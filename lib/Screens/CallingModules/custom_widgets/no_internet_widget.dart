@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:s2toperational/Screens/CallingModules/bloc/expected_beneficiary_bloc.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
 
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
@@ -102,16 +102,11 @@ class NoInternetWidget extends StatelessWidget {
                   onTap: () async {
                     // 1) trigger app-specific retry if you want (kept from your code)
                     //    this is optional; remove if not needed
-                    // ignore: use_build_context_synchronously
-                    context.read<ExpectedBeneficiaryBloc>().add(
-                      BeneficiaryRequest(
-                        payload: {
-                          "CallStatusID": "0",
-                          "TeamID": "0",
-                          "GroupID": "1",
-                        },
-                      ),
-                    );
+                    Get.find<ExpectedBeneficiaryController>().fetchBeneficiaries({
+                      "CallStatusID": "0",
+                      "TeamID": "0",
+                      "GroupID": "1",
+                    });
 
                     // 2) call back to parent to re-check connectivity and refresh
                     if (onRetryPressed != null) {

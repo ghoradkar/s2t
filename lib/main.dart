@@ -2,22 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:s2toperational/Modules/themes/AppTheme.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/CallingModules/bloc/app_bloc_observer.dart';
-import 'package:s2toperational/Screens/CallingModules/bloc/beneficiary_card_bloc_bloc.dart';
-import 'package:s2toperational/Screens/CallingModules/bloc/expected_beneficiary_bloc.dart';
-import 'package:s2toperational/Screens/CallingModules/controllers/beneficiary_card_controller.dart';
 import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
-import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_card_repository.dart';
+import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_repository.dart';
 import 'package:upgrader/upgrader.dart';
 import 'Modules/utilities/DataProvider.dart';
 import 'Modules/utilities/SizeConfig.dart';
-import 'Screens/CallingModules/repository/beneficiary_repository.dart';
 import 'Screens/CallingModules/routes/app_routes.dart';
 import 'Screens/SplashScreen/SplashScreen.dart';
 import 'Modules/utilities/route_observer.dart';
@@ -39,42 +32,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DataProvider.init();
 
-  Bloc.observer = AppBlocObserver();
-
-  // Register GetX controllers (running alongside BLoC during migration)
+  // Register GetX controllers
   Get.put(ExpectedBeneficiaryController(repository: BeneficiaryRepository()));
-  Get.put(BeneficiaryCardController(repository: BeneficiaryCardRepository()));
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(
-    MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<BeneficiaryRepository>(
-          create: (context) => BeneficiaryRepository(),
-        ),
-        RepositoryProvider<BeneficiaryCardRepository>(
-          create: (context) => BeneficiaryCardRepository(),
-        ),
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create:
-                (context) => ExpectedBeneficiaryBloc(
-                  repository: context.read<BeneficiaryRepository>(),
-                ),
-          ),
-          BlocProvider(
-            create:
-                (context) => BeneficiaryCardBlocBloc(
-                  repository: context.read<BeneficiaryCardRepository>(),
-                ),
-          ),
-        ],
-        child: const MyApp(),
-      ),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

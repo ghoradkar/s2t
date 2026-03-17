@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/CallingModules/bloc/expected_beneficiary_bloc.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
 
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
@@ -99,16 +99,10 @@ class NoDataFound extends StatelessWidget {
                 SizedBox(height: responsiveHeight(50)),
                 AppButtonWithIcon(
                   onTap: () {
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      context.read<ExpectedBeneficiaryBloc>().add(
-                        BeneficiaryRequest(
-                          payload: const {
-                            "CallStatusID": "0",
-                            "TeamID": "0",
-                            "GroupID": "1",
-                          },
-                        ),
-                      );
+                    Get.find<ExpectedBeneficiaryController>().fetchBeneficiaries({
+                      "CallStatusID": "0",
+                      "TeamID": "0",
+                      "GroupID": "1",
                     });
                   },
                   title: "Retry",

@@ -268,16 +268,17 @@ class _MedicineDeliveryScreenState extends State<MedicineDeliveryScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.h),
-
-                    // Barcode scanner
-                    AppBarCodeTextfield(
-                      titleHeaderString: "Scan delivery challan",
-                      controller: controller.barcodeController,
-                      onSearch: (_) => controller.submitBarcode(context),
-                      onBarcodeScanned:
-                          () => controller.openBarcodeScanner(context),
-                    ),
+                    ///dont remove
+                    // SizedBox(height: 8.h),
+                    //
+                    // // Barcode scanner
+                    // AppBarCodeTextfield(
+                    //   titleHeaderString: "Scan delivery challan",
+                    //   controller: controller.barcodeController,
+                    //   onSearch: (_) => controller.submitBarcode(context),
+                    //   onBarcodeScanned:
+                    //       () => controller.openBarcodeScanner(context),
+                    // ),
                   ],
                 ),
               ),

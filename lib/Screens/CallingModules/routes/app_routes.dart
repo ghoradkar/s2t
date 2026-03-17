@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/add_dependent_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/appointment_confirmation_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_list_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/models/BeneficiaryResponseModel.dart';
 import 'package:s2toperational/Screens/CallingModules/screens/add_dependent.dart';
 import 'package:s2toperational/Screens/CallingModules/screens/appointment_confirmation.dart';
 import 'package:s2toperational/Screens/CallingModules/screens/expected_beneficiary_list.dart';
@@ -57,7 +62,12 @@ class AppRoutes {
       //   return MaterialPageRoute(builder: (_) => const SideDrawerMenu());
       case expectectedBeneficiaryList:
         return MaterialPageRoute(
-          builder: (_) => const ExpectedBeneficiaryList(),
+          builder: (_) {
+            if (!Get.isRegistered<ExpectedBeneficiaryListController>()) {
+              Get.put(ExpectedBeneficiaryListController());
+            }
+            return const ExpectedBeneficiaryList();
+          },
           settings: settings,
         );
 
@@ -77,15 +87,27 @@ class AppRoutes {
           settings: settings,
         );
       case appointmentConfirmation:
-        return MaterialPageRoute(
-          builder: (_) => const AppointmentConfirmation(),
-          settings: settings,
-        );
+        {
+          final beneficiary = settings.arguments as BeneficiaryOutput;
+          // Always delete stale instance so each navigation gets a fresh
+          // controller initialised with the correct beneficiary.
+          Get.delete<AppointmentConfirmationController>(force: true);
+          Get.put(AppointmentConfirmationController(beneficiary: beneficiary));
+          return MaterialPageRoute(
+            builder: (_) => const AppointmentConfirmation(),
+            settings: settings,
+          );
+        }
       case addDependent:
-        return MaterialPageRoute(
-          builder: (_) => const AddDependentScreen(),
-          settings: settings,
-        );
+        {
+          final args = settings.arguments as Map<String, dynamic>;
+          Get.delete<AddDependentController>(force: true);
+          Get.put(AddDependentController(args: args));
+          return MaterialPageRoute(
+            builder: (_) => const AddDependentScreen(),
+            settings: settings,
+          );
+        }
 
       default:
         throw const RouteException('Route not found!');

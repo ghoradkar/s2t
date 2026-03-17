@@ -17,6 +17,7 @@ import 'package:s2toperational/Screens/AdminDashboard/Screens/D2DTeamsScreen.dar
 import 'package:s2toperational/Screens/AdminDashboard/Screens/LiverScanningScreen.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/S2TPatientAppScreen.dart';
 import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_list_controller.dart';
 import 'package:s2toperational/Screens/CallingModules/screens/expected_beneficiary_list.dart';
 import 'package:s2toperational/Screens/CampCalendarScreen/CampCalendarScreen.dart';
 import 'package:s2toperational/Screens/D2DAvailability/D2DAvailabilityScreen.dart';
@@ -528,7 +529,12 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ExpectedBeneficiaryList(),
+            builder: (context) {
+              if (!Get.isRegistered<ExpectedBeneficiaryListController>()) {
+                Get.put(ExpectedBeneficiaryListController());
+              }
+              return const ExpectedBeneficiaryList();
+            },
           ),
         );
         break;

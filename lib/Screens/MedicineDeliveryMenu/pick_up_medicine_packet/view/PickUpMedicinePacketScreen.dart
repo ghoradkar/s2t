@@ -204,17 +204,19 @@ class _PickUpMedicinePacketScreenState
                         ),
                         suffixIcon: Icon(Icons.keyboard_arrow_down),
                       ),
-                      SizedBox(height: 8.h),
-                      AppBarCodeTextfield(
-                        titleHeaderString: "Scan Delivery Challan",
-                        controller: controller.barcodeController,
-                        onSearch: (p0) {
-                          controller.submitBarcodePacket(context);
-                        },
-                        onBarcodeScanned: () {
-                          controller.openBarCodeScanner(context);
-                        },
-                      ),
+
+                      ///dont remove
+                      // SizedBox(height: 8.h),
+                      // AppBarCodeTextfield(
+                      //   titleHeaderString: "Scan Delivery Challan",
+                      //   controller: controller.barcodeController,
+                      //   onSearch: (p0) {
+                      //     controller.submitBarcodePacket(context);
+                      //   },
+                      //   onBarcodeScanned: () {
+                      //     controller.openBarCodeScanner(context);
+                      //   },
+                      // ),
                     ],
                   ),
                 ).paddingOnly(top: 12.h, left: 10.w, right: 10.w, bottom: 8.h),
