@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:formz/formz.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:s2toperational/Screens/CallingModules/routes/app_routes.dart';
 
 import 'dart:convert';
 
@@ -12,7 +13,6 @@ import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/AppButton.dart';
-import '../../routes/app_routes.dart';
 import '../bloc/forgot_password_bloc.dart';
 
 class ForgotPasswordOTPScreen extends StatefulWidget {

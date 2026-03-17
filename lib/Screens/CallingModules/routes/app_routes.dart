@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-
+import 'package:s2toperational/Screens/CallingModules/screens/add_dependent.dart';
+import 'package:s2toperational/Screens/CallingModules/screens/appointment_confirmation.dart';
+import 'package:s2toperational/Screens/CallingModules/screens/expected_beneficiary_list.dart';
+import 'package:s2toperational/Screens/forgot_password/ui/forgot_password_otp.dart';
+import 'package:s2toperational/Screens/forgot_password/ui/reset_password.dart';
 import '../../ForgotPasswordScreen/ForgotPasswordScreen.dart';
 import '../../LoginScreen/LoginScreen.dart';
 import '../../SplashScreen/SplashScreen.dart';
-import '../calling/add_dependent.dart';
-import '../calling/appointment_confirmation.dart';
-import '../calling/expected_beneficiary_list.dart';
-import '../custom_widgets/exceptions/route_exception.dart';
 import '../custom_widgets/logout_widget.dart';
-import '../forgot_password/ui/forgot_password_otp.dart';
-import '../forgot_password/ui/reset_password.dart';
 
 class AppRoutes {
   const AppRoutes._();
+
   static const String splash = "/";
   static const String loginScreen = "/loginScreen";
   static const String introScreen = "/introScreen";
@@ -92,4 +91,10 @@ class AppRoutes {
         throw const RouteException('Route not found!');
     }
   }
+}
+
+class RouteException implements Exception {
+  final String message;
+
+  const RouteException(this.message);
 }

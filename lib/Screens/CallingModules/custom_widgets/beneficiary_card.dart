@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
@@ -15,21 +14,21 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/beneficiary_card_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/models/APIKeyForMyOperatorModel.dart';
+import 'package:s2toperational/Screens/CallingModules/models/BeneficiaryResponseModel.dart';
+import 'package:s2toperational/Screens/CallingModules/models/api_key_agent_model.dart';
+import 'package:s2toperational/Screens/CallingModules/models/api_key_call_patching_model.dart';
+import 'package:s2toperational/Screens/CallingModules/models/organization_model.dart';
+import 'package:s2toperational/Screens/CallingModules/models/user_created_model.dart';
+import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_card_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
-import '../calling/models/APIKeyForMyOperatorModel.dart';
-import '../calling/models/BeneficiaryResponseModel.dart';
-import '../calling/models/api_key_agent_model.dart';
-import '../calling/models/api_key_call_patching_model.dart';
-import '../calling/models/organization_model.dart';
-import '../calling/models/user_created_model.dart';
 import '../routes/app_routes.dart';
-import 'bloc/beneficiary_card_bloc_bloc.dart';
-import 'repository/beneficiary_card.dart';
 
 class BeneficiaryCard extends StatefulWidget {
   final BeneficiaryOutput beneficiary;
@@ -123,6 +122,9 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
   String apikeyForCAllPAtching = "";
   bool _isCallingLoading = false;
 
+  late final BeneficiaryCardController _controller;
+  final List<Worker> _workers = [];
+
   // Cache static decorations to avoid recreating them
   // static final _cardDecoration = BoxDecoration(
   //   boxShadow: [
@@ -150,53 +152,37 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
   // bool _isinsertCallNew = false;
 
   @override
-  void initState() {
-    //BindOrg
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<BeneficiaryCardBlocBloc>().add(
-        GetOrganization(payload: {"DESGID": widget.desId.toString()}),
-      );
-
-      //GetIs24By7IsAccountCreatedFlag
-      context.read<BeneficiaryCardBlocBloc>().add(
-        GetUserCreatedBy(payload: {"UserID": widget.empCode.toString()}),
-      );
-    });
-
-    super.initState();
+  void dispose() {
+    for (final w in _workers) {
+      w.dispose();
+    }
+    super.dispose();
   }
 
-  // BeneficiaryCard({required this.beneficiary});
   @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
+  void initState() {
+    super.initState();
+    _controller = Get.find<BeneficiaryCardController>();
 
-    return BlocListener<BeneficiaryCardBlocBloc, BeneficiaryCardBlocState>(
-      listener: (context, state) {
-        //BindOrg
-        if (state.organizationStatus.isSuccess) {
+    // ── ever() workers (replace BlocListener) ──────────────────────────────
+    _workers.add(
+      ever(_controller.organizationStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
           organizationModel = OrganizationModel.fromJson(
-            jsonDecode(state.organizationResponse),
+            jsonDecode(_controller.organizationResponse.value),
           );
           _organizationList.clear();
 
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-            context.read<BeneficiaryCardBlocBloc>().add(
-              GetAPIKeyForAgentId(
-                payload: {
-                  "OrgId": (_organizationList[0].subOrgId ?? 0).toString(),
-                },
-              ),
-            );
+            _controller.fetchAPIKeyForAgentId({
+              "OrgId": (_organizationList[0].subOrgId ?? 0).toString(),
+            });
 
-            context.read<BeneficiaryCardBlocBloc>().add(
-              GetAPIKeyForCallPAtching(
-                payload: {
-                  "OrgId": (_organizationList[0].subOrgId ?? 0).toString(),
-                  "UserId": widget.empCode.toString(),
-                },
-              ),
-            );
+            _controller.fetchAPIKeyForCallPatching({
+              "OrgId": (_organizationList[0].subOrgId ?? 0).toString(),
+              "UserId": widget.empCode.toString(),
+            });
 
             var payload = {
               "OrgId": (_organizationList[0].subOrgId ?? 0).toString(),
@@ -255,11 +241,15 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
             }
           });
         }
+      }),
+    );
 
-        //GetIs24By7IsAccountCreatedFlag
-        if (state.usercreatedStatus.isSuccess) {
+    _workers.add(
+      ever(_controller.usercreatedStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
           userCreatedModel = UserCreatedModel.fromJson(
-            jsonDecode(state.userCreatedResponse),
+            jsonDecode(_controller.userCreatedResponse.value),
           );
           _usercreatedBy.clear();
 
@@ -271,17 +261,21 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
 
               isUserCreatedBy = orgdata[0].is24By7IsAccountCreated ?? 0;
               print(isUserCreatedBy.toString());
-              // isUserCreatedBy = 2;
             } else {
               debugPrint("empty or null.");
             }
           });
         }
+      }),
+    );
 
-        if (state.apikeyAgentIdStatus.isSuccess) {
+    _workers.add(
+      ever(_controller.apikeyAgentIdStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
           setState(() {
             apiKeyForAgentIDModel = ApiKeyForAgentIDModel.fromJson(
-              jsonDecode(state.apiKeyAgentResponse),
+              jsonDecode(_controller.apiKeyAgentResponse.value),
             );
             _apiKeyForAgentList.clear();
             var apiKeyData = apiKeyForAgentIDModel?.output;
@@ -296,9 +290,14 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
             }
           });
         }
+      }),
+    );
 
-        if (state.getMyoperatorDetailsStatus.isSuccess) {
-          final responseStr = state.getMyoperatorDetailsResponse;
+    _workers.add(
+      ever(_controller.getMyoperatorDetailsStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          final responseStr = _controller.getMyoperatorDetailsResponse.value;
 
           if (responseStr.isNotEmpty) {
             try {
@@ -330,21 +329,43 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
             }
           }
         }
+      }),
+    );
 
-        if (state.apikeyCallPatchingStatus.isSuccess) {
-          if (state.apiKeyCallPatchingResponse.isNotEmpty) {
-            var resJ = jsonDecode(state.apiKeyCallPatchingResponse);
+    _workers.add(
+      ever(_controller.apikeyCallPatchingStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          if (_controller.apiKeyCallPatchingResponse.value.isNotEmpty) {
+            var resJ =
+                jsonDecode(_controller.apiKeyCallPatchingResponse.value);
             print(resJ['output'][0]['VirtualNo']);
             setState(() {
               apikeyForCAllPAtching = resJ['output'][0]['APIKey'];
               virtualNumberForCallPAtching = resJ['output'][0]['ServieNumber'];
               debugPrint(virtualNumberForCallPAtching);
-              // virtualNumberForCallPAtching = resJ['output'][0]['VirtualNo'];
             });
           }
         }
-      },
-      child: Padding(
+      }),
+    );
+    // ── end ever() workers ─────────────────────────────────────────────────
+
+    //BindOrg
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _controller.fetchOrganization({"DESGID": widget.desId.toString()});
+
+      //GetIs24By7IsAccountCreatedFlag
+      _controller.fetchUserCreatedBy({"UserID": widget.empCode.toString()});
+    });
+  }
+
+  // BeneficiaryCard({required this.beneficiary});
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
+    return Padding(
         padding: EdgeInsets.only(
           top: responsiveHeight(16),
           bottom: responsiveHeight(4),
@@ -1285,7 +1306,6 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
             ),
           ),
         ),
-      ),
     );
   }
 

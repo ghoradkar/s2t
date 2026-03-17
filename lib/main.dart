@@ -7,14 +7,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:s2toperational/Modules/themes/AppTheme.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Screens/CallingModules/bloc/app_bloc_observer.dart';
+import 'package:s2toperational/Screens/CallingModules/bloc/beneficiary_card_bloc_bloc.dart';
+import 'package:s2toperational/Screens/CallingModules/bloc/expected_beneficiary_bloc.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/beneficiary_card_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_card_repository.dart';
 import 'package:upgrader/upgrader.dart';
 import 'Modules/utilities/DataProvider.dart';
 import 'Modules/utilities/SizeConfig.dart';
-import 'Screens/CallingModules/calling/bloc/app_bloc_observer.dart';
-import 'Screens/CallingModules/calling/bloc/expected_beneficiary_bloc.dart';
-import 'Screens/CallingModules/calling/repository/beneficiary_repository.dart';
-import 'Screens/CallingModules/custom_widgets/bloc/beneficiary_card_bloc_bloc.dart';
-import 'Screens/CallingModules/custom_widgets/repository/beneficiary_card.dart';
+import 'Screens/CallingModules/repository/beneficiary_repository.dart';
 import 'Screens/CallingModules/routes/app_routes.dart';
 import 'Screens/SplashScreen/SplashScreen.dart';
 import 'Modules/utilities/route_observer.dart';
@@ -37,6 +40,11 @@ void main() async {
   await DataProvider.init();
 
   Bloc.observer = AppBlocObserver();
+
+  // Register GetX controllers (running alongside BLoC during migration)
+  Get.put(ExpectedBeneficiaryController(repository: BeneficiaryRepository()));
+  Get.put(BeneficiaryCardController(repository: BeneficiaryCardRepository()));
+
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiRepositoryProvider(

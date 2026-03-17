@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
@@ -11,8 +10,15 @@ import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Screens/CallingModules/calling/models/CallStatusAppConfirm.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
 import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/CallingModules/models/BeneficiaryResponseModel.dart';
+import 'package:s2toperational/Screens/CallingModules/models/CallStatusAppConfirm.dart';
+import 'package:s2toperational/Screens/CallingModules/models/ScreeningDependentModel.dart';
+import 'package:s2toperational/Screens/CallingModules/models/add_dependent_model.dart';
+import 'package:s2toperational/Screens/CallingModules/models/calling_address_model.dart';
+import 'package:s2toperational/Screens/CallingModules/models/calling_remark_model.dart';
+import 'package:s2toperational/Screens/CallingModules/models/team_data_model.dart';
 import 'package:s2toperational/Views/CustomTimePicker/CustomTimePickerDialog.dart';
 
 import '../../../Modules/constants/constants.dart';
@@ -26,13 +32,6 @@ import '../custom_widgets/beneficiary_card.dart';
 import '../custom_widgets/no_data_widget.dart';
 import '../custom_widgets/selection_bottom_sheet.dart';
 import '../routes/app_routes.dart';
-import 'bloc/expected_beneficiary_bloc.dart';
-import 'models/BeneficiaryResponseModel.dart';
-import 'models/ScreeningDependentModel.dart';
-import 'models/add_dependent_model.dart';
-import 'models/calling_address_model.dart';
-import 'models/calling_remark_model.dart';
-import 'models/team_data_model.dart';
 
 class AppointmentConfirmation extends StatefulWidget {
   const AppointmentConfirmation({super.key});
@@ -130,6 +129,9 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   final List<CallingRemarkOutput> _remarkList = [];
   final List<CallingAddressOutput> _addressList = [];
 
+  late final ExpectedBeneficiaryController _controller;
+  final List<Worker> _workers = [];
+
   final List<Map<String, dynamic>> _genderList = [
     {"id": 1, "name": "Male"},
     {"id": 2, "name": "Female"},
@@ -173,8 +175,473 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   }
 
   @override
+  void dispose() {
+    for (final w in _workers) {
+      w.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
+    _controller = Get.find<ExpectedBeneficiaryController>();
+
+    // ── ever() workers (replace BlocListener) ──────────────────────────────
+    _workers.add(
+      ever(_controller.getCallStatusForAppointment, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          callstatusModel = CallStatusAppConfirm.fromJson(
+            jsonDecode(_controller.getCallingForAppointmentResponse.value),
+          );
+          _filteredCallStatusList.clear();
+
+          setState(() {
+            _filteredCallStatusList.addAll(callstatusModel!.output!);
+            for (int i = 0; i < _filteredCallStatusList.length; i++) {
+              if (_filteredCallStatusList[i].callingStatus ==
+                  "Calling Pending") {
+                _filteredCallStatusList.removeAt(i);
+              }
+            }
+          });
+
+          if (_isShowCallStatusDropDown == true) {
+            return;
+          }
+          _isShowCallStatusDropDown = true;
+          showModalBottomSheet(
+            isDismissible: false,
+            enableDrag: false,
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (c, sheetState) {
+                  return SelectionBottomSheet<
+                    CallStatusOutputAppConfirm,
+                    int
+                  >(
+                    title: "Call Status",
+                    items: _filteredCallStatusList,
+                    selectedValue: selectedCallStatus?.assignStatusID,
+                    valueFor: (item) => item.assignStatusID ?? 0,
+                    labelFor:
+                        (item) => fixEncoding(item.callingStatus ?? 'NA'),
+                    height: responsiveHeight(500),
+                    padding: EdgeInsets.only(
+                      top: responsiveHeight(28),
+                      left: responsiveHeight(35),
+                      right: responsiveHeight(35),
+                      bottom: responsiveHeight(60),
+                    ),
+                    titleTextStyle: TextStyle(
+                      fontSize: responsiveFont(16),
+                      fontFamily: FontConstants.interFonts,
+                    ),
+                    titleBottomSpacing: responsiveHeight(20),
+                    itemContainerPadding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 4.0,
+                    ),
+                    selectedBackgroundColor: kPrimaryColor.withOpacity(0.1),
+                    itemTextStyle: TextStyle(
+                      fontSize: 13.sp,
+                      fontFamily: FontConstants.interFonts,
+                      fontWeight: FontWeight.normal,
+                      color: kBlackColor,
+                    ),
+                    onItemTap: (item) {
+                      sheetState(() {
+                        selectedCallStatus = item;
+                      });
+
+                      setState(() {
+                        _isShowCallStatusDropDown = false;
+                        callStatusTextController.text = fixEncoding(
+                          selectedCallStatus?.callingStatus ?? "",
+                        );
+
+                        callStatus = selectedCallStatus?.assignStatusID ?? 0;
+
+                        updateWorkerScreeningStatus(callStatus);
+
+                        if (callStatus == 2 ||
+                            callStatus == 3 ||
+                            callStatus == 14) {
+                          _isTextFieldVisibilityDateTime = true;
+                        } else {
+                          _isTextFieldVisibilityDateTime = false;
+                        }
+
+                        if (callStatus == 2 ||
+                            callStatus == 3 ||
+                            callStatus == 14) {
+                          _isTextFieldVisibilityPersonalDet = true;
+                        } else {
+                          _isTextFieldVisibilityPersonalDet = false;
+                        }
+                      });
+
+                      Navigator.pop(context);
+                      _controller.resetState();
+                    },
+                  );
+                },
+              );
+            },
+          );
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.getappointmentstatus, (status) {
+        if (!mounted) return;
+        if (status.isInProgress) {
+          ToastManager.showLoader();
+        } else if (status.isSuccess) {
+          ToastManager.hideLoader();
+          setState(() {
+            var jsonResponse =
+                jsonDecode(_controller.getappointmentResponse.value);
+
+            var outputList = jsonResponse["output"];
+
+            if (outputList != null && outputList.isNotEmpty) {
+              int appointmentCount =
+                  outputList[0]["AppointmentDateCount"] ?? 0;
+
+              if (appointmentCount >= 20 &&
+                  !_isAppointmentAlertVisible &&
+                  mounted) {
+                _isAppointmentAlertVisible = true;
+                showDialog(
+                  context: context,
+                  builder:
+                      (context) => AlertDialog(
+                        title: Text(
+                          'Alert',
+                          style: TextStyle(
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
+                        content: Text(
+                          '20 appointments are already confirmed on ${timeTextController.text} Are you still want to book this appointment?',
+                          style: TextStyle(
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'Yes',
+                              style: TextStyle(
+                                fontFamily: FontConstants.interFonts,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              timeTextController.text = "";
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'No',
+                              style: TextStyle(
+                                fontFamily: FontConstants.interFonts,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                ).whenComplete(() {
+                  _isAppointmentAlertVisible = false;
+                  _controller.resetState();
+                });
+              }
+            }
+          });
+        } else if (status.isFailure) {
+          ToastManager.hideLoader();
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.insertAppointmentStatus, (status) {
+        if (!mounted) return;
+        if (status == FormzSubmissionStatus.success) {
+          showDialog(
+            context: context,
+            builder:
+                (context) => AlertDialog(
+                  title: Text(
+                    'Success',
+                    style: TextStyle(fontFamily: FontConstants.interFonts),
+                  ),
+                  content: Text(
+                    'Details Saved successfully',
+                    style: TextStyle(fontFamily: FontConstants.interFonts),
+                  ),
+                  actions: [
+                    SizedBox(
+                      width: 80.w,
+                      child: AppActiveButton(
+                        buttontitle: "OK",
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context, true);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+          );
+        } else if (status == FormzSubmissionStatus.failure) {
+          ToastManager.showAlertDialog(
+            context,
+            jsonDecode(_controller.insertAppointmentResponse.value)['message'],
+            () {
+              Navigator.pop(context);
+            },
+          );
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.getRemarkStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          callingRemarkModel = CallingRemarkModel.fromJson(
+            jsonDecode(_controller.getRemarkResponse.value),
+          );
+          _remarkList.clear();
+
+          setState(() {
+            _remarkList.addAll(callingRemarkModel!.output!);
+          });
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (c, sheetState) {
+                  return SelectionBottomSheet<CallingRemarkOutput, int>(
+                    title: "Remark",
+                    items: _remarkList,
+                    selectedValue: selectedRemark?.cReamrkID,
+                    valueFor: (item) => item.cReamrkID ?? 0,
+                    labelFor:
+                        (item) => fixEncoding(item.callingRemark ?? ""),
+                    height: 360.h,
+                    padding: EdgeInsets.only(
+                      top: responsiveHeight(28),
+                      left: responsiveHeight(35),
+                      right: responsiveHeight(35),
+                      bottom: responsiveHeight(60),
+                    ),
+                    titleTextStyle: TextStyle(
+                      fontSize: responsiveFont(16),
+                      fontFamily: FontConstants.interFonts,
+                    ),
+                    titleBottomSpacing: responsiveHeight(30),
+                    itemPadding: const EdgeInsets.symmetric(vertical: 8.0),
+                    itemContainerPadding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 4.0,
+                    ),
+                    selectedBackgroundColor: kPrimaryColor.withOpacity(0.1),
+                    itemTextStyle: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontWeight: FontWeight.normal,
+                      color: kBlackColor,
+                    ),
+                    selectedItemTextStyle: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontWeight: FontWeight.normal,
+                      color: kBlackColor,
+                    ),
+                    onItemTap: (item) {
+                      sheetState(() {
+                        selectedRemark = item;
+                      });
+
+                      remarkTextController.text = fixEncoding(
+                        selectedRemark?.callingRemark ?? "",
+                      );
+                      remarkId = selectedRemark?.cReamrkID ?? 0;
+
+                      Navigator.pop(context);
+                      _controller.resetState();
+                    },
+                  );
+                },
+              );
+            },
+          );
+        }
+
+        if (status.isFailure) {
+          ToastManager.showAlertDialog(context, "Remark not found", () {
+            Navigator.pop(context);
+          });
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.getAddressDetailStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess && !hasAddressLoaded) {
+          hasAddressLoaded = true;
+
+          callingAddressModel = CallingAddressModel.fromJson(
+            jsonDecode(_controller.getAddressDetailResponse.value),
+          );
+          _addressList.clear();
+
+          setState(() {
+            var addressData = callingAddressModel?.output;
+
+            if (addressData != null && addressData.isNotEmpty) {
+              _addressList.addAll(addressData);
+
+              _districtTextController.text =
+                  _addressList[0].district.toString();
+              _talukaTextController.text = _addressList[0].taluka.toString();
+              houseNumberTextController.text =
+                  _addressList[0].houseNo.toString();
+              regAddress = _addressList[0].regAddress.toString();
+              areaTextController.text = _addressList[0].area.toString();
+              landMarkTextController.text =
+                  _addressList[0].landMark.toString();
+              pincodeTextController.text = _addressList[0].pincode.toString();
+              roadTextController.text = _addressList[0].road.toString();
+
+              alternateMobileTextController.text =
+                  _addressList[0].altMobileNo?.toString() ?? "NA";
+
+              timeTextController.text =
+                  _addressList[0].appoinmentDate?.toString() ?? "NA";
+
+              timeAppTextController.text =
+                  _addressList[0].appoinmentTime?.toString() ?? "NA";
+
+              remarkTextController.text = fixEncoding(
+                _addressList[0].remark ?? "",
+              );
+              remarkId = _addressList[0].remarkID ?? 0;
+              callLog = _addressList[0].callingLog ?? 0;
+
+              String marriedStatus =
+                  _addressList[0].workersMaritalStatus ?? "";
+              marriedStatusID =
+                  marriedStatus.trim().isEmpty ? "0" : marriedStatus;
+
+              if (marriedStatusID == "1") {
+                workersMartialStatusTextController.text = "Married";
+              }
+
+              fname = _addressList[0].firstName ?? "";
+              mname = _addressList[0].middleName ?? "";
+              lname = _addressList[0].lastName ?? "";
+              districtCode = _addressList[0].dISTLGDCODE ?? 0;
+              talukaCode = _addressList[0].tALLGDCODE ?? 0;
+              workerGender = _addressList[0].gender ?? "";
+              workersGenderTextController.text = workerGender;
+            } else {
+              debugPrint("Address list is empty or null.");
+            }
+          });
+
+          _controller.resetState();
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.screenedDependetStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          ScreeningDependentModel model = ScreeningDependentModel.fromJson(
+            jsonDecode(_controller.screenedDependentResponse.value),
+          );
+
+          if (model.status == 'Success' && model.output != null) {
+            setState(() {
+              _screeningdataList.clear();
+              _screeningdataList.addAll(model.output!);
+
+              screenedBeneficiaryCount = _screeningdataList.length;
+
+              final noOfDepartmentStr = numberOfDependent;
+
+              int screenedCount = 0;
+              int departmentCount = 0;
+
+              try {
+                screenedCount = screenedBeneficiaryCount;
+                departmentCount = noOfDepartmentStr;
+              } catch (e) {
+                debugPrint("Invalid input: $e");
+              }
+
+              differenceCount = (screenedCount - departmentCount).abs();
+            });
+          } else {
+            setState(() {
+              _screeningdataList.clear();
+            });
+          }
+        }
+
+        if (status.isFailure) {
+          screenedBeneficiaryCount = 0;
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.getDependentStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          AddDependentModel addDependentModel = AddDependentModel.fromJson(
+            jsonDecode(_controller.getDependentResponse.value),
+          );
+          if (addDependentModel.status == 'Success') {
+            _controller.addDependent(addDependentModel.output ?? []);
+          }
+          _controller.resetState();
+        }
+
+        if (status.isFailure) {
+          AddDependentModel addDependentModel = AddDependentModel(
+            status: 'Failure',
+            output: [],
+          );
+
+          _controller.addDependent(addDependentModel.output ?? []);
+          _controller.resetState();
+        }
+      }),
+    );
+
+    _workers.add(
+      ever(_controller.addDependentStatus, (status) {
+        if (!mounted) return;
+        if (status.isSuccess) {
+          _controller.resetState();
+        }
+      }),
+    );
+    // ── end ever() workers ─────────────────────────────────────────────────
+
     // _getCaptchaDetails();
 
     var userDetails = DataProvider().getParsedUserData();
@@ -236,27 +703,19 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
       final assignCallID = selectedBeneficiary?.assignCallID.toString();
 
       // API: load registered/current address details for this beneficiary call.
-      context.read<ExpectedBeneficiaryBloc>().add(
-        GetAddressDetails(payload: {"AssignCallID": assignCallID}),
-      );
+      _controller.fetchAddressDetails({"AssignCallID": assignCallID});
 
-      context.read<ExpectedBeneficiaryBloc>().add(
-        // API: fetch already-screened dependents to show counts and status.
-        GetScreenedDependentDetails(
-          payload: {"AssignCallID": assignCallID, "Type": "1"},
-        ),
+      // API: fetch already-screened dependents to show counts and status.
+      _controller.fetchScreenedDependentDetails(
+        {"AssignCallID": assignCallID, "Type": "1"},
       );
     });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // API: load previously saved dependents for this call (prefill/add list).
-      context.read<ExpectedBeneficiaryBloc>().add(
-        GetDependentDetails(
-          payload: {
-            "AssignCallID": selectedBeneficiary?.assignCallID.toString(),
-          },
-        ),
-      );
+      _controller.fetchDependentDetails({
+        "AssignCallID": selectedBeneficiary?.assignCallID.toString(),
+      });
     });
   }
 
@@ -277,484 +736,6 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
     );
 
     return NetworkWrapper(
-      child: BlocListener<ExpectedBeneficiaryBloc, ExpectedBeneficiaryState>(
-        listener: (context, state) {
-          if (state.getCallStatusForAppointment.isSuccess) {
-            callstatusModel = CallStatusAppConfirm.fromJson(
-              jsonDecode(state.getCallingForAppointmentResponse),
-            );
-            _filteredCallStatusList.clear();
-
-            setState(() {
-              _filteredCallStatusList.addAll(callstatusModel!.output!);
-              // _filteredCallStatusList.removeAt(0);
-              for (int i = 0; i < _filteredCallStatusList.length; i++) {
-                if (_filteredCallStatusList[i].callingStatus ==
-                    "Calling Pending") {
-                  _filteredCallStatusList.removeAt(i);
-                }
-              }
-            });
-
-            if (_isShowCallStatusDropDown == true) {
-              return;
-            }
-            _isShowCallStatusDropDown = true;
-            showModalBottomSheet(
-              isDismissible: false,
-              enableDrag: false,
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                return StatefulBuilder(
-                  builder: (c, sheetState) {
-                    return SelectionBottomSheet<
-                      CallStatusOutputAppConfirm,
-                      int
-                    >(
-                      title: "Call Status",
-                      items: _filteredCallStatusList,
-                      selectedValue: selectedCallStatus?.assignStatusID,
-                      valueFor: (item) => item.assignStatusID ?? 0,
-                      labelFor:
-                          (item) => fixEncoding(item.callingStatus ?? 'NA'),
-                      height: responsiveHeight(500),
-                      padding: EdgeInsets.only(
-                        top: responsiveHeight(28),
-                        left: responsiveHeight(35),
-                        right: responsiveHeight(35),
-                        bottom: responsiveHeight(60),
-                      ),
-                      titleTextStyle: TextStyle(
-                        fontSize: responsiveFont(16),
-                        fontFamily: FontConstants.interFonts,
-                      ),
-                      titleBottomSpacing: responsiveHeight(20),
-                      itemContainerPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 4.0,
-                      ),
-                      selectedBackgroundColor: kPrimaryColor.withOpacity(0.1),
-                      itemTextStyle: TextStyle(
-                        fontSize: 13.sp,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.normal,
-                        color: kBlackColor,
-                      ),
-                      onItemTap: (item) {
-                        // STEP 1: Update the visual state FIRST using sheetState
-                        sheetState(() {
-                          selectedCallStatus = item;
-                        });
-
-                        // STEP 2: Update the main view state
-                        setState(() {
-                          _isShowCallStatusDropDown = false;
-                          callStatusTextController.text = fixEncoding(
-                            selectedCallStatus?.callingStatus ?? "",
-                          );
-
-                          callStatus = selectedCallStatus?.assignStatusID ?? 0;
-
-                          updateWorkerScreeningStatus(callStatus);
-
-                          if (callStatus == 2 ||
-                              callStatus == 3 ||
-                              callStatus == 14) {
-                            _isTextFieldVisibilityDateTime = true;
-                          } else {
-                            _isTextFieldVisibilityDateTime = false;
-                          }
-
-                          if (callStatus == 2 ||
-                              callStatus == 3 ||
-                              callStatus == 14) {
-                            _isTextFieldVisibilityPersonalDet = true;
-                          } else {
-                            _isTextFieldVisibilityPersonalDet = false;
-                          }
-                        });
-
-                        // STEP 3: Close sheet and trigger bloc event
-                        Navigator.pop(context);
-                        context.read<ExpectedBeneficiaryBloc>().add(
-                          ResetExpectedBeneficiaryState(),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          }
-          if (state.getappointmentstatus.isInProgress) {
-            ToastManager.showLoader();
-          } else if (state.getappointmentstatus.isSuccess) {
-            ToastManager.hideLoader();
-            setState(() {
-              var jsonResponse = jsonDecode(state.getappointmentResponse);
-
-              var outputList = jsonResponse["output"];
-
-              if (outputList != null && outputList.isNotEmpty) {
-                int appointmentCount =
-                    outputList[0]["AppointmentDateCount"] ?? 0;
-
-                //  int appointmentCount = 21;
-
-                if (appointmentCount >= 20 &&
-                    !_isAppointmentAlertVisible &&
-                    mounted) {
-                  _isAppointmentAlertVisible = true;
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          title: Text(
-                            'Alert',
-                            style: TextStyle(
-                              fontFamily: FontConstants.interFonts,
-                            ),
-                          ),
-                          content: Text(
-                            '20 appointments are already confirmed on ${timeTextController.text} Are you still want to book this appointment?',
-                            style: TextStyle(
-                              fontFamily: FontConstants.interFonts,
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Yes',
-                                style: TextStyle(
-                                  fontFamily: FontConstants.interFonts,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                timeTextController.text = "";
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'No',
-                                style: TextStyle(
-                                  fontFamily: FontConstants.interFonts,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                  ).whenComplete(() {
-                    _isAppointmentAlertVisible = false;
-                    context.read<ExpectedBeneficiaryBloc>().add(
-                      ResetExpectedBeneficiaryState(),
-                    );
-                  });
-                }
-              }
-            });
-          } else if (state.getappointmentstatus.isFailure) {
-            ToastManager.hideLoader();
-          }
-
-          if (state.insertAppointmentStatus == FormzSubmissionStatus.success) {
-            showDialog(
-              context: context,
-              builder:
-                  (context) => AlertDialog(
-                    title: Text(
-                      'Success',
-                      style: TextStyle(fontFamily: FontConstants.interFonts),
-                    ),
-                    content: Text(
-                      'Details Saved successfully',
-                      style: TextStyle(fontFamily: FontConstants.interFonts),
-                    ),
-                    actions: [
-                      SizedBox(
-                        width: 80.w,
-                        child: AppActiveButton(
-                          buttontitle: "OK",
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context, true);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-            );
-          } else if (state.insertAppointmentStatus ==
-              FormzSubmissionStatus.failure) {
-            ToastManager.showAlertDialog(
-              context,
-              jsonDecode(state.insertAppointmentResponse)['message'],
-              () {
-                Navigator.pop(context);
-              },
-            );
-
-            // showDialog(
-            //   context: context,
-            //   builder:
-            //       (context) => AlertDialog(
-            //         title: Text(
-            //           'Alert',
-            //           style: TextStyle(fontFamily: FontConstants.interFonts),
-            //         ),
-            //         content: Text(
-            //           jsonDecode(state.insertAppointmentResponse)['message'],
-            //         ),
-            //         actions: [
-            //           SizedBox(
-            //             width: 80.w,
-            //             child: AppActiveButton(
-            //               buttontitle: "OK",
-            //               onTap: () {
-            //                 Navigator.pop(context);
-            //               },
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            // );
-          }
-
-          if (state.getRemarkStatus.isSuccess) {
-            callingRemarkModel = CallingRemarkModel.fromJson(
-              jsonDecode(state.getRemarkResponse),
-            );
-            _remarkList.clear();
-
-            setState(() {
-              _remarkList.addAll(callingRemarkModel!.output!);
-            });
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                return StatefulBuilder(
-                  builder: (c, sheetState) {
-                    return SelectionBottomSheet<CallingRemarkOutput, int>(
-                      title: "Remark",
-                      items: _remarkList,
-                      selectedValue: selectedRemark?.cReamrkID,
-                      valueFor: (item) => item.cReamrkID ?? 0,
-                      labelFor: (item) => fixEncoding(item.callingRemark ?? ""),
-                      height: 360.h,
-                      padding: EdgeInsets.only(
-                        top: responsiveHeight(28),
-                        left: responsiveHeight(35),
-                        right: responsiveHeight(35),
-                        bottom: responsiveHeight(60),
-                      ),
-                      titleTextStyle: TextStyle(
-                        fontSize: responsiveFont(16),
-                        fontFamily: FontConstants.interFonts,
-                      ),
-                      titleBottomSpacing: responsiveHeight(30),
-                      itemPadding: const EdgeInsets.symmetric(vertical: 8.0),
-                      itemContainerPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 4.0,
-                      ),
-                      selectedBackgroundColor: kPrimaryColor.withOpacity(0.1),
-                      itemTextStyle: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.normal,
-                        color: kBlackColor,
-                      ),
-                      selectedItemTextStyle: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.normal,
-                        color: kBlackColor,
-                      ),
-                      onItemTap: (item) {
-                        // STEP 1: Update the visual state FIRST using sheetState
-                        sheetState(() {
-                          selectedRemark = item;
-                        });
-
-                        // STEP 2: Update text controller and remarkId
-                        remarkTextController.text = fixEncoding(
-                          selectedRemark?.callingRemark ?? "",
-                        );
-                        remarkId = selectedRemark?.cReamrkID ?? 0;
-
-                        // STEP 3: Close sheet and trigger bloc event
-                        Navigator.pop(context);
-                        context.read<ExpectedBeneficiaryBloc>().add(
-                          ResetExpectedBeneficiaryState(),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          }
-
-          if (state.getRemarkStatus.isFailure) {
-            ToastManager.showAlertDialog(context, "Remark not found", () {
-              Navigator.pop(context);
-            });
-          }
-
-          if (state.getAddressDetailStatus.isSuccess && !hasAddressLoaded) {
-            hasAddressLoaded = true;
-
-            callingAddressModel = CallingAddressModel.fromJson(
-              jsonDecode(state.getAddressDetailResponse),
-            );
-            _addressList.clear();
-
-            setState(() {
-              var addressData = callingAddressModel?.output;
-
-              if (addressData != null && addressData.isNotEmpty) {
-                _addressList.addAll(addressData);
-
-                _districtTextController.text =
-                    _addressList[0].district.toString();
-                _talukaTextController.text = _addressList[0].taluka.toString();
-                houseNumberTextController.text =
-                    _addressList[0].houseNo.toString();
-                regAddress = _addressList[0].regAddress.toString();
-                areaTextController.text = _addressList[0].area.toString();
-                landMarkTextController.text =
-                    _addressList[0].landMark.toString();
-                pincodeTextController.text = _addressList[0].pincode.toString();
-                roadTextController.text = _addressList[0].road.toString();
-
-                alternateMobileTextController.text =
-                    _addressList[0].altMobileNo?.toString() ?? "NA";
-
-                timeTextController.text =
-                    _addressList[0].appoinmentDate?.toString() ?? "NA";
-
-                timeAppTextController.text =
-                    _addressList[0].appoinmentTime?.toString() ?? "NA";
-
-                // remarkTextController.text = _addressList[0].remark ?? "";
-                remarkTextController.text = fixEncoding(
-                  _addressList[0].remark ?? "",
-                );
-                remarkId = _addressList[0].remarkID ?? 0;
-                callLog = _addressList[0].callingLog ?? 0;
-
-                String marriedStatus =
-                    _addressList[0].workersMaritalStatus ?? "";
-                marriedStatusID =
-                    marriedStatus.trim().isEmpty ? "0" : marriedStatus;
-
-                if (marriedStatusID == "1") {
-                  workersMartialStatusTextController.text = "Married";
-                }
-
-                fname = _addressList[0].firstName ?? "";
-                mname = _addressList[0].middleName ?? "";
-                lname = _addressList[0].lastName ?? "";
-                districtCode = _addressList[0].dISTLGDCODE ?? 0;
-                talukaCode = _addressList[0].tALLGDCODE ?? 0;
-                workerGender = _addressList[0].gender ?? "";
-                workersGenderTextController.text = workerGender;
-              } else {
-                debugPrint("Address list is empty or null.");
-              }
-            });
-
-            context.read<ExpectedBeneficiaryBloc>().add(
-              ResetExpectedBeneficiaryState(),
-            );
-          }
-
-          if (state.screenedDependetStatus.isSuccess) {
-            // context
-            //     .read<ExpectedBeneficiaryBloc>()
-            //     .add(ResetExpectedBeneficiaryState());
-            ScreeningDependentModel model = ScreeningDependentModel.fromJson(
-              jsonDecode(state.screenedDependentResponse),
-            );
-
-            if (model.status == 'Success' && model.output != null) {
-              setState(() {
-                _screeningdataList.clear();
-                _screeningdataList.addAll(model.output!);
-
-                screenedBeneficiaryCount = _screeningdataList.length;
-
-                final noOfDepartmentStr = numberOfDependent;
-
-                int screenedCount = 0;
-                int departmentCount = 0;
-
-                try {
-                  screenedCount = screenedBeneficiaryCount;
-                  departmentCount = noOfDepartmentStr;
-                } catch (e) {
-                  debugPrint("Invalid input: $e");
-                }
-
-                differenceCount = (screenedCount - departmentCount).abs();
-              });
-            } else {
-              // Optional: Handle "No Data" or "Failed" response
-              setState(() {
-                _screeningdataList.clear();
-              });
-            }
-          }
-
-          if (state.screenedDependetStatus.isFailure) {
-            screenedBeneficiaryCount = 0;
-          }
-
-          if (state.getDependentStatus.isSuccess) {
-            AddDependentModel addDependentModel = AddDependentModel.fromJson(
-              jsonDecode(state.getDependentResponse),
-            );
-            if (addDependentModel.status == 'Success') {
-              context.read<ExpectedBeneficiaryBloc>().add(
-                AddDependentRequest(
-                  addDependentModel: addDependentModel.output ?? [],
-                ),
-              );
-            }
-            context.read<ExpectedBeneficiaryBloc>().add(
-              ResetExpectedBeneficiaryState(),
-            );
-          }
-
-          if (state.getDependentStatus.isFailure) {
-            // Clear the data by using an empty model
-            AddDependentModel addDependentModel = AddDependentModel(
-              status: 'Failure', // or null/empty depending on your model
-              output: [], // Assuming output is a list
-            );
-
-            // Optionally dispatch an event with empty data if needed
-            context.read<ExpectedBeneficiaryBloc>().add(
-              AddDependentRequest(
-                addDependentModel: addDependentModel.output ?? [],
-              ),
-            );
-
-            // Reset the state
-            context.read<ExpectedBeneficiaryBloc>().add(
-              ResetExpectedBeneficiaryState(),
-            );
-          }
-
-          if (state.addDependentStatus.isSuccess) {
-            context.read<ExpectedBeneficiaryBloc>().add(
-              ResetExpectedBeneficiaryState(),
-            );
-          }
-        },
         child: Scaffold(
           appBar: mAppBar(
             scTitle: 'Appointment Confirmation',
@@ -763,9 +744,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
               Navigator.pop(context);
             },
           ),
-          body: BlocBuilder<ExpectedBeneficiaryBloc, ExpectedBeneficiaryState>(
-            builder: (context, state) {
-              return selectedBeneficiary != null
+          body: Obx(() => selectedBeneficiary != null
                   ? Form(
                     key: _formKey,
                     child: Padding(
@@ -861,18 +840,12 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                     AppTextField(
                                       onTap: () {
                                         // API: fetch valid call-status options for this appointment.
-                                        context
-                                            .read<ExpectedBeneficiaryBloc>()
-                                            .add(
-                                              GetCallStatusForAppointment(
-                                                payload: {
-                                                  "AssignCallID":
-                                                      selectedBeneficiary
-                                                          ?.assignCallID
-                                                          .toString(),
-                                                },
-                                              ),
-                                            );
+                                        _controller
+                                            .fetchCallStatusForAppointment({
+                                          "AssignCallID": selectedBeneficiary
+                                              ?.assignCallID
+                                              .toString(),
+                                        });
                                         remarkTextController.clear();
                                       },
                                       controller: callStatusTextController,
@@ -2270,13 +2243,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                 Navigator.pop(
                                                                   context,
                                                                 );
-                                                                context
-                                                                    .read<
-                                                                      ExpectedBeneficiaryBloc
-                                                                    >()
-                                                                    .add(
-                                                                      ResetExpectedBeneficiaryState(),
-                                                                    );
+                                                                _controller
+                                                                    .resetState();
                                                               },
                                                             );
                                                           },
@@ -2544,13 +2512,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                   Navigator.pop(
                                                                     context,
                                                                   );
-                                                                  context
-                                                                      .read<
-                                                                        ExpectedBeneficiaryBloc
-                                                                      >()
-                                                                      .add(
-                                                                        ResetExpectedBeneficiaryState(),
-                                                                      );
+                                                                  _controller
+                                                                      .resetState();
                                                                 },
                                                               );
                                                             },
@@ -2944,19 +2907,17 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
 
                                                                   int
                                                                   screenedCount =
-                                                                  0;
+                                                                      0;
                                                                   int
                                                                   departmentCount =
-                                                                  0;
+                                                                      0;
 
                                                                   try {
                                                                     screenedCount =
                                                                         screenedBeneficiaryCount;
                                                                     departmentCount =
                                                                         noOfDepartmentStr;
-                                                                  } catch (
-                                                                  e
-                                                                  ) {
+                                                                  } catch (e) {
                                                                     debugPrint(
                                                                       "Invalid input: $e",
                                                                     );
@@ -2964,14 +2925,12 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
 
                                                                   differenceCount =
                                                                       (screenedCount -
-                                                                          departmentCount)
+                                                                              departmentCount)
                                                                           .abs();
 
                                                                   // Validation logic
                                                                   if (screenedBeneficiaryCount !=
                                                                       0) {
-
-
                                                                     if (departmentCount <
                                                                         screenedCount) {
                                                                       ToastManager.showAlertDialog(
@@ -2994,7 +2953,6 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                         },
                                                                       );
 
-
                                                                       return;
                                                                     }
                                                                   }
@@ -3008,13 +2966,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                   Navigator.pop(
                                                                     context,
                                                                   );
-                                                                  context
-                                                                      .read<
-                                                                        ExpectedBeneficiaryBloc
-                                                                      >()
-                                                                      .add(
-                                                                        ResetExpectedBeneficiaryState(),
-                                                                      );
+                                                                  _controller
+                                                                      .resetState();
                                                                 },
                                                               );
                                                             },
@@ -3312,13 +3265,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                   Navigator.pop(
                                                                     context,
                                                                   );
-                                                                  context
-                                                                      .read<
-                                                                        ExpectedBeneficiaryBloc
-                                                                      >()
-                                                                      .add(
-                                                                        ResetExpectedBeneficiaryState(),
-                                                                      );
+                                                                  _controller
+                                                                      .resetState();
                                                                 },
                                                               );
                                                             },
@@ -3452,49 +3400,6 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                     },
                                                   );
 
-                                                  // showDialog(
-                                                  //   context: context,
-                                                  //   builder: (
-                                                  //     BuildContext context,
-                                                  //   ) {
-                                                  //     return AlertDialog(
-                                                  //       title: Text(
-                                                  //         "Alert",
-                                                  //         style: TextStyle(
-                                                  //           fontFamily:
-                                                  //               FontConstants
-                                                  //                   .interFonts,
-                                                  //         ),
-                                                  //       ),
-                                                  //       content: Text(
-                                                  //         "Please select number of dependent",
-                                                  //         style: TextStyle(
-                                                  //           fontFamily:
-                                                  //               FontConstants
-                                                  //                   .interFonts,
-                                                  //         ),
-                                                  //       ),
-                                                  //       actions: [
-                                                  //         SizedBox(
-                                                  //           width: 80.w,
-                                                  //           child:
-                                                  //               AppActiveButton(
-                                                  //                 buttontitle:
-                                                  //                     "OK",
-                                                  //                 onTap: () {
-                                                  //                   Navigator.of(
-                                                  //                     context,
-                                                  //                   ).pop();
-                                                  //                 },
-                                                  //               ),
-                                                  //         ),
-                                                  //
-                                                  //
-                                                  //       ],
-                                                  //     );
-                                                  //   },
-                                                  // );
-
                                                   return;
                                                 }
                                                 if (workersMartialStatusTextController
@@ -3510,47 +3415,6 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                     },
                                                   );
 
-                                                  // showDialog(
-                                                  //   context: context,
-                                                  //   builder: (
-                                                  //     BuildContext context,
-                                                  //   ) {
-                                                  //     return AlertDialog(
-                                                  //       title: Text(
-                                                  //         "Alert",
-                                                  //         style: TextStyle(
-                                                  //           fontFamily:
-                                                  //               FontConstants
-                                                  //                   .interFonts,
-                                                  //         ),
-                                                  //       ),
-                                                  //       content: Text(
-                                                  //         "Please select worker marital status",
-                                                  //         style: TextStyle(
-                                                  //           fontFamily:
-                                                  //               FontConstants
-                                                  //                   .interFonts,
-                                                  //         ),
-                                                  //       ),
-                                                  //       actions: [
-                                                  //         SizedBox(
-                                                  //           width: 80.w,
-                                                  //           child:
-                                                  //               AppActiveButton(
-                                                  //                 buttontitle:
-                                                  //                     "OK",
-                                                  //                 onTap: () {
-                                                  //                   Navigator.of(
-                                                  //                     context,
-                                                  //                   ).pop();
-                                                  //                 },
-                                                  //               ),
-                                                  //         ),
-                                                  //
-                                                  //       ],
-                                                  //     );
-                                                  //   },
-                                                  // );
                                                   return;
                                                 }
                                                 if (numberOfDependentPending ==
@@ -3564,48 +3428,6 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                       ).pop();
                                                     },
                                                   );
-
-                                                  // showDialog(
-                                                  //   context: context,
-                                                  //   builder: (
-                                                  //     BuildContext context,
-                                                  //   ) {
-                                                  //     return AlertDialog(
-                                                  //       title: Text(
-                                                  //         "Alert",
-                                                  //         style: TextStyle(
-                                                  //           fontFamily:
-                                                  //               FontConstants
-                                                  //                   .interFonts,
-                                                  //         ),
-                                                  //       ),
-                                                  //       content: Text(
-                                                  //         "Please select number of dependent screening pending",
-                                                  //         style: TextStyle(
-                                                  //           fontFamily:
-                                                  //               FontConstants
-                                                  //                   .interFonts,
-                                                  //         ),
-                                                  //       ),
-                                                  //       actions: [
-                                                  //         SizedBox(
-                                                  //           width: 80.w,
-                                                  //           child:
-                                                  //               AppActiveButton(
-                                                  //                 buttontitle:
-                                                  //                     "OK",
-                                                  //                 onTap: () {
-                                                  //                   Navigator.of(
-                                                  //                     context,
-                                                  //                   ).pop();
-                                                  //                 },
-                                                  //               ),
-                                                  //         ),
-                                                  //
-                                                  //       ],
-                                                  //     );
-                                                  //   },
-                                                  // );
 
                                                   return;
                                                 }
@@ -3624,7 +3446,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                         numberOfDependentPending,
 
                                                     "currentCount":
-                                                        state
+                                                        _controller
                                                             .addDependentOutput
                                                             .length,
                                                     "assignCallId":
@@ -3637,26 +3459,20 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                         _screeningdataList,
                                                   },
                                                 );
-
-                                                // context
-                                                //     .read<
-                                                //         ExpectedBeneficiaryBloc>()
-                                                //     .add(
-                                                //         ResetExpectedBeneficiaryState());
                                               },
                                             ),
                                           ),
                                           SizedBox(
                                             height: responsiveHeight(10),
                                           ),
-                                          state.getDependentStatus.isInProgress
+                                          _controller.getDependentStatus.value.isInProgress
                                               ? const CircularProgressIndicator()
                                               : ListView.builder(
                                                 shrinkWrap: true,
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),
                                                 itemCount:
-                                                    state
+                                                    _controller
                                                         .addDependentOutput
                                                         .length,
                                                 itemBuilder:
@@ -3709,7 +3525,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                 children: [
                                                                   Expanded(
                                                                     child: Text(
-                                                                      '${state.addDependentOutput[index].firstName} ${state.addDependentOutput[index].middleName} ${state.addDependentOutput[index].lastName} ',
+                                                                      '${_controller.addDependentOutput[index].firstName} ${_controller.addDependentOutput[index].middleName} ${_controller.addDependentOutput[index].lastName} ',
                                                                       style: TextStyle(
                                                                         fontSize:
                                                                             responsiveHeight(
@@ -3725,7 +3541,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                   GestureDetector(
                                                                     onTap: () {
                                                                       // final dependent =
-                                                                      //     state.addDependentOutput[index];
+                                                                      //     _controller.addDependentOutput[index];
                                                                       // final lastScreeningDateStr =
                                                                       // dependent.lastDependantScreeningDate;
 
@@ -3761,27 +3577,12 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                       //   }
                                                                       // }
 
-                                                                      context
-                                                                          .read<
-                                                                            ExpectedBeneficiaryBloc
-                                                                          >()
-                                                                          .add(
-                                                                            ResetExpectedBeneficiaryState(),
-                                                                          );
-                                                                      context
-                                                                          .read<
-                                                                            ExpectedBeneficiaryBloc
-                                                                          >()
-                                                                          .add(
-                                                                            DeleteDependentRequest(
-                                                                              dependentIndex:
-                                                                                  index,
-                                                                            ),
-                                                                          );
-
-                                                                      if (state
-                                                                          .addDependentStatus
-                                                                          .isSuccess) {}
+                                                                      _controller
+                                                                          .resetState();
+                                                                      _controller
+                                                                          .deleteDependent(
+                                                                        index,
+                                                                      );
                                                                     },
                                                                     child: Container(
                                                                       padding:
@@ -3842,7 +3643,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                       children: [
                                                                         TextSpan(
                                                                           text: getRelationText(
-                                                                            state.addDependentOutput[index].relId,
+                                                                            _controller.addDependentOutput[index].relId,
                                                                           ),
                                                                           // Dynamic text
                                                                           style: TextStyle(
@@ -3884,7 +3685,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
 
                                                                   // Space between image and text
                                                                   // Text(
-                                                                  //   'Last Screening Date : ${state.addDependentOutput[index].lastDependantScreeningDate}',
+                                                                  //   'Last Screening Date : ${_controller.addDependentOutput[index].lastDependantScreeningDate}',
                                                                   //   style:
                                                                   //       TextStyle(
                                                                   //     fontSize:
@@ -3909,7 +3710,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                       children: [
                                                                         TextSpan(
                                                                           text:
-                                                                              (state.addDependentOutput[index].lastDependantScreeningDate),
+                                                                              (_controller.addDependentOutput[index].lastDependantScreeningDate),
                                                                           // Dynamic text
                                                                           style: TextStyle(
                                                                             fontSize: responsiveFont(
@@ -3949,7 +3750,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
 
                                                                   // Space between image and text
                                                                   // Text(
-                                                                  //   'Age :${state.addDependentOutput[index].age}',
+                                                                  //   'Age :${_controller.addDependentOutput[index].age}',
                                                                   //   style:
                                                                   //       TextStyle(
                                                                   //     fontSize:
@@ -3976,7 +3777,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                       children: [
                                                                         TextSpan(
                                                                           text:
-                                                                              (state.addDependentOutput[index].age),
+                                                                              (_controller.addDependentOutput[index].age),
                                                                           // Dynamic text
                                                                           style: TextStyle(
                                                                             fontSize: responsiveFont(
@@ -4122,20 +3923,13 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                                     .text =
                                                                 formattedDate;
 
-                                                            context
-                                                                .read<
-                                                                  ExpectedBeneficiaryBloc
-                                                                >()
-                                                                .add(
-                                                                  // API: check appointment count/slot availability for the selected date.
-                                                                  GetAppointmentCount(
-                                                                    payload: {
-                                                                      "AppoinmentDate":
-                                                                          timeTextController
-                                                                              .text,
-                                                                    },
-                                                                  ),
-                                                                );
+                                                            // API: check appointment count/slot availability for the selected date.
+                                                            _controller
+                                                                .fetchAppointmentCount({
+                                                              "AppoinmentDate":
+                                                                  timeTextController
+                                                                      .text,
+                                                            });
                                                           });
                                                         }
                                                       });
@@ -4333,19 +4127,10 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                                 return;
                                               }
 
-                                              context
-                                                  .read<
-                                                    ExpectedBeneficiaryBloc
-                                                  >()
-                                                  .add(
-                                                    GetRemark(
-                                                      payload: {
-                                                        "CallStatusID":
-                                                            callStatus
-                                                                .toString(),
-                                                      },
-                                                    ),
-                                                  );
+                                              _controller.fetchRemarks({
+                                                "CallStatusID":
+                                                    callStatus.toString(),
+                                              });
                                             },
                                             controller: remarkTextController,
                                             readOnly: true,
@@ -4492,7 +4277,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                             //                       .addDependentOutput
                             //                       .length ==
                             //                   numberOfDependentPending)) {
-                            //                 // if (!(state.addDependentOutput.length ==
+                            //                 // if (!(_controller.addDependentOutput.length ==
                             //                 //     int.parse(
                             //                 //       noOfDependentTextController.text,
                             //                 //     ))) {
@@ -4642,7 +4427,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                             //                         .addDependentOutput
                             //                         .isNotEmpty)
                             //                     ? jsonEncode(
-                            //                       state.addDependentOutput
+                            //                       _controller.addDependentOutput
                             //                           .map((e) => e.toJson())
                             //                           .toList(),
                             //                     )
@@ -4787,9 +4572,9 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                 }
 
                                 if (callStatus == 2) {
-                                  if (!(state.addDependentOutput.length ==
+                                  if (!(_controller.addDependentOutput.length ==
                                       numberOfDependentPending)) {
-                                    // if (!(state.addDependentOutput.length ==
+                                    // if (!(_controller.addDependentOutput.length ==
                                     //     int.parse(
                                     //       noOfDependentTextController.text,
                                     //     ))) {
@@ -4922,9 +4707,9 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                 }
 
                                 String dependentJson =
-                                    (state.addDependentOutput.isNotEmpty)
+                                    (_controller.addDependentOutput.isNotEmpty)
                                         ? jsonEncode(
-                                          state.addDependentOutput
+                                          _controller.addDependentOutput
                                               .map((e) => e.toJson())
                                               .toList(),
                                         )
@@ -4935,60 +4720,47 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                                 WidgetsBinding.instance.addPostFrameCallback((
                                   timeStamp,
                                 ) {
-                                  context.read<ExpectedBeneficiaryBloc>().add(
-                                    // API: submit the appointment confirmation details and dependent data.
-                                    InsertAppointmentDetails(
-                                      payload: {
-                                        "AssignCallID":
-                                            selectedBeneficiary?.assignCallID
-                                                .toString(),
-                                        "CallStatusID": callStatus.toString(),
-                                        "RegisteredAddress": regAddress,
-                                        "CurrentAddress": regAddress,
-                                        "IsCurrentSameAsRegd":
-                                            isCurrentAsSameRegId.toString(),
-                                        "RegMobileNo":
-                                            selectedBeneficiary?.mobile
-                                                .toString(),
-                                        "AltMobileNo":
-                                            alternateMobileTextController.text,
-                                        "Pincode": pincodeTextController.text,
-                                        "Landmark": landMarkTextController.text,
-                                        "WorkersGender":
-                                            workersGenderTextController.text,
-                                        "WorkersMaritalStatus":
-                                            (marriedStatusID.isEmpty)
-                                                ? "0"
-                                                : marriedStatusID,
-                                        "NoOfDependants":
-                                            numberOfDependent.toString(),
-                                        "DependantScreeningPending":
-                                            numberOfDependentPending.toString(),
-                                        "AppoinmentDate":
-                                            timeTextController.text,
-                                        "AppoinmentTime":
-                                            timeAppTextController.text,
-                                        "Remark": remarkTextController.text,
-                                        "DISTLGDCODE": districtCode.toString(),
-                                        "TALLGDCODE": talukaCode.toString(),
-                                        "HouseNo":
-                                            houseNumberTextController.text,
-                                        "Road": roadTextController.text,
-                                        "Area": areaTextController.text,
-                                        "DependantDetails": dependentJson,
-                                        "CReatedBy": empCode.toString(),
-                                        "WorkerScreeningStatus":
-                                            selectedBeneficiary
-                                                ?.isWorkerScreened
-                                                .toString(),
-                                        "RemarkID": remarkId.toString(),
-                                      },
-                                    ),
-                                  );
-
-                                  context.read<ExpectedBeneficiaryBloc>().add(
-                                    ResetExpectedBeneficiaryState(),
-                                  );
+                                  // API: submit the appointment confirmation details and dependent data.
+                                  _controller.insertAppointment({
+                                    "AssignCallID":
+                                        selectedBeneficiary?.assignCallID
+                                            .toString(),
+                                    "CallStatusID": callStatus.toString(),
+                                    "RegisteredAddress": regAddress,
+                                    "CurrentAddress": regAddress,
+                                    "IsCurrentSameAsRegd":
+                                        isCurrentAsSameRegId.toString(),
+                                    "RegMobileNo":
+                                        selectedBeneficiary?.mobile.toString(),
+                                    "AltMobileNo":
+                                        alternateMobileTextController.text,
+                                    "Pincode": pincodeTextController.text,
+                                    "Landmark": landMarkTextController.text,
+                                    "WorkersGender":
+                                        workersGenderTextController.text,
+                                    "WorkersMaritalStatus":
+                                        (marriedStatusID.isEmpty)
+                                            ? "0"
+                                            : marriedStatusID,
+                                    "NoOfDependants":
+                                        numberOfDependent.toString(),
+                                    "DependantScreeningPending":
+                                        numberOfDependentPending.toString(),
+                                    "AppoinmentDate": timeTextController.text,
+                                    "AppoinmentTime": timeAppTextController.text,
+                                    "Remark": remarkTextController.text,
+                                    "DISTLGDCODE": districtCode.toString(),
+                                    "TALLGDCODE": talukaCode.toString(),
+                                    "HouseNo": houseNumberTextController.text,
+                                    "Road": roadTextController.text,
+                                    "Area": areaTextController.text,
+                                    "DependantDetails": dependentJson,
+                                    "CReatedBy": empCode.toString(),
+                                    "WorkerScreeningStatus":
+                                        selectedBeneficiary?.isWorkerScreened
+                                            .toString(),
+                                    "RemarkID": remarkId.toString(),
+                                  });
                                 });
                               },
                               textStyle: TextStyle(
@@ -5011,13 +4783,11 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                       ),
                     ),
                   )
-                  : const NoDataFound();
-            },
+                  : const NoDataFound(),
           ),
           //   ],
           // ),
         ),
-      ),
     );
   }
 

@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
+import 'package:s2toperational/Screens/CallingModules/models/BeneficiaryResponseModel.dart';
+import 'package:s2toperational/Screens/CallingModules/models/CallStatusModel.dart';
+import 'package:s2toperational/Screens/CallingModules/models/team_data_model.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
@@ -20,10 +23,6 @@ import '../custom_widgets/beneficiary_card.dart' show BeneficiaryCard;
 import '../custom_widgets/network_wrapper.dart';
 import '../custom_widgets/no_data_widget.dart';
 import '../custom_widgets/selection_bottom_sheet.dart';
-import 'bloc/expected_beneficiary_bloc.dart';
-import 'models/BeneficiaryResponseModel.dart';
-import 'models/CallStatusModel.dart';
-import 'models/team_data_model.dart';
 
 class ExpectedBeneficiaryList extends StatefulWidget {
   const ExpectedBeneficiaryList({super.key});
@@ -60,6 +59,9 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
   String selectedDate = "";
   Timer? _searchDebounce;
 
+  late final ExpectedBeneficiaryController _controller;
+  final List<Worker> _workers = [];
+
   // Cache user data to avoid repeated DataProvider calls
   int? _cachedEmpCode;
   int? _cachedDesId;
@@ -77,6 +79,8 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
 
   @override
   void initState() {
+    _controller = Get.find<ExpectedBeneficiaryController>();
+
     // Cache user data once to avoid repeated DataProvider calls in cards
     final userData = DataProvider().getParsedUserData()?.output?[0];
     _cachedEmpCode = userData?.empCode ?? 0;
@@ -85,12 +89,233 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
     _cachedMyOperatorUserId = userData?.myOperatorUserID ?? "";
     _cachedAgentId = int.tryParse(userData?.agentID?.toString() ?? '') ?? 0;
 
-    // API: load the initial list of beneficiaries expected for calling.
+    // ─── ever() workers replace BlocListener ─────────────────────────────────
+    _workers.add(ever(_controller.beneficiaryStatus, (FormzSubmissionStatus status) {
+      if (!mounted) return;
+      if (status.isSuccess) {
+        beneficiaryresponsemodel = Beneficiaryresponsemodel.fromJson(
+          jsonDecode(_controller.beneficiaryResponse.value),
+        );
+        _filteredList.clear();
+        _filteredList = beneficiaryresponsemodel?.output ?? [];
+        setState(() {});
+        Future.delayed(const Duration(milliseconds: 300), () {});
+      }
+      if (status.isFailure) {
+        setState(() { _filteredList.clear(); });
+        try {
+          var resJ = jsonDecode(_controller.beneficiaryResponse.value);
+          if (resJ['message'] !=
+              "Assign Expected Beneficiaries List for screens details not found") {
+            ToastManager.showAlertDialog(context, resJ['message'], () {
+              Navigator.pop(context);
+            });
+          }
+        } catch (e) {
+          ToastManager.showAlertDialog(context, "Data Not Found.!!", () {
+            Navigator.pop(context);
+          });
+        }
+      }
+    }));
+
+    _workers.add(ever(_controller.dateTypeWiseDataStatus, (FormzSubmissionStatus status) {
+      if (!mounted) return;
+      if (status.isSuccess) {
+        setState(() {
+          beneficiaryresponsemodel = Beneficiaryresponsemodel.fromJson(
+            jsonDecode(_controller.beneficiaryResponse.value),
+          );
+          _filteredList.clear();
+          _filteredList.addAll(beneficiaryresponsemodel!.output!);
+        });
+        Future.delayed(const Duration(milliseconds: 300), () {});
+      }
+      if (status.isFailure) {
+        setState(() { _filteredList.clear(); });
+      }
+    }));
+
+    _workers.add(ever(_controller.getCallStatus, (FormzSubmissionStatus status) {
+      if (!mounted) return;
+      if (status.isSuccess) {
+        callstatusModel = Callstatusmodel.fromJson(
+          jsonDecode(_controller.getCallingResponse.value),
+        );
+        filteredCallStatusList.clear();
+        filteredCallStatusList.add(CallStatusOutput(
+          appointmentStatus: "All", groupID: 0, assignStatusID: 0,
+        ));
+        filteredCallStatusList.addAll(callstatusModel!.output!);
+
+        print("=== FILTERED LIST ===");
+        for (var item in filteredCallStatusList) {
+          print("Item: ${item.appointmentStatus} - ID: ${item.assignStatusID}");
+        }
+        print("Currently selected: ${selectedCallStatus?.appointmentStatus} - ID: ${selectedCallStatus?.assignStatusID}");
+        print("====================");
+
+        String tempSelectedStatus = selectedCallStatus?.appointmentStatus ?? "";
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (c, sheetState) {
+                return SelectionBottomSheet<CallStatusOutput, String>(
+                  title: "Call Status",
+                  items: filteredCallStatusList,
+                  selectedValue: tempSelectedStatus,
+                  valueFor: (item) => item.appointmentStatus ?? "",
+                  labelFor: (item) => item.appointmentStatus ?? 'NA',
+                  height: 360.h,
+                  padding: EdgeInsets.only(
+                    top: responsiveHeight(28), left: responsiveHeight(35),
+                    right: responsiveHeight(35), bottom: responsiveHeight(60),
+                  ),
+                  titleTextStyle: TextStyle(fontSize: 14.sp, fontFamily: FontConstants.interFonts),
+                  titleBottomSpacing: 30.h,
+                  itemPadding: EdgeInsets.symmetric(vertical: 4.h),
+                  itemContainerPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  selectedBackgroundColor: kPrimaryColor.withOpacity(0.1),
+                  itemTextStyle: TextStyle(fontFamily: FontConstants.interFonts, fontSize: 13.sp, fontWeight: FontWeight.normal, color: kBlackColor),
+                  selectedItemTextStyle: TextStyle(fontFamily: FontConstants.interFonts, fontSize: 13.sp, fontWeight: FontWeight.w600, color: kPrimaryColor),
+                  onItemTap: (item) async {
+                    print("Selected item: ${item.appointmentStatus} - ID: ${item.assignStatusID}");
+                    sheetState(() { tempSelectedStatus = item.appointmentStatus ?? ""; });
+                    await Future.delayed(const Duration(milliseconds: 200));
+                    setState(() {
+                      selectedCallStatus = item;
+                      callStatusTextController.text = item.appointmentStatus ?? "";
+                      teamNumberTextController.text = "";
+                      teamId = 0;
+                      selectedTeamData = null;
+                      dateTextController.text = "";
+                      dateTypeId = 0;
+                      dateTypeTextController.text = "";
+                      selectedDate = "";
+                      fromDateTypeData = 0;
+                    });
+                    print("After setState - selectedCallStatus: ${selectedCallStatus?.appointmentStatus} - ID: ${selectedCallStatus?.assignStatusID}");
+                    Navigator.pop(context);
+                    _controller.resetState();
+                  },
+                );
+              },
+            );
+          },
+        );
+      }
+      if (status.isFailure) {
+        ToastManager.showAlertDialog(
+          context,
+          _controller.beneficiaryResponse.value.isEmpty
+              ? "Something Went Wrong try again"
+              : _controller.beneficiaryResponse.value,
+          () { Navigator.pop(context); },
+        );
+      }
+    }));
+
+    _workers.add(ever(_controller.teamStatus, (FormzSubmissionStatus status) {
+      if (!mounted) return;
+      if (status.isSuccess) {
+        teamDataModel = TeamDataModel.fromJson(jsonDecode(_controller.teamResponse.value));
+        _filteredTeamList.clear();
+        _filteredTeamList.add(TeamDataOutput(teamName: "All", teamid: 0, member1: "NA", member2: "NA"));
+        _filteredTeamList.addAll(teamDataModel!.output!);
+
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (c, sheetState) {
+                return SelectionBottomSheet<TeamDataOutput, int>(
+                  title: "Select Team",
+                  items: _filteredTeamList,
+                  selectedValue: selectedTeamData?.teamid,
+                  valueFor: (item) => item.teamid ?? 0,
+                  labelFor: (item) => item.teamName ?? 'NA',
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  padding: EdgeInsets.only(
+                    top: responsiveHeight(20), left: responsiveHeight(20),
+                    right: responsiveHeight(20), bottom: responsiveHeight(20),
+                  ),
+                  titleTextStyle: TextStyle(fontSize: responsiveFont(16), fontWeight: FontWeight.normal, fontFamily: FontConstants.interFonts),
+                  titleBottomSpacing: responsiveHeight(16),
+                  showRadio: false,
+                  useInkWell: false,
+                  itemBuilder: (context, item, isSelected) {
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 8.h),
+                      decoration: BoxDecoration(
+                        color: isSelected ? kTextOutlineColor : Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: isSelected ? const Color(0xFF3B5998) : Colors.grey.shade300, width: 1),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomRight, end: Alignment.topLeft,
+                                colors: [kFirstAppBarcolor.withValues(alpha: 0.4), kFirstAppBarcolor],
+                              ),
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                            ),
+                            child: Text("( ${item.teamName ?? 'NA'} )", textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14.sp, fontFamily: FontConstants.interFonts)),
+                          ),
+                          if (item.member1 != null && item.member1!.isNotEmpty)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                              child: Text(item.member1 ?? 'NA',
+                                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, fontFamily: FontConstants.interFonts,
+                                  color: isSelected ? Colors.white : Colors.black87)),
+                            ),
+                          if (item.member1 != null && item.member2 != null)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Divider(height: 1, color: isSelected ? Colors.white38 : Colors.grey.shade300),
+                            ),
+                          if (item.member2 != null && item.member2!.isNotEmpty)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                              child: Text(item.member2 ?? 'NA',
+                                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, fontFamily: FontConstants.interFonts,
+                                  color: isSelected ? Colors.white : Colors.black87)),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                  onItemTap: (item) {
+                    sheetState(() { selectedTeamData = item; });
+                    if (selectedTeamData != null) {
+                      teamNumberTextController.text = selectedTeamData?.teamName ?? "";
+                      teamId = selectedTeamData?.teamid ?? 0;
+                      Navigator.pop(context);
+                      _controller.resetState();
+                    }
+                  },
+                );
+              },
+            );
+          },
+        );
+      }
+    }));
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // API: load the initial list of beneficiaries expected for screens.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ExpectedBeneficiaryBloc>().add(
-        BeneficiaryRequest(
-          payload: const {"CallStatusID": "0", "TeamID": "0", "GroupID": "1"},
-        ),
+      _controller.fetchBeneficiaries(
+        const {"CallStatusID": "0", "TeamID": "0", "GroupID": "1"},
       );
 
       // Pre-cache images for better performance
@@ -115,6 +340,9 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
 
   @override
   void dispose() {
+    for (final w in _workers) {
+      w.dispose();
+    }
     _searchDebounce?.cancel();
     searchTextController.dispose();
     callStatusTextController.dispose();
@@ -129,426 +357,6 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
     SizeConfig().init(context);
 
     return NetworkWrapper(
-      child: BlocListener<ExpectedBeneficiaryBloc, ExpectedBeneficiaryState>(
-        listener: (context, state) {
-          if (state.beneficiaryStatus.isSuccess) {
-            beneficiaryresponsemodel = Beneficiaryresponsemodel.fromJson(
-              jsonDecode(state.beneficiaryResponse),
-            );
-            _filteredList.clear();
-            _filteredList = beneficiaryresponsemodel?.output ?? [];
-            setState(() {});
-
-            // Delay state reset to ensure UI updates first
-            Future.delayed(const Duration(milliseconds: 300), () {
-              // context
-              //     .read<ExpectedBeneficiaryBloc>()
-              //     .add(ResetExpectedBeneficiaryState());
-            });
-          }
-
-          if (state.beneficiaryStatus.isFailure) {
-            setState(() {
-              _filteredList.clear();
-            });
-
-            try {
-              var resJ = jsonDecode(state.beneficiaryResponse);
-              if (resJ['message'] !=
-                  "Assign Expected Beneficiaries List for calling details not found") {
-                ToastManager.showAlertDialog(context, resJ['message'], () {
-                  Navigator.pop(context);
-                });
-              }
-            } catch (e) {
-              ToastManager.showAlertDialog(context, "Data Not Found.!!", () {
-                Navigator.pop(context);
-              });
-              // showDialog(
-              //   context: context,
-              //   builder: (c) {
-              //     return AlertDialog(
-              //       title: Text(
-              //         "Failed",
-              //         style: TextStyle(fontFamily: FontConstants.interFonts),
-              //       ),
-              //       content: Column(
-              //         mainAxisSize: MainAxisSize.min,
-              //         children: [
-              //           Text(
-              //             state.beneficiaryResponse,
-              //             style: TextStyle(
-              //               fontFamily: FontConstants.interFonts,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //       actions: [
-              //         SizedBox(
-              //           width: 80.w,
-              //           child: AppActiveButton(
-              //             buttontitle: "OK",
-              //             onTap: () {
-              //               Navigator.pop(context);
-              //             },
-              //           ),
-              //         ),
-              //
-              //       ],
-              //     );
-              //   },
-              // );
-            }
-          }
-
-          if (state.dateTypeWiseDataStatus.isSuccess) {
-            setState(() {
-              beneficiaryresponsemodel = Beneficiaryresponsemodel.fromJson(
-                jsonDecode(state.beneficiaryResponse),
-              );
-              _filteredList.clear();
-              _filteredList.addAll(beneficiaryresponsemodel!.output!);
-            });
-
-            Future.delayed(const Duration(milliseconds: 300), () {});
-          }
-
-          if (state.dateTypeWiseDataStatus.isFailure) {
-            setState(() {
-              _filteredList.clear();
-            });
-          }
-
-          if (state.getCallStatus.isSuccess) {
-            callstatusModel = Callstatusmodel.fromJson(
-              jsonDecode(state.getCallingResponse),
-            );
-            filteredCallStatusList.clear();
-            filteredCallStatusList.add(
-              CallStatusOutput(
-                appointmentStatus: "All",
-                groupID: 0,
-                assignStatusID: 0,
-              ),
-            );
-            filteredCallStatusList.addAll(callstatusModel!.output!);
-
-            print("=== FILTERED LIST ===");
-            for (var item in filteredCallStatusList) {
-              print(
-                "Item: ${item.appointmentStatus} - ID: ${item.assignStatusID}",
-              );
-            }
-            print(
-              "Currently selected: ${selectedCallStatus?.appointmentStatus} - ID: ${selectedCallStatus?.assignStatusID}",
-            );
-            print("====================");
-
-            String tempSelectedStatus =
-                selectedCallStatus?.appointmentStatus ?? "";
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                return StatefulBuilder(
-                  builder: (c, sheetState) {
-                    return SelectionBottomSheet<CallStatusOutput, String>(
-                      title: "Call Status",
-                      items: filteredCallStatusList,
-                      selectedValue: tempSelectedStatus,
-                      valueFor: (item) => item.appointmentStatus ?? "",
-                      labelFor: (item) => item.appointmentStatus ?? 'NA',
-                      height: 360.h,
-                      padding: EdgeInsets.only(
-                        top: responsiveHeight(28),
-                        left: responsiveHeight(35),
-                        right: responsiveHeight(35),
-                        bottom: responsiveHeight(60),
-                      ),
-                      titleTextStyle: TextStyle(
-                        fontSize: 14.sp,
-                        fontFamily: FontConstants.interFonts,
-                      ),
-                      titleBottomSpacing: 30.h,
-                      itemPadding: EdgeInsets.symmetric(vertical: 4.h),
-                      itemContainerPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 4.0,
-                      ),
-                      selectedBackgroundColor: kPrimaryColor.withOpacity(0.1),
-                      itemTextStyle: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.normal,
-                        color: kBlackColor,
-                      ),
-                      selectedItemTextStyle: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                        color: kPrimaryColor,
-                      ),
-                      onItemTap: (item) async {
-                        print(
-                          "Selected item: ${item.appointmentStatus} - ID: ${item.assignStatusID}",
-                        );
-                        sheetState(() {
-                          tempSelectedStatus = item.appointmentStatus ?? "";
-                        });
-
-                        await Future.delayed(const Duration(milliseconds: 200));
-
-                        setState(() {
-                          selectedCallStatus = item;
-                          callStatusTextController.text =
-                              item.appointmentStatus ?? "";
-                          teamNumberTextController.text = "";
-                          teamId = 0;
-                          selectedTeamData = null;
-                          dateTextController.text = "";
-                          dateTypeId = 0;
-                          dateTypeTextController.text = "";
-                          selectedDate = "";
-                          fromDateTypeData = 0;
-                        });
-
-                        print(
-                          "After setState - selectedCallStatus: ${selectedCallStatus?.appointmentStatus} - ID: ${selectedCallStatus?.assignStatusID}",
-                        );
-
-                        Navigator.pop(context);
-                        context.read<ExpectedBeneficiaryBloc>().add(
-                          ResetExpectedBeneficiaryState(),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          }
-
-          if (state.getCallStatus.isFailure) {
-            ToastManager.showAlertDialog(
-              context,
-              state.beneficiaryResponse.isEmpty
-                  ? "Something Went Wrong try again"
-                  : state.beneficiaryResponse,
-              () {
-                Navigator.pop(context);
-              },
-            );
-
-            // showDialog(
-            //   context: context,
-            //   builder: (c) {
-            //     return AlertDialog(
-            //       title: Text(
-            //         "Failed",
-            //         style: TextStyle(fontFamily: FontConstants.interFonts),
-            //       ),
-            //       content: Column(
-            //         mainAxisSize: MainAxisSize.min,
-            //         children: [
-            //           Text(
-            //             state.beneficiaryResponse.isEmpty
-            //                 ? "Something Went Wrong try again"
-            //                 : state.beneficiaryResponse,
-            //             style: TextStyle(fontFamily: FontConstants.interFonts),
-            //           ),
-            //         ],
-            //       ),
-            //       actions: [
-            //         SizedBox(
-            //           width: 80.w,
-            //           child: AppActiveButton(
-            //             buttontitle: "OK",
-            //             onTap: () {
-            //               Navigator.pop(context);
-            //             },
-            //           ),
-            //         ),
-            //
-            //       ],
-            //     );
-            //   },
-            // );
-          }
-
-          if (state.teamStatus.isSuccess) {
-            teamDataModel = TeamDataModel.fromJson(
-              jsonDecode(state.teamResponse),
-            );
-            _filteredTeamList.clear();
-            _filteredTeamList.add(
-              TeamDataOutput(
-                teamName: "All",
-                teamid: 0,
-                member1: "NA",
-                member2: "NA",
-              ),
-            );
-            _filteredTeamList.addAll(teamDataModel!.output!);
-
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) {
-                return StatefulBuilder(
-                  builder: (c, sheetState) {
-                    return SelectionBottomSheet<TeamDataOutput, int>(
-                      title: "Select Team",
-                      items: _filteredTeamList,
-                      selectedValue: selectedTeamData?.teamid,
-                      valueFor: (item) => item.teamid ?? 0,
-                      labelFor: (item) => item.teamName ?? 'NA',
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      padding: EdgeInsets.only(
-                        top: responsiveHeight(20),
-                        left: responsiveHeight(20),
-                        right: responsiveHeight(20),
-                        bottom: responsiveHeight(20),
-                      ),
-                      titleTextStyle: TextStyle(
-                        fontSize: responsiveFont(16),
-                        fontWeight: FontWeight.normal,
-                        fontFamily: FontConstants.interFonts,
-                      ),
-                      titleBottomSpacing: responsiveHeight(16),
-                      showRadio: false,
-                      useInkWell: false,
-                      itemBuilder: (context, item, isSelected) {
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 8.h),
-                          decoration: BoxDecoration(
-                            color:
-                                isSelected ? kTextOutlineColor : Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color:
-                                  isSelected
-                                      ? const Color(0xFF3B5998)
-                                      : Colors.grey.shade300,
-                              width: 1,
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Team ID Header
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 4.h,
-                                  horizontal: 16.w,
-                                ),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomRight,
-                                    end: Alignment.topLeft,
-                                    colors: [
-                                      kFirstAppBarcolor.withValues(alpha: 0.4),
-                                      kFirstAppBarcolor,
-                                    ],
-                                  ),
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8),
-                                  ),
-                                ),
-                                child: Text(
-                                  "( ${item.teamName ?? 'NA'} )",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14.sp,
-                                    fontFamily: FontConstants.interFonts,
-                                  ),
-                                ),
-                              ),
-                              // Member 1
-                              if (item.member1 != null &&
-                                  item.member1!.isNotEmpty)
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                    vertical: 6.h,
-                                  ),
-                                  child: Text(
-                                    item.member1 ?? 'NA',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontConstants.interFonts,
-                                      color:
-                                          isSelected
-                                              ? Colors.white
-                                              : Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                              // Divider
-                              if (item.member1 != null && item.member2 != null)
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                  ),
-                                  child: Divider(
-                                    height: 1,
-                                    color:
-                                        isSelected
-                                            ? Colors.white38
-                                            : Colors.grey.shade300,
-                                  ),
-                                ),
-                              // Member 2
-                              if (item.member2 != null &&
-                                  item.member2!.isNotEmpty)
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                    vertical: 6.h,
-                                  ),
-                                  child: Text(
-                                    item.member2 ?? 'NA',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontConstants.interFonts,
-                                      color:
-                                          isSelected
-                                              ? Colors.white
-                                              : Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
-                      onItemTap: (item) {
-                        sheetState(() {
-                          selectedTeamData = item;
-                        });
-                        if (selectedTeamData != null) {
-                          teamNumberTextController.text =
-                              selectedTeamData?.teamName ?? "";
-                          teamId = selectedTeamData?.teamid ?? 0;
-                          Navigator.pop(context);
-                          context.read().add(ResetExpectedBeneficiaryState());
-                        }
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          }
-        },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: mAppBar(
@@ -566,12 +374,7 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                     isDismissible: false,
                     enableDrag: false,
                     builder: (c) {
-                      return BlocBuilder<
-                        ExpectedBeneficiaryBloc,
-                        ExpectedBeneficiaryState
-                      >(
-                        builder: (context, state) {
-                          return Container(
+                      return Container(
                             decoration: BoxDecoration(
                               color: kWhiteColor,
                               borderRadius: BorderRadius.only(
@@ -601,10 +404,6 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          // callStatusTextController.clear();
-                                          // teamNumberTextController.clear();
-                                          // dateTypeTextController.clear();
-                                          // dateTextController.clear();
                                           Navigator.pop(context);
                                         },
                                         child: Icon(Icons.cancel_presentation),
@@ -615,9 +414,7 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                   AppTextField(
                                     onTap: () {
                                       // API: fetch available call-status options for filtering.
-                                      context
-                                          .read<ExpectedBeneficiaryBloc>()
-                                          .add(GetCallStatusRequest());
+                                      _controller.fetchCallStatus();
                                     },
                                     controller: callStatusTextController,
                                     readOnly: true,
@@ -644,8 +441,8 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                       Icons.call_outlined,
                                       color: kPrimaryColor,
                                     ).paddingOnly(left: 6.0),
-                                    suffixIcon:
-                                        state.getCallStatus.isInProgress
+                                    suffixIcon: Obx(() =>
+                                        _controller.getCallStatus.value.isInProgress
                                             ? SizedBox(
                                               height: 20.h,
                                               width: 20.w,
@@ -665,19 +462,13 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
-                                            ),
+                                            )),
                                   ),
                                   SizedBox(height: 26.h),
                                   AppTextField(
                                     onTap: () {
                                       // API: fetch team list to filter beneficiaries by team.
-                                      context
-                                          .read<ExpectedBeneficiaryBloc>()
-                                          .add(
-                                            TeamStatusRequest(
-                                              payload: const {},
-                                            ),
-                                          );
+                                      _controller.fetchTeamData(const {});
                                     },
                                     controller: teamNumberTextController,
                                     readOnly: true,
@@ -704,8 +495,8 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                       Icons.numbers,
                                       color: kPrimaryColor,
                                     ).paddingOnly(left: 6.0),
-                                    suffixIcon:
-                                        state.teamStatus.isInProgress
+                                    suffixIcon: Obx(() =>
+                                        _controller.teamStatus.value.isInProgress
                                             ? SizedBox(
                                               height: 20.h,
                                               width: 20.w,
@@ -725,7 +516,7 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
-                                            ),
+                                            )),
                                   ),
                                   SizedBox(height: 26.h),
                                   AppTextField(
@@ -819,13 +610,7 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                                   });
 
                                                   Navigator.pop(context);
-                                                  context
-                                                      .read<
-                                                        ExpectedBeneficiaryBloc
-                                                      >()
-                                                      .add(
-                                                        ResetExpectedBeneficiaryState(),
-                                                      );
+                                                  _controller.resetState();
                                                 },
                                               );
                                             },
@@ -882,42 +667,6 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                             Navigator.pop(context);
                                           },
                                         );
-
-                                        // showDialog(
-                                        //   context: context,
-                                        //   builder: (BuildContext context) {
-                                        //     return AlertDialog(
-                                        //       title: Text(
-                                        //         "Alert",
-                                        //         style: TextStyle(
-                                        //           fontFamily:
-                                        //               FontConstants.interFonts,
-                                        //         ),
-                                        //       ),
-                                        //       content: Text(
-                                        //         "Please select a date type first",
-                                        //         style: TextStyle(
-                                        //           fontFamily:
-                                        //               FontConstants.interFonts,
-                                        //         ),
-                                        //       ),
-                                        //       actions: [
-                                        //         SizedBox(
-                                        //           width: 80.w,
-                                        //           child: AppActiveButton(
-                                        //             buttontitle: "OK",
-                                        //             onTap: () {
-                                        //               Navigator.pop(context);
-                                        //             },
-                                        //           ),
-                                        //         ),
-                                        //
-                                        //
-
-                                        //       ],
-                                        //     );
-                                        //   },
-                                        // );
 
                                         return;
                                       }
@@ -1061,54 +810,21 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                             Navigator.pop(context);
                                             if (fromDateTypeData == 0) {
                                               // API: fetch beneficiaries using selected call status and team.
-                                              context
-                                                  .read<
-                                                    ExpectedBeneficiaryBloc
-                                                  >()
-                                                  .add(
-                                                    BeneficiaryRequest(
-                                                      payload: {
-                                                        "CallStatusID": "0",
-                                                        "TeamID":
-                                                            teamId.toString(),
-                                                        "GroupID":
-                                                            selectedCallStatus
-                                                                ?.groupID
-                                                                .toString() ??
-                                                            "0",
-                                                      },
-                                                    ),
-                                                  );
+                                              _controller.fetchBeneficiaries({
+                                                "CallStatusID": "0",
+                                                "TeamID": teamId.toString(),
+                                                "GroupID": selectedCallStatus?.groupID.toString() ?? "0",
+                                              });
                                             } else {
                                               // API: fetch beneficiaries filtered by date type and selected date.
-                                              context
-                                                  .read<
-                                                    ExpectedBeneficiaryBloc
-                                                  >()
-                                                  .add(
-                                                    BeneficiaryRequestForDateType(
-                                                      payload: {
-                                                        "CallStatusID": "0",
-                                                        "TeamID":
-                                                            teamId.toString(),
-                                                        "GroupID":
-                                                            selectedCallStatus
-                                                                ?.groupID
-                                                                .toString() ??
-                                                            "0",
-                                                        "AssignDate":
-                                                            selectedDate,
-                                                        "CallingDateID":
-                                                            dateTypeId
-                                                                .toString(),
-                                                      },
-                                                    ),
-                                                  );
+                                              _controller.fetchBeneficiariesByDateType({
+                                                "CallStatusID": "0",
+                                                "TeamID": teamId.toString(),
+                                                "GroupID": selectedCallStatus?.groupID.toString() ?? "0",
+                                                "AssignDate": selectedDate,
+                                                "CallingDateID": dateTypeId.toString(),
+                                              });
                                             }
-                                            // callStatusTextController.clear();
-                                            // teamNumberTextController.clear();
-                                            // dateTypeTextController.clear();
-                                            // dateTextController.clear();
 
                                             setState(() {});
                                           },
@@ -1135,8 +851,6 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                               ),
                             ),
                           );
-                        },
-                      );
                     },
                   );
                 },
@@ -1155,10 +869,9 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
             ],
             showActions: true,
           ),
-          body: BlocBuilder<ExpectedBeneficiaryBloc, ExpectedBeneficiaryState>(
-            builder: (context, state) {
-              return state.beneficiaryStatus.isInProgress ||
-                      state.dateTypeWiseDataStatus.isInProgress
+          body: Obx(() {
+              return _controller.beneficiaryStatus.value.isInProgress ||
+                      _controller.dateTypeWiseDataStatus.value.isInProgress
                   ? CommonSkeletonList(
                     key: const ValueKey('skeleton'),
                   ).paddingSymmetric(horizontal: 8.w)
@@ -1214,7 +927,9 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                                 itemBuilder: (context, index) {
                                   return RepaintBoundary(
                                     child: BeneficiaryCard(
-                                      key: ValueKey(_filteredList[index].assignCallID),
+                                      key: ValueKey(
+                                        _filteredList[index].assignCallID,
+                                      ),
                                       beneficiary: _filteredList[index],
                                       index: index,
                                       onAppointmentSaved: _refreshData,
@@ -1237,10 +952,8 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
                           ),
                     ],
                   );
-            },
-          ),
+          }),
         ),
-      ),
     );
   }
 
@@ -1264,32 +977,24 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
     });
   }
 
-  Future<void> _refreshData() async {
+  Future<void> _refreshData() async  {
     // Reset filters and fetch fresh data
     if (fromDateTypeData == 0) {
       // API: refresh beneficiaries using current call status and team filters.
-      context.read<ExpectedBeneficiaryBloc>().add(
-        BeneficiaryRequest(
-          payload: {
-            "CallStatusID": "0",
-            "TeamID": teamId.toString(),
-            "GroupID": selectedCallStatus?.groupID.toString() ?? "0",
-          },
-        ),
-      );
+      _controller.fetchBeneficiaries({
+        "CallStatusID": "0",
+        "TeamID": teamId.toString(),
+        "GroupID": selectedCallStatus?.groupID.toString() ?? "0",
+      });
     } else {
       // API: refresh beneficiaries filtered by date type and selected date.
-      context.read<ExpectedBeneficiaryBloc>().add(
-        BeneficiaryRequestForDateType(
-          payload: {
-            "CallStatusID": "0",
-            "TeamID": teamId.toString(),
-            "GroupID": selectedCallStatus?.groupID.toString() ?? "0",
-            "AssignDate": selectedDate,
-            "CallingDateID": dateTypeId.toString(),
-          },
-        ),
-      );
+      _controller.fetchBeneficiariesByDateType({
+        "CallStatusID": "0",
+        "TeamID": teamId.toString(),
+        "GroupID": selectedCallStatus?.groupID.toString() ?? "0",
+        "AssignDate": selectedDate,
+        "CallingDateID": dateTypeId.toString(),
+      });
     }
 
     // Wait a bit for the request to complete

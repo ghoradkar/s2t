@@ -15,7 +15,7 @@ import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/repository/beneficiary_card.dart';
+import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_card_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../Modules/Json_Class/AttendancesListUsingSiteDetailsIDResponse/AttendancesListUsingSiteDetailsIDResponse.dart';
 import '../../../Modules/Json_Class/InsertBeneficiaryCallingLogResponse/InsertBeneficiaryCallingLogResponse.dart';

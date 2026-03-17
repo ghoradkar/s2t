@@ -7,10 +7,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
+import 'package:s2toperational/Screens/CallingModules/models/add_dependent_model.dart';
+import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_repository.dart';
 
 import '../../../../Modules/utilities/DataProvider.dart';
-import '../models/add_dependent_model.dart';
-import '../repository/beneficiary_repository.dart';
 
 part 'expected_beneficiary_event.dart';
 part 'expected_beneficiary_state.dart';

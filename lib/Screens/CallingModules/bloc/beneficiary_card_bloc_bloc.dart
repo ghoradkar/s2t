@@ -6,9 +6,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
+import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_card_repository.dart';
 
-import '../../../../Modules/utilities/DataProvider.dart';
-import '../repository/beneficiary_card.dart';
+import '../../../../../Modules/utilities/DataProvider.dart';
 
 part 'beneficiary_card_bloc_event.dart';
 part 'beneficiary_card_bloc_state.dart';

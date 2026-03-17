@@ -6,18 +6,16 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 
-typedef SelectionItemBuilder<T> = Widget Function(
-  BuildContext context,
-  T item,
-  bool isSelected,
-);
-typedef SelectionItemBuilderWithIndex<T> = Widget Function(
-  BuildContext context,
-  T item,
-  bool isSelected,
-  int index,
-  int itemCount,
-);
+typedef SelectionItemBuilder<T> =
+    Widget Function(BuildContext context, T item, bool isSelected);
+typedef SelectionItemBuilderWithIndex<T> =
+    Widget Function(
+      BuildContext context,
+      T item,
+      bool isSelected,
+      int index,
+      int itemCount,
+    );
 
 class SelectionBottomSheet<T, V> extends StatelessWidget {
   const SelectionBottomSheet({
@@ -72,10 +70,7 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolvedTitleStyle =
         titleTextStyle ??
-        TextStyle(
-          fontSize: 14.sp,
-          fontFamily: FontConstants.interFonts,
-        );
+        TextStyle(fontSize: 14.sp, fontFamily: FontConstants.interFonts);
     final resolvedItemTextStyle =
         itemTextStyle ??
         TextStyle(
