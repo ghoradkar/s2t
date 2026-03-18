@@ -731,11 +731,11 @@ class BeneficiaryCardController extends GetxController {
         var jsonResponse = jsonDecode(resString);
         if (jsonResponse['status'] == 'Success') {
           organizationResponse.value = resString;
-          organizationStatus.value = FormzSubmissionStatus.success;
           final orgData = jsonResponse['output'] as List?;
           if (orgData != null && orgData.isNotEmpty) {
             organizationId = (orgData[0]['SubOrgId'] as num?)?.toInt() ?? 0;
           }
+          organizationStatus.value = FormzSubmissionStatus.success;
         } else {
           organizationResponse.value = resString;
           organizationStatus.value = FormzSubmissionStatus.failure;
@@ -776,7 +776,7 @@ class BeneficiaryCardController extends GetxController {
           if (userData != null && userData.isNotEmpty) {
             isUserCreatedBy =
                 (userData[0]['Is24By7IsAccountCreated'] as num?)?.toInt() ?? 0;
-            // isUserCreatedBy = 2;
+            // isUserCreatedBy = 1;
           }
         } else {
           userCreatedResponse.value = resString;
