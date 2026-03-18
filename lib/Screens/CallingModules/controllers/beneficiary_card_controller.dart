@@ -282,12 +282,19 @@ class BeneficiaryCardController extends GetxController {
             isCallingLoading = false;
             update();
           } else {
-            if (virtualNumberForCallPAtching != null &&
+            if (virtualNumberForCallPAtching == null ||
                 virtualNumberForCallPAtching!.isEmpty) {
               print(virtualNumberForCallPAtching);
-              ScaffoldMessenger.of(Get.context!)
-                ..clearSnackBars()
-                ..showSnackBar(SnackBar(content: Text("Virtual Number Empty")));
+              print(apikeyForCAllPAtching);
+              isCallingLoading = false;
+              update();
+              ToastManager.showAlertDialog(
+                Get.context!,
+                "Virtual Number Empty",
+                () {
+                  Get.back();
+                },
+              );
               return;
             }
 
@@ -898,8 +905,10 @@ class BeneficiaryCardController extends GetxController {
           final patchData = jsonResponse['output'] as List?;
           if (patchData != null && patchData.isNotEmpty) {
             apikeyForCAllPAtching = (patchData[0]['APIKey'] as String?) ?? '';
+            print((patchData[0]['ServieNumber'] as String?) ?? '');
             virtualNumberForCallPAtching =
-                patchData[0]['ServieNumber'] as String?;
+                (patchData[0]['ServieNumber'] as String?) ?? "";
+            print((patchData[0]['ServieNumber'] as String?) ?? '');
           }
         } else {
           apiKeyCallPatchingResponse.value = resString;
