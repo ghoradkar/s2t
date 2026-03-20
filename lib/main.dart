@@ -36,6 +36,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DataProvider.init();
 
+  // Clear upgrader's saved state so it performs a fresh store check on every
+  // launch instead of using a cached result from a previous session.
+  await Upgrader.clearSavedSettings();
+
   Bloc.observer = AppBlocObserver();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
@@ -69,8 +73,40 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  // Tracks whether the force-update dialog is currently displayed.
+  // Used to lock the back button at the OS level while update is required.
+  bool _updateRequired = false;
+
+  // willDisplayUpgrade belongs on Upgrader (not UpgradeAlert) in v12,
+  // so the instance is created here to close over setState.
+  late final Upgrader _upgrader;
+
+  @override
+  void initState() {
+    super.initState();
+    _upgrader = Upgrader(
+      durationUntilAlertAgain: Duration.zero, // No cooldown — check every launch.
+      debugLogging: false,
+      debugDisplayAlways: false,
+      willDisplayUpgrade: ({
+        required bool display,
+        String? installedVersion,
+        UpgraderVersionInfo? versionInfo,
+      }) {
+        if (display != _updateRequired) {
+          setState(() => _updateRequired = display);
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +120,18 @@ class MyApp extends StatelessWidget {
           onGenerateRoute: AppRoutes.onGenerateRoute,
           navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
-          home: UpgradeAlert(
-            showIgnore: false,
-            showLater: false,
-            onUpdate: () => true,
-            shouldPopScope: () => false,
-            upgrader: Upgrader(debugDisplayAlways: false, debugLogging: false),
-            child: const SplashScreen(),
+          home: PopScope(
+            // When update is required, canPop: false prevents the Android back
+            // button from minimizing/exiting the app to bypass the dialog.
+            canPop: !_updateRequired,
+            child: UpgradeAlert(
+              showIgnore: false,
+              showLater: false,
+              onUpdate: () => true,
+              shouldPopScope: () => false,
+              upgrader: _upgrader,
+              child: const SplashScreen(),
+            ),
           ),
           builder: EasyLoading.init(),
         );
