@@ -147,11 +147,11 @@ class Repository {
   }
 }
 
-// class Repository {
-//   Repository._();
+// class repository {
+//   repository._();
 //
 //   APIManager apiManager = APIManager();
-//   static final Repository instance = Repository._();
+//   static final repository instance = repository._();
 //   static IOClient ioClient = APIManager.getInstanceOfIo1Client();
 //
 //   static Future<http.Response> getResponse(String url) async {

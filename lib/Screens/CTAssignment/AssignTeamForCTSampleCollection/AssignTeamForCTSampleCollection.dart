@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import '../../../Modules/DispatchGroup/DispatchGroup.dart';
 import '../../../Modules/Json_Class/BeneficiaryDetailsforAssignTeamidDetailsResponse/BeneficiaryDetailsforAssignTeamidDetailsResponse.dart';
 import '../../../Modules/Json_Class/ConfirmatoryTestsScreeningResponse/ConfirmatoryTestsScreeningResponse.dart';

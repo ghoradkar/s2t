@@ -14,7 +14,7 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Controller/AdminController.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/CampConductedResponse.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/CampDetailsScreen/CampDetailsScreen.dart';
 
 class ConductedCampsScreen extends StatefulWidget {

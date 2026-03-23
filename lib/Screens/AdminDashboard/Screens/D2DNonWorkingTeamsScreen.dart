@@ -9,8 +9,8 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Controller/AdminController.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/D2DTeamsCallingDetails.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_data_widget.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ... imports stay the same

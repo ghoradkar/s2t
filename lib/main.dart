@@ -1,17 +1,16 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/themes/AppTheme.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_controller.dart';
-import 'package:s2toperational/Screens/CallingModules/repository/beneficiary_repository.dart';
+import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_repository.dart';
 import 'package:upgrader/upgrader.dart';
 import 'Modules/utilities/DataProvider.dart';
 import 'Modules/utilities/SizeConfig.dart';
-import 'Screens/CallingModules/routes/app_routes.dart';
+import 'Screens/calling_modules/routes/app_routes.dart';
 import 'Screens/SplashScreen/SplashScreen.dart';
 import 'Modules/utilities/route_observer.dart';
 

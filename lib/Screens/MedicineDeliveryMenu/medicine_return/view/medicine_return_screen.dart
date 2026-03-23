@@ -8,7 +8,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/MedicineDeliveryMenu/medicine_return/controller/medicine_return_controller.dart';
 import '../../../../Modules/constants/fonts.dart';
 

@@ -16,9 +16,9 @@ import 'package:s2toperational/Screens/AdminDashboard/Screens/AdminDashboardWidg
 import 'package:s2toperational/Screens/AdminDashboard/Screens/D2DTeamsScreen.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/LiverScanningScreen.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/S2TPatientAppScreen.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
-import 'package:s2toperational/Screens/CallingModules/controllers/expected_beneficiary_list_controller.dart';
-import 'package:s2toperational/Screens/CallingModules/screens/expected_beneficiary_list.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
 import 'package:s2toperational/Screens/CampCalendarScreen/CampCalendarScreen.dart';
 import 'package:s2toperational/Screens/D2DAvailability/D2DAvailabilityScreen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
@@ -29,6 +29,7 @@ import 'package:s2toperational/Screens/MedicineDeliveryMenu/medicine_delivery_da
 import 'package:s2toperational/Screens/PaymentAndInvoice/payment_invoice_segment_screen.dart';
 import 'package:s2toperational/Screens/SuperAdmin/Controller/SuperAdminController.dart';
 import 'package:s2toperational/Screens/SuperAdmin/super_admin_card.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/screens/D2DPhysicalExaminationDetailsScreen/D2DPhysicalExaminationDetailsScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/constants/constants.dart';
@@ -42,7 +43,6 @@ import '../AppointmentsConfirmedList/AppointmentsConfirmedListScreen/Appointment
 import '../CTAssignment/CTAssignmentScreen/CTAssignmentScreen.dart';
 import '../CampCreationScreen/CampCreationScreen.dart';
 import '../CampReadinessForm/CampReadinessFormScreen.dart';
-import '../D2DPhysicalExaminationDetails/D2DPhysicalExaminationDetailsScreen/D2DPhysicalExaminationDetailsScreen.dart';
 import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
 import '../DailyWorkDashboard/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
 import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
@@ -52,7 +52,7 @@ import '../HealthScreeningDetails/CampForHealthScreeningScreen/CampForHealthScre
 import '../ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampListScreen.dart';
 import '../SideDrawerMenu/SideDrawerMenu.dart';
 import '../TeamCampMapping/TeamCampMappingScreen/TeamCampMappingScreen.dart';
-import '../UserAttendanceScreen/UserAttendanceScreen.dart';
+import '../user_attendance/screens/user_attendance_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

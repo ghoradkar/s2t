@@ -10,7 +10,7 @@ import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Controller/AdminController.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/FibroScanningPatientDataScreen.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardAdminCard.dart';
 
 class LiverScanningScreen extends StatefulWidget {

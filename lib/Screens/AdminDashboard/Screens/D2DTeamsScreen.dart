@@ -11,7 +11,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Controller/AdminController.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/D2DNonWorkingTeamsScreen.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/WorkingTeamsCountView.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class D2DTeamsScreen extends StatefulWidget {

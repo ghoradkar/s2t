@@ -513,7 +513,7 @@ class _AdminDashboardWidgetState extends State<AdminDashboardWidget>
   }
 }
 
-// Pie Chart Data Model
+// Pie Chart Data model
 class PieSegment {
   final double value;
   final Color color;

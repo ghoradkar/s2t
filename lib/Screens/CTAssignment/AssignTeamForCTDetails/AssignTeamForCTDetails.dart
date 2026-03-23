@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';

@@ -27,7 +27,7 @@ import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDi
 import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountModel.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Repository.dart';
 
-import '../../CallingModules/custom_widgets/check_connectivity.dart';
+import '../../calling_modules/custom_widgets/check_connectivity.dart';
 
 class AdminController extends GetxController {
   /// Defaults
@@ -718,7 +718,7 @@ class AdminController extends GetxController {
   //     final uri = "${APIManager.kTreatmentCount}${APIConstants.kIosCount}";
   //     debugPrint(uri);
   //
-  //     final response = await Repository.postResponseWithoutBody(uri);
+  //     final response = await repository.postResponseWithoutBody(uri);
   //
   //     if (response.statusCode == 200) {
   //       var resp = await response.stream.bytesToString();

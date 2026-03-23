@@ -11,7 +11,7 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Controller/AdminController.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/AndroidAndIosPatientCountScreen.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 
 class S2tPatientAppScreen extends StatefulWidget {
   const S2tPatientAppScreen({super.key});

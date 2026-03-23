@@ -5,7 +5,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Views/AssignToDETeamScreenFilterView/AssignToDETeamScreenFilterView.dart';
 
 import '../../../../../Modules/constants/fonts.dart';

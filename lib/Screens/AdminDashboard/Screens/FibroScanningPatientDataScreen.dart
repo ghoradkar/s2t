@@ -17,7 +17,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Controller/AdminController.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableData.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/FibroScanningPatientDataDetails.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'dart:io';
 import 'package:excel/excel.dart' as ex;
 import 'package:path_provider/path_provider.dart';

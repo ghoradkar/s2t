@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/CampDetailsScreen/BeneficiaryCampDetailsScreen/BeneficiaryCampRow/BeneficiaryCampRow.dart';
 import '../../../Modules/APIManager/APIManager.dart';
 import '../../../Modules/Enums/Enums.dart';

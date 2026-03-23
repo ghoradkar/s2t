@@ -12,7 +12,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Repository.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/check_connectivity.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';
 import 'package:s2toperational/Screens/SuperAdmin/Model/ConductedCardSuperAdmin.dart';
 import 'package:s2toperational/Screens/SuperAdmin/Model/TodayAndTotalTableCount.dart';
 import 'package:s2toperational/Screens/SuperAdmin/Model/TodaysPatientTableModel.dart';
@@ -263,7 +263,7 @@ class SuperAdminController extends GetxController {
   //         "${APIManager.kD2DBaseURL}${APIConstants.kGetLandingPageCountsDisplayforFinancialYearV1WithSubOrg}";
   //     debugPrint(uri);
   //
-  //     final response = await Repository.getResponse(uri);
+  //     final response = await repository.getResponse(uri);
   //     debugPrint("response.body : ${response.body}");
   //
   //     if (response.statusCode == 200) {
@@ -297,7 +297,7 @@ class SuperAdminController extends GetxController {
   //         "${APIManager.kD2DBaseURL}${APIConstants.kGetTodaysPatientCountV1}?Date=$date";
   //     debugPrint(uri);
   //
-  //     final response = await Repository.getResponse(uri);
+  //     final response = await repository.getResponse(uri);
   //     debugPrint("response.body : ${response.body}");
   //
   //     if (response.statusCode == 200) {
@@ -329,7 +329,7 @@ class SuperAdminController extends GetxController {
   //   debugPrint(uri);
   //   Map<String, String> body = {"fromDate": fromDate, "toDate": toDate};
   //
-  //   final response = await Repository.postResponse(uri, body, {
+  //   final response = await repository.postResponse(uri, body, {
   //     'Content-Type': 'application/x-www-form-urlencoded',
   //   });
   //
@@ -360,7 +360,7 @@ class SuperAdminController extends GetxController {
   //   debugPrint(uri);
   //   Map<String, String> body = {"fromDate": fromDate, "toDate": toDate};
   //
-  //   final response = await Repository.postResponse(uri, body, {
+  //   final response = await repository.postResponse(uri, body, {
   //     'Content-Type': 'application/x-www-form-urlencoded',
   //   });
   //

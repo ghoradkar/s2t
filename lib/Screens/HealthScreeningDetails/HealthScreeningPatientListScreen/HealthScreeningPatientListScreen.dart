@@ -8,13 +8,13 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/screens/PhysicalExaminationFormScreen/PhysicalExaminationFormScreen.dart';
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../D2DPhysicalExaminationDetails/PhysicalExaminationFormScreen/PhysicalExaminationFormScreen.dart';
 import 'HealthScreeningPatientRow/HealthScreeningPatientRow.dart';
 
 class HealthScreeningPatientListScreen extends StatefulWidget {

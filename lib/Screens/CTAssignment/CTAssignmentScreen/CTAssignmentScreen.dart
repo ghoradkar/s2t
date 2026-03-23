@@ -8,7 +8,7 @@ import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/CTAssignment/CTAssignmentScreen/CTAssignmentRow/CTAssignmentRow.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 
 import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../../../Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';

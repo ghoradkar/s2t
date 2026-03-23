@@ -17,7 +17,7 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/CallingModules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketAllocation/view/AssignToDETeamRow.dart';
 import '../../../../../Modules/constants/fonts.dart';
 

@@ -47,7 +47,7 @@ class DeliveryRemarkItem {
 
 enum AckMode { pending, delivered, notAvailable, denied }
 
-// ── Controller ────────────────────────────────────────────────────────────────
+// ── controller ────────────────────────────────────────────────────────────────
 
 class MedicineDeliveryAcknowledgementController extends GetxController {
   final PostCampBeneficiaryOutput beneficiary;
