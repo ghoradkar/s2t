@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';

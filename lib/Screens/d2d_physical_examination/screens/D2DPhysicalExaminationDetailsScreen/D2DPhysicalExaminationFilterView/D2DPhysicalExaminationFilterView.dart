@@ -3,38 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AllDistrictListForPhyExamResponse/AllDistrictListForPhyExamResponse.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_physical_examination_controller.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/AllDistrictListForPhyExamResponse.dart';
 import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
 class D2DPhysicalExaminationFilterView extends StatefulWidget {
-  String selectedFromDate = "";
-  String selectedToDate = "";
-  AllDistrictListForPhyExamOutput? selectedDistrict;
-  Function(String) onSelectedFromDate;
-  Function(String) onSelectedToDate;
-  Function(AllDistrictListForPhyExamOutput) onSelectedDistrict;
-  Function() onApply;
-
-  D2DPhysicalExaminationFilterView({
-    super.key,
-    required this.selectedFromDate,
-    required this.selectedToDate,
-    required this.selectedDistrict,
-    required this.onSelectedFromDate,
-    required this.onSelectedToDate,
-    required this.onSelectedDistrict,
-    required this.onApply,
-  });
+  const D2DPhysicalExaminationFilterView({super.key});
 
   @override
   State<D2DPhysicalExaminationFilterView> createState() =>
@@ -43,14 +24,8 @@ class D2DPhysicalExaminationFilterView extends StatefulWidget {
 
 class _D2DPhysicalExaminationFilterViewState
     extends State<D2DPhysicalExaminationFilterView> {
-  APIManager apiManager = APIManager();
-  int empCode = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
-  }
+  D2DPhysicalExaminationController get ctrl =>
+      Get.find<D2DPhysicalExaminationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -73,21 +48,9 @@ class _D2DPhysicalExaminationFilterViewState
               ),
             ),
             SizedBox(height: 12.h),
-
-            // AppDateTextfield(
-            //   icon: icCalendarMonth,
-            //   titleHeaderString: "From Date",
-            //   valueString: widget.selectedFromDate,
-            //   onTap: () {
-            //     _selectFromDate(context);
-            //   },
-            // ),
             AppTextField(
-              onTap: () {
-                _selectFromDate(context);
-
-              },
-              controller: TextEditingController(text: widget.selectedFromDate),
+              onTap: () => _selectFromDate(context),
+              controller: TextEditingController(text: ctrl.selectedFromDate),
               readOnly: true,
               label: RichText(
                 text: TextSpan(
@@ -97,26 +60,17 @@ class _D2DPhysicalExaminationFilterViewState
                     fontSize: responsiveFont(14),
                     fontFamily: FontConstants.interFonts,
                   ),
-
                 ),
               ),
-              prefixIcon: const Icon(Icons.calendar_month, color: kPrimaryColor).paddingOnly(left: 8.w),
+              prefixIcon: const Icon(
+                Icons.calendar_month,
+                color: kPrimaryColor,
+              ).paddingOnly(left: 8.w),
             ),
             SizedBox(height: 12.h),
-            // AppDateTextfield(
-            //   icon: icCalendarMonth,
-            //   titleHeaderString: "To Date",
-            //   valueString: widget.selectedToDate,
-            //   onTap: () {
-            //     _selectToDate(context);
-            //   },
-            // ),
             AppTextField(
-              onTap: () {
-                _selectToDate(context);
-
-              },
-              controller: TextEditingController(text: widget.selectedToDate),
+              onTap: () => _selectToDate(context),
+              controller: TextEditingController(text: ctrl.selectedToDate),
               readOnly: true,
               label: RichText(
                 text: TextSpan(
@@ -126,27 +80,24 @@ class _D2DPhysicalExaminationFilterViewState
                     fontSize: responsiveFont(14),
                     fontFamily: FontConstants.interFonts,
                   ),
-
                 ),
               ),
-              prefixIcon: const Icon(Icons.calendar_month, color: kPrimaryColor).paddingOnly(left: 8.w),
+              prefixIcon: const Icon(
+                Icons.calendar_month,
+                color: kPrimaryColor,
+              ).paddingOnly(left: 8.w),
             ),
             SizedBox(height: 12.h),
-            // AppDropdownTextfield(
-            //   icon: icMapPin,
-            //   titleHeaderString: "District",
-            //   valueString: widget.selectedDistrict?.district ?? "",
-            //   onTap: () {
-            //     ToastManager.showLoader();
-            //     getAllDistrictListForPhyExam();
-            //   },
-            // ),
             AppTextField(
-              onTap: () {
-                ToastManager.showLoader();
-                    getAllDistrictListForPhyExam();
+              onTap: () async {
+                final districts = await ctrl.fetchDistricts();
+                if (districts.isNotEmpty) {
+                  _showDistrictBottomSheet(districts);
+                }
               },
-              controller: TextEditingController(text: widget.selectedDistrict?.district ?? ""),
+              controller: TextEditingController(
+                text: ctrl.selectedDistrict?.district ?? "",
+              ),
               readOnly: true,
               label: RichText(
                 text: TextSpan(
@@ -156,11 +107,13 @@ class _D2DPhysicalExaminationFilterViewState
                     fontSize: responsiveFont(14),
                     fontFamily: FontConstants.interFonts,
                   ),
-
                 ),
               ),
-              suffixIcon: Icon(Icons.keyboard_arrow_down),
-              prefixIcon: const Icon(Icons.location_on_outlined, color: kPrimaryColor).paddingOnly(left: 8.w),
+              suffixIcon: const Icon(Icons.keyboard_arrow_down),
+              prefixIcon: const Icon(
+                Icons.location_on_outlined,
+                color: kPrimaryColor,
+              ).paddingOnly(left: 8.w),
             ),
             SizedBox(height: 30.h),
             Row(
@@ -169,9 +122,7 @@ class _D2DPhysicalExaminationFilterViewState
                   child: AppActiveButton(
                     buttontitle: "Clear",
                     isCancel: true,
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () => Navigator.pop(context),
                   ),
                 ),
                 SizedBox(width: 67.w),
@@ -180,7 +131,7 @@ class _D2DPhysicalExaminationFilterViewState
                     buttontitle: "Apply",
                     onTap: () {
                       Navigator.pop(context);
-                      widget.onApply();
+                      ctrl.applyFilter();
                     },
                   ),
                 ),
@@ -200,10 +151,8 @@ class _D2DPhysicalExaminationFilterViewState
       lastDate: DateTime.now(),
     );
     if (picked != null) {
-      setState(() {
-        widget.selectedFromDate = FormatterManager.formatDateToString(picked);
-        widget.onSelectedFromDate(widget.selectedFromDate);
-      });
+      ctrl.onFromDateSelected(FormatterManager.formatDateToString(picked));
+      setState(() {});
     }
   }
 
@@ -215,52 +164,13 @@ class _D2DPhysicalExaminationFilterViewState
       lastDate: DateTime(2101),
     );
     if (picked != null) {
-      setState(() {
-        widget.selectedToDate = FormatterManager.formatDateToString(picked);
-        widget.onSelectedToDate(widget.selectedToDate);
-      });
+      ctrl.onToDateSelected(FormatterManager.formatDateToString(picked));
+      setState(() {});
     }
   }
 
-  void getAllDistrictListForPhyExam() {
-    Map<String, String> params = {
-      "FromDate": widget.selectedFromDate,
-      "ToDate": widget.selectedToDate,
-      "DoctorID": "$empCode",
-    };
-
-    apiManager.getAllDistrictListForPhyExamAPI(
-      params,
-      apiAllDistrictListForPhyExamCallBack,
-    );
-  }
-
-  void apiAllDistrictListForPhyExamCallBack(
-    AllDistrictListForPhyExamResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      List<AllDistrictListForPhyExamOutput>? list = response?.output ?? [];
-      list.insert(
-        0,
-        AllDistrictListForPhyExamOutput(dISTLGDCODE: 0, district: "All"),
-      );
-      _showDropDownBottomSheet(
-        "District",
-        list,
-        DropDownTypeMenu.AllDistrictListForPhyExam,
-      );
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-  }
-
-  void _showDropDownBottomSheet(
-    String title,
-    List<dynamic> list,
-    DropDownTypeMenu dropDownType,
+  void _showDistrictBottomSheet(
+    List<AllDistrictListForPhyExamOutput> districts,
   ) {
     showModalBottomSheet(
       context: context,
@@ -269,10 +179,10 @@ class _D2DPhysicalExaminationFilterViewState
       backgroundColor: Colors.white,
       isDismissible: false,
       enableDrag: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext ctx) {
         return Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.33,
+          height: MediaQuery.of(ctx).size.width * 1.33,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -281,20 +191,16 @@ class _D2DPhysicalExaminationFilterViewState
             ),
           ),
           child: DropDownListScreen(
-            titleString: title,
-            dropDownList: list,
-            dropDownMenu: dropDownType,
+            titleString: "District",
+            dropDownList: districts,
+            dropDownMenu: DropDownTypeMenu.AllDistrictListForPhyExam,
             onApplyTap: (p0) {
-              if (dropDownType == DropDownTypeMenu.AllDistrictListForPhyExam) {
-                widget.selectedDistrict = p0;
-              }
+              ctrl.onDistrictSelected(p0 as AllDistrictListForPhyExamOutput);
               setState(() {});
             },
           ),
         );
       },
-    ).whenComplete(() {
-      setState(() {});
-    });
+    );
   }
 }

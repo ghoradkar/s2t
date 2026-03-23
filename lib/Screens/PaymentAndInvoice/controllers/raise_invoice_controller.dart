@@ -7,7 +7,7 @@ import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../../../Modules/Json_Class/CampWiseInvoiceDetailsResponse/CampWiseInvoiceDetailsResponse.dart';
 import '../../../Modules/Json_Class/MonthWiseInvoiceResponse/MonthWiseInvoiceResponse.dart';
 import '../../../Modules/Json_Class/VerificationRemarkResponse/VerificationRemarkResponse.dart';
-import '../../../Modules/Json_Class/YearsResponse/YearsResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/YearsResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 

@@ -1,32 +1,24 @@
-// ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/YearsResponse/YearsResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/YearsResponse/YearsResponse.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/Model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 import 'package:s2toperational/Modules/utilities/validators.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../../../Modules/constants/constants.dart';
+import '../../../../model/MonthsResponse.dart';
+import '../../../../model/YearsResponse.dart';
 
 class LiverExaminationHistoryCard extends StatefulWidget {
-  String titleString;
-  Function(bool) selectedRadioYesChange;
-  Function(YearsOutput?) selectedYearChange;
-  Function(MonthsOutput?) selectedMonthChange;
-  Function(String) descriptionTextFieldChange;
-  final bool? isUnknown;
-  Function? selectedUnknown;
-  final TextEditingController? descriptionController;
-
-  LiverExaminationHistoryCard({
+  const LiverExaminationHistoryCard({
     super.key,
     required this.titleString,
     required this.selectedRadioYesChange,
@@ -37,6 +29,15 @@ class LiverExaminationHistoryCard extends StatefulWidget {
     this.selectedUnknown,
     this.descriptionController,
   });
+
+  final String titleString;
+  final Function(bool) selectedRadioYesChange;
+  final Function(YearsOutput?) selectedYearChange;
+  final Function(MonthsOutput?) selectedMonthChange;
+  final Function(String) descriptionTextFieldChange;
+  final bool? isUnknown;
+  final Function? selectedUnknown;
+  final TextEditingController? descriptionController;
 
   @override
   State<LiverExaminationHistoryCard> createState() =>
@@ -394,18 +395,18 @@ class _LiverExaminationHistoryCardState
 }
 
 class LiverExaminationHistoryCardDefaultSelected extends StatefulWidget {
-  String titleString;
-  String value;
-  final bool selectedRadioYesChange;
-  final D2DPhysicalExamninationDetailsOutput? patientObj;
-
-  LiverExaminationHistoryCardDefaultSelected({
+  const LiverExaminationHistoryCardDefaultSelected({
     super.key,
     required this.titleString,
     required this.value,
     required this.selectedRadioYesChange,
     this.patientObj,
   });
+
+  final String titleString;
+  final String value;
+  final bool? selectedRadioYesChange;
+  final D2DPhysicalExamninationDetailsOutput? patientObj;
 
   @override
   State<LiverExaminationHistoryCardDefaultSelected> createState() =>

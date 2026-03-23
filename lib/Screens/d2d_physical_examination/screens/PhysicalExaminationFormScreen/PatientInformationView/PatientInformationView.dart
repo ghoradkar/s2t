@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,12 +5,12 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/Model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 
 class PatientInformationView extends StatefulWidget {
-  PatientInformationView({super.key, required this.patientObj});
+  const PatientInformationView({super.key, required this.patientObj});
 
-  D2DPhysicalExamninationDetailsOutput? patientObj;
+  final D2DPhysicalExamninationDetailsOutput? patientObj;
 
   @override
   State<PatientInformationView> createState() => _PatientInformationViewState();

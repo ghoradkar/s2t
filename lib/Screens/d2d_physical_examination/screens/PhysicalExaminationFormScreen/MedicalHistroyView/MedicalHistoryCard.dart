@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, file_names
+// ignore_for_file: file_names
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,15 +8,17 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../../Modules/Enums/Enums.dart';
-import '../../../../../Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
-import '../../../../../Modules/Json_Class/YearsResponse/YearsResponse.dart';
+// import '../../../../../Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
+// import '../../../../../Modules/Json_Class/YearsResponse/YearsResponse.dart';
 import '../../../../../Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';
 import '../../../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import '../../../model/MonthsResponse.dart';
+import '../../../model/YearsResponse.dart';
 
 class MedicalHistoryCard extends StatefulWidget {
-  MedicalHistoryCard({
+  const MedicalHistoryCard({
     super.key,
     required this.titleString,
     required this.selectedRadioYesChange,
@@ -28,14 +30,14 @@ class MedicalHistoryCard extends StatefulWidget {
     required this.isNoHistory,
   });
 
-  String titleString;
-  bool showStar;
-  Function(bool) selectedRadioYesChange;
-  Function(YearsOutput?) selectedYearChange;
-  Function(MonthsOutput?) selectedMonthChange;
-  Function(String) descriptionTextFieldChange;
-  Function(bool) noHistoryChange;
-  bool isNoHistory = false;
+  final String titleString;
+  final bool showStar;
+  final Function(bool) selectedRadioYesChange;
+  final Function(YearsOutput?) selectedYearChange;
+  final Function(MonthsOutput?) selectedMonthChange;
+  final Function(String) descriptionTextFieldChange;
+  final Function(bool) noHistoryChange;
+  final bool isNoHistory;
 
   @override
   State<MedicalHistoryCard> createState() => _MedicalHistoryCardState();

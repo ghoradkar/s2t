@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (designaionId == 166 || designaionId == 51) {
         showHomeScreen();
       } else {
-        String dayString = FormatterManager.getDay(DateTime.now());
+        String dayString = FormatterManager.formatDateToStringInDash(DateTime.now());
 
         if (DataProvider().getAutoLogoutDate().isEmpty) {
           DataProvider().setAutoLogoutDate(dayString);

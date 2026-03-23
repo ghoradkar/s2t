@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Modules/APIManager/APIManager.dart';
 import '../../../Modules/Json_Class/MonthWiseInvoiceResponse/MonthWiseInvoiceResponse.dart';
-import '../../../Modules/Json_Class/YearsResponse/YearsResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/YearsResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 

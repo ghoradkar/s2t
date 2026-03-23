@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, file_names
+// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,14 +6,14 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/Model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/PhysicalExaminationFormScreen/MedicalHistroyView/MedicalHistoryCard.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
 class MedicalHistroyView extends StatefulWidget {
-  MedicalHistroyView({super.key, required this.patientObj});
+  const MedicalHistroyView({super.key, required this.patientObj});
 
-  D2DPhysicalExamninationDetailsOutput? patientObj;
+  final D2DPhysicalExamninationDetailsOutput? patientObj;
 
   @override
   State<MedicalHistroyView> createState() => _MedicalHistroyViewState();
@@ -161,55 +161,52 @@ class _MedicalHistroyViewState extends State<MedicalHistroyView> {
                     }
 
                     if (physicalExaminationFormDataManager.isNoHistory) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(
-                              "Alert",
-                              style: TextStyle(
-                                fontFamily: FontConstants.interFonts,
-                              ),
+                      Get.dialog(
+                        AlertDialog(
+                          title: Text(
+                            "Alert",
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
                             ),
-                            content: Text(
-                              "It seems that the patien has no know medical history. Please confirm to proceed.",
-                              style: TextStyle(
-                                fontFamily: FontConstants.interFonts,
-                              ),
+                          ),
+                          content: Text(
+                            "It seems that the patien has no know medical history. Please confirm to proceed.",
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
                             ),
-                            actions: [
-                              TextButton(
-                                child: Text(
-                                  "CONFIRM",
-                                  style: TextStyle(
-                                    fontFamily: FontConstants.interFonts,
-                                  ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(
+                                "CONFIRM",
+                                style: TextStyle(
+                                  fontFamily: FontConstants.interFonts,
                                 ),
-                                onPressed: () {
-                                  setNoHistory();
-                                  physicalExaminationFormDataManager
-                                      .isNoHistory = true;
-                                  Navigator.pop(context);
-                                  setState(() {});
-                                },
                               ),
-                              TextButton(
-                                child: Text(
-                                  "CANCEL",
-                                  style: TextStyle(
-                                    fontFamily: FontConstants.interFonts,
-                                  ),
+                              onPressed: () {
+                                setNoHistory();
+                                physicalExaminationFormDataManager
+                                    .isNoHistory = true;
+                                Get.back();
+                                setState(() {});
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                "CANCEL",
+                                style: TextStyle(
+                                  fontFamily: FontConstants.interFonts,
                                 ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  physicalExaminationFormDataManager
-                                      .isNoHistory = false;
-                                  setState(() {});
-                                },
                               ),
-                            ],
-                          );
-                        },
+                              onPressed: () {
+                                Get.back();
+                                physicalExaminationFormDataManager
+                                    .isNoHistory = false;
+                                setState(() {});
+                              },
+                            ),
+                          ],
+                        ),
                       );
                     }
                     setState(() {});

@@ -1,10 +1,10 @@
-// ignore_for_file: must_be_immutable, file_names
+// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/YearsResponse/YearsResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/YearsResponse/YearsResponse.dart';
 import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
@@ -15,17 +15,11 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 
-class AlleriesSurgeriesAndSymptoms extends StatefulWidget {
-  String titleString;
-  bool showStar;
-  Function(bool) selectedRadioYesChange;
-  Function(YearsOutput?) selectedYearChange;
-  Function(MonthsOutput?) selectedMonthChange;
-  Function(String) descriptionTextFieldChange;
-  Function(bool) noHistoryChange;
-  bool isNoHistory = false;
+import '../../../../model/MonthsResponse.dart';
+import '../../../../model/YearsResponse.dart';
 
-  AlleriesSurgeriesAndSymptoms({
+class AlleriesSurgeriesAndSymptoms extends StatefulWidget {
+  const AlleriesSurgeriesAndSymptoms({
     super.key,
     required this.titleString,
     required this.selectedRadioYesChange,
@@ -36,6 +30,15 @@ class AlleriesSurgeriesAndSymptoms extends StatefulWidget {
     required this.noHistoryChange,
     required this.isNoHistory,
   });
+
+  final String titleString;
+  final bool showStar;
+  final Function(bool) selectedRadioYesChange;
+  final Function(YearsOutput?) selectedYearChange;
+  final Function(MonthsOutput?) selectedMonthChange;
+  final Function(String) descriptionTextFieldChange;
+  final Function(bool) noHistoryChange;
+  final bool isNoHistory;
 
   @override
   State<AlleriesSurgeriesAndSymptoms> createState() =>

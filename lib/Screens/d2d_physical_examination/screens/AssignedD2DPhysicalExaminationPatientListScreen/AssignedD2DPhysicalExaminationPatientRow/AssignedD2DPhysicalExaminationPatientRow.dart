@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Json_Class/AttendancesListUsingSiteDetailsIDResponse/AttendancesListUsingSiteDetailsIDResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/AttendancesListUsingSiteDetailsIDResponse/AttendancesListUsingSiteDetailsIDResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import '../../../../../Modules/constants/fonts.dart';
+import '../../../model/AttendancesListUsingSiteDetailsIDResponse.dart';
 
 class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
   AttendancesListUsingSiteDetailsIDOutput obj;

@@ -2,8 +2,11 @@
 
 import 'package:flutter/material.dart';
 
-import '../Json_Class/MonthsResponse/MonthsResponse.dart';
-import '../Json_Class/YearsResponse/YearsResponse.dart';
+import '../../Screens/d2d_physical_examination/model/MonthsResponse.dart';
+import '../../Screens/d2d_physical_examination/model/YearsResponse.dart';
+//
+// import '../Json_Class/MonthsResponse/MonthsResponse.dart';
+// import '../Json_Class/YearsResponse/YearsResponse.dart';
 
 class PhysicalExaminationFormDataManager {
   static final PhysicalExaminationFormDataManager _singleton =

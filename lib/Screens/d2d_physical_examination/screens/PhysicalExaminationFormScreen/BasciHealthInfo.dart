@@ -1,18 +1,16 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/Model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/WidgetPaddingX.dart';
 
 class BasicHealthInfo extends StatefulWidget {
-  BasicHealthInfo({super.key, required this.patientObj});
+  const BasicHealthInfo({super.key, required this.patientObj});
 
-  D2DPhysicalExamninationDetailsOutput? patientObj;
+  final D2DPhysicalExamninationDetailsOutput? patientObj;
 
   @override
   State<BasicHealthInfo> createState() => _BasicHealthInfoState();

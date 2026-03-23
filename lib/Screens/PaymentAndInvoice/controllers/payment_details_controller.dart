@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import '../../../Modules/APIManager/APIManager.dart';
 import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../../../Modules/Json_Class/CompanyListResponse/CompanyListResponse.dart';
-import '../../../Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/MonthsResponse.dart';
 import '../../../Modules/Json_Class/UserInvoicePaymentDetailsResponse/UserInvoicePaymentDetailsResponse.dart';
-import '../../../Modules/Json_Class/YearsResponse/YearsResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/YearsResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 

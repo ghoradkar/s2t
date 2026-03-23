@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/Json_Class/MonthsResponse/MonthsResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/YearsResponse/YearsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/MonthsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/YearsResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/CompanyListResponse/CompanyListResponse.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../Modules/Enums/Enums.dart';
-import '../../Modules/Json_Class/AllDistrictListForPhyExamResponse/AllDistrictListForPhyExamResponse.dart';
+import '../../Screens/d2d_physical_examination/model/AllDistrictListForPhyExamResponse.dart';
 import '../../Modules/Json_Class/AppointmentStatusResponse/AppointmentStatusResponse.dart';
 import '../../Modules/Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
 import '../../Modules/Json_Class/AssignTypeModel/AssignTypeModel.dart';

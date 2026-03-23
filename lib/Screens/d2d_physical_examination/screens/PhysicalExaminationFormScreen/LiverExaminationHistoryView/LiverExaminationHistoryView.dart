@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/Model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import '../../../../../Modules/constants/fonts.dart';
@@ -526,7 +526,7 @@ class _LiverExaminationHistoryViewState
                   patientObj: widget.patientObj,
                   titleString: "9.Is BMI >/=23 Kg/m2 (Overweight or obesity)",
                   selectedRadioYesChange:
-                      widget.physicalExaminationFormDataManager.isBMI!,
+                      widget.physicalExaminationFormDataManager.isBMI,
                   value: 'BMI',
                 ).paddingSymmetric(vertical: 6)
                 : Container(),
@@ -546,7 +546,7 @@ class _LiverExaminationHistoryViewState
                   selectedRadioYesChange:
                       widget
                           .physicalExaminationFormDataManager
-                          .isElevatedBloodGlucose!,
+                          .isElevatedBloodGlucose,
                   value: 'Blood Glucose',
                 ).paddingSymmetric(vertical: 6)
                 : Container(),
