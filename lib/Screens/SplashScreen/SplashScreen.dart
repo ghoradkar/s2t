@@ -78,10 +78,9 @@ class _SplashScreenState extends State<SplashScreen> {
               "App Update",
               message,
                   () async {
-                const packageName = 'com.example.s2toperational';
+                const packageName = 'com.s2t.operational';
                 final uri = Uri.parse(
-                  // 'https://play.google.com/store/apps/details?id=$packageName',
-                  'https://play.google.com/store/apps/details?id=in.janarogyaseva.s2t_operational', // remove this once package name decided
+                  'https://play.google.com/store/apps/details?id=$packageName',
                 );
                 if (await canLaunchUrl(uri)) {
                   await launchUrl(uri, mode: LaunchMode.externalApplication);

@@ -238,7 +238,8 @@ class APIManager {
 
     // Server expects "major.minor" format (e.g. "1.0"), not "major.minor.patch"
     final parts = version.split('.');
-    final serverVersion = parts.length >= 2 ? '${parts[0]}.${parts[1]}' : version;
+    final serverVersion =
+        parts.length >= 2 ? '${parts[0]}.${parts[1]}' : version;
 
     final url = Uri.parse('$kConstructionWorkerBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
@@ -3917,8 +3918,7 @@ class APIManager {
       print(body);
       print(json.decode(response.body));
       UserInvoicePaymentDetailsResponse person =
-          UserInvoicePaymentDetailsResponse.
-          fromJson(
+          UserInvoicePaymentDetailsResponse.fromJson(
             json.decode(response.body),
           );
 
@@ -4104,9 +4104,7 @@ class APIManager {
     }
   }
 
-  Future<void> getPaymentVerificationRemarkAPI(
-    dynamic callback,
-  ) async {
+  Future<void> getPaymentVerificationRemarkAPI(dynamic callback) async {
     String method = APIConstants.kGetPaymentVerificationRemark;
 
     final url = Uri.parse('$kD2DBaseURL$method');
@@ -4483,11 +4481,10 @@ class APIManager {
     }
   }
 
-
   Future<void> insertCallDetailsAPI(
-      Map<String, dynamic> data,
-      dynamic callback,
-      ) async {
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
     String method = APIConstants.kInsertCallDetails;
 
     final url = Uri.parse('$kD2DBaseURL$method');
@@ -4504,8 +4501,7 @@ class APIManager {
       String body = response.body;
       print(body);
       print(json.decode(response.body));
-      InsertDetailsResponse person =
-      InsertDetailsResponse.fromJson(
+      InsertDetailsResponse person = InsertDetailsResponse.fromJson(
         json.decode(response.body),
       );
 
@@ -4691,11 +4687,10 @@ class APIManager {
     }
   }
 
-
   Future<void> apiKeyForMyoperator(
-      Map<String, dynamic> data,
-      dynamic callback,
-      ) async {
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
     String method = APIConstants.kGetOrganisationWiseAPIKeyV1;
 
     final url = Uri.parse('$kD2DBaseURL$method');
@@ -4712,8 +4707,9 @@ class APIManager {
       String body = response.body;
       print(body);
       print(json.decode(response.body));
-      GetMyOperatorResponse person =
-      GetMyOperatorResponse.fromJson(json.decode(response.body));
+      GetMyOperatorResponse person = GetMyOperatorResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if (person.status == 'Success') {
         callback(person, "", true);
@@ -4832,10 +4828,9 @@ class APIManager {
       // if (person.status == 'Success') {
       //   callback(person, "", true);
       // } else {
-        callback(person, person.message ?? "", true);
+      callback(person, person.message ?? "", true);
       // }
     } catch (e) {
-
       callback(null, "Expections: $e", false);
     }
   }
@@ -5503,8 +5498,9 @@ class APIManager {
       print(url);
       print(data);
       print(json.decode(response.body));
-      PacketReturnResponse person =
-          PacketReturnResponse.fromJson(json.decode(response.body));
+      PacketReturnResponse person = PacketReturnResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if ((person.status ?? "").toLowerCase() == 'success') {
         callback(person, "", true);
@@ -5535,8 +5531,9 @@ class APIManager {
       print(url);
       print(data);
       print(json.decode(response.body));
-      PacketReturnResponse person =
-          PacketReturnResponse.fromJson(json.decode(response.body));
+      PacketReturnResponse person = PacketReturnResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if ((person.status ?? "").toLowerCase() == 'success') {
         callback(person, "", true);
@@ -6806,10 +6803,7 @@ class APIManager {
     }
   }
 
-  Future<void> getFaceDetectionFlagAPI(
-    String userId,
-    dynamic callback,
-  ) async {
+  Future<void> getFaceDetectionFlagAPI(String userId, dynamic callback) async {
     final method = APIConstants.kGetFaceDetectionFlag;
     final url = Uri.parse('$kD2DBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
