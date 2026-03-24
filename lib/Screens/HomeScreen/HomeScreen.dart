@@ -376,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.HealthScreeningDetails);
       // menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
-    } else if (dESGID == 173) {
+    } else if (dESGID == 172) {
       menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 75) {
       isShowRadioCamp = true;
@@ -437,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     
-    else if (dESGID == 173) {
+    else if (dESGID == 172) {
       isShowRadioCamp = true;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
       menuList.add(DashboardMenu.CampCalendar);

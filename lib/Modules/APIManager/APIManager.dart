@@ -229,6 +229,39 @@ class APIManager {
     return IOClient(httpClient);
   }
 
+  Future<void> checkAppVersionAPI({
+    required String version,
+    required Function(String status, String message) onResult,
+  }) async {
+    const String applicationId = "91";
+    String method = APIConstants.kAPKDownloader;
+
+    // Server expects "major.minor" format (e.g. "1.0"), not "major.minor.patch"
+    final parts = version.split('.');
+    final serverVersion = parts.length >= 2 ? '${parts[0]}.${parts[1]}' : version;
+
+    final url = Uri.parse('$kConstructionWorkerBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'aplicationId': applicationId, 'versionname': serverVersion},
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print('APKDownloader url: $url');
+      print('APKDownloader response: ${response.body}');
+      final decoded = json.decode(response.body);
+      final status = decoded['status'] ?? '';
+      final message = decoded['message'] ?? '';
+      onResult(status, message);
+    } catch (e) {
+      print('APKDownloader error: $e');
+      onResult('', '');
+    }
+  }
+
   Future<void> getLoginAPI(Map<String, dynamic> data, dynamic callback) async {
     String method = APIConstants.kUserLogin;
 

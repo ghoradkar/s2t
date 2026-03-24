@@ -133,6 +133,7 @@ const String icInitiatedBy = "assets/icons/icInitiatedBy.png";
 const String icMapPin = "assets/icons/icMapPin.png";
 const String icQuestionMark = "assets/icons/question-mark.png";
 const String icLandingLab = "assets/icons/icLandingLab.png";
+const String softwareUpdate = "assets/icons/softwareUpdate.png";
 const String icCalendarMonth = "assets/icons/icCalendarMonth.png";
 const String icScreeningTests = "assets/icons/icScreeningTests.png";
 const String icUsersGroup = "assets/icons/icUsersGroup.png";

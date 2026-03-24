@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import '../constants/constants.dart';
 import '../constants/fonts.dart';
 import '../constants/images.dart';
@@ -218,66 +219,6 @@ class ToastManager {
   //   );
   // }
 
-  static void showAlertYesNoDialog(
-    BuildContext context,
-    String title,
-    String message,
-    void Function(bool) didSelectYes,
-  ) {
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: const Text("Yes"),
-              onPressed: () {
-                Navigator.pop(context);
-                didSelectYes(true);
-              },
-            ),
-            TextButton(
-              child: const Text("No"),
-              onPressed: () {
-                Navigator.pop(context);
-                didSelectYes(false);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showAlertOkayDialog(
-    BuildContext context,
-    String title,
-    String message,
-    void Function() didTap,
-  ) {
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: const Text("Okay"),
-              onPressed: () {
-                didTap;
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void showAlertMessage(BuildContext context, String content, Color color) {
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
@@ -347,161 +288,160 @@ class ToastManager {
     );
   }
 
-  static  Future<void> showInfoPopup(BuildContext context) async{
+  static Future<void> showInfoPopup(BuildContext context) async {
     await showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      return AlertDialog(
-        title: Text(
-          "Info",
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: FontConstants.interFonts,
-            fontWeight: FontWeight.w400,
-            fontSize: 18.sp,
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            "Info",
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: FontConstants.interFonts,
+              fontWeight: FontWeight.w400,
+              fontSize: 18.sp,
+            ),
           ),
-        ),
-        content: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 30,
-              child: Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: prescriptionAssignedColor,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      "Medicine Delivery Not Attempted",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w400,
-                        fontSize: responsiveFont(14),
+          content: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 30,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: prescriptionAssignedColor,
+                        borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-              child: Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: prescriptionAcceptedColor,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      "Need to Re Attempt Medicine Delivery",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w400,
-                        fontSize: responsiveFont(14),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Medicine Delivery Not Attempted",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: FontConstants.interFonts,
+                          fontWeight: FontWeight.w400,
+                          fontSize: responsiveFont(14),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-              child: Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: packetReceivedColor,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      "Medicines Delivered Successfully",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w400,
-                        fontSize: responsiveFont(14),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-              child: Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: beneficiaryNotAvailableColor,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      "Medicine Denied by Beneficiary",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w400,
-                        fontSize: responsiveFont(14),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: AppButtonWithIcon(
-                buttonColor: kButtonColor,
-                mHeight: 40,
-                title: "Okay",
-                icon: Image.asset(
-                  iconArrow,
-                  height: responsiveHeight(24),
-                  width: responsiveHeight(24),
+                  ],
                 ),
-                mWidth: 140.w,
-                textStyle: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  color: Colors.white,
-                  fontSize: responsiveFont(14),
-                ),
-                onTap: () {
-                  Get.back();
-                },
               ),
-            ),
-          ],
-        ),
-      );
-
-    });
-
+              SizedBox(
+                height: 30,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: prescriptionAcceptedColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Need to Re Attempt Medicine Delivery",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: FontConstants.interFonts,
+                          fontWeight: FontWeight.w400,
+                          fontSize: responsiveFont(14),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: packetReceivedColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Medicines Delivered Successfully",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: FontConstants.interFonts,
+                          fontWeight: FontWeight.w400,
+                          fontSize: responsiveFont(14),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: beneficiaryNotAvailableColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Medicine Denied by Beneficiary",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: FontConstants.interFonts,
+                          fontWeight: FontWeight.w400,
+                          fontSize: responsiveFont(14),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                child: AppButtonWithIcon(
+                  buttonColor: kButtonColor,
+                  mHeight: 40,
+                  title: "Okay",
+                  icon: Image.asset(
+                    iconArrow,
+                    height: responsiveHeight(24),
+                    width: responsiveHeight(24),
+                  ),
+                  mWidth: 140.w,
+                  textStyle: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    color: Colors.white,
+                    fontSize: responsiveFont(14),
+                  ),
+                  onTap: () {
+                    Get.back();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
 
     // showModalBottomSheet(
     //   context: parentContext,
@@ -662,31 +602,80 @@ class ToastManager {
     // );
   }
 
-  static void showSaveYesNoPopup(
+  static AlertDialog commonAlert(
     BuildContext parentContext,
     String icon,
     String title,
+    String content,
+    Function yes,
+    Function no,
+    String yesButtonText,
+    String noButtonText,
   ) {
-    showModalBottomSheet(
-      context: parentContext,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      constraints: const BoxConstraints(minWidth: double.infinity),
-      builder: (BuildContext sheetContext) {
-        return Container(
-          width: double.infinity,
-          height: MediaQuery.of(sheetContext).size.height,
-          color: Colors.transparent,
-          child: S2TAlertView(
-            icon: icon,
-            message: title,
-            onTap: () {
-              Navigator.of(sheetContext).pop();
-              Navigator.of(parentContext).pop();
-            },
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CommonText(
+              text: title,
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w500,
+              textColor: kBlackColor,
+              textAlign: TextAlign.center,
+            ),
           ),
-        );
-      },
+          Image.asset(icon, width: 100.w),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            // child: Text(content, textAlign: TextAlign.center),
+            child: CommonText(
+              text: content,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              textColor: kBlackColor,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // AppButtonWithIcon(
+              //   mWidth: 100.w,
+              //   mHeight: 40.h,
+              //   title: noButtonText,
+              //   onTap: () {
+              //     no();
+              //   },
+              // ),
+              AppButtonWithIcon(
+                mWidth: 140.w,
+                mHeight: 40.h,
+                title: yesButtonText,
+                onTap: () {
+                  yes();
+                },
+              ),
+
+              SizedBox(width: 10.w),
+
+              TextButton(
+                onPressed: () {
+                  no();
+                },
+                child: CommonText(
+                  text: noButtonText,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  textColor: kPrimaryColor,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

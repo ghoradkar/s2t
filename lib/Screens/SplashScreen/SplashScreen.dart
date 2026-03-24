@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously, file_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/utilities/DeviceInfoUtil.dart';
 import 'package:s2toperational/Screens/LoginScreen/LoginScreen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
 import '../../Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
@@ -32,6 +33,99 @@ class _SplashScreenState extends State<SplashScreen> {
     apiManager.apiMode = APIMode.Beta;
     // apiManager.apiMode = kReleaseMode ? APIMode.Live : APIMode.Beta;
     apiManager.setAPIEnvironment();
+    getAppVersion();
+    _checkVersionThenNavigate();
+  }
+
+  Future<void> _checkVersionThenNavigate() async {
+    var deviceInfo = await DeviceInfoUtil().getPackageInfo();
+    String version = deviceInfo.version;
+
+    bool updateRequired = false;
+    String updateMessage = '';
+
+    await APIManager().checkAppVersionAPI(
+      version: version,
+      onResult: (status, message) {
+        if (status.toLowerCase() == 'success') {
+          updateRequired = true;
+          updateMessage = message;
+        }
+      },
+    );
+
+    if (!mounted) return;
+
+    if (updateRequired) {
+      _showForceUpdateDialog(updateMessage);
+      return;
+    }
+
+    _navigateNext();
+  }
+
+  void _showForceUpdateDialog(String message) {
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (ctx) => PopScope(
+            canPop: false,
+            child: ToastManager.commonAlert(
+              context,
+              softwareUpdate,
+              "App Update",
+              message,
+                  () async {
+                const packageName = 'com.example.s2toperational';
+                final uri = Uri.parse(
+                  // 'https://play.google.com/store/apps/details?id=$packageName',
+                  'https://play.google.com/store/apps/details?id=in.janarogyaseva.s2t_operational', // remove this once package name decided
+                );
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+                  () {
+                SystemNavigator.pop();
+              },
+              "Update",
+              "Cancel",
+            )
+
+
+            // AlertDialog(
+            //   title: const Text('App Update'),
+            //   content: Text(message),
+            //   actions: [
+            //     TextButton(
+            //       onPressed: () async {
+            //         const packageName = 'com.example.s2toperational';
+            //         final uri = Uri.parse(
+            //           // 'https://play.google.com/store/apps/details?id=$packageName',
+            //           'https://play.google.com/store/apps/details?id=in.janarogyaseva.s2t_operational', // remove this once package name decided
+            //         );
+            //         if (await canLaunchUrl(uri)) {
+            //           await launchUrl(
+            //             uri,
+            //             mode: LaunchMode.externalApplication,
+            //           );
+            //         }
+            //       },
+            //       child: const Text('UPDATE'),
+            //     ),
+            //     TextButton(
+            //       onPressed: () => SystemNavigator.pop(),
+            //       child: const Text('CANCEL'),
+            //     ),
+            //   ],
+            // ),
+          ),
+    );
+  }
+
+  void _navigateNext() {
     LoginResponseModel? loginResponseModel = DataProvider().getParsedUserData();
     int designaionId = loginResponseModel?.output?.first.dESGID ?? 0;
     if (DataProvider().isLoggedIn()) {
@@ -61,7 +155,6 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       showLoginScreen();
     }
-    getAppVersion();
   }
 
   @override
