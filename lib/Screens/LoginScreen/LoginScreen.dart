@@ -1,6 +1,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/Enums/Enums.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -343,29 +344,28 @@ class LoginScreenState extends State<LoginScreen> {
     ToastManager.hideLoader();
 
     if (success) {
-      // if (apiManager.apiMode == APIMode.Beta) {
-      DataProvider().setIsLogin(true);
+      if (apiManager.apiMode == APIMode.Beta) {
+        DataProvider().setIsLogin(true);
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
-        (Route route) => false,
-      );
-      // }
-      // else {
-      //   int dESGID =
-      //       DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
-      //
-      //   if (dESGID == 51 || dESGID == 166) {
-      //     DataProvider().setIsLogin(true);
-      //
-      //     Navigator.of(context).pushAndRemoveUntil(
-      //       MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
-      //       (Route route) => false,
-      //     );
-      //   } else {
-      //     getOtp();
-      //   }
-      // }
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+          (Route route) => false,
+        );
+      } else {
+        int dESGID =
+            DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
+
+        if (dESGID == 51 || dESGID == 166) {
+          DataProvider().setIsLogin(true);
+
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+            (Route route) => false,
+          );
+        } else {
+          getOtp();
+        }
+      }
     } else {
       ToastManager.toast(errorMessage);
     }
