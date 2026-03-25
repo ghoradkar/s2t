@@ -1,21 +1,24 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import '../../../../Modules/Json_Class/ResourceReMappingCampResponse/ResourceReMappingCampResponse.dart';
-import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
+import '../../../../../Modules/constants/constants.dart';
+import '../../../../../Modules/constants/images.dart';
+import '../../../../../Modules/utilities/SizeConfig.dart';
+
 import '../../../../../Modules/constants/fonts.dart';
 
 class CampForHealthScreeningRow extends StatelessWidget {
+  Function() onSelectTap;
+  ResourceReMappingCampOutput? reMappingCampOutput;
+
   CampForHealthScreeningRow({
     super.key,
     required this.reMappingCampOutput,
     required this.onSelectTap,
   });
 
-  Function() onSelectTap;
-  ResourceReMappingCampOutput? reMappingCampOutput;
+
 
   @override
   Widget build(BuildContext context) {

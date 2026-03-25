@@ -47,11 +47,11 @@ import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
 import '../DailyWorkDashboard/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
 import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
 import '../ExpenseClaimScreen/ExpenseClaimDashboardScreen.dart';
-import '../HealthScreeningDetails/CampForHealthScreeningD2DScreen/CampForHealthScreeningD2DScreen.dart';
-import '../HealthScreeningDetails/CampForHealthScreeningScreen/CampForHealthScreeningScreen.dart';
 import '../ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampListScreen.dart';
 import '../SideDrawerMenu/SideDrawerMenu.dart';
 import '../TeamCampMapping/TeamCampMappingScreen/TeamCampMappingScreen.dart';
+import '../health_screening_details/screens/camp_for_health_screening_d2d_screen/camp_for_health_screening_d2d_screen.dart';
+import '../health_screening_details/screens/camp_for_health_screening_screen/camp_for_health_screening_screen.dart';
 import '../user_attendance/screens/user_attendance_screen.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -340,29 +340,14 @@ class BeneficiaryCardController extends GetxController {
           //   "reference_id": referanceId.toString(),
           // };
 
-          // var payload = {
-          //   "company_id": companyID.toString(),
-          //   "secret_token": secretToken.toString(),
-          //   "type": typeForMyOperator.toString(),
-          //   // "user_id": myOperatorUserId.toString(),
-          //   "number": "+91${beneficiary.mobile}",
-          //   "number_2":
-          //       "+91${DataProvider().getParsedUserData()?.output?[0].bMobile?.toString() ?? ''}",
-          //   "max_call_duration": 0,
-          //   "region": "",
-          //   "caller_id": "",
-          //   "public_ivr_id": publicIvrId.toString(),
-          //   "reference_id": referanceId.toString(),
-          //   "group": "",
-          //   "call_hold": false,
-          // };
-
           var payload = {
             "company_id": companyID.toString(),
             "secret_token": secretToken.toString(),
             "type": typeForMyOperator.toString(),
-            "number": "+91${9673974373}",
-            "number_2": "+918830378568",
+            // "user_id": myOperatorUserId.toString(),
+            "number": "+91${beneficiary.mobile}",
+            "number_2":
+                "+91${DataProvider().getParsedUserData()?.output?[0].bMobile?.toString() ?? ''}",
             "max_call_duration": 0,
             "region": "",
             "caller_id": "",
@@ -371,6 +356,21 @@ class BeneficiaryCardController extends GetxController {
             "group": "",
             "call_hold": false,
           };
+
+          // var payload = {
+          //   "company_id": companyID.toString(),
+          //   "secret_token": secretToken.toString(),
+          //   "type": typeForMyOperator.toString(),
+          //   "number": "+91${9673974373}",
+          //   "number_2": "+918830378568",
+          //   "max_call_duration": 0,
+          //   "region": "",
+          //   "caller_id": "",
+          //   "public_ivr_id": publicIvrId.toString(),
+          //   "reference_id": referanceId.toString(),
+          //   "group": "",
+          //   "call_hold": false,
+          // };
 
           var apiKey = apiKeyForMyOperator;
 
@@ -793,9 +793,9 @@ class BeneficiaryCardController extends GetxController {
           usercreatedStatus.value = FormzSubmissionStatus.success;
           final userData = jsonResponse['output'] as List?;
           if (userData != null && userData.isNotEmpty) {
-            // isUserCreatedBy =
-            //     (userData[0]['Is24By7IsAccountCreated'] as num?)?.toInt() ?? 0;
-            isUserCreatedBy = 2;
+            isUserCreatedBy =
+                (userData[0]['Is24By7IsAccountCreated'] as num?)?.toInt() ?? 0;
+            // isUserCreatedBy = 2;
           }
         } else {
           userCreatedResponse.value = resString;

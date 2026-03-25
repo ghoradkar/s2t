@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../Modules/Enums/Enums.dart';
-import '../../../../Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
-import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
+
+import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
+
+import '../../../../../Modules/Enums/Enums.dart';
+import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/fonts.dart';
+import '../../../../../Modules/constants/images.dart';
+import '../../../../../Modules/utilities/SizeConfig.dart';
 
 class HealthScreeningPatientRow extends StatelessWidget {
   HealthScreeningPatientRow({

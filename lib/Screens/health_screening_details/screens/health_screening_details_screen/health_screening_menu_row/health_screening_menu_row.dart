@@ -2,16 +2,82 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../Modules/Enums/Enums.dart';
-import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/constants/images.dart';
+import '../../../../../Modules/Enums/Enums.dart';
+import '../../../../../Modules/constants/constants.dart';
+import '../../../../../Modules/constants/images.dart';
+import '../../../../../Modules/utilities/SizeConfig.dart';
+
 import '../../../../../Modules/constants/fonts.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
 
 class HealthScreeningMenuRow extends StatelessWidget {
+  HealthScreeningDetailsMenu dashboardMenu;
+
   HealthScreeningMenuRow({super.key, required this.dashboardMenu});
 
-  HealthScreeningDetailsMenu dashboardMenu;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.4),
+            spreadRadius: 2,
+            blurRadius: 3,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 6),
+          SizedBox(
+            width: responsiveWidth(30),
+            height: responsiveWidth(30),
+            child: Image.asset(getIconName()),
+          ),
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+            child: Text(
+              getTitleName(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: responsiveFont(14),
+                color: gridTitleColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+        ],
+      ),
+      // Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   children: [
+      //     const Spacer(),
+      //     SizedBox(width: 80, height: 80, child: Image.asset(getIconName())),
+      //     const Spacer(),
+      //     Text(
+      //       getTitleName(),
+      //       textAlign: TextAlign.center,
+      //       style: TextStyle(
+      //         fontFamily: FontConstants.interFonts,
+      //         fontSize: 12,
+      //         color: kPrimaryColor,
+      //         fontWeight: FontWeight.bold,
+      //       ),
+      //     ),
+      //     const Spacer(),
+      //   ],
+      // ),
+    );
+  }
 
   String getIconName() {
     String icon;
@@ -80,69 +146,5 @@ class HealthScreeningMenuRow extends StatelessWidget {
         break;
     }
     return title;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.4),
-            spreadRadius: 2,
-            blurRadius: 3,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 6),
-          SizedBox(
-            width: responsiveWidth(30),
-            height: responsiveWidth(30),
-            child: Image.asset(getIconName()),
-          ),
-          const SizedBox(height: 6),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-            child: Text(
-              getTitleName(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: responsiveFont(14),
-                color: gridTitleColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-        ],
-      ),
-      // Column(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: [
-      //     const Spacer(),
-      //     SizedBox(width: 80, height: 80, child: Image.asset(getIconName())),
-      //     const Spacer(),
-      //     Text(
-      //       getTitleName(),
-      //       textAlign: TextAlign.center,
-      //       style: TextStyle(
-      //         fontFamily: FontConstants.interFonts,
-      //         fontSize: 12,
-      //         color: kPrimaryColor,
-      //         fontWeight: FontWeight.bold,
-      //       ),
-      //     ),
-      //     const Spacer(),
-      //   ],
-      // ),
-    );
   }
 }

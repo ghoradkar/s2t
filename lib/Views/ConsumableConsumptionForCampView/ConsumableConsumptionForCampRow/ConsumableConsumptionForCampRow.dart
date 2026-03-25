@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../Modules/Json_Class/ConsumableListDetailsResponse/ConsumableListDetailsResponse.dart';
+import 'package:s2toperational/Screens/health_screening_details/models/camp_closing_model.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../../../Modules/constants/fonts.dart';
