@@ -59,6 +59,9 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
   int dateTypeId = 0;
   String selectedDate = "";
   Timer? _searchDebounce;
+  bool _isInitialCallStatusLoad = true;
+  bool _wasCallStatusSuccess = false;
+  bool _hasLoadedOnce = false;
 
   // Cache user data to avoid repeated DataProvider calls
   int? _cachedEmpCode;
@@ -86,12 +89,25 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
     _cachedAgentId = int.tryParse(userData?.agentID?.toString() ?? '') ?? 0;
 
     // API: load the initial list of beneficiaries expected for calling.
+    // Pre-set Team Number default to "All"
+    teamId = 0;
+    selectedTeamData = TeamDataOutput(
+      teamName: "All",
+      teamid: 0,
+      member1: "NA",
+      member2: "NA",
+    );
+    teamNumberTextController.text = "All";
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<ExpectedBeneficiaryBloc>().add(
         BeneficiaryRequest(
           payload: const {"CallStatusID": "0", "TeamID": "0", "GroupID": "1"},
         ),
       );
+
+      // Load call status list on init to auto-select "Calling Pending" as default
+      context.read<ExpectedBeneficiaryBloc>().add(GetCallStatusRequest());
 
       // Pre-cache images for better performance
       precacheImage(const AssetImage(icFilter), context);
@@ -131,13 +147,20 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
     return NetworkWrapper(
       child: BlocListener<ExpectedBeneficiaryBloc, ExpectedBeneficiaryState>(
         listener: (context, state) {
+          // Track transition: only true when getCallStatus just became success this call
+          final callStatusJustSucceeded =
+              state.getCallStatus.isSuccess && !_wasCallStatusSuccess;
+          _wasCallStatusSuccess = state.getCallStatus.isSuccess;
+
           if (state.beneficiaryStatus.isSuccess) {
             beneficiaryresponsemodel = Beneficiaryresponsemodel.fromJson(
               jsonDecode(state.beneficiaryResponse),
             );
             _filteredList.clear();
             _filteredList = beneficiaryresponsemodel?.output ?? [];
-            setState(() {});
+            setState(() {
+              _hasLoadedOnce = true;
+            });
 
             // Delay state reset to ensure UI updates first
             Future.delayed(const Duration(milliseconds: 300), () {
@@ -203,6 +226,7 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
 
           if (state.dateTypeWiseDataStatus.isSuccess) {
             setState(() {
+              _hasLoadedOnce = true;
               beneficiaryresponsemodel = Beneficiaryresponsemodel.fromJson(
                 jsonDecode(state.beneficiaryResponse),
               );
@@ -219,7 +243,7 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
             });
           }
 
-          if (state.getCallStatus.isSuccess) {
+          if (callStatusJustSucceeded) {
             callstatusModel = Callstatusmodel.fromJson(
               jsonDecode(state.getCallingResponse),
             );
@@ -243,6 +267,20 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
               "Currently selected: ${selectedCallStatus?.appointmentStatus} - ID: ${selectedCallStatus?.assignStatusID}",
             );
             print("====================");
+
+            if (_isInitialCallStatusLoad) {
+              _isInitialCallStatusLoad = false;
+              final callingPending = filteredCallStatusList.firstWhere(
+                (item) => item.appointmentStatus == "Calling Pending",
+                orElse: () => filteredCallStatusList.first,
+              );
+              setState(() {
+                selectedCallStatus = callingPending;
+                callStatusTextController.text =
+                    callingPending.appointmentStatus ?? "";
+              });
+              return;
+            }
 
             String tempSelectedStatus =
                 selectedCallStatus?.appointmentStatus ?? "";
@@ -1158,7 +1196,8 @@ class _ExpectedBeneficiaryListState extends State<ExpectedBeneficiaryList> {
           body: BlocBuilder<ExpectedBeneficiaryBloc, ExpectedBeneficiaryState>(
             builder: (context, state) {
               return state.beneficiaryStatus.isInProgress ||
-                      state.dateTypeWiseDataStatus.isInProgress
+                      state.dateTypeWiseDataStatus.isInProgress ||
+                      !_hasLoadedOnce
                   ? CommonSkeletonList(
                     key: const ValueKey('skeleton'),
                   ).paddingSymmetric(horizontal: 8.w)
