@@ -33,6 +33,7 @@ class RaiseInvoiceScreen extends StatefulWidget {
 class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
   late final RaiseInvoiceController controller;
   late final String tag;
+  final TextEditingController _serviceTypeController = TextEditingController();
 
   @override
   void initState() {
@@ -43,10 +44,14 @@ class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
       RaiseInvoiceController(invoiceObj: widget.invoiceObj),
       tag: tag,
     );
+    ever(controller.selectedServiceType, (val) {
+      _serviceTypeController.text = val?.yearName ?? '';
+    });
   }
 
   @override
   void dispose() {
+    _serviceTypeController.dispose();
     Get.delete<RaiseInvoiceController>(tag: tag);
     super.dispose();
   }
@@ -159,70 +164,70 @@ class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String formatValue(double? value) {
-      if (value == null) return "0.0";
-      return value.toStringAsFixed(1);
-    }
+    // String formatValue(double? value) {
+    //   if (value == null) return "0.0";
+    //   return value.toStringAsFixed(1);
+    // }
 
-    Widget headerCell(String text, int flex) {
-      return Expanded(
-        flex: flex,
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: kWhiteColor,
-            fontSize: responsiveFont(9),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      );
-    }
-
-    Widget valueCell(String text, int flex, {bool bold = false}) {
-      return Expanded(
-        flex: flex,
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: kBlackColor,
-            fontSize: responsiveFont(9),
-            fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
-          ),
-        ),
-      );
-    }
-
-    Widget actionButton(String text, VoidCallback onTap) {
-      return Expanded(
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 44,
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  text,
-                  style: TextStyle(
-                    color: kWhiteColor,
-                    fontSize: responsiveFont(10),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(Icons.arrow_forward, color: kWhiteColor, size: 16),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    // Widget headerCell(String text, int flex) {
+    //   return Expanded(
+    //     flex: flex,
+    //     child: Text(
+    //       text,
+    //       textAlign: TextAlign.center,
+    //       style: TextStyle(
+    //         color: kWhiteColor,
+    //         fontSize: responsiveFont(9),
+    //         fontWeight: FontWeight.w600,
+    //       ),
+    //     ),
+    //   );
+    // }
+    //
+    // Widget valueCell(String text, int flex, {bool bold = false}) {
+    //   return Expanded(
+    //     flex: flex,
+    //     child: Text(
+    //       text,
+    //       textAlign: TextAlign.center,
+    //       style: TextStyle(
+    //         color: kBlackColor,
+    //         fontSize: responsiveFont(9),
+    //         fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+    //       ),
+    //     ),
+    //   );
+    // }
+    //
+    // Widget actionButton(String text, VoidCallback onTap) {
+    //   return Expanded(
+    //     child: InkWell(
+    //       onTap: onTap,
+    //       child: Container(
+    //         height: 44,
+    //         decoration: BoxDecoration(
+    //           color: kPrimaryColor,
+    //           borderRadius: BorderRadius.circular(8),
+    //         ),
+    //         child: Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [
+    //             Text(
+    //               text,
+    //               style: TextStyle(
+    //                 color: kWhiteColor,
+    //                 fontSize: responsiveFont(10),
+    //                 fontWeight: FontWeight.w600,
+    //               ),
+    //             ),
+    //             const SizedBox(width: 8),
+    //             Icon(Icons.arrow_forward, color: kWhiteColor, size: 16),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     return NetworkWrapper(
       child: Scaffold(
@@ -233,12 +238,6 @@ class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
             Navigator.pop(context);
           },
           showActions: true,
-          actions: [
-            // IconButton(
-            //   onPressed: () {},
-            //   icon: Image.asset(icInfo, width: 20, height: 20),
-            // ),
-          ],
         ),
         body: SafeArea(
           bottom: true,
@@ -249,8 +248,7 @@ class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               child: Column(
                 children: [
-                Obx(() {
-                  return Container(
+                  Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: kWhiteColor,
@@ -265,10 +263,7 @@ class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
                     ),
                     child: AppTextField(
                       readOnly: true,
-                      controller: TextEditingController(
-                        text:
-                            controller.selectedServiceType.value?.yearName ?? '',
-                      ),
+                      controller: _serviceTypeController,
                       onTap: () {
                         _selectServiceType(context);
                       },
@@ -310,208 +305,294 @@ class _RaiseInvoiceScreenState extends State<RaiseInvoiceScreen> {
                     //     _selectServiceType(context);
                     //   },
                     // ),
-                  );
-                }),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: kTextFieldBorder.withValues(alpha: 0.5),
-                          blurRadius: 4,
-                          spreadRadius: 4,
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: kPrimaryColor,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(12),
-                                topRight: Radius.circular(12),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    headerCell("Date", 2),
-                                    headerCell("Camp ID", 2),
-                                    headerCell("Phy. Exam\nDone", 2),
-                                    headerCell("Rejected", 2),
-                                    headerCell("Billable", 4),
-                                  ],
-                                ),
-                                Container(
-                                  color: kPurpleFaint,
-                                  child: Row(
-                                    children: [
-                                      const Expanded(flex: 8, child: SizedBox()),
-                                      valueCell("Same Day", 2),
-                                      valueCell("Next Day", 2),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: kWhiteColor,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: kTextFieldBorder.withValues(alpha: 0.5),
+                            blurRadius: 4,
+                            spreadRadius: 4,
                           ),
-                          Obx(() {
-                            if (controller.isLoading.value) {
-                              return const CommonSkeletonInvoiceTable();
-                            }
-                            return Container(
+                        ],
+                      ),
+                      padding: EdgeInsets.all(8),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: kTextFieldBorder),
+                                color: kPrimaryColor,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  topRight: Radius.circular(12),
+                                ),
                               ),
                               child: Column(
                                 children: [
+                                  Row(
+                                    children: [
+                                      headerCell("Date", 2),
+                                      headerCell("Camp ID", 2),
+                                      headerCell("Phy. Exam\nDone", 2),
+                                      headerCell("Rejected", 2),
+                                      headerCell("Billable", 4),
+                                    ],
+                                  ),
                                   Container(
-                                    color: const Color(0xFFF5F5F5),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 6,
-                                    ),
+                                    color: kPurpleFaint,
                                     child: Row(
                                       children: [
-                                        valueCell("Total", 4),
-                                        valueCell(
-                                          formatValue(
-                                            controller.totalBeneficiaries.value,
-                                          ),
-                                          2,
-                                          bold: true,
+                                        const Expanded(
+                                          flex: 8,
+                                          child: SizedBox(),
                                         ),
-                                        valueCell(
-                                          formatValue(
-                                            controller
-                                                .totalIndividualRejected.value,
-                                          ),
-                                          2,
-                                          bold: true,
-                                        ),
-                                        valueCell(
-                                          formatValue(
-                                            controller
-                                                .totalIndividualBillableWorker
-                                                .value,
-                                          ),
-                                          2,
-                                          bold: true,
-                                        ),
-                                        valueCell(
-                                          formatValue(
-                                            controller
-                                                .totalIndividualBillableDependent
-                                                .value,
-                                          ),
-                                          2,
-                                          bold: true,
-                                        ),
+                                        valueCell("Same Day", 2),
+                                        valueCell("Next Day", 2),
                                       ],
                                     ),
                                   ),
-                                  Obx(() {
-                                    return Column(
-                                      children: List.generate(
-                                        controller.campList.length,
-                                        (index) {
-                                          final item = controller.campList[index];
-                                          return Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 6,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                top: BorderSide(
-                                                  color: kTextFieldBorder,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                valueCell(item.campDate ?? "", 2),
-                                                valueCell(item.campID ?? "", 2),
-                                                valueCell(
-                                                  formatValue(
-                                                    item.totalBeneficiaries,
-                                                  ),
-                                                  2,
-                                                ),
-                                                valueCell(
-                                                  formatValue(
-                                                    item.totalIndividualRejected,
-                                                  ),
-                                                  2,
-                                                ),
-                                                valueCell(
-                                                  formatValue(
-                                                    item.billablesSameDay ??
-                                                        item
-                                                            .individualBillableWorker,
-                                                  ),
-                                                  2,
-                                                ),
-                                                valueCell(
-                                                  formatValue(
-                                                    item.billablesAnotherDay ??
-                                                        item
-                                                            .individualBillableDependent,
-                                                  ),
-                                                  2,
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }),
                                 ],
                               ),
-                            );
-                          }),
-                        ],
+                            ),
+                            Obx(() {
+                              if (controller.isLoading.value) {
+                                return const CommonSkeletonInvoiceTable(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                );
+                              }
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: kTextFieldBorder),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      color: const Color(0xFFF5F5F5),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 6,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          valueCell("Total", 4),
+                                          valueCell(
+                                            formatValue(
+                                              controller
+                                                  .totalBeneficiaries
+                                                  .value,
+                                            ),
+                                            2,
+                                            bold: true,
+                                          ),
+                                          valueCell(
+                                            formatValue(
+                                              controller
+                                                  .totalIndividualRejected
+                                                  .value,
+                                            ),
+                                            2,
+                                            bold: true,
+                                          ),
+                                          valueCell(
+                                            formatValue(
+                                              controller
+                                                  .totalIndividualBillableWorker
+                                                  .value,
+                                            ),
+                                            2,
+                                            bold: true,
+                                          ),
+                                          valueCell(
+                                            formatValue(
+                                              controller
+                                                  .totalIndividualBillableDependent
+                                                  .value,
+                                            ),
+                                            2,
+                                            bold: true,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Obx(() {
+                                      return Column(
+                                        children: List.generate(
+                                          controller.campList.length,
+                                          (index) {
+                                            final item =
+                                                controller.campList[index];
+                                            return Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 6,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  top: BorderSide(
+                                                    color: kTextFieldBorder,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  valueCell(
+                                                    item.campDate ?? "",
+                                                    2,
+                                                  ),
+                                                  valueCell(
+                                                    item.campID ?? "",
+                                                    2,
+                                                  ),
+                                                  valueCell(
+                                                    formatValue(
+                                                      item.totalBeneficiaries,
+                                                    ),
+                                                    2,
+                                                  ),
+                                                  valueCell(
+                                                    formatValue(
+                                                      item.totalIndividualRejected,
+                                                    ),
+                                                    2,
+                                                  ),
+                                                  valueCell(
+                                                    formatValue(
+                                                      item.billablesSameDay ??
+                                                          item.individualBillableWorker,
+                                                    ),
+                                                    2,
+                                                  ),
+                                                  valueCell(
+                                                    formatValue(
+                                                      item.billablesAnotherDay ??
+                                                          item.individualBillableDependent,
+                                                    ),
+                                                    2,
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Obx(() {
-                  final hasData = controller.campList.isNotEmpty;
-                  final bottomInset = MediaQuery.of(context).padding.bottom;
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: bottomInset),
-                    child: Row(
-                      children: [
-                        hasData && controller.canRaiseInvoice
-                            ? actionButton("Raise Invoice", _showRaiseOtpSheet)
-                            : const SizedBox.shrink(),
-                        hasData && controller.canRaiseInvoice
-                            ? const SizedBox(width: 10)
-                            : const SizedBox.shrink(),
-                        hasData && controller.canSendForVerification
-                            ? actionButton(
-                              "Send for Verification",
-                              _showVerificationSheet,
-                            )
-                            : const SizedBox.shrink(),
-                      ],
-                    ),
-                  );
-                }),
-              ],
+                  const SizedBox(height: 12),
+                  Builder(
+                    builder: (context) {
+                      final bottomInset = MediaQuery.of(context).padding.bottom;
+                      return Obx(() {
+                        final hasData = controller.campList.isNotEmpty;
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: bottomInset),
+                          child: Row(
+                            children: [
+                              hasData && controller.canRaiseInvoice
+                                  ? actionButton(
+                                    "Raise Invoice",
+                                    _showRaiseOtpSheet,
+                                  )
+                                  : const SizedBox.shrink(),
+                              hasData && controller.canRaiseInvoice
+                                  ? const SizedBox(width: 10)
+                                  : const SizedBox.shrink(),
+                              hasData && controller.canSendForVerification
+                                  ? actionButton(
+                                    "Send for Verification",
+                                    _showVerificationSheet,
+                                  )
+                                  : const SizedBox.shrink(),
+                            ],
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      )),
+      ),
     );
+  }
 
+  String formatValue(double? value) {
+    if (value == null) return "0.0";
+    return value.toStringAsFixed(1);
+  }
+
+  Widget headerCell(String text, int flex) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: kWhiteColor,
+          fontSize: responsiveFont(9),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget valueCell(String text, int flex, {bool bold = false}) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: kBlackColor,
+          fontSize: responsiveFont(9),
+          fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget actionButton(String text, VoidCallback onTap) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: 44,
+          decoration: BoxDecoration(
+            color: kPrimaryColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                text,
+                style: TextStyle(
+                  color: kWhiteColor,
+                  fontSize: responsiveFont(10),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(Icons.arrow_forward, color: kWhiteColor, size: 16),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

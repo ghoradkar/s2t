@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
 import '../../../Modules/APIManager/APIManager.dart';
@@ -57,7 +58,9 @@ class RaiseInvoiceController extends GetxController {
     subOrgId = user?.subOrgId ?? 0;
     bMobile = user?.bMobile ?? "";
     isDoctor = desigId == 34;
-    fetchCampWiseInvoiceDetails();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      fetchCampWiseInvoiceDetails();
+    });
   }
 
   List<YearsOutput> getServiceTypeOptions() {
