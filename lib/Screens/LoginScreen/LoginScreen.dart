@@ -317,7 +317,6 @@ class LoginScreenState extends State<LoginScreen> {
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
-    // captchaController.dispose();
     super.dispose();
   }
 
@@ -345,14 +344,13 @@ class LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       if (apiManager.apiMode == APIMode.Beta) {
-      DataProvider().setIsLogin(true);
+        DataProvider().setIsLogin(true);
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
-        (Route route) => false,
-      );
-      }
-      else {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+          (Route route) => false,
+        );
+      } else {
         int dESGID =
             DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
 

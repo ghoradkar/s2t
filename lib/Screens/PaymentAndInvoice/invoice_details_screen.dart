@@ -31,7 +31,7 @@ class InvoiceDetailsScreen extends StatelessWidget {
       children: [
         Obx(() {
           return Container(
-            padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
             decoration: BoxDecoration(
               color: kWhiteColor,
               borderRadius: BorderRadius.circular(12),
@@ -175,7 +175,7 @@ class InvoiceDetailsScreen extends StatelessWidget {
                   child: Obx(() {
                     final items = controller.invoices;
                     if (controller.isLoading.value) {
-                      return const CommonSkeletonInvoiceTable(itemCount: 12,);
+                      return const CommonSkeletonInvoiceTable(itemCount: 12);
                     }
                     if (items.isEmpty) {
                       return Center(
@@ -211,7 +211,7 @@ class InvoiceDetailsScreen extends StatelessWidget {
                               _openRaiseInvoice(controller, item);
                               return;
                             }
-                            ToastManager.toast("Invoice not available");
+                            // ToastManager.toast("Invoice not available");
                           },
                           isDoctor: controller.isDoctor,
                         );
@@ -228,9 +228,9 @@ class InvoiceDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _selectYear(
-      BuildContext context,
-      InvoiceController controller,
-      ) async {
+    BuildContext context,
+    InvoiceController controller,
+  ) async {
     final years = await controller.fetchYears();
     if (years.isEmpty) {
       return;
@@ -267,9 +267,9 @@ class InvoiceDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _openRaiseInvoice(
-      InvoiceController controller,
-      MonthWiseInvoiceOutput item,
-      ) async {
+    InvoiceController controller,
+    MonthWiseInvoiceOutput item,
+  ) async {
     await Get.to(() => RaiseInvoiceScreen(invoiceObj: item));
     controller.fetchInvoices();
   }
