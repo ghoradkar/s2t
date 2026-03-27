@@ -8,17 +8,17 @@ import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 
-import '../../Modules/Enums/Enums.dart';
-import '../../Modules/Json_Class/MonthWiseInvoiceResponse/MonthWiseInvoiceResponse.dart';
-import '../../Modules/ToastManager/ToastManager.dart';
-import '../../Modules/constants/constants.dart';
-import '../../Modules/constants/images.dart';
-import '../../Modules/utilities/SizeConfig.dart';
-import '../../Modules/widgets/CommonSkeletonList.dart';
-import '../../Views/DropDownListScreen/DropDownListScreen.dart';
-import 'controllers/invoice_controller.dart';
+import '../../../Modules/Enums/Enums.dart';
+import '../models/month_wise_invoice_model.dart';
+import '../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/constants/constants.dart';
+import '../../../Modules/constants/images.dart';
+import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/widgets/CommonSkeletonList.dart';
+import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import '../controllers/invoice_controller.dart';
 import 'raise_invoice_screen.dart';
-import 'widgets/invoice_row.dart';
+import '../widgets/invoice_row.dart';
 
 class InvoiceDetailsScreen extends StatelessWidget {
   const InvoiceDetailsScreen({super.key, required this.controller});
@@ -79,15 +79,6 @@ class InvoiceDetailsScreen extends StatelessWidget {
               ),
               suffixIcon: Icon(Icons.keyboard_arrow_down),
             ),
-
-            // AppDropdownTextfield(
-            //   icon: calendar,
-            //   titleHeaderString: "Year*",
-            //   valueString: controller.selectedYear.value?.yearName ?? "",
-            //   onTap: () {
-            //     _selectYear(context, controller);
-            //   },
-            // ),
           );
         }),
         const SizedBox(height: 12),
@@ -247,7 +238,6 @@ class InvoiceDetailsScreen extends StatelessWidget {
           width: double.infinity,
           height: MediaQuery.of(context).size.width * 1.33,
           decoration: const BoxDecoration(
-            // color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),

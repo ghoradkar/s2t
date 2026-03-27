@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../Modules/Json_Class/MonthWiseInvoiceResponse/MonthWiseInvoiceResponse.dart';
+import '../models/month_wise_invoice_model.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/utilities/SizeConfig.dart';

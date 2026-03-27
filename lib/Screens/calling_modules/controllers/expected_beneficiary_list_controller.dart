@@ -65,6 +65,10 @@ class ExpectedBeneficiaryListController extends GetxController {
   // ── Image precache guard ───────────────────────────────────────────────
   bool imagesPrecached = false;
 
+  // ── Initial-load guards ────────────────────────────────────────────────
+  bool _isInitialCallStatusLoad = true;
+  final hasLoadedOnce = false.obs;
+
   // ── Static lookup data ─────────────────────────────────────────────────
   static const List<Map<String, dynamic>> dateTypeList = [
     {"id": 1, "name": "Assign Date"},
@@ -105,10 +109,22 @@ class ExpectedBeneficiaryListController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    // Pre-set Team Number default to "All"
+    teamId = 0;
+    selectedTeamData = TeamDataOutput(
+      teamName: 'All',
+      teamid: 0,
+      member1: 'NA',
+      member2: 'NA',
+    );
+    teamNumberTextController.text = 'All';
+
     // Initial load — replaces addPostFrameCallback in initState
     svc.fetchBeneficiaries(
       const {'CallStatusID': '0', 'TeamID': '0', 'GroupID': '1'},
     );
+    // Load call status on init to auto-select "Calling Pending" as default
+    svc.fetchCallStatus();
   }
 
   @override
@@ -130,6 +146,7 @@ class ExpectedBeneficiaryListController extends GetxController {
         jsonDecode(svc.beneficiaryResponse.value),
       );
       filteredList.assignAll(_beneficiaryModel?.output ?? []);
+      hasLoadedOnce.value = true;
       Future.delayed(const Duration(milliseconds: 300), () {});
     }
     if (status.isFailure) {
@@ -160,6 +177,7 @@ class ExpectedBeneficiaryListController extends GetxController {
         jsonDecode(svc.beneficiaryResponse.value),
       );
       filteredList.assignAll(_beneficiaryModel!.output!);
+      hasLoadedOnce.value = true;
       Future.delayed(const Duration(milliseconds: 300), () {});
     }
     if (status.isFailure) {
@@ -181,17 +199,16 @@ class ExpectedBeneficiaryListController extends GetxController {
         ...model.output!,
       ];
 
-      print('=== FILTERED LIST ===');
-      for (var item in filteredCallStatusList) {
-        print(
-          'Item: ${item.appointmentStatus} - ID: ${item.assignStatusID}',
+      if (_isInitialCallStatusLoad) {
+        _isInitialCallStatusLoad = false;
+        final callingPending = filteredCallStatusList.firstWhere(
+          (item) => item.appointmentStatus == 'Calling Pending',
+          orElse: () => filteredCallStatusList.first,
         );
+        selectedCallStatus = callingPending;
+        callStatusTextController.text = callingPending.appointmentStatus ?? '';
+        return;
       }
-      print(
-        'Currently selected: ${selectedCallStatus?.appointmentStatus}'
-        ' - ID: ${selectedCallStatus?.assignStatusID}',
-      );
-      print('====================');
 
       String tempSelectedStatus =
           selectedCallStatus?.appointmentStatus ?? '';

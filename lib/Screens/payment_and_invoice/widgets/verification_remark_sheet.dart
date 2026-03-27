@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 
-import '../../../Modules/Json_Class/VerificationRemarkResponse/VerificationRemarkResponse.dart';
+import '../models/verification_remark_model.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';

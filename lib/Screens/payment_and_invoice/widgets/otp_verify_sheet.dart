@@ -47,66 +47,6 @@ class _OtpVerifySheetState extends State<OtpVerifySheet> {
     startTimer();
   }
 
-  void startTimer() {
-    setState(() {
-      totalTime = 120;
-      showResendButton = false;
-      timerText = formatTime(totalTime);
-    });
-
-    timer?.cancel();
-    timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (totalTime > 0) {
-        setState(() {
-          totalTime--;
-          timerText = formatTime(totalTime);
-        });
-      } else {
-        t.cancel();
-        setState(() {
-          showResendButton = true;
-        });
-      }
-    });
-  }
-
-  String formatTime(int seconds) {
-    int minutes = seconds ~/ 60;
-    int remainingSeconds = seconds % 60;
-    return "${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}";
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    otpTextField.dispose();
-    super.dispose();
-  }
-
-  Future<void> handleResend() async {
-    otpTextField.text = "";
-    final updatedOtp = await widget.onResend();
-    if (updatedOtp != null) {
-      setState(() {
-        expectedOtp = updatedOtp;
-      });
-      startTimer();
-    }
-  }
-
-  void handleVerify() {
-    if (otpTextField.text.trim().isEmpty) {
-      ToastManager.toast("Please enter otp");
-      return;
-    }
-    final expected = expectedOtp ?? widget.expectedOtp;
-    if (otpTextField.text.trim() != expected.trim()) {
-      ToastManager.toast("Entered OTP is not matched");
-      return;
-    }
-    widget.onVerify(otpTextField.text.trim());
-  }
-
   @override
   Widget build(BuildContext context) {
     return KeyboardDismissOnTap(
@@ -256,5 +196,65 @@ class _OtpVerifySheetState extends State<OtpVerifySheet> {
         ),
       ),
     );
+  }
+
+  void startTimer() {
+    setState(() {
+      totalTime = 120;
+      showResendButton = false;
+      timerText = formatTime(totalTime);
+    });
+
+    timer?.cancel();
+    timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (totalTime > 0) {
+        setState(() {
+          totalTime--;
+          timerText = formatTime(totalTime);
+        });
+      } else {
+        t.cancel();
+        setState(() {
+          showResendButton = true;
+        });
+      }
+    });
+  }
+
+  String formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    return "${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    otpTextField.dispose();
+    super.dispose();
+  }
+
+  Future<void> handleResend() async {
+    otpTextField.text = "";
+    final updatedOtp = await widget.onResend();
+    if (updatedOtp != null) {
+      setState(() {
+        expectedOtp = updatedOtp;
+      });
+      startTimer();
+    }
+  }
+
+  void handleVerify() {
+    if (otpTextField.text.trim().isEmpty) {
+      ToastManager.toast("Please enter otp");
+      return;
+    }
+    final expected = expectedOtp ?? widget.expectedOtp;
+    if (otpTextField.text.trim() != expected.trim()) {
+      ToastManager.toast("Entered OTP is not matched");
+      return;
+    }
+    widget.onVerify(otpTextField.text.trim());
   }
 }

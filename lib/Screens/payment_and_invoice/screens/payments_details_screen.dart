@@ -7,23 +7,22 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../Modules/Enums/Enums.dart';
-import '../../Modules/ToastManager/ToastManager.dart';
-import '../../Modules/constants/constants.dart';
-import '../../Modules/constants/fonts.dart';
-import '../../Modules/constants/images.dart';
-import '../../Modules/utilities/SizeConfig.dart';
-import '../../Modules/widgets/AppActiveButton.dart';
-import '../../Modules/widgets/CommonSkeletonList.dart';
-import '../../Views/DropDownListScreen/DropDownListScreen.dart';
-import 'controllers/payment_details_controller.dart';
-import 'widgets/otp_verify_sheet.dart';
+import '../../../Modules/Enums/Enums.dart';
+import '../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/constants/constants.dart';
+import '../../../Modules/constants/fonts.dart';
+import '../../../Modules/constants/images.dart';
+import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/widgets/AppActiveButton.dart';
+import '../../../Modules/widgets/CommonSkeletonList.dart';
+import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import '../controllers/payment_details_controller.dart';
+import '../widgets/otp_verify_sheet.dart';
 
 class PaymentsDetailsScreen extends StatelessWidget {
   const PaymentsDetailsScreen({super.key, required this.controller});
 
   final PaymentDetailsController controller;
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,15 +70,6 @@ class PaymentsDetailsScreen extends StatelessWidget {
                     ),
                     suffixIcon: Icon(Icons.keyboard_arrow_down),
                   ),
-
-                  // AppDropdownTextfield(
-                  //   icon: calendar,
-                  //   titleHeaderString: "Year *",
-                  //   valueString: controller.selectedYear.value?.yearName ?? "",
-                  //   onTap: () {
-                  //     _selectYear(context, controller);
-                  //   },
-                  // ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -119,16 +109,6 @@ class PaymentsDetailsScreen extends StatelessWidget {
                     ),
                     suffixIcon: Icon(Icons.keyboard_arrow_down),
                   ),
-
-                  // AppDropdownTextfield(
-                  //   icon: calendar,
-                  //   titleHeaderString: "Month *",
-                  //   valueString:
-                  //       controller.selectedMonth.value?.monthNameEng ?? "",
-                  //   onTap: () {
-                  //     _selectMonth(context, controller);
-                  //   },
-                  // ),
                 ),
               ],
             ),
@@ -170,15 +150,6 @@ class PaymentsDetailsScreen extends StatelessWidget {
                   ),
                   suffixIcon: Icon(Icons.keyboard_arrow_down),
                 )
-                // AppDropdownTextfield(
-                //       icon: icUserIcon,
-                //       titleHeaderString: "Paid By Company",
-                //       valueString:
-                //           controller.selectedCompany.value?.paidByCompany ?? "",
-                //       onTap: () {
-                //         _selectCompany(context, controller);
-                //       },
-                //     )
                 : const SizedBox.shrink(),
             controller.isDoctor ? const SizedBox(height: 10) : Container(),
             controller.isLoading.value
@@ -319,9 +290,9 @@ class PaymentsDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _selectYear(
-      BuildContext context,
-      PaymentDetailsController controller,
-      ) async {
+    BuildContext context,
+    PaymentDetailsController controller,
+  ) async {
     final years = await controller.fetchYears();
     if (years.isEmpty) {
       return;
@@ -358,9 +329,9 @@ class PaymentsDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _selectMonth(
-      BuildContext context,
-      PaymentDetailsController controller,
-      ) async {
+    BuildContext context,
+    PaymentDetailsController controller,
+  ) async {
     final months = await controller.fetchMonths();
     if (months.isEmpty) {
       return;
@@ -397,9 +368,9 @@ class PaymentsDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _selectCompany(
-      BuildContext context,
-      PaymentDetailsController controller,
-      ) async {
+    BuildContext context,
+    PaymentDetailsController controller,
+  ) async {
     if (controller.selectedYear.value == null) {
       ToastManager.toast("Please select year");
       return;
@@ -448,10 +419,10 @@ class PaymentsDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _showOtpSheet(
-      BuildContext context,
-      PaymentDetailsController controller,
-      int paymentStatusId,
-      ) async {
+    BuildContext context,
+    PaymentDetailsController controller,
+    int paymentStatusId,
+  ) async {
     if (controller.isDoctor && controller.selectedCompany.value == null) {
       ToastManager.toast("Please select company");
       return;
@@ -537,5 +508,4 @@ class PaymentsDetailsScreen extends StatelessWidget {
       ),
     );
   }
-
 }

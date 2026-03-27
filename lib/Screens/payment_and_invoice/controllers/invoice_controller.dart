@@ -1,16 +1,14 @@
-import 'dart:async';
-
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../Modules/APIManager/APIManager.dart';
-import '../../../Modules/Json_Class/MonthWiseInvoiceResponse/MonthWiseInvoiceResponse.dart';
-import '../../../Screens/d2d_physical_examination/model/YearsResponse.dart';
+import '../models/years_response.dart';
+import '../models/month_wise_invoice_model.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/utilities/DataProvider.dart';
+import '../repository/invoice_repository.dart';
 
 class InvoiceController extends GetxController {
-  final APIManager apiManager = APIManager();
+  final _repo = InvoiceRepository();
 
   final RxList<MonthWiseInvoiceOutput> invoices = <MonthWiseInvoiceOutput>[].obs;
   final Rxn<YearsOutput> selectedYear = Rxn<YearsOutput>();
@@ -44,23 +42,16 @@ class InvoiceController extends GetxController {
     fetchInvoices();
   }
 
-  Future<List<YearsOutput>> fetchYears() {
-    final completer = Completer<List<YearsOutput>>();
+  Future<List<YearsOutput>> fetchYears() async {
     ToastManager.showLoader();
-    apiManager.getYearAPI((
-      YearsResponse? response,
-      String errorMessage,
-      bool success,
-    ) {
+    try {
+      return await _repo.fetchYears();
+    } catch (e) {
+      ToastManager.toast(e.toString());
+      return [];
+    } finally {
       ToastManager.hideLoader();
-      if (success) {
-        completer.complete(response?.output ?? <YearsOutput>[]);
-      } else {
-        ToastManager.toast(errorMessage);
-        completer.complete(<YearsOutput>[]);
-      }
-    });
-    return completer.future;
+    }
   }
 
   void updateYear(YearsOutput year) {
@@ -76,38 +67,24 @@ class InvoiceController extends GetxController {
       "UserID": empCode.toString(),
       "LoginUserID": empCode.toString(),
     };
+    if (!isDoctor) params["DValueAv"] = statusType;
 
-    if (isDoctor) {
-      apiManager.getMonthWiseDoctorInvoiceStatusAPI(
-        params,
-        _onMonthWiseInvoiceResponse,
+    try {
+      invoices.value = await _repo.fetchInvoices(
+        isDoctor: isDoctor,
+        params: params,
       );
-    } else {
-      params["DValueAv"] = statusType;
-      apiManager.getMonthWiseInvoiceStatusAPI(
-        params,
-        _onMonthWiseInvoiceResponse,
-      );
-    }
-  }
-
-  void _onMonthWiseInvoiceResponse(
-    MonthWiseInvoiceResponse? response,
-    String errorMessage,
-    bool success,
-  ) {
-    if (success) {
-      invoices.value = response?.output ?? <MonthWiseInvoiceOutput>[];
-    } else {
+    } catch (e) {
       invoices.clear();
-      ToastManager.toast(errorMessage);
+      ToastManager.toast(e.toString());
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 
   Future<void> openInvoiceUrl(String url) async {
     if (url.trim().isEmpty) {
-      ToastManager.toast("Invoice Not Generated");
+      // ToastManager.toast("Invoice Not Generated");
       return;
     }
     final uri = Uri.parse(url);

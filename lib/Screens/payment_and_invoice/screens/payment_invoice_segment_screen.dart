@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 
-import '../../Modules/constants/constants.dart';
-import '../../Modules/constants/fonts.dart';
-import '../../Modules/constants/images.dart';
-import '../../Modules/utilities/SizeConfig.dart';
-import '../../Modules/widgets/S2TAppBar.dart';
-import 'controllers/invoice_controller.dart';
-import 'controllers/payment_details_controller.dart';
-import 'controllers/payment_invoice_controller.dart';
+import '../../../Modules/constants/constants.dart';
+import '../../../Modules/constants/fonts.dart';
+import '../../../Modules/constants/images.dart';
+import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/widgets/S2TAppBar.dart';
+import '../controllers/invoice_controller.dart';
+import '../controllers/payment_details_controller.dart';
+import '../controllers/payment_invoice_controller.dart';
 import 'invoice_details_screen.dart';
 import 'payments_details_screen.dart';
 
@@ -83,7 +83,6 @@ class _PaymentInvoiceSegmentScreenState
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -118,12 +117,9 @@ class _PaymentInvoiceSegmentScreenState
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child:
-                        tabController.isInvoicesTab.value
-                            ? InvoiceDetailsScreen(controller: invoiceController)
-                            : PaymentsDetailsScreen(
-                              controller: paymentsController,
-                            ),
+                    child: tabController.isInvoicesTab.value
+                        ? InvoiceDetailsScreen(controller: invoiceController)
+                        : PaymentsDetailsScreen(controller: paymentsController),
                   ),
                 ),
               ],
@@ -139,7 +135,6 @@ class _PaymentInvoiceSegmentScreenState
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
       child: Container(
         height: 44,
-        // padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: kWhiteColor,
           border: Border.all(color: kTextFieldBorder),
@@ -166,8 +161,7 @@ class _PaymentInvoiceSegmentScreenState
                             height: 18,
                             child: Image.asset(
                               icFileInvoice,
-                              color:
-                              isInvoicesTab ? kWhiteColor : kPrimaryColor,
+                              color: isInvoicesTab ? kWhiteColor : kPrimaryColor,
                             ),
                           ),
                           const SizedBox(width: 6),
@@ -175,8 +169,7 @@ class _PaymentInvoiceSegmentScreenState
                             "Invoices",
                             style: TextStyle(
                               fontFamily: FontConstants.interFonts,
-                              color:
-                              isInvoicesTab ? kWhiteColor : kPrimaryColor,
+                              color: isInvoicesTab ? kWhiteColor : kPrimaryColor,
                               fontSize: responsiveFont(14),
                               fontWeight: FontWeight.w600,
                             ),
@@ -205,8 +198,7 @@ class _PaymentInvoiceSegmentScreenState
                             height: 18,
                             child: Image.asset(
                               icCash,
-                              color:
-                              !isInvoicesTab ? kWhiteColor : kPrimaryColor,
+                              color: !isInvoicesTab ? kWhiteColor : kPrimaryColor,
                             ),
                           ),
                           const SizedBox(width: 6),
@@ -214,8 +206,7 @@ class _PaymentInvoiceSegmentScreenState
                             "Payments",
                             style: TextStyle(
                               fontFamily: FontConstants.interFonts,
-                              color:
-                              !isInvoicesTab ? kWhiteColor : kPrimaryColor,
+                              color: !isInvoicesTab ? kWhiteColor : kPrimaryColor,
                               fontSize: responsiveFont(14),
                               fontWeight: FontWeight.w600,
                             ),
@@ -232,7 +223,6 @@ class _PaymentInvoiceSegmentScreenState
       ),
     );
   }
-
 
   void _showColorInfoDialog(BuildContext context) {
     showDialog(

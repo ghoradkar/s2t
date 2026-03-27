@@ -77,7 +77,8 @@ class ExpectedBeneficiaryList
         body: Obx(() {
           final isLoading =
               _svc.beneficiaryStatus.value.isInProgress ||
-              _svc.dateTypeWiseDataStatus.value.isInProgress;
+              _svc.dateTypeWiseDataStatus.value.isInProgress ||
+              !controller.hasLoadedOnce.value;
           return isLoading
               ? CommonSkeletonList(
                 key: const ValueKey('skeleton'),

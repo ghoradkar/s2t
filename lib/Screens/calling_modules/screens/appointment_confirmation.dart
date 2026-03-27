@@ -67,6 +67,9 @@ class AppointmentConfirmation
                           horizontal: 14.w,
                         ),
                         child: SingleChildScrollView(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).padding.bottom,
+                          ),
                           child: Column(
                             children: [
                               SizedBox(height: 6.h),
