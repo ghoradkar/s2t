@@ -117,6 +117,8 @@ class AppointmentConfirmationController extends GetxController {
   String regAddress = "";
 
   bool hasAddressLoaded = false;
+  bool _screeningLoaded = false;
+  bool _dependentsLoaded = false;
 
   String isWorkerScreened = "";
 
@@ -501,11 +503,18 @@ class AppointmentConfirmationController extends GetxController {
         update();
 
         svc.resetState();
+        _checkAndHideLoader();
+      }
+
+      if (status.isFailure && !hasAddressLoaded) {
+        hasAddressLoaded = true;
+        _checkAndHideLoader();
       }
     });
 
     _on(svc.screenedDependetStatus, (status) {
       if (status.isSuccess) {
+        _screeningLoaded = true;
         ScreeningDependentModel model = ScreeningDependentModel.fromJson(
           jsonDecode(svc.screenedDependentResponse.value),
         );
@@ -534,15 +543,20 @@ class AppointmentConfirmationController extends GetxController {
           screeningdataList.clear();
           update();
         }
+        svc.resetState();
+        _checkAndHideLoader();
       }
 
       if (status.isFailure) {
         screenedBeneficiaryCount = 0;
+        _screeningLoaded = true;
+        _checkAndHideLoader();
       }
     });
 
     _on(svc.getDependentStatus, (status) {
       if (status.isSuccess) {
+        _dependentsLoaded = true;
         AddDependentModel addDependentModelLocal = AddDependentModel.fromJson(
           jsonDecode(svc.getDependentResponse.value),
         );
@@ -550,9 +564,11 @@ class AppointmentConfirmationController extends GetxController {
           svc.addDependent(addDependentModelLocal.output ?? []);
         }
         svc.resetState();
+        _checkAndHideLoader();
       }
 
       if (status.isFailure) {
+        _dependentsLoaded = true;
         AddDependentModel addDependentModelLocal = AddDependentModel(
           status: 'Failure',
           output: [],
@@ -560,6 +576,7 @@ class AppointmentConfirmationController extends GetxController {
 
         svc.addDependent(addDependentModelLocal.output ?? []);
         svc.resetState();
+        _checkAndHideLoader();
       }
     });
 
@@ -624,6 +641,8 @@ class AppointmentConfirmationController extends GetxController {
     // addPostFrameCallback wrapper needed.
     final assignCallID = selectedBeneficiary?.assignCallID.toString();
 
+    ToastManager.showLoader();
+
     // API: load registered/current address details for this beneficiary call.
     svc.fetchAddressDetails({"AssignCallID": assignCallID});
 
@@ -636,6 +655,12 @@ class AppointmentConfirmationController extends GetxController {
     svc.fetchDependentDetails({
       "AssignCallID": selectedBeneficiary?.assignCallID.toString(),
     });
+  }
+
+  void _checkAndHideLoader() {
+    if (hasAddressLoaded && _screeningLoaded && _dependentsLoaded) {
+      ToastManager.hideLoader();
+    }
   }
 
   @override
