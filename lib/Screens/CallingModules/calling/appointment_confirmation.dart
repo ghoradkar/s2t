@@ -104,6 +104,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   String regAddress = "";
 
   bool hasAddressLoaded = false;
+  bool _screeningLoaded = false;
+  bool _dependentsLoaded = false;
 
   String isWorkerScreened = "";
 
@@ -235,6 +237,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final assignCallID = selectedBeneficiary?.assignCallID.toString();
 
+      ToastManager.showLoader();
+
       // API: load registered/current address details for this beneficiary call.
       context.read<ExpectedBeneficiaryBloc>().add(
         GetAddressDetails(payload: {"AssignCallID": assignCallID}),
@@ -258,6 +262,12 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
         ),
       );
     });
+  }
+
+  void _checkAndHideLoader() {
+    if (hasAddressLoaded && _screeningLoaded && _dependentsLoaded) {
+      ToastManager.hideLoader();
+    }
   }
 
   @override
@@ -670,12 +680,16 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
             context.read<ExpectedBeneficiaryBloc>().add(
               ResetExpectedBeneficiaryState(),
             );
+            _checkAndHideLoader();
+          }
+
+          if (state.getAddressDetailStatus.isFailure && !hasAddressLoaded) {
+            hasAddressLoaded = true;
+            _checkAndHideLoader();
           }
 
           if (state.screenedDependetStatus.isSuccess) {
-            // context
-            //     .read<ExpectedBeneficiaryBloc>()
-            //     .add(ResetExpectedBeneficiaryState());
+            _screeningLoaded = true;
             ScreeningDependentModel model = ScreeningDependentModel.fromJson(
               jsonDecode(state.screenedDependentResponse),
             );
@@ -707,13 +721,20 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                 _screeningdataList.clear();
               });
             }
+            context.read<ExpectedBeneficiaryBloc>().add(
+              ResetExpectedBeneficiaryState(),
+            );
+            _checkAndHideLoader();
           }
 
           if (state.screenedDependetStatus.isFailure) {
             screenedBeneficiaryCount = 0;
+            _screeningLoaded = true;
+            _checkAndHideLoader();
           }
 
           if (state.getDependentStatus.isSuccess) {
+            _dependentsLoaded = true;
             AddDependentModel addDependentModel = AddDependentModel.fromJson(
               jsonDecode(state.getDependentResponse),
             );
@@ -727,9 +748,11 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
             context.read<ExpectedBeneficiaryBloc>().add(
               ResetExpectedBeneficiaryState(),
             );
+            _checkAndHideLoader();
           }
 
           if (state.getDependentStatus.isFailure) {
+            _dependentsLoaded = true;
             // Clear the data by using an empty model
             AddDependentModel addDependentModel = AddDependentModel(
               status: 'Failure', // or null/empty depending on your model
@@ -747,6 +770,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
             context.read<ExpectedBeneficiaryBloc>().add(
               ResetExpectedBeneficiaryState(),
             );
+            _checkAndHideLoader();
           }
 
           if (state.addDependentStatus.isSuccess) {

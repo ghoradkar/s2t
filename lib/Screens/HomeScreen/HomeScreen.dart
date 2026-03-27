@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     final LoginResponseModel? loginResponseModel =
-    DataProvider().getParsedUserData();
+        DataProvider().getParsedUserData();
 
     dESGID = loginResponseModel?.output?.first.dESGID ?? 0;
     designation = loginResponseModel?.output?.first.designation ?? "";
@@ -102,9 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _isOnline = null;
 
     _connSub = Connectivity().onConnectivityChanged.listen((
-        List<ConnectivityResult> results,) {
+      List<ConnectivityResult> results,
+    ) {
       final result =
-      results.isNotEmpty ? results.first : ConnectivityResult.none;
+          results.isNotEmpty ? results.first : ConnectivityResult.none;
       onConnectivityChanged(result);
     });
   }
@@ -128,11 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: SideDrawerMenu(appVersion: appVersion),
       body:
-      _isOnline == null && dESGID != 166
-          ? Center(child: CircularProgressIndicator()) // Loading state
-          : _isOnline ?? true
-          ? buildOnlineBody(context)
-          : NoInternetWidget(onRetryPressed: retry),
+          _isOnline == null && dESGID != 166
+              ? Center(child: CircularProgressIndicator()) // Loading state
+              : _isOnline ?? true
+              ? buildOnlineBody(context)
+              : NoInternetWidget(onRetryPressed: retry),
     );
   }
 
@@ -148,58 +149,58 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 14.h),
                 child:
-                (dESGID == 51 ||
-                    dESGID == 166 ||
-                    dESGID == 171 ||
-                    dESGID == 26) //admin dash
-                    ? GridView.builder(
-                  gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: 0.91,
-                  ),
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: menuList.length,
-                  itemBuilder: (context, index) {
-                    final dashboardMenu = menuList[index];
-                    return GestureDetector(
-                      onTap: () => pushToNextScreen(dashboardMenu),
-                      child: AdminDashboardMenuOptions(
-                        dashboardMenu: dashboardMenu,
-                      ),
-                      // child: DashboardMenuRow(dashboardMenu: dashboardMenu),
-                    );
-                  },
-                ).paddingOnly(left: 6.w, right: 6.w)
-                    : GridView.builder(
-                  gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.86,
-                  ),
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount:
-                  // dESGID == 141 && regularCamp == true
-                  //     ? 0
-                  //     :
-                  menuList.length,
-                  itemBuilder: (context, index) {
-                    final dashboardMenu = menuList[index];
-                    return GestureDetector(
-                      onTap: () => pushToNextScreen(dashboardMenu),
-                      child: DashboardMenuOptions(
-                        dashboardMenu: dashboardMenu,
-                      ),
-                      // child: DashboardMenuRow(dashboardMenu: dashboardMenu),
-                    );
-                  },
-                ),
+                    (dESGID == 51 ||
+                            dESGID == 166 ||
+                            dESGID == 171 ||
+                            dESGID == 26) //admin dash
+                        ? GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 14,
+                                mainAxisSpacing: 20,
+                                childAspectRatio: 0.91,
+                              ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: menuList.length,
+                          itemBuilder: (context, index) {
+                            final dashboardMenu = menuList[index];
+                            return GestureDetector(
+                              onTap: () => pushToNextScreen(dashboardMenu),
+                              child: AdminDashboardMenuOptions(
+                                dashboardMenu: dashboardMenu,
+                              ),
+                              // child: DashboardMenuRow(dashboardMenu: dashboardMenu),
+                            );
+                          },
+                        ).paddingOnly(left: 6.w, right: 6.w)
+                        : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 14,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.86,
+                              ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount:
+                              // dESGID == 141 && regularCamp == true
+                              //     ? 0
+                              //     :
+                              menuList.length,
+                          itemBuilder: (context, index) {
+                            final dashboardMenu = menuList[index];
+                            return GestureDetector(
+                              onTap: () => pushToNextScreen(dashboardMenu),
+                              child: DashboardMenuOptions(
+                                dashboardMenu: dashboardMenu,
+                              ),
+                              // child: DashboardMenuRow(dashboardMenu: dashboardMenu),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
@@ -211,8 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void onConnectivityChanged(ConnectivityResult result) {
     final connected =
         result == ConnectivityResult.mobile ||
-            result == ConnectivityResult.wifi ||
-            result == ConnectivityResult.ethernet;
+        result == ConnectivityResult.wifi ||
+        result == ConnectivityResult.ethernet;
 
     if (!connected) {
       if (mounted) setState(() => _isOnline = false);
@@ -239,14 +240,15 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => isLoadingAdminData = false);
   }
 
-  void apiCampConducted(ConductedCampsResponse? response,
-      String errorMessage,
-      bool success,) {
+  void apiCampConducted(
+    ConductedCampsResponse? response,
+    String errorMessage,
+    bool success,
+  ) {
     ToastManager.hideLoader();
     if (!success || response == null) {
       print(
-        'ConductedCamp FAILED: $errorMessage  resp=${response
-            ?.status}/${response?.message}',
+        'ConductedCamp FAILED: $errorMessage  resp=${response?.status}/${response?.message}',
       );
       ToastManager.toast(errorMessage);
       return;
@@ -255,22 +257,21 @@ class _HomeScreenState extends State<HomeScreen> {
     campsResponse = response;
     conductedTotals = ConductedCampsTotals.fromRows(response.output);
     print(
-      'Conducted totals: total=${conductedTotals?.total} reg=${conductedTotals
-          ?.regular} d2d=${conductedTotals?.d2d} bill=${conductedTotals
-          ?.billable}',
+      'Conducted totals: total=${conductedTotals?.total} reg=${conductedTotals?.regular} d2d=${conductedTotals?.d2d} bill=${conductedTotals?.billable}',
     );
     setState(() {});
   }
 
-  void apiTodaysPatient(TodaysPatientsResponse? response,
-      String errorMessage,
-      bool success,) {
+  void apiTodaysPatient(
+    TodaysPatientsResponse? response,
+    String errorMessage,
+    bool success,
+  ) {
     ToastManager.hideLoader();
 
     if (!success || response == null) {
       print(
-        'TodaysPatient FAILED: $errorMessage resp=${response?.status}/${response
-            ?.message}',
+        'TodaysPatient FAILED: $errorMessage resp=${response?.status}/${response?.message}',
       );
       ToastManager.toast(errorMessage);
       return;
@@ -280,8 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
     todaysTotals = TodaysPatientsTotals.fromRows(response.output);
 
     print(
-      'Todays totals: total=${todaysTotals?.total} reg=${todaysTotals
-          ?.regular} d2d=${todaysTotals?.d2d}',
+      'Todays totals: total=${todaysTotals?.total} reg=${todaysTotals?.regular} d2d=${todaysTotals?.d2d}',
     );
 
     setState(() {});
@@ -434,10 +434,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isShowRadioCamp = true;
       // topHeight = 200;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
-    }
-
-    
-    else if (dESGID == 172) {
+    } else if (dESGID == 172) {
       isShowRadioCamp = true;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
       menuList.add(DashboardMenu.CampCalendar);
@@ -589,19 +586,19 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         break;
       case DashboardMenu.Acknowledgement:
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => AcknowledgementCampListScreen(),
-      //   ),
-      // );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => AcknowledgementCampListScreen(),
+        //   ),
+        // );
         break;
       case DashboardMenu.ELearning:
         openYouTubeChannel();
         break;
-    // case DashboardMenu.D2DAvailabilityScreening:
-    // openYouTubeChannel();
-    // break;
+      // case DashboardMenu.D2DAvailabilityScreening:
+      // openYouTubeChannel();
+      // break;
       case DashboardMenu.OtherMenu:
         break;
       case DashboardMenu.FingerPrintUpload:
@@ -660,10 +657,10 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case DashboardMenu.MedicineDelivery:
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => PacketCollectionScreen()),
-      // );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => PacketCollectionScreen()),
+        // );
         break;
       case DashboardMenu.CTAssignment:
         Navigator.push(
@@ -697,7 +694,7 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(
             builder:
                 (context) =>
-                AppointmentsConfirmedListScreen(dashboardType: null),
+                    AppointmentsConfirmedListScreen(dashboardType: null),
           ),
         );
         break;
@@ -753,10 +750,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return Padding(
         padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 12.h),
         child: Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
+          width: MediaQuery.of(context).size.width,
           height: 46.h,
           decoration: BoxDecoration(
             color: Colors.transparent,
@@ -801,9 +795,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Image.asset(
                               icnTent,
                               color:
-                              regularCamp == false
-                                  ? Colors.black
-                                  : Colors.white,
+                                  regularCamp == false
+                                      ? Colors.black
+                                      : Colors.white,
                             ),
                           ),
                           SizedBox(width: 6.w),
@@ -812,9 +806,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             textColor:
-                            regularCamp == false
-                                ? Colors.black
-                                : Colors.white,
+                                regularCamp == false
+                                    ? Colors.black
+                                    : Colors.white,
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -835,7 +829,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       color:
-                      doorToDoorCamp == true ? kPrimaryColor : kWhiteColor,
+                          doorToDoorCamp == true ? kPrimaryColor : kWhiteColor,
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(20),
                         bottomRight: Radius.circular(20),
@@ -855,9 +849,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Image.asset(
                               "assets/icons/home-2.png",
                               color:
-                              doorToDoorCamp == false
-                                  ? Colors.black
-                                  : Colors.white,
+                                  doorToDoorCamp == false
+                                      ? Colors.black
+                                      : Colors.white,
                             ),
                           ),
                           SizedBox(width: 6.w),
@@ -866,9 +860,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             textColor:
-                            doorToDoorCamp == false
-                                ? Colors.black
-                                : Colors.white,
+                                doorToDoorCamp == false
+                                    ? Colors.black
+                                    : Colors.white,
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -972,18 +966,18 @@ class _HomeScreenState extends State<HomeScreen> {
           final todaysOutput =
               adminController.todaysPatientCardSuperAdmin?.output ?? [];
           final todaysHllData = todaysOutput.firstWhereOrNull(
-                (item) => item.subOrgId == 2,
+            (item) => item.subOrgId == 2,
           );
           final todaysHsccData = todaysOutput.firstWhereOrNull(
-                (item) => item.subOrgId == 3,
+            (item) => item.subOrgId == 3,
           );
 
           // Conducted Camps - Filter by SubOrgId
           final conductedHllData = output.firstWhereOrNull(
-                (item) => item.subOrgId == 2,
+            (item) => item.subOrgId == 2,
           );
           final conductedHsccData = output.firstWhereOrNull(
-                (item) => item.subOrgId == 3,
+            (item) => item.subOrgId == 3,
           );
 
           final conductedGroups = [
@@ -1013,9 +1007,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ];
 
           final conductedSubtitle =
-          output.isNotEmpty
-              ? _formatFinancialYear(output.first.financialYear)
-              : "";
+              output.isNotEmpty
+                  ? _formatFinancialYear(output.first.financialYear)
+                  : "";
 
           return Column(
             children: [
@@ -1032,8 +1026,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 title: "",
                 subtitle:
-                "*Today's Data as of :${adminController.todaysTableCount
-                    ?.dateTime ?? "-"}",
+                    "*Today's Data as of :${adminController.todaysTableCount?.dateTime ?? "-"}",
                 headers: ["", "", "HLL", "HSCC", "Total"],
                 rows: [
                   [
@@ -1079,8 +1072,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 title: "",
                 subtitle:
-                "*Total Data as of : ${adminController.totalTableCount
-                    ?.dateTime ?? "-"}",
+                    "*Total Data as of : ${adminController.totalTableCount?.dateTime ?? "-"}",
                 headers: ["", "", "HLL", "HSCC", "Total"],
                 rows: [
                   [
@@ -1163,7 +1155,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   CommonText(
                     text:
-                    "If you logout you will not be able to use all the features of ABKAT",
+                        "If you logout you will not be able to use all the features of ABKAT",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     textColor: kBlackColor,
@@ -1489,8 +1481,7 @@ class _SuperAdminBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final maxValueRaw = groups.fold<int>(
       0,
-          (maxValue, group) =>
-          math.max(maxValue, math.max(group.hll, group.hscc)),
+      (maxValue, group) => math.max(maxValue, math.max(group.hll, group.hscc)),
     );
     final step = _calculateNiceStep(maxValueRaw);
     final maxValue = _roundUpTo(maxValueRaw, step);
@@ -1500,12 +1491,12 @@ class _SuperAdminBarChart extends StatelessWidget {
     final allNonZero = groups.every((g) => g.hll > 0 && g.hscc > 0);
 
     final ticks =
-    List.generate(
-      tickCount,
-          (i) => (maxValue * i / (tickCount - 1)).round(),
-    )
-        .where((tick) => !allNonZero || tick > 0)
-        .toList(); // Exclude 0 if all values are non-zero
+        List.generate(
+              tickCount,
+              (i) => (maxValue * i / (tickCount - 1)).round(),
+            )
+            .where((tick) => !allNonZero || tick > 0)
+            .toList(); // Exclude 0 if all values are non-zero
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -1527,18 +1518,18 @@ class _SuperAdminBarChart extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children:
-                      ticks.reversed.map((value) {
-                        return Padding(
-                          padding: EdgeInsets.only(right: 8.w),
-                          child: CommonText(
-                            text: value.toString(),
-                            fontSize: 10.sp,
-                            textColor: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
-                            textAlign: TextAlign.right,
-                          ),
-                        );
-                      }).toList(),
+                          ticks.reversed.map((value) {
+                            return Padding(
+                              padding: EdgeInsets.only(right: 8.w),
+                              child: CommonText(
+                                text: value.toString(),
+                                fontSize: 10.sp,
+                                textColor: Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                                textAlign: TextAlign.right,
+                              ),
+                            );
+                          }).toList(),
                     ),
                   ),
                   // Chart area
@@ -1552,11 +1543,10 @@ class _SuperAdminBarChart extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               ticks.length,
-                                  (index) =>
-                                  Container(
-                                    height: 1,
-                                    color: Colors.grey.withOpacity(0.25),
-                                  ),
+                              (index) => Container(
+                                height: 1,
+                                color: Colors.grey.withOpacity(0.25),
+                              ),
                             ),
                           ),
                         ),
@@ -1583,20 +1573,19 @@ class _SuperAdminBarChart extends StatelessWidget {
                 padding: EdgeInsets.only(left: 45.w),
                 child: Row(
                   children:
-                  groups
-                      .map(
-                        (group) =>
-                        Expanded(
-                          child: CommonText(
-                            text: group.label,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                            textColor: kTextBlackColor,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                  )
-                      .toList(),
+                      groups
+                          .map(
+                            (group) => Expanded(
+                              child: CommonText(
+                                text: group.label,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                textColor: kTextBlackColor,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
+                          .toList(),
                 ),
               ),
             ),
@@ -1612,26 +1601,26 @@ class _SuperAdminBarChart extends StatelessWidget {
 
     return groups.map((group) {
       final hllHeight =
-      maxValue <= 0 ? 0.0 : (group.hll / maxValue) * chartHeight;
+          maxValue <= 0 ? 0.0 : (group.hll / maxValue) * chartHeight;
       final hsccHeight =
-      maxValue <= 0 ? 0.0 : (group.hscc / maxValue) * chartHeight;
+          maxValue <= 0 ? 0.0 : (group.hscc / maxValue) * chartHeight;
 
       // Calculate badge offset based on visible bars only
       final visibleHeights = <double>[];
       if (group.hll > 0) visibleHeights.add(hllHeight);
       if (group.hscc > 0) visibleHeights.add(hsccHeight);
       final maxBarHeight =
-      visibleHeights.isNotEmpty
-          ? visibleHeights.reduce((a, b) => math.max(a, b))
-          : 0.0;
+          visibleHeights.isNotEmpty
+              ? visibleHeights.reduce((a, b) => math.max(a, b))
+              : 0.0;
 
       // Add extra offset for label height when labels are shown above the bars
       final labelAboveBarHeight = 10.sp + 4.h; // fontSize + spacing
       final hasLabelAboveBar = maxBarHeight < 40.h && visibleHeights.isNotEmpty;
       final badgeBottomOffset =
-      hasLabelAboveBar
-          ? maxBarHeight + labelAboveBarHeight + 10.h
-          : maxBarHeight + 10.h;
+          hasLabelAboveBar
+              ? maxBarHeight + labelAboveBarHeight + 10.h
+              : maxBarHeight + 10.h;
 
       // Don't show total badge if total is zero
       final showTotalBadge = group.total > 0;
