@@ -4,8 +4,9 @@ import 'no_internet_widget.dart'; // import your NoInternetWidget
 
 class NetworkWrapper extends StatelessWidget {
   final Widget child;
+  final Function? onRetey;
 
-  const NetworkWrapper({super.key, required this.child});
+  const NetworkWrapper({super.key, required this.child, this.onRetey});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,13 @@ class NetworkWrapper extends StatelessWidget {
         if (snapshot.hasData &&
             snapshot.data != ConnectivityResult.mobile &&
             snapshot.data != ConnectivityResult.wifi) {
-          return const NoInternetWidget();
+          return NoInternetWidget(
+            onRetryPressed: () async {
+              if (onRetey != null) {
+                onRetey!();
+              }
+            },
+          );
         }
 
         // Default: show the actual view

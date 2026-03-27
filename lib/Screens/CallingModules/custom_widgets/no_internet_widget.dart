@@ -7,7 +7,7 @@ import '../../../Modules/widgets/AppButtonWithIcon.dart';
 import '../calling/bloc/expected_beneficiary_bloc.dart';
 
 class NoInternetWidget extends StatelessWidget {
-  final Future<void> Function()? onRetryPressed;
+  final Future Function()? onRetryPressed;
 
   const NoInternetWidget({super.key, this.onRetryPressed});
 
