@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
       designSize: Size(428, 926),
       builder: (context, child) {
         return GetMaterialApp(
-          title: "S2T Operational",
+          title: "S2T-Executive",
           theme: AppTheme.lightTheme,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           navigatorObservers: [routeObserver],
