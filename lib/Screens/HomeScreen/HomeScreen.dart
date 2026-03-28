@@ -99,11 +99,17 @@ class _HomeScreenState extends State<HomeScreen> {
     updateDahsboardMenu();
     getAppVersion();
 
-    _isOnline = null;
+    // _isOnline = null;
 
     _connSub = Connectivity().onConnectivityChanged.listen((
       List<ConnectivityResult> results,
     ) {
+      final result =
+          results.isNotEmpty ? results.first : ConnectivityResult.none;
+      onConnectivityChanged(result);
+    });
+
+    Connectivity().checkConnectivity().then((results) {
       final result =
           results.isNotEmpty ? results.first : ConnectivityResult.none;
       onConnectivityChanged(result);
@@ -222,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (mounted) setState(() => _isOnline = true);
 
-    /// 🔥 LOAD DASHBOARD ONLY ONCE WHEN ONLINE
+
     if (!_adminLoaded) {
       _adminLoaded = true;
       checkIfAdminDashboard();
