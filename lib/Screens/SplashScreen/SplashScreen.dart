@@ -30,11 +30,73 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     APIManager apiManager = APIManager();
-    apiManager.apiMode = APIMode.Beta;
+    apiManager.apiMode = APIMode.Live;
     // apiManager.apiMode = kReleaseMode ? APIMode.Live : APIMode.Beta;
     apiManager.setAPIEnvironment();
     getAppVersion();
     _checkVersionThenNavigate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    return Scaffold(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Stack(
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Spacer(),
+                  Image.asset(
+                    splashScreenLogoNew,
+                    height: SizeConfig.screenHeight * 0.2,
+                  ),
+                  Text(
+                    "S2T-Executive",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Version : ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Text(
+                        appVersion ?? '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _checkVersionThenNavigate() async {
@@ -65,7 +127,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _showForceUpdateDialog(String message) {
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -77,7 +138,7 @@ class _SplashScreenState extends State<SplashScreen> {
               softwareUpdate,
               "App Update",
               message,
-                  () async {
+              () async {
                 const packageName = 'com.s2t.operational';
                 final uri = Uri.parse(
                   'https://play.google.com/store/apps/details?id=$packageName',
@@ -86,13 +147,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   await launchUrl(uri, mode: LaunchMode.externalApplication);
                 }
               },
-                  () {
+              () {
                 SystemNavigator.pop();
               },
               "Update",
               "Cancel",
-            )
-
+            ),
 
             // AlertDialog(
             //   title: const Text('App Update'),
@@ -154,58 +214,6 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       showLoginScreen();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Spacer(),
-                  Image.asset(
-                    splashScreenLogoNew,
-                    height: SizeConfig.screenHeight * 0.2,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Version : ",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      Text(
-                        appVersion ?? '',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   void getAppVersion() async {

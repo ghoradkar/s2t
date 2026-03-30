@@ -13,7 +13,6 @@ const String rect2 = "assets/images/rect_2.png";
 const String rect3 = "assets/images/rect_3.png";
 const String rect4 = "assets/images/rect_4.png";
 const String rect5 = "assets/images/rectangle2.png";
-const String splashScreenLogo = "assets/images/splash_screen_logo.png";
 const String splashScreenLogoNew = "assets/images/splash_screen_logo_new.png";
 const String dottedBorderImage = "assets/images/dottedBorderImage.png";
 const String icSideMenuBottomImage = "assets/images/icSideMenuBottomImage.png";
