@@ -25,7 +25,7 @@ import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableDa
 import 'package:s2toperational/Screens/AdminDashboard/Model/OrganizationListModel.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDistrictWiseModel.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountModel.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Repository.dart';
+import 'package:s2toperational/Modules/constants/Repository.dart';
 
 import '../../calling_modules/custom_widgets/check_connectivity.dart';
 

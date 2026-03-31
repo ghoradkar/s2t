@@ -301,9 +301,14 @@ class DashboardMenuOptions extends StatelessWidget {
 }
 
 class AdminDashboardMenuOptions extends StatelessWidget {
-  AdminDashboardMenuOptions({super.key, required this.dashboardMenu});
-
   DashboardMenu dashboardMenu;
+  int? desigId;
+
+  AdminDashboardMenuOptions({
+    super.key,
+    required this.dashboardMenu,
+    this.desigId,
+  });
 
   String getIconName() {
     String icon;
@@ -438,7 +443,12 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         title = "D2D Availability Screening";
         break;
       case DashboardMenu.DailyWorkDashboard:
-        title = "Daily Work Dashboard";
+        if (desigId == 26) {
+          title = "Rescreening Dashboard";
+        } else {
+          title = "Daily Work Dashboard";
+        }
+
         break;
       case DashboardMenu.LiverScanning:
         title = "Liver Scanning";

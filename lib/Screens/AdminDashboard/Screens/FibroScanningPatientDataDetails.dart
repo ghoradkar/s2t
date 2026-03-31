@@ -547,10 +547,10 @@ class CompactDataCell extends StatelessWidget {
 // import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 // import 'package:s2toperational/Modules/widgets/CommonText.dart';
 // import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-// import 'package:s2toperational/Screens/AdminDashboard/controller/AdminController.dart';
-// import 'package:s2toperational/Screens/AdminDashboard/model/FibroScanningDistrictWiseModel.dart';
-// import 'package:s2toperational/Screens/AdminDashboard/model/LiverScanningTableData.dart';
-// import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
+// import 'package:s2toperational/screens/AdminDashboard/controller/AdminController.dart';
+// import 'package:s2toperational/screens/AdminDashboard/model/FibroScanningDistrictWiseModel.dart';
+// import 'package:s2toperational/screens/AdminDashboard/model/LiverScanningTableData.dart';
+// import 'package:s2toperational/screens/calling_modules/custom_widgets/no_internet_widget.dart';
 // import 'dart:io';
 // import 'package:excel/excel.dart' as ex;
 // import 'package:path_provider/path_provider.dart';

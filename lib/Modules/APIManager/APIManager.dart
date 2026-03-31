@@ -17,7 +17,6 @@ import '../../Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsRespo
 import '../../Screens/d2d_physical_examination/model/GetMyOpratorResponse.dart';
 import '../../Screens/d2d_physical_examination/model/InsertDetailsResponse.dart';
 import '../../Screens/d2d_physical_examination/model/Is24By7IsAccountCreatedResponse.dart';
-import '../../Screens/d2d_physical_examination/model/SubOrgResponse.dart';
 import '../../Screens/d2d_physical_examination/model/T2TCallingAPIDetailsResponse.dart';
 import '../../Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../Json_Class/HubHomelabDashboardResponse/HubHomelabDashboardResponse.dart';
@@ -1367,7 +1366,7 @@ class APIManager {
       print(data);
       //campid
       print(response.body);
-      SubOrgResponse person = SubOrgResponse.fromJson(
+      SubOrganizationResponse person = SubOrganizationResponse.fromJson(
         json.decode(response.body),
       );
 
