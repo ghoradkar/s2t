@@ -48,7 +48,7 @@ class SuperAdminController extends GetxController {
   //   }
   // }
 
-  checkInternetSuperAdmin({bool showLoader = true}) async {
+  Future<void> checkInternetSuperAdmin({bool showLoader = true}) async {
     hasInternet = await CheckConnectivity.checkInternetAndLoadData();
     loginResponseModel = DataProvider().getParsedUserData();
 

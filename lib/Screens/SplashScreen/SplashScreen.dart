@@ -81,7 +81,18 @@ class _SplashScreenState extends State<SplashScreen> {
                     splashScreenLogoNew,
                     height: SizeConfig.screenHeight * 0.2,
                   ),
+                  Text(
+                    "S2T Executive",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   Spacer(),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
