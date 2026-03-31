@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     APIManager apiManager = APIManager();
-    apiManager.apiMode = APIMode.Live;
+    apiManager.apiMode = APIMode.Beta;
     // apiManager.apiMode = kReleaseMode ? APIMode.Live : APIMode.Beta;
     apiManager.setAPIEnvironment();
     getAppVersion();

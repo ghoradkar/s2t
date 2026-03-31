@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
     updateDahsboardMenu();
     getAppVersion();
 
-    // _isOnline = null;
+    _isOnline = null;
 
     _connSub = Connectivity().onConnectivityChanged.listen((
       List<ConnectivityResult> results,
@@ -109,7 +109,10 @@ class _HomeScreenState extends State<HomeScreen> {
       onConnectivityChanged(result);
     });
 
-    Connectivity().checkConnectivity().then((results) {
+    // Check current connectivity on mount — the stream only fires on changes,
+    // so if the device is already online the APIs would never be called otherwise.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final results = await Connectivity().checkConnectivity();
       final result =
           results.isNotEmpty ? results.first : ConnectivityResult.none;
       onConnectivityChanged(result);
