@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 class APIConstants {
+  static String kAPKDownloader = "APKDownloader";
   static String kUserLogin = "UserLoginApp";
   static String kGetAssignedExpectedBefForCallingMobileNew =
       "GetAssignedExpectedBefForCallingMobileNew";

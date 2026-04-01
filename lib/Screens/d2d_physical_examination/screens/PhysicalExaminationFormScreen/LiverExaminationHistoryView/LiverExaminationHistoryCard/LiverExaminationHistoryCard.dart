@@ -11,6 +11,7 @@ import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysica
 import 'package:s2toperational/Modules/utilities/validators.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/widgets/AppMultilineTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../../../Modules/constants/constants.dart';
@@ -232,16 +233,16 @@ class _LiverExaminationHistoryCardState
                   ],
                 ),
                 SizedBox(height: 8.h),
-                AppTextField(
+                AppMultilineTextField(
                   validators: UIValidator.validateDescription,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  readOnly: false,
                   controller:
                       widget.descriptionController ?? descriptionTextField,
                   onChange: (p0) {
                     widget.descriptionTextFieldChange(p0);
                   },
                   hint: 'Description',
+                  minLines: 1,
                   label: CommonText(
                     text: 'Description',
                     fontSize: 14.sp * 1.33,
@@ -267,7 +268,6 @@ class _LiverExaminationHistoryCardState
                       ),
                     ),
                   ),
-                  // suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
                 ),
 
               ],

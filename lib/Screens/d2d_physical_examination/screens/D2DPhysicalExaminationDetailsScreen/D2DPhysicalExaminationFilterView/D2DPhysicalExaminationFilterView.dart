@@ -160,8 +160,8 @@ class _D2DPhysicalExaminationFilterViewState
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
+      firstDate: DateTime(1880),
+      lastDate: DateTime.now(),
     );
     if (picked != null) {
       ctrl.onToDateSelected(FormatterManager.formatDateToString(picked));

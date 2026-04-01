@@ -45,7 +45,11 @@ class D2DPhysicalExaminationController extends GetxController {
         "DoctorID": empCode.toString(),
       };
       final response = await _repo.fetchPhysicalExamDetails(params);
-      physicalExaminationList = response?.output ?? [];
+      final allList = response?.output ?? [];
+      final distCode = selectedDistrict?.dISTLGDCODE ?? 0;
+      physicalExaminationList = distCode != 0
+          ? allList.where((e) => e.dISTLGDCODE == distCode).toList()
+          : allList;
       _computeTotals();
     } catch (e) {
       physicalExaminationList = [];

@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously, file_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/utilities/DeviceInfoUtil.dart';
 import 'package:s2toperational/Screens/LoginScreen/LoginScreen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
 import '../../Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
@@ -32,36 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
     apiManager.apiMode = APIMode.Beta;
     // apiManager.apiMode = kReleaseMode ? APIMode.Live : APIMode.Beta;
     apiManager.setAPIEnvironment();
-    LoginResponseModel? loginResponseModel = DataProvider().getParsedUserData();
-    int designaionId = loginResponseModel?.output?.first.dESGID ?? 0;
-    if (DataProvider().isLoggedIn()) {
-      if (designaionId == 166 || designaionId == 51) {
-        showHomeScreen();
-      } else {
-        String dayString = FormatterManager.formatDateToStringInDash(DateTime.now());
-
-        if (DataProvider().getAutoLogoutDate().isEmpty) {
-          DataProvider().setAutoLogoutDate(dayString);
-          DataProvider().setIsLogin(false);
-          showLoginScreen();
-        } else if (DataProvider().getAutoLogoutDate() == dayString) {
-          if (DataProvider().isLoggedIn()) {
-            showHomeScreen();
-          } else {
-            DataProvider().setAutoLogoutDate(dayString);
-            DataProvider().setIsLogin(false);
-            showLoginScreen();
-          }
-        } else {
-          DataProvider().setAutoLogoutDate(dayString);
-          DataProvider().setIsLogin(false);
-          showLoginScreen();
-        }
-      }
-    } else {
-      showLoginScreen();
-    }
     getAppVersion();
+    _checkVersionThenNavigate();
   }
 
   @override
@@ -92,7 +65,6 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                   Spacer(),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -125,6 +97,96 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _checkVersionThenNavigate() async {
+    var deviceInfo = await DeviceInfoUtil().getPackageInfo();
+    String version = deviceInfo.version;
+
+    bool updateRequired = false;
+    String updateMessage = '';
+
+    await APIManager().checkAppVersionAPI(
+      version: version,
+      onResult: (status, message) {
+        if (status.toLowerCase() == 'success') {
+          updateRequired = true;
+          updateMessage = message;
+        }
+      },
+    );
+
+    if (!mounted) return;
+
+    if (updateRequired) {
+      _showForceUpdateDialog(updateMessage);
+      return;
+    }
+
+    _navigateNext();
+  }
+
+  void _showForceUpdateDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (ctx) => PopScope(
+            canPop: false,
+            child: ToastManager.commonAlert(
+              context,
+              softwareUpdate,
+              "App Update",
+              message,
+              () async {
+                const packageName = 'com.s2t.operational';
+                final uri = Uri.parse(
+                  'https://play.google.com/store/apps/details?id=$packageName',
+                );
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              () {
+                SystemNavigator.pop();
+              },
+              "Update",
+              "Cancel",
+            ),
+          ),
+    );
+  }
+
+  void _navigateNext() {
+    LoginResponseModel? loginResponseModel = DataProvider().getParsedUserData();
+    int designaionId = loginResponseModel?.output?.first.dESGID ?? 0;
+    if (DataProvider().isLoggedIn()) {
+      if (designaionId == 166 || designaionId == 51) {
+        showHomeScreen();
+      } else {
+        String dayString = FormatterManager.getDay(DateTime.now());
+
+        if (DataProvider().getAutoLogoutDate().isEmpty) {
+          DataProvider().setAutoLogoutDate(dayString);
+          DataProvider().setIsLogin(false);
+          showLoginScreen();
+        } else if (DataProvider().getAutoLogoutDate() == dayString) {
+          if (DataProvider().isLoggedIn()) {
+            showHomeScreen();
+          } else {
+            DataProvider().setAutoLogoutDate(dayString);
+            DataProvider().setIsLogin(false);
+            showLoginScreen();
+          }
+        } else {
+          DataProvider().setAutoLogoutDate(dayString);
+          DataProvider().setIsLogin(false);
+          showLoginScreen();
+        }
+      }
+    } else {
+      showLoginScreen();
+    }
   }
 
   void getAppVersion() async {

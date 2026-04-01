@@ -11,6 +11,7 @@ import '../constants/fonts.dart';
 import '../constants/images.dart';
 import '../utilities/SizeConfig.dart';
 import '../widgets/AppButtonWithIcon.dart';
+import '../widgets/CommonText.dart';
 import '../widgets/S2TAlertView.dart';
 
 class ToastManager {
@@ -687,6 +688,72 @@ class ToastManager {
           ),
         );
       },
+    );
+  }
+
+  static AlertDialog commonAlert(
+    BuildContext parentContext,
+    String icon,
+    String title,
+    String content,
+    Function yes,
+    Function no,
+    String yesButtonText,
+    String noButtonText,
+  ) {
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CommonText(
+              text: title,
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w500,
+              textColor: kBlackColor,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Image.asset(icon, width: 100.w),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CommonText(
+              text: content,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              textColor: kBlackColor,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppButtonWithIcon(
+                mWidth: 140.w,
+                mHeight: 40.h,
+                title: yesButtonText,
+                onTap: () {
+                  yes();
+                },
+              ),
+              SizedBox(width: 10.w),
+              TextButton(
+                onPressed: () {
+                  no();
+                },
+                child: CommonText(
+                  text: noButtonText,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  textColor: kPrimaryColor,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

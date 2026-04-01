@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/utilities/validators.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/widgets/AppMultilineTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../../Modules/Enums/Enums.dart';
@@ -337,15 +338,15 @@ class _MedicalHistoryCardState extends State<MedicalHistoryCard> {
               : Container(),
           isSelectedRadioYes == true ? SizedBox(height: 10.h) : Container(),
           isSelectedRadioYes == true
-              ? AppTextField(
+              ? AppMultilineTextField(
                 validators: UIValidator.validateDescription,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                readOnly: false,
                 controller: descriptionTextField,
                 onChange: (p0) {
                   widget.descriptionTextFieldChange(p0);
                 },
                 hint: 'Description',
+                minLines: 1,
                 label: CommonText(
                   text: 'Description',
                   fontSize: 14.sp * 1.33,
@@ -371,7 +372,6 @@ class _MedicalHistoryCardState extends State<MedicalHistoryCard> {
                     ),
                   ),
                 ),
-                // suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
               )
               : Container(),
         ],

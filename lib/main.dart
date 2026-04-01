@@ -7,7 +7,6 @@ import 'package:s2toperational/Modules/themes/AppTheme.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_repository.dart';
-import 'package:upgrader/upgrader.dart';
 import 'Modules/utilities/DataProvider.dart';
 import 'Modules/utilities/SizeConfig.dart';
 import 'Screens/calling_modules/routes/app_routes.dart';
@@ -53,14 +52,7 @@ class MyApp extends StatelessWidget {
           onGenerateRoute: AppRoutes.onGenerateRoute,
           navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
-          home: UpgradeAlert(
-            showIgnore: false,
-            showLater: false,
-            onUpdate: () => true,
-            shouldPopScope: () => false,
-            upgrader: Upgrader(debugDisplayAlways: false, debugLogging: false),
-            child: const SplashScreen(),
-          ),
+          home: const SplashScreen(),
           builder: EasyLoading.init(),
         );
       },

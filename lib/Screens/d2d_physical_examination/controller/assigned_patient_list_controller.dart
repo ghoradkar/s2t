@@ -16,7 +16,7 @@ import 'package:s2toperational/Screens/d2d_physical_examination/model/InsertBene
 import 'package:s2toperational/Screens/d2d_physical_examination/model/InsertDetailsResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/Is24By7IsAccountCreatedResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/OrganisationWiseAPIKeyResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/SubOrgResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/T2TCallingAPIDetailsResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import 'dart:io';
@@ -167,7 +167,7 @@ class AssignedPatientListController extends GetxController
   }
 
   void _onSubOrganization(
-    SubOrgResponse? response,
+    SubOrganizationResponse? response,
     String errorMessage,
     bool success,
   ) async {
