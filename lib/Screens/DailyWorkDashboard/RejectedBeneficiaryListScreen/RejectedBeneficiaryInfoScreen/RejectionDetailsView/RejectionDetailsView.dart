@@ -16,7 +16,7 @@ class RejectionDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
-      width: MediaQuery.of(context).size.width - 40,
+      // width: MediaQuery.of(context).size.width - 40,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -58,8 +58,8 @@ class RejectionDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icHashIcon),
               ),
               const SizedBox(width: 8),
@@ -99,8 +99,8 @@ class RejectionDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icnTent),
               ),
               const SizedBox(width: 8),
@@ -140,8 +140,8 @@ class RejectionDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icCalendarMonth),
               ),
               const SizedBox(width: 8),
@@ -181,8 +181,49 @@ class RejectionDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
+                child: Image.asset(icCalendarMonth),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Rejection Date : ",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: FontConstants.interFonts,
+                        fontWeight: FontWeight.w500,
+                        fontSize: responsiveFont(16),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        beneficiaryObj?.rejectionDate ?? "",
+                        style: TextStyle(
+                          color: dropDownTitleHeader,
+                          fontFamily: FontConstants.interFonts,
+                          fontWeight: FontWeight.w400,
+                          fontSize: responsiveFont(16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icMapPin),
               ),
               const SizedBox(width: 8),
@@ -222,8 +263,8 @@ class RejectionDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icRejectionReason),
               ),
               const SizedBox(width: 8),
@@ -263,8 +304,8 @@ class RejectionDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icLandingLab),
               ),
               const SizedBox(width: 8),

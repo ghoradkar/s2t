@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:math' as math;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -231,7 +231,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (mounted) setState(() => _isOnline = true);
 
-
     if (!_adminLoaded) {
       _adminLoaded = true;
       checkIfAdminDashboard();
@@ -385,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.HealthScreeningDetails);
       // menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
-    } else if (dESGID == 172) {
+    } else if (dESGID == 172 || dESGID == 173) {
       menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 75) {
       isShowRadioCamp = true;
@@ -443,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isShowRadioCamp = true;
       // topHeight = 200;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
-    } else if (dESGID == 172) {
+    } else if ((dESGID == 172 || dESGID == 173)) {
       isShowRadioCamp = true;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
       menuList.add(DashboardMenu.CampCalendar);

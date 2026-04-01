@@ -37,8 +37,8 @@ class _RejectedBeneficiaryTeamViewState
             style: TextStyle(
               color: kBlackColor,
               fontFamily: FontConstants.interFonts,
-              fontWeight: FontWeight.w400,
-              fontSize: responsiveFont(16),
+              fontWeight: FontWeight.w600,
+              fontSize: responsiveFont(18),
             ),
           ),
           Expanded(
@@ -50,7 +50,7 @@ class _RejectedBeneficiaryTeamViewState
                   SelectedTeamsDataLisOutput obj = widget.list[index];
 
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 26),
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
                     child: Container(
                       padding: EdgeInsets.fromLTRB(14, 10, 8, 10),
                       decoration: BoxDecoration(
@@ -108,14 +108,14 @@ class _RejectedBeneficiaryTeamViewState
                               const SizedBox(width: 8),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 4),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                width: responsiveHeight(30),
-                                height: responsiveHeight(30),
+                                width: responsiveHeight(22),
+                                height: responsiveHeight(22),
                                 child: Image.asset(icUserIcon),
                               ),
                               const SizedBox(width: 8),
@@ -126,20 +126,20 @@ class _RejectedBeneficiaryTeamViewState
                                     color: dropDownTitleHeader,
                                     fontFamily: FontConstants.interFonts,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: responsiveFont(16),
+                                    fontSize: responsiveFont(14),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 4),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                width: responsiveHeight(30),
-                                height: responsiveHeight(30),
+                                width: responsiveHeight(22),
+                                height: responsiveHeight(22),
                                 child: Image.asset(icUserIcon),
                               ),
                               const SizedBox(width: 8),
@@ -150,13 +150,13 @@ class _RejectedBeneficiaryTeamViewState
                                     color: dropDownTitleHeader,
                                     fontFamily: FontConstants.interFonts,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: responsiveFont(16),
+                                    fontSize: responsiveFont(14),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 4),
                         ],
                       ),
                     ),

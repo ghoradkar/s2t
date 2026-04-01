@@ -223,6 +223,9 @@ class APIConstants {
   static String kUpdaterecollectionAppointmentDate =
       "UpdaterecollectionAppointmentDate";
 
+  static String kInsertRecollectionTeamandBeneficiaryMapping =
+      "Insert_RecollectionTeamandBeneficiaryMapping";
+
   static String kGetUserCampMappingAndAttendanceStatusForRegularCampReadiness =
       "GetUserCampMappingAndAttendanceStatusForRegularCamp_Readiness";
 

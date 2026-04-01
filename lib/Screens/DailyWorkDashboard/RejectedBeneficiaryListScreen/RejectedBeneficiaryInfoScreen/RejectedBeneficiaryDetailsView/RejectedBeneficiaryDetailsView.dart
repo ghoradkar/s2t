@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../../Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/BeneficiaryStatusAndDetailsResponse.dart';
@@ -21,7 +22,7 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
-      width: MediaQuery.of(context).size.width - 40,
+      // width: MediaQuery.of(context).size.width - 30,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -74,8 +75,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(iconPerson),
               ),
               const SizedBox(width: 8),
@@ -115,8 +116,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icHashIcon),
               ),
               const SizedBox(width: 8),
@@ -156,8 +157,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icCalendarMonth),
               ),
               const SizedBox(width: 8),
@@ -197,8 +198,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(iconPerson),
               ),
               const SizedBox(width: 8),
@@ -238,8 +239,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icHashIcon),
               ),
               const SizedBox(width: 8),
@@ -279,8 +280,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icMapPin),
               ),
               const SizedBox(width: 8),
@@ -320,8 +321,8 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: responsiveHeight(30),
-                height: responsiveHeight(30),
+                width: responsiveHeight(24),
+                height: responsiveHeight(24),
                 child: Image.asset(icMapPin),
               ),
               const SizedBox(width: 8),
@@ -357,6 +358,6 @@ class RejectedBeneficiaryDetailsView extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ).paddingOnly(top: 12);
   }
 }

@@ -3660,6 +3660,39 @@ class APIManager {
     }
   }
 
+  Future<void> insertRecollectionTeamandBeneficiaryMappingAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kInsertRecollectionTeamandBeneficiaryMapping;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      String body = response.body;
+      print(body);
+      print(json.decode(response.body));
+      BeneficiaryStatusAndDetailsResponse person =
+          BeneficiaryStatusAndDetailsResponse.fromJson(
+            json.decode(response.body),
+          );
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message, false);
+      }
+    } catch (e) {
+      callback(null, "Expections: $e", false);
+    }
+  }
+
   Future<void> getUserCampMappingAndAttendanceStatusForRegularCampReadinessAPI(
     Map<String, dynamic> data,
     dynamic callback,

@@ -4,11 +4,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/Enums/Enums.dart';
+import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/RecollectionAssignmentRemarksResponse.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppDateTextfield.dart';
 import 'package:s2toperational/Modules/widgets/AppDropdownTextfield.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 import 'package:s2toperational/Screens/DailyWorkDashboard/RejectedBeneficiaryListScreen/RejectedBeneficiaryInfoScreen/RejectedBeneficiaryDetailsView/RejectedBeneficiaryDetailsView.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/BeneficiaryStatusAndDetailsResponse.dart';
@@ -21,6 +27,7 @@ import '../../../../Modules/utilities/DataProvider.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Views/RejectedBeneficiaryTeamView/RejectedBeneficiaryTeamView.dart';
 import 'RejectionDetailsView/RejectionDetailsView.dart';
+import 'package:get/get.dart';
 
 class RejectedBeneficiaryInfoScreen extends StatefulWidget {
   RejectedBeneficiaryInfoScreen({
@@ -74,6 +81,7 @@ class _RejectedBeneficiaryInfoScreenState
 
   int? remarkId;
   String remark = "";
+  RecollectionAssignmentRemarksOutput? selectedRemark;
 
   @override
   void initState() {
@@ -301,6 +309,10 @@ class _RejectedBeneficiaryInfoScreenState
             list: list,
             onTapTeam: (p0) {
               selectedTeam = p0;
+              teamName = p0.teamName ?? "";
+              teamID = p0.teamID ?? 0;
+              teamActivae = "${p0.teamName ?? "NA"} (Active)";
+              setState(() {});
             },
           ),
         );
@@ -340,22 +352,115 @@ class _RejectedBeneficiaryInfoScreenState
 
     if (success) {
       if (remarkId == 3) {
-        ToastManager.showSuccessPopup(
-          context,
-          icSuccessIcon,
-          "Appointment Booked successfully",
+        ToastManager().showSuccessOkayDialog(
+          context: context,
+          title: "Success",
+          message: "Appointment Booked successfully",
+          onTap: () {
+            Navigator.pop(context); // close dialog
+            Navigator.pop(context, true); // pop info screen with refresh signal
+          },
         );
+
+        // ToastManager.showSuccessPopup(
+        //   context,
+        //   icSuccessIcon,
+        //   "Appointment Booked successfully",
+        // );
       } else {
-        ToastManager.showSuccessPopup(
-          context,
-          icSuccessIcon,
-          "Data Saved successfully",
+        // ToastManager.showSuccessPopup(
+        //   context,
+        //   icSuccessIcon,
+        //   "Data Saved successfully",
+        // );
+        ToastManager().showSuccessOkayDialog(
+          context: context,
+          title: "Success",
+          message: "Data Saved successfully",
+          onTap: () {
+            Navigator.pop(context); // close dialog
+            Navigator.pop(context, true); // pop info screen with refresh signal
+          },
         );
       }
     } else {
       ToastManager.toast(errorMessage);
     }
     setState(() {});
+  }
+
+  void getRemarkList() {
+    ToastManager.showLoader();
+    Map<String, String> params = {"Type": "1"};
+    apiManager.getRecollectionAssignmentRemarksAPI(
+      params,
+      apiRemarkListCallBack,
+    );
+  }
+
+  void apiRemarkListCallBack(
+    RecollectionAssignmentRemarksResponse? response,
+    String errorMessage,
+    bool success,
+  ) async {
+    ToastManager.hideLoader();
+    if (success) {
+      _showRemarkBottomSheet(response?.output ?? []);
+    } else {
+      ToastManager.toast(errorMessage);
+    }
+  }
+
+  void _showRemarkBottomSheet(List<RecollectionAssignmentRemarksOutput> list) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      constraints: const BoxConstraints(minWidth: double.infinity),
+      backgroundColor: Colors.white,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.width * 1.33,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: DropDownListScreen(
+            titleString: "Remark",
+            dropDownList: list,
+            dropDownMenu: DropDownTypeMenu.RejectedStatus,
+            onApplyTap: (p0) {
+              selectedRemark = p0;
+              remarkId = p0?.arId;
+              remark = p0?.assignmentRemarks ?? "";
+              showAppoointmentDate = remarkId == 3;
+              setState(() {});
+            },
+          ),
+        );
+      },
+    ).whenComplete(() {
+      setState(() {});
+    });
+  }
+
+  Future<void> _selectAppointmentDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        appoointmentDate = FormatterManager.formatDateToString(picked);
+      });
+    }
   }
 
   submitData() {
@@ -380,7 +485,7 @@ class _RejectedBeneficiaryInfoScreenState
         context: context,
         message: 'Are you sure you want to Continue?',
         didSelectYes: (bool p1) {
-          if(p1 == true){
+          if (p1 == true) {
             Navigator.pop(context);
             ToastManager.showLoader();
             List<Map<String, String>> teamUserJsonArray = [];
@@ -392,9 +497,8 @@ class _RejectedBeneficiaryInfoScreenState
             teamUserJsonArray.add(jsonObject);
             final jsonString = jsonToStringConvert(teamUserJsonArray);
             insertAppointmentDetails(jsonString);
-          }else  if(p1 == false){
+          } else if (p1 == false) {
             Navigator.pop(context);
-
           }
         },
       );
@@ -484,12 +588,11 @@ class _RejectedBeneficiaryInfoScreenState
       //   },
       // );
 
-
       ToastManager().showConfirmationDialog(
         context: context,
         message: 'Are you sure you want to Continue?',
         didSelectYes: (bool p1) {
-          if(p1 == true){
+          if (p1 == true) {
             Navigator.pop(context);
             ToastManager.showLoader();
             List<Map<String, String>> teamUserJsonArray = [];
@@ -507,14 +610,54 @@ class _RejectedBeneficiaryInfoScreenState
             teamUserJsonArray.add(jsonObject1);
 
             final jsonString = jsonToStringConvert(teamUserJsonArray);
-            insertAppointmentDetails(jsonString);
-          }else  if(p1 == false){
+            insertTeamMapping(jsonString);
+          } else if (p1 == false) {
             Navigator.pop(context);
-
           }
         },
       );
     }
+  }
+
+  void insertTeamMapping(String teamMappingJson) {
+    Map<String, String> params = {
+      "Regdid": beneficiaryObj?.rejRegdid.toString() ?? "0",
+      "Campid": beneficiaryObj?.rejCampID.toString() ?? "0",
+      "RecollectionTeamandBeneficiaryMapping": teamMappingJson,
+      "AssignedBy": empCode.toString(),
+    };
+    apiManager.insertRecollectionTeamandBeneficiaryMappingAPI(
+      params,
+      apiInsertTeamMappingCallBack,
+    );
+  }
+
+  void apiInsertTeamMappingCallBack(
+    BeneficiaryStatusAndDetailsResponse? response,
+    String errorMessage,
+    bool success,
+  ) async {
+    ToastManager.hideLoader();
+    if (success) {
+      ToastManager().showSuccessOkayDialog(
+        context: context,
+        title: "Success",
+        message: "Team assigned successfully",
+        onTap: () {
+          Navigator.pop(context); // close dialog
+          Navigator.pop(context, true); // pop info screen with refresh signal
+        },
+      );
+
+      // ToastManager.showSuccessPopup(
+      //   context,
+      //   icSuccessIcon,
+      //   "Team assigned successfully",
+      // );
+    } else {
+      ToastManager.toast(errorMessage);
+    }
+    setState(() {});
   }
 
   @override
@@ -530,143 +673,139 @@ class _RejectedBeneficiaryInfoScreenState
       ),
       body: KeyboardDismissOnTap(
         dismissOnCapturedTaps: true,
-        child: SizedBox(
-          height: SizeConfig.screenHeight,
-          width: SizeConfig.screenWidth,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 74,
-                child: Image.asset(
-                  fit: BoxFit.fill,
-                  rect4,
-                  width: SizeConfig.screenWidth,
-                  height: responsiveHeight(300.37),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+            child: Column(
+              children: [
+                RejectedBeneficiaryDetailsView(
+                  beneficiaryObj: beneficiaryObj,
+                  mobile: widget.obj.mobileNo ?? "",
                 ),
-              ),
-              Positioned(
-                top: 53,
-                child: Image.asset(
-                  fit: BoxFit.fill,
-                  rect3,
-                  width: SizeConfig.screenWidth,
-                  height: responsiveHeight(300.37),
-                ),
-              ),
-              Positioned(
-                top: 30,
-                child: Image.asset(
-                  fit: BoxFit.fill,
-                  rect2,
-                  width: SizeConfig.screenWidth,
-                  height: responsiveHeight(300.37),
-                ),
-              ),
-              Image.asset(
-                fit: BoxFit.fill,
-                rect1,
-                width: SizeConfig.screenWidth,
-                height: responsiveHeight(300.37),
-              ),
-              Positioned(
-                top: 0,
-                bottom: 8,
-                left: 8,
-                right: 8,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RejectedBeneficiaryDetailsView(
-                          beneficiaryObj: beneficiaryObj,
-                          mobile: widget.obj.mobileNo ?? "",
+                const SizedBox(height: 10),
+                RejectionDetailsView(beneficiaryObj: beneficiaryObj),
+                const SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  // width: MediaQuery.of(context).size.width - 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 1),
+                        color: Colors.black.withValues(alpha: 0.15),
+                        spreadRadius: 0,
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        teamActivae,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          color: kPrimaryColor,
+                          fontSize: responsiveFont(14),
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(height: 20),
-                        RejectionDetailsView(beneficiaryObj: beneficiaryObj),
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          width: MediaQuery.of(context).size.width - 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 1),
-                                color: Colors.black.withValues(alpha: 0.15),
-                                spreadRadius: 0,
-                                blurRadius: 10,
+                      ),
+                      if (showTeam) ...[
+                        const SizedBox(height: 10),
+                        AppTextField(
+                          onTap: () {
+                            getTeamDetailsListForAssign();
+                          },
+                          controller: TextEditingController(text: teamName),
+                          readOnly: true,
+                          label: RichText(
+                            text: TextSpan(
+                              text: 'Select Team *',
+                              style: TextStyle(
+                                color: kLabelTextColor,
+                                fontSize: 14.sp,
+                                fontFamily: FontConstants.interFonts,
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                teamActivae,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily: FontConstants.interFonts,
-                                  color: kPrimaryColor,
-                                  fontSize: responsiveFont(16),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              AppDropdownTextfield(
-                                icon: icUsersGroup,
-                                titleHeaderString: "Team *",
-                                valueString: teamName,
-                                onTap: () {
-                                  getTeamDetailsListForAssign();
-                                },
-                              ),
-                              showRemark == true
-                                  ? const SizedBox(height: 10)
-                                  : Container(),
-                              showRemark == true
-                                  ? AppDropdownTextfield(
-                                    icon: iconDocument,
-                                    titleHeaderString: "Remark *",
-                                    valueString: "",
-                                    onTap: () {},
-                                  )
-                                  : Container(),
-                              showAppoointmentDate == true
-                                  ? AppDateTextfield(
-                                    icon: icCalendarMonth,
-                                    titleHeaderString: "Appointment Date *",
-                                    valueString: appoointmentDate,
-                                    onTap: () {},
-                                  )
-                                  : Container(),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        Center(
-                          child: SizedBox(
-                            width: 140,
-                            height: 40,
-                            child: AppActiveButton(
-                              buttontitle: "Assign",
-                              isCancel: false,
-                              onTap: () {
-                                submitData();
-                              },
                             ),
+                          ),
+                          suffixIcon: Icon(
+                            Icons.keyboard_arrow_down_outlined,
+                            color: kPrimaryColor,
+                            size: 26,
+                          ).paddingOnly(left: 6.w),
+                          prefixIcon: Image.asset(
+                            icUsersGroup,
+                            color: kPrimaryColor,
+                            width: 24,
+                            height: 24,
                           ),
                         ),
                       ],
-                    ),
+                      if (showRemark) ...[
+                        const SizedBox(height: 10),
+                        AppDropdownTextfield(
+                          icon: iconDocument,
+                          titleHeaderString: "Remark *",
+                          valueString: selectedRemark?.assignmentRemarks ?? "",
+                          onTap: () {
+                            getRemarkList();
+                          },
+                        ),
+                      ],
+                      if (showAppoointmentDate) ...[
+                        const SizedBox(height: 10),
+                        AppDateTextfield(
+                          icon: icCalendarMonth,
+                          titleHeaderString: "Appointment Date *",
+                          valueString: appoointmentDate,
+                          onTap: () {
+                            _selectAppointmentDate();
+                          },
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (showAssignButton)
+                      SizedBox(
+                        width: 140,
+                        height: 40,
+                        child: AppActiveButton(
+                          buttontitle: buttonTitle,
+                          isCancel: false,
+                          onTap: () {
+                            submitData();
+                          },
+                        ),
+                      ),
+                    if (showAssignButton && showReRegisterButton)
+                      const SizedBox(width: 12),
+                    if (showReRegisterButton)
+                      SizedBox(
+                        width: 140,
+                        height: 40,
+                        child: AppActiveButton(
+                          buttontitle: "Re-Register",
+                          isCancel: false,
+                          onTap: () {
+                            ToastManager.toast(
+                              "Re-Register screen not yet implemented",
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
