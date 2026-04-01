@@ -8,6 +8,7 @@ import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
@@ -23,6 +24,7 @@ import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/utilities/WidgetPaddingX.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
+import '../RejectedBeneficiaryListScreen/RejectedBeneficiaryListScreen.dart';
 import '../RejectedBeneficiaryTrackingScreen/RejectedBeneficiaryTrackingScreen.dart';
 
 class DailyWorkDashboardScreen extends StatefulWidget {
@@ -64,12 +66,24 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
   LandingLabCampCreationOutput? selectedLabVal;
   bool isLoading = true;
 
+  bool get _isGroup1 => [86, 64, 35, 129, 146].contains(dESGID);
+  bool get _isGroup3 => [170, 171, 182, 183].contains(dESGID);
+  bool get _isAdminDesignation => [
+        170, 171, 51, 26, 30, 128, 182, 183, 78,
+        47, 83, 101, 102, 103, 168, 173, 196, 198, 60, 61, 69, 79,
+      ].contains(dESGID);
+
   @override
   void initState() {
     dESGID = DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
     empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
 
-    DateTime firstDate = DateTime.now().subtract(const Duration(days: 10));
+    const adminDesignations = [
+      170, 171, 51, 26, 30, 128, 182, 183, 78,
+      47, 83, 101, 102, 103, 168, 173, 196, 198, 60, 61, 69, 79,
+    ];
+    final int daysBack = adminDesignations.contains(dESGID) ? 10 : 7;
+    DateTime firstDate = DateTime.now().subtract(Duration(days: daysBack));
     fromDate = FormatterManager.formatDateToString(firstDate);
     toDate = FormatterManager.formatDateToString(DateTime.now());
 
@@ -87,7 +101,7 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
         onLeadingIconClick: () {
           Navigator.pop(context);
         },
-        showActions: true,
+        showActions: !_isGroup1,
         actions: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -115,6 +129,7 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (!_isGroup1)
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 50,
@@ -318,7 +333,7 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
                       ),
 
                       Visibility(
-                        visible: isShowFilter,
+                        visible: isShowFilter && _isGroup3,
                         child: AppTextField(
                           onTap: () {
                             isShowSubOrg = true;
@@ -349,7 +364,7 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
                         ).paddingOnly(top: 8.h),
                       ),
                       Visibility(
-                        visible: isShowFilter,
+                        visible: isShowFilter && _isGroup3,
 
                         child: Row(
                           children: [
@@ -413,7 +428,7 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
                       ),
 
                       Visibility(
-                        visible: isShowFilter,
+                        visible: isShowFilter && !_isGroup1 && !_isGroup3,
 
                         child: AppTextField(
                           onTap: () {
@@ -506,28 +521,75 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
                                           : "0",
                                   valueColor: campOpenColor,
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (_) =>
-                                                RejectedBeneficiaryTrackingScreen(
-                                                  fromDate: fromDate,
-                                                  toDate: toDate,
-                                                  oganizationId: "0",
-                                                  divisionId: "0",
-                                                  dISTLGDCODE: "0",
-                                                  tALLGDCODE: "0",
-                                                  landingLabId:
-                                                      selectedLabVal?.labCode
-                                                          .toString() ??
-                                                      "0",
-                                                  campType:
-                                                      regularCamp ? "1" : "3",
-                                                  searchFilterId: "0",
-                                                ),
-                                      ),
-                                    );
+                                    if (_isAdminDesignation) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) =>
+                                                  RejectedBeneficiaryTrackingScreen(
+                                                    fromDate: fromDate,
+                                                    toDate: toDate,
+                                                    oganizationId:
+                                                        selectedSubOrganization
+                                                            ?.subOrgId
+                                                            .toString() ??
+                                                        "0",
+                                                    divisionId:
+                                                        selectedDivision?.dIVID
+                                                            .toString() ??
+                                                        "0",
+                                                    dISTLGDCODE:
+                                                        selectedDistrict
+                                                            ?.dISTLGDCODE
+                                                            .toString() ??
+                                                        "0",
+                                                    tALLGDCODE: "0",
+                                                    landingLabId:
+                                                        selectedLabVal?.labCode
+                                                            .toString() ??
+                                                        "0",
+                                                    campType:
+                                                        regularCamp ? "1" : "3",
+                                                    searchFilterId: "0",
+                                                  ),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) =>
+                                                  RejectedBeneficiaryListScreen(
+                                                    fromDate: fromDate,
+                                                    toDate: toDate,
+                                                    oganizationId:
+                                                        selectedSubOrganization
+                                                            ?.subOrgId
+                                                            .toString() ??
+                                                        "0",
+                                                    divisionId:
+                                                        selectedDivision?.dIVID
+                                                            .toString() ??
+                                                        "0",
+                                                    dISTLGDCODE:
+                                                        selectedDistrict
+                                                            ?.dISTLGDCODE
+                                                            .toString() ??
+                                                        "0",
+                                                    tALLGDCODE: "0",
+                                                    landingLabId:
+                                                        selectedLabVal?.labCode
+                                                            .toString() ??
+                                                        "0",
+                                                    campType:
+                                                        regularCamp ? "1" : "3",
+                                                    searchFilterId: "0",
+                                                  ),
+                                        ),
+                                      );
+                                    }
                                   },
                                 ),
 
@@ -773,7 +835,7 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
       "BeneficiaryNumber": "0",
       "UserId": empCode.toString(),
       "Type": "1",
-      "CampType": "0",
+      "CampType": regularCamp ? "1" : "3",
     };
 
     apiManager.getCountForPageloadForTeamAPI(
@@ -865,24 +927,29 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
   void getLandingLabAPI() {
     ToastManager.showLoader();
     Map<String, String> data = {
-      "DISTLGDCODE": selectedDistrict?.dISTLGDCODE.toString() ?? '0',
+      "UserID": empCode.toString(),
     };
-    apiManager.getLandingLabAPI(data, apiLandingLabCallBack);
+    apiManager.getLabforD2DCampCoordinatorAPI(data, apiLabForD2DCallBack);
   }
 
-  void apiLandingLabCallBack(
-    LandingLabCampCreationResponse? response,
+  void apiLabForD2DCallBack(
+    LabDataResponse? response,
     String errorMessage,
     bool success,
   ) async {
     ToastManager.hideLoader();
 
     if (success) {
-      _showDropDownBottomSheet(
-        "Lab",
-        response?.output ?? [],
-        DropDownTypeMenu.BindLab,
-      );
+      final List<LandingLabCampCreationOutput> labs =
+          (response?.output ?? [])
+              .map(
+                (e) => LandingLabCampCreationOutput(
+                  labCode: e.labCode,
+                  labName: e.labName,
+                ),
+              )
+              .toList();
+      _showDropDownBottomSheet("Lab", labs, DropDownTypeMenu.BindLab);
     } else {
       ToastManager.toast(errorMessage);
     }
@@ -1016,19 +1083,10 @@ class _DailyWorkDashboardScreenState extends State<DailyWorkDashboardScreen> {
       lastDate: DateTime.now(),
     );
     if (picked != null) {
-      // setState(() {
-      //   toDate = FormatterManager.formatDateToString(picked);
-      //   if (FormatterManager.isAscendingOrder(fromDate, toDate)) {
-      //     //API call or any other logic can be added here
-      //     callAPI();
-      //   } else {
-      //     toDate = "";
-      //     ToastManager.toast("To Date cannot be before From Date");
-      //   }
-      // });
-
+      setState(() {
+        toDate = FormatterManager.formatDateToString(picked);
+      });
       callAPI();
-      setState(() {});
     }
   }
 

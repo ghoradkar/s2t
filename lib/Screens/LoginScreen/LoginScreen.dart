@@ -360,28 +360,29 @@ class LoginScreenState extends State<LoginScreen> {
     ToastManager.hideLoader();
 
     if (success) {
-      if (apiManager.apiMode == APIMode.Beta) {
+      // if (apiManager.apiMode == APIMode.Beta) {
         DataProvider().setIsLogin(true);
 
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
           (Route route) => false,
         );
-      } else {
-        int dESGID =
-            DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
-
-        if (dESGID == 51 || dESGID == 166) {
-          DataProvider().setIsLogin(true);
-
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
-            (Route route) => false,
-          );
-        } else {
-          getOtp();
-        }
-      }
+      // }
+      // else {
+      //   int dESGID =
+      //       DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
+      //
+      //   if (dESGID == 51 || dESGID == 166) {
+      //     DataProvider().setIsLogin(true);
+      //
+      //     Navigator.of(context).pushAndRemoveUntil(
+      //       MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+      //       (Route route) => false,
+      //     );
+      //   } else {
+      //     getOtp();
+      //   }
+      // }
     } else {
       ToastManager.toast(errorMessage);
     }

@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppDropdownTextfield.dart';
 import 'package:s2toperational/Modules/widgets/AppIconSearchTextfield.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/RecollectionAssignmentRemarksResponse/RecollectionAssignmentRemarksResponse.dart';
 import '../../../Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
@@ -13,6 +15,7 @@ import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/utilities/WidgetPaddingX.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
 import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
 import 'RejectedBeneficiaryInfoScreen/RejectedBeneficiaryInfoScreen.dart';
@@ -42,6 +45,7 @@ class RejectedBeneficiaryListScreen extends StatefulWidget {
   String landingLabId = "";
   String campType = "";
   String searchFilterId;
+
   @override
   State<RejectedBeneficiaryListScreen> createState() =>
       _RejectedBeneficiaryListScreenState();
@@ -375,7 +379,12 @@ class _RejectedBeneficiaryListScreenState
               statusType: selectedStatus?.arId.toString() ?? "0",
             ),
       ),
-    );
+    ).then((result) {
+      if (result == true) {
+        callAPICall();
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -391,262 +400,284 @@ class _RejectedBeneficiaryListScreenState
       ),
       body: KeyboardDismissOnTap(
         dismissOnCapturedTaps: true,
-        child: SizedBox(
-          height: SizeConfig.screenHeight,
-          width: SizeConfig.screenWidth,
-          child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Positioned(
-                top: 74,
-                child: Image.asset(
-                  fit: BoxFit.fill,
-                  rect4,
-                  width: SizeConfig.screenWidth,
-                  height: responsiveHeight(300.37),
-                ),
-              ),
-              Positioned(
-                top: 53,
-                child: Image.asset(
-                  fit: BoxFit.fill,
-                  rect3,
-                  width: SizeConfig.screenWidth,
-                  height: responsiveHeight(300.37),
-                ),
-              ),
-              Positioned(
-                top: 30,
-                child: Image.asset(
-                  fit: BoxFit.fill,
-                  rect2,
-                  width: SizeConfig.screenWidth,
-                  height: responsiveHeight(300.37),
-                ),
-              ),
-              Image.asset(
-                fit: BoxFit.fill,
-                rect1,
+              const SizedBox(height: 10),
+              Container(
                 width: SizeConfig.screenWidth,
-                height: responsiveHeight(300.37),
-              ),
-              Positioned(
-                top: 0,
-                bottom: 8,
-                left: 8,
-                right: 8,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Container(
-                        width: SizeConfig.screenWidth,
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(0, 1),
-                              color: Colors.black.withValues(alpha: 0.15),
-                              spreadRadius: 0,
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            AppDropdownTextfield(
-                              icon: icnTent,
-                              titleHeaderString: "Status*",
-                              valueString:
-                                  selectedStatus?.assignmentRemarks ?? "",
-                              onTap: () {
-                                ToastManager.showLoader();
-                                getStatus();
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            AppDropdownTextfield(
-                              icon: icSearch,
-                              titleHeaderString: "Search By*",
-                              valueString:
-                                  selectedSearchBy?.assignmentRemarks ?? "",
-                              onTap: () {
-                                _showDropDownBottomSheet(
-                                  "Select Search By",
-                                  searcyByList,
-                                  DropDownTypeMenu.SearchBy,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            AppIconSearchTextfield(
-                              icon: icSearch,
-                              titleHeaderString: "Search Value*",
-                              controller: searchTextEditingController,
-                              onChange: (value) {
-                                searchRejectedBeneficaryList = searchByDescEn(
-                                  value,
-                                );
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0, 1),
+                      color: Colors.black.withValues(alpha: 0.15),
+                      spreadRadius: 0,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    AppTextField(
+                      onTap: () {
+                        ToastManager.showLoader();
+                        getStatus();
+                      },
+                      controller: TextEditingController(
+                        text: selectedStatus?.assignmentRemarks ?? "",
                       ),
-                      const SizedBox(height: 10),
-                      Expanded(
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: kPrimaryColor,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8),
-                                  ),
-                                ),
-                                height: 40,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        border: Border(
-                                          right: BorderSide(
-                                            color: kBlackColor,
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Sr. No.",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: kWhiteColor,
-                                            fontFamily:
-                                                FontConstants.interFonts,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: responsiveFont(13),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.transparent,
-                                          border: Border(
-                                            right: BorderSide(
-                                              color: kBlackColor,
-                                              width: 1,
-                                            ),
-                                          ),
-                                        ),
-                                        padding: EdgeInsets.fromLTRB(
-                                          4,
-                                          0,
-                                          4,
-                                          0,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Beneficiary Name",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                              color: kWhiteColor,
-                                              fontFamily:
-                                                  FontConstants.interFonts,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: responsiveFont(13),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 68,
-                                      decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        border: Border(
-                                          right: BorderSide(
-                                            color: kBlackColor,
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Area",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: kWhiteColor,
-                                            fontFamily:
-                                                FontConstants.interFonts,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: responsiveFont(13),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 84,
-                                      color: Colors.transparent,
-                                      child: Center(
-                                        child: Text(
-                                          "Pin code",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: kWhiteColor,
-                                            fontFamily:
-                                                FontConstants.interFonts,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: responsiveFont(13),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount:
-                                      searchRejectedBeneficaryList.length,
-                                  itemBuilder: (context, index) {
-                                    RecollectionBeneficiaryStatusandDetailsCountV1Output
-                                    obj = searchRejectedBeneficaryList[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        showRejectedBeneficiaryInfoScreenBottomSheet(
-                                          obj,
-                                        );
-                                      },
-                                      child: RejectedBeneficiaryRow(
-                                        index: index,
-                                        obj: obj,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+                      readOnly: true,
+                      label: RichText(
+                        text: TextSpan(
+                          text: 'Status*',
+                          style: TextStyle(
+                            color: kLabelTextColor,
+                            fontSize: 14.sp,
+                            fontFamily: FontConstants.interFonts,
                           ),
                         ),
                       ),
-                      // const SizedBox(height: 6),
+                      suffixIcon: Icon(Icons.arrow_drop_down_outlined),
+                      prefixIcon: Image.asset(
+                        icnTent,
+                        color: kPrimaryColor,
+                      ).paddingOnly(left: 6.w),
+                    ),
+                    // AppDropdownTextfield(
+                    //   icon: icnTent,
+                    //   titleHeaderString: "Status*",
+                    //   valueString:
+                    //   selectedStatus?.assignmentRemarks ?? "",
+                    //   onTap: () {
+                    //     ToastManager.showLoader();
+                    //     getStatus();
+                    //   },
+                    // ),
+                    const SizedBox(height: 10),
+                    // AppDropdownTextfield(
+                    //   icon: icSearch,
+                    //   titleHeaderString: "Search By*",
+                    //   valueString: selectedSearchBy?.assignmentRemarks ?? "",
+                    //   onTap: () {
+                    //     _showDropDownBottomSheet(
+                    //       "Select Search By",
+                    //       searcyByList,
+                    //       DropDownTypeMenu.SearchBy,
+                    //     );
+                    //   },
+                    // ),
+                    AppTextField(
+                      onTap: () {
+                        _showDropDownBottomSheet(
+                          "Select Search By",
+                          searcyByList,
+                          DropDownTypeMenu.SearchBy,
+                        );
+                      },
+                      controller: TextEditingController(
+                        text: selectedSearchBy?.assignmentRemarks ?? "",
+                      ),
+                      readOnly: true,
+                      label: RichText(
+                        text: TextSpan(
+                          text: 'Search By*',
+                          style: TextStyle(
+                            color: kLabelTextColor,
+                            fontSize: 14.sp,
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
+                      ),
+                      suffixIcon: Icon(Icons.arrow_drop_down_outlined),
+                      prefixIcon: Icon(
+                        Icons.search_sharp,
+                        color: kPrimaryColor,
+                        size: 36,
+                      ).paddingOnly(left: 6.w),
+                    ),
+
+                    const SizedBox(height: 10),
+                    // AppIconSearchTextfield(
+                    //   icon: icSearch,
+                    //   titleHeaderString: "Search Value*",
+                    //   controller: searchTextEditingController,
+                    //   onChange: (value) {
+                    //     searchRejectedBeneficaryList = searchByDescEn(value);
+                    //     setState(() {});
+                    //   },
+                    // ),
+                    AppTextField(
+                      onChange: (value) {
+                        searchRejectedBeneficaryList = searchByDescEn(value);
+                        setState(() {});
+                      },
+                      controller: searchTextEditingController,
+                      readOnly: true,
+                      label: RichText(
+                        text: TextSpan(
+                          text: 'Search Value*',
+                          style: TextStyle(
+                            color: kLabelTextColor,
+                            fontSize: 14.sp,
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
+                      ),
+                      suffixIcon: Icon(
+                        Icons.search_sharp,
+                        color: kPrimaryColor,
+                        size: 36,
+                      ),
+                      // prefixIcon: Image.asset(
+                      //   icSearch,
+                      //   color: kPrimaryColor,
+                      // ).paddingOnly(left: 6.w),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: Container(
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8),
+                          ),
+                        ),
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border(
+                                  right: BorderSide(
+                                    color: kBlackColor,
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Sr. No.",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: kWhiteColor,
+                                    fontFamily: FontConstants.interFonts,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: responsiveFont(13),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: kBlackColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                child: Center(
+                                  child: Text(
+                                    "Beneficiary Name",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: kWhiteColor,
+                                      fontFamily: FontConstants.interFonts,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: responsiveFont(13),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 68,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border(
+                                  right: BorderSide(
+                                    color: kBlackColor,
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Area",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: kWhiteColor,
+                                    fontFamily: FontConstants.interFonts,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: responsiveFont(13),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 84,
+                              color: Colors.transparent,
+                              child: Center(
+                                child: Text(
+                                  "Pin code",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: kWhiteColor,
+                                    fontFamily: FontConstants.interFonts,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: responsiveFont(13),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: searchRejectedBeneficaryList.length,
+                          itemBuilder: (context, index) {
+                            RecollectionBeneficiaryStatusandDetailsCountV1Output
+                            obj = searchRejectedBeneficaryList[index];
+                            return GestureDetector(
+                              onTap: () {
+                                showRejectedBeneficiaryInfoScreenBottomSheet(
+                                  obj,
+                                );
+                              },
+                              child: RejectedBeneficiaryRow(
+                                index: index,
+                                obj: obj,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
+              // const SizedBox(height: 6),
             ],
           ),
         ),
