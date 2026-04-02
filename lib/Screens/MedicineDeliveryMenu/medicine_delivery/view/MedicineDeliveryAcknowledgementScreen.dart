@@ -1151,7 +1151,7 @@ class _MedicineDeliveryAcknowledgementScreenState
                           )
                         : hasNetwork
                             ? _SslSafeImage(
-                                url: url!,
+                                url: url,
                                 width: 52,
                                 height: 52,
                                 fit: BoxFit.cover,
@@ -1573,9 +1573,9 @@ class _MedicineDeliveryAcknowledgementScreenState
               child: captured
                   ? Image.file(file, width: 52, height: 52, fit: BoxFit.cover)
                   : hasFallbackLocal
-                      ? Image.file(fallbackLocalFile!, width: 52, height: 52, fit: BoxFit.cover)
+                      ? Image.file(fallbackLocalFile, width: 52, height: 52, fit: BoxFit.cover)
                       : hasFallbackUrl
-                          ? _SslSafeImage(url: fallbackUrl!, width: 52, height: 52, fit: BoxFit.cover)
+                          ? _SslSafeImage(url: fallbackUrl, width: 52, height: 52, fit: BoxFit.cover)
                           : Image.asset(icCameraIcon, width: 36, height: 36),
             ),
             SizedBox(width: 12.w),

@@ -202,10 +202,20 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
   }
 
   void showAlertmessage(String campID) {
-    ToastManager.showSuccessPopup(
-      context,
-      icSuccessIcon,
-      "Camp Created Successfully.\nCamp ID $campID",
+    // ToastManager.showSuccessPopup(
+    //   context,
+    //   icSuccessIcon,
+    //   "Camp Created Successfully.\nCamp ID $campID",
+    // );
+
+    ToastManager().showSuccessOkayDialog(
+      context: context,
+      title: "Success",
+      message: "Camp Created Successfully.\nCamp ID $campID",
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
     );
   }
 
@@ -806,10 +816,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
               // const SizedBox(height: 8),
               AppTextField(
                 controller: campNameTextField,
-                readOnly: true,
-                onTap: () {
-                  getLandingLabAPI();
-                },
+                readOnly: false,
+                // onTap: () {
+                //   getLandingLabAPI();
+                // },
                 hint: 'Camp Name',
                 label: CommonText(
                   text: 'Camp Name',
@@ -836,7 +846,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                     ),
                   ),
                 ),
-                suffixIcon: Icon(Icons.keyboard_arrow_down),
+                // suffixIcon: Icon(Icons.keyboard_arrow_down),
               ).paddingOnly(top: 12),
               AppTextField(
                 controller: campAddressTextField,
@@ -1113,9 +1123,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
               //   textInputType: TextInputType.number,
               // ),
               AppTextField(
+                textInputType: TextInputType.number,
                 controller: expectedBeneficiaryTextField,
-                readOnly: true,
-
+                readOnly: false,
                 hint: 'Expected Beneficiary',
                 label: CommonText(
                   text: 'Expected Beneficiary',

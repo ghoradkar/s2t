@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:s2toperational/Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
 import 'package:s2toperational/Screens/HomeScreen/HomeScreen.dart';
 import 'package:s2toperational/Screens/VerifyOTPScreen/VerifyOTPScreen.dart';
-import '../../Modules/Enums/Enums.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
 import '../../Modules/ToastManager/ToastManager.dart';
 import '../../Modules/constants/constants.dart';

@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_camp_details_controller.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/AssignedD2DPhysicalExaminationPatientListScreen/AssignedD2DPhysicalExaminationPatientListScreen.dart';
@@ -36,83 +37,85 @@ class D2DPhysicalExaminationCampDetailsScreen extends StatelessWidget {
       }),
       dispose: (_) => Get.delete<D2DCampDetailsController>(),
       builder: (ctrl) {
-        return Scaffold(
-          appBar: mAppBar(
-            scTitle: "D2D Physical Examination Details",
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-          ),
-          body: KeyboardDismissOnTap(
-            dismissOnCapturedTaps: true,
-            child: SizedBox(
-              height: SizeConfig.screenHeight,
-              width: SizeConfig.screenWidth,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(12.h, 8.h, 12.h, 8.h),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildCampInfoCard(),
-                    SizedBox(height: 8.h),
-                    _buildHeaderRow(),
-                    _buildTotalsRow(ctrl),
-                    SizedBox(height: 6.h),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: ctrl.physicalExaminationList.length,
-                        itemBuilder: (context, index) {
-                          final obj = ctrl.physicalExaminationList[index];
-                          return D2DPhysicalExaminationCampRow(
-                            obj: obj,
-                            onAssignedDidPressed: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      AssignedD2DPhysicalExaminationPatientListScreen(
-                                        dISTLGDCODE: obj.dISTLGDCODE ?? 0,
-                                        campId: obj.campId ?? 0,
-                                        healthScreentype: "16",
-                                        flag: "2",
-                                      ),
-                                ),
-                              );
-                              ctrl.fetchData(
-                                campId: selectedPhysicalExamObj.campId ?? 0,
-                                doctorId:
-                                    selectedPhysicalExamObj.doctorID ?? 0,
-                              );
-                            },
-                            onTeamNoIDDidPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CallTopTeamD2DScreen(
-                                    campId: obj.campId ?? 0,
-                                    doctorID: obj.doctorID ?? 0,
-                                    teamid: obj.teamid ?? "",
+        return NetworkWrapper(
+          child: Scaffold(
+            appBar: mAppBar(
+              scTitle: "D2D Physical Examination Details",
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+            ),
+            body: KeyboardDismissOnTap(
+              dismissOnCapturedTaps: true,
+              child: SizedBox(
+                height: SizeConfig.screenHeight,
+                width: SizeConfig.screenWidth,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(12.h, 8.h, 12.h, 8.h),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildCampInfoCard(),
+                      SizedBox(height: 8.h),
+                      _buildHeaderRow(),
+                      _buildTotalsRow(ctrl),
+                      SizedBox(height: 6.h),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: ctrl.physicalExaminationList.length,
+                          itemBuilder: (context, index) {
+                            final obj = ctrl.physicalExaminationList[index];
+                            return D2DPhysicalExaminationCampRow(
+                              obj: obj,
+                              onAssignedDidPressed: () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AssignedD2DPhysicalExaminationPatientListScreen(
+                                          dISTLGDCODE: obj.dISTLGDCODE ?? 0,
+                                          campId: obj.campId ?? 0,
+                                          healthScreentype: "16",
+                                          flag: "2",
+                                        ),
                                   ),
-                                ),
-                              );
-                            },
-                            onCallTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CallTopTeamD2DScreen(
-                                    campId: obj.campId ?? 0,
-                                    doctorID: obj.doctorID ?? 0,
-                                    teamid: obj.teamid ?? "",
+                                );
+                                ctrl.fetchData(
+                                  campId: selectedPhysicalExamObj.campId ?? 0,
+                                  doctorId:
+                                      selectedPhysicalExamObj.doctorID ?? 0,
+                                );
+                              },
+                              onTeamNoIDDidPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CallTopTeamD2DScreen(
+                                      campId: obj.campId ?? 0,
+                                      doctorID: obj.doctorID ?? 0,
+                                      teamid: obj.teamid ?? "",
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
+                                );
+                              },
+                              onCallTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CallTopTeamD2DScreen(
+                                      campId: obj.campId ?? 0,
+                                      doctorID: obj.doctorID ?? 0,
+                                      teamid: obj.teamid ?? "",
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

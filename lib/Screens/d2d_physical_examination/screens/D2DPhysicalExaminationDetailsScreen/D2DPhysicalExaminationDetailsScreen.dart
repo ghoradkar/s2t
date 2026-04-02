@@ -10,6 +10,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_physical_examination_controller.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/AssignedD2DPhysicalExaminationPatientListScreen/AssignedD2DPhysicalExaminationPatientListScreen.dart';
@@ -26,51 +27,53 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
       init: D2DPhysicalExaminationController(),
       dispose: (_) => Get.delete<D2DPhysicalExaminationController>(),
       builder: (ctrl) {
-        return Scaffold(
-          appBar: mAppBar(
-            scTitle: "D2D Physical Examination Details",
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-            showActions: true,
-            actions: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 10.w, 0),
-                child: GestureDetector(
-                  onTap: () => _showFilterPopup(context),
-                  child: SizedBox(
-                    width: 26.w,
-                    height: 26.h,
-                    child: Image.asset(icFilter),
+        return NetworkWrapper(
+          child: Scaffold(
+            appBar: mAppBar(
+              scTitle: "D2D Physical Examination Details",
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+              showActions: true,
+              actions: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 10.w, 0),
+                  child: GestureDetector(
+                    onTap: () => _showFilterPopup(context),
+                    child: SizedBox(
+                      width: 26.w,
+                      height: 26.h,
+                      child: Image.asset(icFilter),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          body: KeyboardDismissOnTap(
-            dismissOnCapturedTaps: true,
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
-              child: Column(
-                children: [
-                  _buildHeaderRow(),
-                  _buildTotalsRow(ctrl),
-                  Container(height: 0.5.h, color: Colors.grey),
-                  Expanded(
-                    child: ctrl.isLoading
-                        ? const CommonSkeletonD2DPhysicalExamTable()
-                        : ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: ctrl.physicalExaminationList.length,
-                            itemBuilder: (context, index) {
-                              return _buildListRow(
-                                context,
-                                ctrl.physicalExaminationList[index],
-                                ctrl,
-                              );
-                            },
-                          ),
-                  ),
-                ],
+              ],
+            ),
+            body: KeyboardDismissOnTap(
+              dismissOnCapturedTaps: true,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                child: Column(
+                  children: [
+                    _buildHeaderRow(),
+                    _buildTotalsRow(ctrl),
+                    Container(height: 0.5.h, color: Colors.grey),
+                    Expanded(
+                      child: ctrl.isLoading
+                          ? const CommonSkeletonD2DPhysicalExamTable()
+                          : ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: ctrl.physicalExaminationList.length,
+                              itemBuilder: (context, index) {
+                                return _buildListRow(
+                                  context,
+                                  ctrl.physicalExaminationList[index],
+                                  ctrl,
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -84,23 +87,18 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
       height: 50.h,
       decoration: BoxDecoration(
         color: kWhiteColor,
-        border: Border(
-          right: BorderSide(color: Colors.grey, width: 0.5),
-          left: BorderSide(color: Colors.grey, width: 0.5),
-          top: BorderSide(color: Colors.grey, width: 0.5),
-          bottom: BorderSide(color: Colors.grey, width: 0.5),
-        ),
+        border: Border.all(color: Colors.grey, width: 0.5),
       ),
       child: Row(
         children: [
           _headerCell("District"),
-          Container(width: 0.5.w, color: Colors.grey),
+          Container(width: 0.5, color: Colors.grey),
           _headerCell("Camp ID"),
-          Container(width: 0.5.w, color: Colors.grey),
+          Container(width: 0.5, color: Colors.grey),
           _headerCell("Assigned"),
-          Container(width: 0.5.w, color: Colors.grey),
+          Container(width: 0.5, color: Colors.grey),
           _headerCell("Calling Pending"),
-          Container(width: 0.5.w, color: Colors.grey),
+          Container(width: 0.5, color: Colors.grey),
           _headerCell("Phy. Exam.\nPending"),
         ],
       ),
@@ -157,9 +155,9 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
-            right: BorderSide(color: Colors.grey, width: 0.5.w),
+            right: BorderSide(color: Colors.grey, width: 0.5),
             left: hasBothBorders
-                ? BorderSide(color: Colors.grey, width: 0.5.w)
+                ? BorderSide(color: Colors.grey, width: 0.5)
                 : BorderSide.none,
           ),
         ),
@@ -188,12 +186,14 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          bottom: BorderSide(color: Colors.grey, width: 0.5.w),
+          left: BorderSide(color: Colors.grey, width: 0.5),
+          bottom: BorderSide(color: Colors.grey, width: 0.5),
         ),
       ),
-      child: Row(
+      child: IntrinsicHeight(
+        child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _dataCell(obj.district ?? "", isLink: false),
           _tapCell(
@@ -211,7 +211,6 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
               ctrl.fetchData();
             },
           ),
-          Container(width: 0.5.w, color: Colors.grey),
           _tapCell(
             "${obj.assigned ?? ""}",
             onTap: () async {
@@ -230,11 +229,10 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
               ctrl.fetchData();
             },
           ),
-          Container(width: 0.5.w, color: Colors.grey),
           _dataCell("${obj.callingPending ?? ""}"),
-          Container(width: 0.5.w, color: Colors.grey),
           _dataCell("${obj.phyExamPending ?? ""}"),
         ],
+      ),
       ),
     );
   }
@@ -246,8 +244,7 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
-            right: BorderSide(color: Colors.grey, width: 0.5.w),
-            left: BorderSide(color: Colors.grey, width: 0.5.w),
+            right: BorderSide(color: Colors.grey, width: 0.5),
           ),
         ),
         child: Center(
@@ -275,7 +272,7 @@ class D2DPhysicalExaminationDetailsScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
-              right: BorderSide(color: Colors.grey, width: 0.5.w),
+              right: BorderSide(color: Colors.grey, width: 0.5),
             ),
           ),
           child: Center(

@@ -6,7 +6,6 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppBarCodeTextfield.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';

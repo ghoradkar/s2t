@@ -12,19 +12,19 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/AdminDashboardWidget.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Screens/D2DTeamsScreen.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Screens/LiverScanningScreen.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Screens/S2TPatientAppScreen.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
-import 'package:s2toperational/Screens/CampCalendarScreen/CampCalendarScreen.dart';
 import 'package:s2toperational/Screens/D2DAvailability/D2DAvailabilityScreen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
 import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketAllocation/view/PacketAllocationScreen.dart';
 import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketCollection/view/PacketCollectionScreen.dart';
 import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketReceive/view/PacketReceiveScreen.dart';
 import 'package:s2toperational/Screens/MedicineDeliveryMenu/medicine_delivery_dash.dart';
+import 'package:s2toperational/Screens/camp_calendar/screen/CampCalendarScreen.dart';
+import 'package:s2toperational/Screens/d2d_teams/screen/D2DTeamsScreen.dart';
+import 'package:s2toperational/Screens/liver_scanning/screen/LiverScanningScreen.dart';
+import 'package:s2toperational/Screens/s2t_patient_app/screen/S2TPatientAppScreen.dart';
 import 'package:s2toperational/Screens/super_admin/controller/super_admin_controller.dart';
 import 'package:s2toperational/Screens/super_admin/screens/super_admin_dashboard.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/D2DPhysicalExaminationDetailsScreen/D2DPhysicalExaminationDetailsScreen.dart';
@@ -34,8 +34,6 @@ import '../../Modules/constants/constants.dart';
 import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/utilities/DeviceInfoUtil.dart';
-import '../../Modules/utilities/SizeConfig.dart';
-import '../../Modules/widgets/AppButton.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
 import '../AppointmentsConfirmedList/AppointmentsConfirmedListScreen/AppointmentsConfirmedListScreen.dart';
 import '../CTAssignment/CTAssignmentScreen/CTAssignmentScreen.dart';
@@ -394,9 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.HealthScreeningDetails);
       // menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
-    } else if (dESGID == 173 && apiManager.apiMode == APIMode.Beta) {
-      menuList.add(DashboardMenu.UserAttendance);
-    } else if (dESGID == 172) {
+    } else if (dESGID == 173 || dESGID == 172) {
       menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 75) {
       isShowRadioCamp = true;
@@ -431,10 +427,11 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.CampCalendar);
       menuList.add(DashboardMenu.HealthScreeningDetails);
       menuList.add(DashboardMenu.UserAttendance);
-    } else if (dESGID == 141) {
-      menuList.add(DashboardMenu.UserAttendance);
-      menuList.add(DashboardMenu.ELearning);
     }
+    // else if (dESGID == 141) {
+    //   menuList.add(DashboardMenu.UserAttendance);
+    //   menuList.add(DashboardMenu.ELearning);
+    // }
     setState(() {});
   }
 
@@ -455,12 +452,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isShowRadioCamp = true;
       // topHeight = 200;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
-    } else if (dESGID == 173 && apiManager.apiMode == APIMode.Beta) {
-      isShowRadioCamp = true;
-      menuList.add(DashboardMenu.MedicineDeliveryMenu);
-      menuList.add(DashboardMenu.CampCalendar);
-      menuList.add(DashboardMenu.UserAttendance);
-    } else if (dESGID == 172) {
+    } else if (dESGID == 173 || dESGID == 172) {
       isShowRadioCamp = true;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
       menuList.add(DashboardMenu.CampCalendar);
@@ -518,11 +510,11 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
     } else if (dESGID == 141) {
-      menuList.add(DashboardMenu.UserAttendance);
-      menuList.add(DashboardMenu.D2DPhysicalExaminationDetails);
       menuList.add(DashboardMenu.HealthScreeningDetails);
+      menuList.add(DashboardMenu.D2DPhysicalExaminationDetails);
+      menuList.add(DashboardMenu.ELearning);
+      menuList.add(DashboardMenu.UserAttendance);
       // menuList.add(DashboardMenu.D2DAvailabilityScreening);
-      // menuList.add(DashboardMenu.ELearning);
     }
     setState(() {});
   }
@@ -937,6 +929,4 @@ class _HomeScreenState extends State<HomeScreen> {
       todaysTotals: todaysTotals!,
     );
   }
-
 }
-
