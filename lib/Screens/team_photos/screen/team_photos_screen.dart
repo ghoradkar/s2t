@@ -17,8 +17,8 @@ import 'package:s2toperational/Screens/team_photos/model/camp_list_response.dart
 import 'package:s2toperational/Screens/team_photos/model/teams_details_response.dart';
 
 class TeamPhotosScreen extends StatefulWidget {
-  /// Pass "1" for Regular, "3" for D2D — matches the dashboard selection.
   final String initialCampType;
+
   const TeamPhotosScreen({super.key, this.initialCampType = '1'});
 
   @override
@@ -31,7 +31,6 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
   @override
   void initState() {
     super.initState();
-    // Always delete any cached instance so we start fresh every visit.
     Get.delete<TeamPhotosController>(force: true);
     c = Get.put(TeamPhotosController());
     c.applyCampType(widget.initialCampType);
@@ -57,7 +56,11 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
             padding: EdgeInsets.only(right: 12.w),
             child: GestureDetector(
               onTap: () => _showInfoDialog(context),
-              child: Icon(Icons.info_outline, color: kWhiteColor, size: 22),
+              child: const Icon(
+                Icons.info_outline,
+                color: kWhiteColor,
+                size: 22,
+              ),
             ),
           ),
         ],
@@ -67,67 +70,81 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Camp type toggle ──────────────────────────────────────────────
+            // ── Camp type toggle ──────────────────────────────────────────
             if (!c.hideTabToggle) ...[
               _CampTypeToggle(controller: c),
               SizedBox(height: 14.h),
             ],
 
-            // ── Filter card ───────────────────────────────────────────────────
+            // ── Filter card ───────────────────────────────────────────────
             _SectionCard(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Date
-                  Obx(
-                    () => AppTextField(
-                      controller: TextEditingController(
-                        text: c.selectedDate.value,
-                      ),
-                      readOnly: true,
-                      onTap: () => c.onDateChanged(context),
-                      label: _label('Date'),
-                      prefixIcon: Image.asset(
-                        icCalendarMonth,
-                        color: kPrimaryColor,
-                        width: 18,
-                        height: 18,
-                      ).paddingOnly(left: 6.w),
-                      suffixIcon: const Icon(
-                        Icons.calendar_today,
-                        size: 18,
-                        color: kPrimaryColor,
-                      ),
-                    ),
+                  _sectionHeader(
+                    icon: Icons.tune_rounded,
+                    label: 'Select Filter',
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      // Date
+                      Obx(
+                        () => Expanded(
+                          child: AppTextField(
+                            controller: TextEditingController(
+                              text: c.selectedDate.value,
+                            ),
+                            readOnly: true,
+                            onTap: () => c.onDateChanged(context),
+                            label: _label('Date'),
+                            prefixIcon: Image.asset(
+                              icCalendarMonth,
+                              color: kPrimaryColor,
+                              width: 18,
+                              height: 18,
+                            ).paddingOnly(left: 6.w),
+                            suffixIcon: const Icon(
+                              Icons.calendar_today,
+                              size: 18,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
 
-                  // Camp ID
-                  Obx(
-                    () => AppTextField(
-                      controller: TextEditingController(
-                        text: c.selectedCamp.value?.campId ?? '',
+                      // Camp ID
+                      Obx(
+                        () => Expanded(
+                          child: AppTextField(
+                            controller: TextEditingController(
+                              text: c.selectedCamp.value?.campId ?? '',
+                            ),
+                            readOnly: true,
+                            onTap: () => c.showCampDropdown(context),
+                            label: _label('Camp ID'),
+                            prefixIcon: const Icon(
+                              Icons.location_on_outlined,
+                              color: kPrimaryColor,
+                              size: 18,
+                            ).paddingOnly(left: 6.w),
+                            suffixIcon: const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ),
                       ),
-                      readOnly: true,
-                      onTap: () => c.showCampDropdown(context),
-                      label: _label('Camp ID'),
-                      prefixIcon: const Icon(
-                        Icons.location_on_outlined,
-                        color: kPrimaryColor,
-                        size: 18,
-                      ).paddingOnly(left: 6.w),
-                      suffixIcon: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: kPrimaryColor,
-                      ),
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 10.h),
 
                   // Team (D2D / MMU only)
                   Obx(() {
                     if (!c.isD2DOrMMU) return const SizedBox.shrink();
                     return Column(
                       children: [
+                        SizedBox(height: 10.h),
                         AppTextField(
                           controller: TextEditingController(
                             text: c.selectedTeam.value?.displayName ?? '',
@@ -143,20 +160,20 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
                             color: kPrimaryColor,
                             size: 18,
                           ).paddingOnly(left: 6.w),
-                          suffixIcon: c.isLoadingTeams.value
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                          suffixIcon:
+                              c.isLoadingTeams.value
+                                  ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ).paddingOnly(right: 8.w)
+                                  : const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: kPrimaryColor,
                                   ),
-                                ).paddingOnly(right: 8.w)
-                              : const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: kPrimaryColor,
-                                ),
                         ),
-                        SizedBox(height: 10.h),
                       ],
                     );
                   }),
@@ -165,28 +182,23 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
             ),
             SizedBox(height: 14.h),
 
-            // ── Attendance table — always visible ─────────────────────────────
+            // ── Attendance table ──────────────────────────────────────────
             Obx(() => _AttendanceTable(list: c.attendanceList.value)),
             SizedBox(height: 14.h),
 
-            // ── Photo cards — always visible ──────────────────────────────────
-            _PhotoCard(
-              title: 'Team Photo — Check In',
-              isCheckIn: true,
-              controller: c,
-            ),
+            // ── Photo cards ───────────────────────────────────────────────
+            _PhotoCard(title: 'Check-In Photo', isCheckIn: true, controller: c),
             SizedBox(height: 12.h),
             _PhotoCard(
-              title: 'Team Photo — Check Out',
+              title: 'Check-Out Photo',
               isCheckIn: false,
               controller: c,
             ),
             SizedBox(height: 16.h),
 
-            // Upload button
+            // ── Upload / Camp Closing button ──────────────────────────────
             Obx(() {
               if (c.bothPhotosUploaded) {
-                // Camp closing confirmation (D2D only)
                 if (c.isD2DOrMMU) {
                   return AppActiveButton(
                     buttontitle: 'Camp Closing Confirmation',
@@ -196,12 +208,14 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
                 return const SizedBox.shrink();
               }
               return AppActiveButton(
-                buttontitle: c.isMarkInOut.value == '0'
-                    ? 'Upload Check-In Photo'
-                    : 'Upload Check-Out Photo',
-                onTap: c.isUploadingPhoto.value
-                    ? () {}
-                    : () => c.uploadPhoto(
+                buttontitle:
+                    c.isMarkInOut.value == '0'
+                        ? 'Upload Check-In Photo'
+                        : 'Upload Check-Out Photo',
+                onTap:
+                    c.isUploadingPhoto.value
+                        ? () {}
+                        : () => c.uploadPhoto(
                           isCheckIn: c.isMarkInOut.value == '0',
                         ),
               );
@@ -213,16 +227,42 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
     );
   }
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────────
+  // ─── Shared helpers ───────────────────────────────────────────────────────────
 
   static Widget _label(String text) => Text(
-        text,
-        style: TextStyle(
-          color: kLabelTextColor,
-          fontSize: 14.sp,
-          fontFamily: FontConstants.interFonts,
+    text,
+    style: TextStyle(
+      color: kLabelTextColor,
+      fontSize: 14.sp,
+      fontFamily: FontConstants.interFonts,
+    ),
+  );
+
+  static Widget _sectionHeader({
+    required IconData icon,
+    required String label,
+  }) => Row(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: kPrimaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
         ),
-      );
+        child: Icon(icon, color: kPrimaryColor, size: 16),
+      ),
+      SizedBox(width: 8.w),
+      Text(
+        label,
+        style: TextStyle(
+          fontFamily: FontConstants.interFonts,
+          fontWeight: FontWeight.w600,
+          fontSize: 13.sp,
+          color: kPrimaryColor,
+        ),
+      ),
+    ],
+  );
 
   static void _toast(String msg) {
     Get.snackbar(
@@ -239,47 +279,45 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
   static void _showInfoDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        title: Text(
-          'Team Photos',
-          style: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
-          ),
-        ),
-        content: Text(
-          'Capture and upload the team group photo for Check-In and Check-Out. '
-          'All team members must mark attendance before uploading.',
-          style: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontSize: 14.sp,
-            color: kTextColor,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
+      builder:
+          (_) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            title: Text(
+              'Team Photos',
               style: TextStyle(
-                color: kPrimaryColor,
                 fontFamily: FontConstants.interFonts,
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
               ),
             ),
+            content: Text(
+              'Capture and upload the team group photo for Check-In and Check-Out. '
+              'All team members must mark attendance before uploading.',
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 14.sp,
+                color: kTextColor,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'OK',
+                  style: TextStyle(
+                    color: kPrimaryColor,
+                    fontFamily: FontConstants.interFonts,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
-  static void _showCampPicker(
-    BuildContext context,
-    TeamPhotosController c,
-  ) {
+  static void _showTeamPicker(BuildContext context, TeamPhotosController c) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -287,46 +325,20 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => _PickerSheet<CampListOutput>(
-        title: 'Select Camp',
-        items: c.campList,
-        labelBuilder: (item) => 'Camp ID: ${item.campId}',
-        onSelected: (item) {
-          Navigator.pop(context);
-          c.onCampSelected(item);
-        },
-      ),
+      builder:
+          (_) => _PickerSheet<TeamsDetailsOutput>(
+            title: 'Select Team',
+            items: c.teamList,
+            labelBuilder: (item) => item.displayName,
+            onSelected: (item) {
+              Navigator.pop(context);
+              c.onTeamSelected(item);
+            },
+          ),
     );
   }
 
-  static void _showTeamPicker(
-    BuildContext context,
-    TeamPhotosController c,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: kWhiteColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _PickerSheet<TeamsDetailsOutput>(
-        title: 'Select Team',
-        items: c.teamList,
-        labelBuilder: (item) => item.displayName,
-        onSelected: (item) {
-          Navigator.pop(context);
-          c.onTeamSelected(item);
-        },
-      ),
-    );
-  }
-
-  static void _onCampClosingTap(
-    BuildContext context,
-    TeamPhotosController c,
-  ) {
-    // TODO: Navigate to CampClosingConfirmationScreen when built
+  static void _onCampClosingTap(BuildContext context, TeamPhotosController c) {
     _toast('Camp Closing Confirmation coming soon');
   }
 }
@@ -335,6 +347,7 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
 
 class _CampTypeToggle extends StatelessWidget {
   final TeamPhotosController controller;
+
   const _CampTypeToggle({required this.controller});
 
   @override
@@ -352,7 +365,6 @@ class _CampTypeToggle extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Regular tab: always visible when showBoth; hidden when single-tab and D2D is active
             if (showBoth || isRegular)
               _tab(
                 label: 'Regular Camp',
@@ -360,16 +372,15 @@ class _CampTypeToggle extends StatelessWidget {
                 selected: isRegular,
                 onTap: showBoth ? controller.selectRegularCamp : () {},
                 leftRadius: true,
-                rightRadius: showBoth ? false : true, // full radius when alone
+                rightRadius: showBoth ? false : true,
               ),
-            // D2D tab: always visible when showBoth; hidden when single-tab and Regular is active
             if (showBoth || !isRegular)
               _tab(
                 label: 'D2D Camp',
                 icon: "assets/icons/home-2.png",
                 selected: !isRegular,
                 onTap: showBoth ? controller.selectD2DCamp : () {},
-                leftRadius: showBoth ? false : true, // full radius when alone
+                leftRadius: showBoth ? false : true,
                 rightRadius: true,
               ),
           ],
@@ -401,7 +412,12 @@ class _CampTypeToggle extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(icon, color: selected ? kWhiteColor : kLabelTextColor, width: 20.w, height: 20.h),
+              Image.asset(
+                icon,
+                color: selected ? kWhiteColor : kLabelTextColor,
+                width: 20.w,
+                height: 20.h,
+              ),
               SizedBox(width: 6.w),
               Text(
                 label,
@@ -424,7 +440,11 @@ class _CampTypeToggle extends StatelessWidget {
 
 class _AttendanceTable extends StatelessWidget {
   final List<AttendanceDetailsOutput> list;
+
   const _AttendanceTable({required this.list});
+
+  // Vertical separator widget — stretches to row height via IntrinsicHeight
+  Widget _vSep(Color color) => Container(width: 1, color: color);
 
   @override
   Widget build(BuildContext context) {
@@ -432,172 +452,369 @@ class _AttendanceTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Team Attendance',
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontWeight: FontWeight.w600,
-              fontSize: 14.sp,
-              color: kPrimaryColor,
-            ),
-          ),
-          SizedBox(height: 10.h),
-          // Header row
-          Container(
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
-            child: Row(
-              children: [
-                Expanded(flex: 3, child: _headerCell('Member')),
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _headerCell('Check In'),
-                      SizedBox(height: 2.h),
-                      _headerCell('Time | Distance', sub: true),
-                    ],
-                  ),
+          // ── Section title + badge ──────────────────────────────────────
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: kPrimaryColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _headerCell('Check Out'),
-                      SizedBox(height: 2.h),
-                      _headerCell('Time | Distance', sub: true),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Empty state
-          if (list.isEmpty)
-            Container(
-              color: kBackground,
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
-              child: Center(
-                child: Text(
-                  'No attendance data',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    fontSize: 13.sp,
-                    color: kLabelTextColor,
-                  ),
+                child: const Icon(
+                  Icons.people_alt_outlined,
+                  color: kPrimaryColor,
+                  size: 16,
                 ),
               ),
-            ),
-          // Data rows
-          ...list.asMap().entries.map((e) {
-            final isEven = e.key.isEven;
-            final m = e.value;
-            return Container(
-              color: isEven ? kBackground : kWhiteColor,
-              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
+              SizedBox(width: 8.w),
+              Text(
+                'Team Attendance',
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13.sp,
+                  color: kPrimaryColor,
+                ),
+              ),
+              const Spacer(),
+              if (list.isNotEmpty)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${list.length} Members',
+                    style: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontSize: 10.sp,
+                      color: kWhiteColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+
+          // ── Table (clipped for rounded corners) ───────────────────────
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Column(
+              children: [
+                // ── Group header row ──────────────────────────────────
+                Container(
+                  color: kPrimaryColor,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Team column
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8.h,
+                              horizontal: 8.w,
+                            ),
+                            child: _headerCell('Team'),
+                          ),
+                        ),
+                        _vSep(kWhiteColor.withValues(alpha: 0.3)),
+                        // Check In group
+                        Expanded(
+                          flex: 4,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            child: Center(child: _headerCell('Check In')),
+                          ),
+                        ),
+                        _vSep(kWhiteColor.withValues(alpha: 0.3)),
+                        // Check Out group
+                        Expanded(
+                          flex: 4,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            child: Center(child: _headerCell('Check Out')),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // ── Sub-header row ────────────────────────────────────
+                Container(
+                  color: kPrimaryColor.withValues(alpha: 0.82),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Empty team slot
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 5.h,
+                              horizontal: 8.w,
+                            ),
+                            child: const SizedBox(),
+                          ),
+                        ),
+                        _vSep(kWhiteColor.withValues(alpha: 0.25)),
+                        // In Time
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 5.h,
+                              horizontal: 4.w,
+                            ),
+                            child: _headerCell('Time', sub: true),
+                          ),
+                        ),
+                        _vSep(kWhiteColor.withValues(alpha: 0.18)),
+                        // In Dist
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 5.h,
+                              horizontal: 4.w,
+                            ),
+                            child: _headerCell('Dist.', sub: true),
+                          ),
+                        ),
+                        _vSep(kWhiteColor.withValues(alpha: 0.25)),
+                        // Out Time
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 5.h,
+                              horizontal: 4.w,
+                            ),
+                            child: _headerCell('Time', sub: true),
+                          ),
+                        ),
+                        _vSep(kWhiteColor.withValues(alpha: 0.18)),
+                        // Out Dist
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 5.h,
+                              horizontal: 4.w,
+                            ),
+                            child: _headerCell('Dist.', sub: true),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // ── Empty state ───────────────────────────────────────
+                if (list.isEmpty)
+                  Container(
+                    width: double.infinity,
+                    color: kWhiteColor,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 24.h,
+                      horizontal: 8.w,
+                    ),
                     child: Text(
-                      m.memberName ?? '—',
+                      'No attendance data',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: FontConstants.interFonts,
-                        fontSize: 12.sp,
-                        color: kTextColor,
+                        fontSize: 13.sp,
+                        color: kLabelTextColor,
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: _timeDistanceCell(
-                      time: m.isInPending ? 'Pending' : (m.inTime ?? '—'),
-                      distance: m.inDistanceInKM,
-                      isPending: m.isInPending,
+
+                // ── Data rows ─────────────────────────────────────────
+                ...list.asMap().entries.map((e) {
+                  final isEven = e.key.isEven;
+                  final m = e.value;
+                  return Container(
+                    color: isEven ? kBackground : kWhiteColor,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 1,
+                          color: kTextFieldBorder.withValues(alpha: 0.5),
+                        ),
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Member name
+                              Expanded(
+                                flex: 3,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 8.h,
+                                    horizontal: 8.w,
+                                  ),
+                                  child: Text(
+                                    m.memberName ?? '—',
+                                    style: TextStyle(
+                                      fontFamily: FontConstants.interFonts,
+                                      fontSize: 11.sp,
+                                      color: kTextColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              _vSep(kTextFieldBorder),
+                              // Check-in Time
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 8.h,
+                                    horizontal: 4.w,
+                                  ),
+                                  child: _timeCell(
+                                    value:
+                                        m.isInPending
+                                            ? 'Pending'
+                                            : (m.inTime ?? '—'),
+                                    isPending: m.isInPending,
+                                  ),
+                                ),
+                              ),
+                              _vSep(kTextFieldBorder),
+                              // Check-in Distance
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 8.h,
+                                    horizontal: 4.w,
+                                  ),
+                                  child: _distanceCell(
+                                    value:
+                                        m.isInPending
+                                            ? '—'
+                                            : (m.inDistanceInKM ?? '—'),
+                                  ),
+                                ),
+                              ),
+                              _vSep(kTextFieldBorder),
+                              // Check-out Time
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 8.h,
+                                    horizontal: 4.w,
+                                  ),
+                                  child: _timeCell(
+                                    value:
+                                        m.isOutPending
+                                            ? 'Pending'
+                                            : (m.outTime ?? '—'),
+                                    isPending: m.isOutPending,
+                                  ),
+                                ),
+                              ),
+                              _vSep(kTextFieldBorder),
+                              // Check-out Distance
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 8.h,
+                                    horizontal: 4.w,
+                                  ),
+                                  child: _distanceCell(
+                                    value:
+                                        m.isOutPending
+                                            ? '—'
+                                            : (m.outDistanceInKM ?? '—'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: _timeDistanceCell(
-                      time: m.isOutPending ? 'Pending' : (m.outTime ?? '—'),
-                      distance: m.outDistanceInKM,
-                      isPending: m.isOutPending,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                  );
+                }),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _headerCell(String text, {bool sub = false}) => Text(
-        text,
-        style: TextStyle(
-          fontFamily: FontConstants.interFonts,
-          fontSize: sub ? 10.sp : 12.sp,
-          fontWeight: sub ? FontWeight.w400 : FontWeight.w600,
-          color: kWhiteColor.withValues(alpha: sub ? 0.75 : 1.0),
-        ),
-      );
+    text,
+    style: TextStyle(
+      fontFamily: FontConstants.interFonts,
+      fontSize: sub ? 10.sp : 12.sp,
+      fontWeight: sub ? FontWeight.w400 : FontWeight.w600,
+      color: kWhiteColor.withValues(alpha: sub ? 0.75 : 1.0),
+    ),
+    textAlign: TextAlign.start,
+  );
 
-  Widget _timeDistanceCell({
-    required String time,
-    required String? distance,
-    required bool isPending,
-  }) {
+  Widget _timeCell({required String value, required bool isPending}) {
     if (isPending) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
         decoration: BoxDecoration(
-          color: noteRedColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: noteRedColor.withValues(alpha: 0.4)),
+          color: noteRedColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: noteRedColor.withValues(alpha: 0.35)),
         ),
         child: Text(
           'Pending',
           style: TextStyle(
             fontFamily: FontConstants.interFonts,
-            fontSize: 10.sp,
+            fontSize: 9.sp,
             color: noteRedColor,
             fontWeight: FontWeight.w600,
           ),
+          textAlign: TextAlign.start,
         ),
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          time,
-          style: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w600,
-            color: kTextColor,
-          ),
-        ),
-        if (distance != null && distance.isNotEmpty)
-          Text(
-            '$distance km',
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 10.sp,
-              color: kLabelTextColor,
-            ),
-          ),
-      ],
+    return Text(
+      value,
+      style: TextStyle(
+        fontFamily: FontConstants.interFonts,
+        fontSize: 11.sp,
+        fontWeight: FontWeight.w600,
+        color: kTextColor,
+      ),
+      textAlign: TextAlign.start,
     );
   }
 
+  Widget _distanceCell({required String value}) {
+    final isEmpty = value == '—' || value.isEmpty;
+    return Text(
+      isEmpty ? '—' : '$value km',
+      style: TextStyle(
+        fontFamily: FontConstants.interFonts,
+        fontSize: 10.sp,
+        color:
+            isEmpty ? kLabelTextColor.withValues(alpha: 0.4) : kLabelTextColor,
+      ),
+      textAlign: TextAlign.start,
+    );
+  }
 }
 
 // ─── Photo card ───────────────────────────────────────────────────────────────
@@ -616,34 +833,43 @@ class _PhotoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final serverUrl = isCheckIn
-          ? controller.inPhotoServerUrl.value
-          : controller.outPhotoServerUrl.value;
-      final localPath = isCheckIn
-          ? controller.inPhotoLocalPath.value
-          : controller.outPhotoLocalPath.value;
-      final uploadedOn = isCheckIn
-          ? controller.inPhotoUploadedOn.value
-          : controller.outPhotoUploadedOn.value;
+      final serverUrl =
+          isCheckIn
+              ? controller.inPhotoServerUrl.value
+              : controller.outPhotoServerUrl.value;
+      final localPath =
+          isCheckIn
+              ? controller.inPhotoLocalPath.value
+              : controller.outPhotoLocalPath.value;
+      final uploadedOn =
+          isCheckIn
+              ? controller.inPhotoUploadedOn.value
+              : controller.outPhotoUploadedOn.value;
 
       final isUploaded = serverUrl.isNotEmpty;
       final hasLocal = localPath.isNotEmpty;
-
-      // Lock check-out until check-in is done
       final isLocked = !isCheckIn && controller.isMarkInOut.value == '0';
+
+      final Color accentColor =
+          isCheckIn ? const Color(0xFF1565C0) : const Color(0xFF2E7D32);
 
       return _SectionCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ── Card header ─────────────────────────────────────────────
             Row(
               children: [
                 Container(
-                  width: 4,
-                  height: 16,
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: kPrimaryColor,
-                    borderRadius: BorderRadius.circular(2),
+                    color: accentColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    isCheckIn ? Icons.login_rounded : Icons.logout_rounded,
+                    color: accentColor,
+                    size: 16,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -658,121 +884,149 @@ class _PhotoCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Status badge
                 if (isUploaded)
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 3.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: Colors.green.withValues(alpha: 0.4),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.green,
-                          size: 12,
-                        ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          'Uploaded',
-                          style: TextStyle(
-                            fontFamily: FontConstants.interFonts,
-                            fontSize: 10.sp,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
+                  _statusBadge(
+                    label: 'Uploaded',
+                    color: Colors.green,
+                    icon: Icons.cloud_done_rounded,
+                  )
+                else if (isLocked)
+                  _statusBadge(
+                    label: 'Locked',
+                    color: Colors.orange,
+                    icon: Icons.lock_outline_rounded,
+                  )
+                else if (hasLocal)
+                  _statusBadge(
+                    label: 'Ready',
+                    color: Colors.blue,
+                    icon: Icons.check_circle_outline_rounded,
+                  )
+                else
+                  _statusBadge(
+                    label: 'Pending',
+                    color: kLabelTextColor,
+                    icon: Icons.radio_button_unchecked_rounded,
                   ),
               ],
             ),
             SizedBox(height: 12.h),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Photo preview
-                GestureDetector(
-                  onTap: isUploaded
-                      ? () => _openFullScreen(context, serverUrl)
-                      : null,
-                  child: Container(
-                    width: 80.w,
-                    height: 80.w,
-                    decoration: BoxDecoration(
-                      color: kBackground,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: kTextFieldBorder),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: _buildPhotoWidget(
-                      serverUrl: serverUrl,
-                      localPath: localPath,
-                    ),
+
+            // ── Photo preview ────────────────────────────────────────────
+            GestureDetector(
+              onTap:
+                  isUploaded ? () => _openFullScreen(context, serverUrl) : null,
+              child: Container(
+                width: double.infinity,
+                height: (isUploaded || hasLocal) ? 150.h : 90.h,
+                decoration: BoxDecoration(
+                  color: kBackground,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color:
+                        isUploaded
+                            ? Colors.green.withValues(alpha: 0.4)
+                            : kTextFieldBorder,
+                    width: isUploaded ? 1.5 : 1,
                   ),
                 ),
-                SizedBox(width: 14.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isLocked)
-                        Text(
-                          'Upload check-in photo first',
-                          style: TextStyle(
-                            fontFamily: FontConstants.interFonts,
-                            fontSize: 12.sp,
-                            color: kLabelTextColor,
-                          ),
-                        )
-                      else if (!isUploaded && controller.canCapturePhoto)
-                        AppActiveButton(
-                          buttontitle: hasLocal ? 'Retake Photo' : 'Capture Photo',
-                          onTap: () => controller.capturePhoto(
-                            isCheckIn: isCheckIn,
-                          ),
-                        )
-                      else
-                        const SizedBox.shrink(),
-                      if (uploadedOn.isNotEmpty) ...[
-                        SizedBox(height: 8.h),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.access_time,
-                              size: 12,
-                              color: kLabelTextColor,
-                            ),
-                            SizedBox(width: 4.w),
-                            Expanded(
-                              child: Text(
-                                uploadedOn,
-                                style: TextStyle(
-                                  fontFamily: FontConstants.interFonts,
-                                  fontSize: 11.sp,
-                                  color: kLabelTextColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
+                clipBehavior: Clip.antiAlias,
+                child: _buildPhotoWidget(
+                  serverUrl: serverUrl,
+                  localPath: localPath,
                 ),
-              ],
+              ),
             ),
+            SizedBox(height: 12.h),
+
+            // ── Action row ───────────────────────────────────────────────
+            if (isLocked)
+              _infoRow(
+                icon: Icons.lock_outline_rounded,
+                text: 'Upload check-in photo first to unlock',
+                color: Colors.orange,
+              )
+            else if (isUploaded)
+              _infoRow(
+                icon: Icons.access_time_rounded,
+                text:
+                    uploadedOn.isNotEmpty
+                        ? 'Uploaded on $uploadedOn'
+                        : 'Photo uploaded successfully',
+                color: Colors.green,
+              )
+            else
+              Row(
+                children: [
+                  Expanded(
+                    child: AppActiveButton(
+                      buttontitle: hasLocal ? 'Retake Photo' : 'Capture Photo',
+                      onTap:
+                          () => controller.capturePhoto(isCheckIn: isCheckIn),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       );
     });
+  }
+
+  Widget _statusBadge({
+    required String label,
+    required Color color,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 11, color: color),
+          SizedBox(width: 3.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 10.sp,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoRow({
+    required IconData icon,
+    required String text,
+    required Color color,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: color),
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 11.sp,
+              color: color,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildPhotoWidget({
@@ -786,7 +1040,17 @@ class _PhotoCard extends StatelessWidget {
         errorBuilder: (_, __, ___) => _placeholder(),
         loadingBuilder: (_, child, progress) {
           if (progress == null) return child;
-          return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+          return Center(
+            child: CircularProgressIndicator(
+              value:
+                  progress.expectedTotalBytes != null
+                      ? progress.cumulativeBytesLoaded /
+                          progress.expectedTotalBytes!
+                      : null,
+              color: kPrimaryColor,
+              strokeWidth: 2,
+            ),
+          );
         },
       );
     }
@@ -796,28 +1060,33 @@ class _PhotoCard extends StatelessWidget {
     return _placeholder();
   }
 
-  Widget _placeholder() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.camera_alt_outlined, color: kLabelTextColor, size: 28),
-          SizedBox(height: 4.h),
-          Text(
-            'No photo',
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 10.sp,
-              color: kLabelTextColor,
-            ),
+  Widget _placeholder() {
+    final bool isLocked = !isCheckIn && controller.isMarkInOut.value == '0';
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          isLocked ? Icons.lock_outline_rounded : Icons.camera_alt_outlined,
+          color: kLabelTextColor.withValues(alpha: 0.4),
+          size: 40,
+        ),
+        SizedBox(height: 8.h),
+        Text(
+          isLocked ? 'Complete check-in first' : 'No photo captured yet',
+          style: TextStyle(
+            fontFamily: FontConstants.interFonts,
+            fontSize: 12.sp,
+            color: kLabelTextColor.withValues(alpha: 0.6),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   void _openFullScreen(BuildContext context, String url) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => _FullScreenImageView(imageUrl: url),
-      ),
+      MaterialPageRoute(builder: (_) => _FullScreenImageView(imageUrl: url)),
     );
   }
 }
@@ -826,6 +1095,7 @@ class _PhotoCard extends StatelessWidget {
 
 class _FullScreenImageView extends StatelessWidget {
   final String imageUrl;
+
   const _FullScreenImageView({required this.imageUrl});
 
   @override
@@ -841,11 +1111,12 @@ class _FullScreenImageView extends StatelessWidget {
           child: Image.network(
             imageUrl,
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => const Icon(
-              Icons.broken_image,
-              color: Colors.white,
-              size: 64,
-            ),
+            errorBuilder:
+                (_, __, ___) => const Icon(
+                  Icons.broken_image,
+                  color: Colors.white,
+                  size: 64,
+                ),
           ),
         ),
       ),
@@ -880,7 +1151,6 @@ class _PickerSheet<T> extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle
           Container(
             margin: EdgeInsets.only(top: 10.h, bottom: 4.h),
             width: 40.w,
@@ -890,7 +1160,6 @@ class _PickerSheet<T> extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          // Title
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             child: Text(
@@ -904,7 +1173,6 @@ class _PickerSheet<T> extends StatelessWidget {
             ),
           ),
           const Divider(height: 1),
-          // List
           Flexible(
             child: ListView.separated(
               shrinkWrap: true,
@@ -940,6 +1208,7 @@ class _PickerSheet<T> extends StatelessWidget {
 
 class _SectionCard extends StatelessWidget {
   final Widget child;
+
   const _SectionCard({required this.child});
 
   @override
@@ -949,12 +1218,13 @@ class _SectionCard extends StatelessWidget {
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
         color: kWhiteColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            offset: const Offset(0, 1),
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 8,
+            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 10,
+            spreadRadius: 0,
           ),
         ],
       ),
