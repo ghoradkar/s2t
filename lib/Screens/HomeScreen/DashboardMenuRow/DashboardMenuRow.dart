@@ -18,6 +18,9 @@ class DashboardMenuRow extends StatelessWidget {
       case DashboardMenu.CallingList:
         icon = iconCalling;
         break;
+      case DashboardMenu.TeamPhotos:
+        icon = iconCalling;
+        break;
       case DashboardMenu.UserAttendance:
         icon = iconAttendance;
         break;
@@ -126,6 +129,9 @@ class DashboardMenuRow extends StatelessWidget {
       case DashboardMenu.CallingList:
         title = "Calling List";
         break;
+      case DashboardMenu.TeamPhotos:
+        title = "Team Photos";
+        break;
       case DashboardMenu.UserAttendance:
         title = "User Attendance";
         break;
@@ -142,7 +148,8 @@ class DashboardMenuRow extends StatelessWidget {
         title = "D2D Teams";
         break;
       case DashboardMenu.DailyWorkDashboard:
-        title = "Daily Work Dashboard";
+        // title = "Daily Work Dashboard";
+        title = "Rescreening Dashboard";
         break;
       case DashboardMenu.LiverScanning:
         title = "Liver Scanning";

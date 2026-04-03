@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/RecollectionBeneficiaryToTeamResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
@@ -23,6 +24,7 @@ class DailyWorkDashboardController extends GetxController {
   // ─── Role helpers ─────────────────────────────────────────────────────────────
 
   bool get isGroup1 => [86, 64, 35, 129, 146].contains(dESGID);
+  bool get isGroup2 => [92, 29, 160, 104, 162, 78, 77, 128, 30, 108, 84, 139, 136].contains(dESGID);
   bool get isGroup3 => [170, 171, 182, 183].contains(dESGID);
   bool get isAdminDesignation => [
         170, 171, 51, 26, 30, 128, 182, 183, 78,
@@ -278,14 +280,25 @@ class DailyWorkDashboardController extends GetxController {
   Future<List<LandingLabCampCreationOutput>?> fetchLabList() async {
     ToastManager.showLoader();
     try {
-      final params = {"UserID": empCode.toString()};
-      final response = await _repository.getLabForD2DCampCoordinator(params);
-      return response?.output
-          ?.map((e) => LandingLabCampCreationOutput(
-                labCode: e.labCode,
-                labName: e.labName,
-              ))
-          .toList();
+      if (isGroup2) {
+        // Group 2 (camp coordinators): use UserID-based API
+        final params = {"UserID": empCode.toString()};
+        final LabDataResponse? response =
+            await _repository.getLabForD2DCampCoordinator(params);
+        return response?.output
+            ?.map((e) => LandingLabCampCreationOutput(
+                  labCode: e.labCode,
+                  labName: e.labName,
+                ))
+            .toList();
+      } else {
+        // Admin designations: use district-wise API
+        final params = {
+          "DISTLGDCODE": selectedDistrict?.dISTLGDCODE?.toString() ?? "0",
+        };
+        final response = await _repository.getLabDistrictWise(params);
+        return response?.output;
+      }
     } finally {
       ToastManager.hideLoader();
     }

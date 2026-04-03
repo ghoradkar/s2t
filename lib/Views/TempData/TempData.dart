@@ -66,7 +66,7 @@ import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
 import '../../Modules/Json_Class/CampIdListResponse/CampIdListResponse.dart';
-import '../../Modules/Json_Class/CampListResponse/CampListResponse.dart';
+import '../../Modules/Json_Class/CampListResponse/camp_list_response.dart';
 import '../../Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
 import '../../Modules/constants/constants.dart';
 import '../../Modules/constants/images.dart';

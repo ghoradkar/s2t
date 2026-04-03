@@ -12,6 +12,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/AdminDashboardWidget.dart';
+import 'package:s2toperational/Screens/DailyWorkDashboard/screen/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
@@ -28,6 +29,8 @@ import 'package:s2toperational/Screens/s2t_patient_app/screen/S2TPatientAppScree
 import 'package:s2toperational/Screens/super_admin/controller/super_admin_controller.dart';
 import 'package:s2toperational/Screens/super_admin/screens/super_admin_dashboard.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/D2DPhysicalExaminationDetailsScreen/D2DPhysicalExaminationDetailsScreen.dart';
+import 'package:s2toperational/Screens/team_camp_mapping/TeamCampMappingScreen/TeamCampMappingScreen.dart';
+import 'package:s2toperational/Screens/team_photos/screen/team_photos_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/constants/constants.dart';
@@ -40,12 +43,10 @@ import '../CTAssignment/CTAssignmentScreen/CTAssignmentScreen.dart';
 import '../CampCreationScreen/CampCreationScreen.dart';
 import '../CampReadinessForm/CampReadinessFormScreen.dart';
 import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
-import '../DailyWorkDashboard/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
 import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
 import '../ExpenseClaimScreen/ExpenseClaimDashboardScreen.dart';
 import '../ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampListScreen.dart';
 import '../SideDrawerMenu/SideDrawerMenu.dart';
-import '../TeamCampMapping/TeamCampMappingScreen/TeamCampMappingScreen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_d2d_screen/camp_for_health_screening_d2d_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_screen/camp_for_health_screening_screen.dart';
 import '../payment_and_invoice/screens/payment_invoice_segment_screen.dart';
@@ -406,6 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.FingerPrintUpload);
       menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
+      menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 29) {
       menuList.add(DashboardMenu.DeviceAndResourceMapping);
       menuList.add(DashboardMenu.ResourceReMapping);
@@ -418,6 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.FingerPrintUpload);
       menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
+      menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 92) {
       menuList.add(DashboardMenu.CampCreation);
       menuList.add(DashboardMenu.DeviceAndResourceMapping);
@@ -466,6 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
       menuList.add(DashboardMenu.ELearning);
       menuList.add(DashboardMenu.PaymentAndInvoice);
+      menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 29) {
       menuList.add(DashboardMenu.AppointmentConfirmedList);
       menuList.add(DashboardMenu.PacketAllocation);
@@ -478,6 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.HealthScreeningDetails);
       menuList.add(DashboardMenu.UserAttendance);
       menuList.add(DashboardMenu.D2DCampActivity);
+      menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 92) {
       menuList.add(DashboardMenu.DailyWorkDashboard);
       menuList.add(DashboardMenu.AppointmentConfirmedList);
@@ -758,6 +763,16 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case DashboardMenu.PickupMedicinePacket:
+        break;
+      case DashboardMenu.TeamPhotos:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TeamPhotosScreen(
+              initialCampType: regularCamp ? '1' : '3',
+            ),
+          ),
+        );
         break;
     }
   }

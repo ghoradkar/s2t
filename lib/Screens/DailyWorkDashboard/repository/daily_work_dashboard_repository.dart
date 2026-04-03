@@ -70,6 +70,14 @@ class DailyWorkDashboardRepository {
     return c.future;
   }
 
+  Future<LandingLabCampCreationResponse?> getLabDistrictWise(
+    Map<String, String> params,
+  ) {
+    final c = Completer<LandingLabCampCreationResponse?>();
+    _api.getLandingLabAPI(params, (res, _, ok) => c.complete(ok ? res : null));
+    return c.future;
+  }
+
   // ─── Tracking screen ─────────────────────────────────────────────────────────
 
   Future<RecollectionBeneficiaryDashboardForMobResponse?> getRecollectionBeneficiaryDashboardForMob(

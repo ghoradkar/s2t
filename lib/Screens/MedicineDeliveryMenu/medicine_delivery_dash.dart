@@ -65,6 +65,7 @@ class _MedicineDeliveryDashState extends State<MedicineDeliveryDash> {
   void pushToNextScreen(DashboardMenu dashboardMenu) {
     switch (dashboardMenu) {
       case DashboardMenu.CampCalendar:
+      case DashboardMenu.TeamPhotos:
       case DashboardMenu.PatientRegistration:
       case DashboardMenu.D2DTeams:
       case DashboardMenu.DailyWorkDashboard:

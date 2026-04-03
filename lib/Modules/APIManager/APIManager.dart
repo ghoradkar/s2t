@@ -160,6 +160,7 @@ class APIManager {
   static String kUploadPostCampFileHandler = "";
   static String kChangeBeneficiaryAndCardImage = "";
   static String kMedicineDeliveryAckHandler = "";
+  static String kCampAttendancePhotoHandler = "";
   static String kMediaBaseURL = "";
   static String kt24By7 = "";
   static String kLiverScann = "";
@@ -187,6 +188,8 @@ class APIManager {
             "https://mcwwb.janarogyaseva.in/webservices/handler/ChangeBeneficiaryAndCardImage_InCampTest.ashx";
         kMedicineDeliveryAckHandler =
             "https://mcwwb.janarogyaseva.in/webservices/handler/CW_MedicineDelivery_V1_DC.ashx";
+        kCampAttendancePhotoHandler =
+            "https://mcwwb.janarogyaseva.in/webservices/handler/CampAttendanceCheckInOutImages.ashx";
         kMediaBaseURL = "https://mcwwb.janarogyaseva.in/MCWWBDOCS_LIVE";
         kt24By7 = "https://app.office24by7.com/v1/common/API/";
         kLiverScann =
@@ -208,6 +211,8 @@ class APIManager {
             "https://testmcwwb.myhindlab.com/webservices/handler/ChangeBeneficiaryAndCardImage_InCampTest.ashx";
         kMedicineDeliveryAckHandler =
             "https://testmcwwb.myhindlab.com/webservices/handler/CW_MedicineDelivery_V1_DC.ashx";
+        kCampAttendancePhotoHandler =
+            "https://testmcwwb.myhindlab.com/webservices/handler/CampAttendanceCheckInOutImages.ashx";
         kMediaBaseURL = "https://testmcwwb.myhindlab.com/BETA_MYHINDLABDOCS";
         kt24By7 = "https://app.office24by7.com/v1/common/API/";
 
@@ -6922,6 +6927,132 @@ class APIManager {
           ),
         );
       }
+
+      final streamed = await ioClient.send(request);
+      final response = await http.Response.fromStream(streamed);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') {
+        callback(decoded, '', true);
+      } else {
+        callback(decoded, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
+    }
+  }
+
+  // ─── Team Photos ──────────────────────────────────────────────────────────
+
+  Future<void> getUserWiseCampListAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    final url = Uri.parse(
+      '$kD2DBaseURL${APIConstants.kGetUserWiseCampList}',
+    );
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      print(url);
+      print(response.body);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') {
+        callback(decoded, '', true);
+      } else {
+        callback(decoded, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
+    }
+  }
+
+  Future<void> getTeamMembersAttendanceDetailsCampIDWiseAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    final url = Uri.parse(
+      '$kD2DBaseURL${APIConstants.kGetTeamMembersAttendanceDetailsCampIDWise}',
+    );
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      print(url);
+      print(response.body);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') {
+        callback(decoded, '', true);
+      } else {
+        callback(decoded, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
+    }
+  }
+
+  Future<void> getCampAttendanceImagesAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    final url = Uri.parse(
+      '$kD2DBaseURL${APIConstants.kGetCampAttendanceImages}',
+    );
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      print(url);
+      print(response.body);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') {
+        callback(decoded, '', true);
+      } else {
+        callback(decoded, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
+    }
+  }
+
+  Future<void> uploadCampAttendancePhotoAPI({
+    required Map<String, String> fields,
+    required File photoFile,
+    required String statusId,
+    required dynamic callback,
+  }) async {
+    final uri = Uri.parse(kCampAttendancePhotoHandler);
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final request = http.MultipartRequest('POST', uri);
+      fields.forEach((key, value) => request.fields[key] = value);
+      request.fields['StatusID'] = statusId;
+
+      final fieldName = statusId == '1' ? 'InImagePath' : 'OutImagePath';
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          fieldName,
+          photoFile.path,
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      );
 
       final streamed = await ioClient.send(request);
       final response = await http.Response.fromStream(streamed);

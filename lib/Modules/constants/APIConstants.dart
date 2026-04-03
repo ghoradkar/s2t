@@ -376,4 +376,10 @@ class APIConstants {
   static String kInsertPacketAcceptDetailsManually =
       "InsertPacketAcceptDetailsManually";
   static String kInsertPacketAcceptDetails = "InsertPacketAcceptDetails";
+
+  // Team Photos
+  static String kGetTeamMembersAttendanceDetailsCampIDWise =
+      "GetTeamMembersAttendanceDetailsCampIDWise";
+  static String kGetCampAttendanceImages = "GetCampAttendanceImages";
+  static String kGetUserWiseCampList = "GetUserWiseCampList";
 }

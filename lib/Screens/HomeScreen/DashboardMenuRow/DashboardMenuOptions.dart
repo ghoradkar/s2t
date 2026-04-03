@@ -116,6 +116,9 @@ class DashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.PaymentAndInvoice:
         icon = iconAttendance;
         break;
+      case DashboardMenu.TeamPhotos:
+        icon = iconAttendance;
+        break;
     }
     return icon;
   }
@@ -143,7 +146,8 @@ class DashboardMenuOptions extends StatelessWidget {
         title = "D2D Teams";
         break;
       case DashboardMenu.DailyWorkDashboard:
-        title = "Daily Work Dashboard";
+        // title = "Daily Work Dashboard";
+        title = "Rescreening Dashboard";
         break;
       case DashboardMenu.LiverScanning:
         title = "Liver Scanning";
@@ -243,9 +247,9 @@ class DashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.PickupMedicinePacket:
         title = "Pick Up Medicine Packet";
         break;
-      // case DashboardMenu.AnalyticalDashboard:
-      //   title = "Analytical Dashboard";
-      //   break;
+      case DashboardMenu.TeamPhotos:
+        title = "Team Photos";
+        break;
     }
     return title;
   }
@@ -343,9 +347,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.S2TPatientApp:
         icon = s2tPatientAppAdmin;
         break;
-      // case DashboardMenu.CampAwarenessActivity:
-      //   icon = icAampawareness;
-      //   break;
+      case DashboardMenu.TeamPhotos:
+        icon = icAampawareness;
+        break;
       case DashboardMenu.Acknowledgement:
         icon = iconAttendance;
         break;
@@ -443,11 +447,12 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         title = "D2D Availability Screening";
         break;
       case DashboardMenu.DailyWorkDashboard:
-        if (desigId == 26) {
+        // if (desigId == 26) {
           title = "Rescreening Dashboard";
-        } else {
-          title = "Daily Work Dashboard";
-        }
+        // }
+        // else {
+        //   title = "Daily Work Dashboard";
+        // }
 
         break;
       case DashboardMenu.LiverScanning:
@@ -535,6 +540,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         break;
       case DashboardMenu.MedicineReturn:
         title = "Medicine Return";
+        break;
+      case DashboardMenu.TeamPhotos:
+        title = "Teams Photos";
         break;
     }
     return title;
@@ -647,9 +655,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.PickupMedicinePacket:
         color = kCallingBackGroundColor;
         break;
-      // case DashboardMenu.AnalyticalDashboard:
-      //   color = kAnalyticalDashBackGroundColor;
-      //   break;
+      case DashboardMenu.TeamPhotos:
+        color = kAnalyticalDashBackGroundColor;
+        break;
 
       case DashboardMenu.PaymentAndInvoice:
         color = kCallingBackGroundColor;

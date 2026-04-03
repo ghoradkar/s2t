@@ -2,12 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
+import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../../Modules/constants/fonts.dart';
-import '../../../../../Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/BeneficiaryStatusAndDetailsResponse.dart';
-import '../../../../../Modules/constants/constants.dart';
-import '../../../../../Modules/constants/images.dart';
-import '../../../../../Modules/utilities/SizeConfig.dart';
+
+import '../../../../model/BeneficiaryStatusAndDetailsResponse.dart';
 
 class RejectedBeneficiaryDetailsView extends StatelessWidget {
   RejectedBeneficiaryDetailsView({

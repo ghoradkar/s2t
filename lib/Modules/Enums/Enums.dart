@@ -39,6 +39,7 @@ enum DashboardMenu {
   MedicineReturn,
   MedicineDelivery,
   PickupMedicinePacket,
+  TeamPhotos,
   // AnalyticalDashboard,
 }
 
@@ -78,6 +79,7 @@ enum DropDownTypeMenu {
   TeamCampLab,
   SelectTeam,
   AssignResources,
+  TeamCampID,
 }
 
 enum DropDownMultipleTypeMenu {

@@ -37,6 +37,7 @@ import '../../Modules/Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
 import '../../Modules/Json_Class/TeamDetailsListResponse/TeamDetailsListResponse.dart';
 import '../../Modules/Json_Class/TestListForRejectResponse/TestListForRejectResponse.dart';
 import '../../Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import '../../Screens/team_photos/model/camp_list_response.dart';
 import '../../Modules/constants/constants.dart';
 import '../../Modules/constants/images.dart';
 import '../../Modules/widgets/AppActiveButton.dart';
@@ -173,6 +174,9 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
       case DropDownTypeMenu.BindLab:
         LandingLabCampCreationOutput type = searchList[index];
         return "${type.labName}";
+      case DropDownTypeMenu.TeamCampID:
+        CampListOutput type = searchList[index];
+        return type.campId ?? "";
     }
   }
 
@@ -390,6 +394,12 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
         }
         LandingLabCampCreationOutput initiatedBy = searchList[index];
         initiatedBy.isSelected = true;
+      case DropDownTypeMenu.TeamCampID:
+        for (CampListOutput item in searchList) {
+          item.isSelected = false;
+        }
+        CampListOutput item = searchList[index];
+        item.isSelected = true;
     }
 
     selectedIndex = index;
@@ -572,6 +582,11 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
         );
       case DropDownTypeMenu.BindLab:
         LandingLabCampCreationOutput type = searchList[index];
+        return Image.asset(
+          type.isSelected == true ? icRadioSelected : icUnRadioSelected,
+        );
+      case DropDownTypeMenu.TeamCampID:
+        CampListOutput type = searchList[index];
         return Image.asset(
           type.isSelected == true ? icRadioSelected : icUnRadioSelected,
         );
