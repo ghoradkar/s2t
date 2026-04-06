@@ -10,6 +10,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDistrictWiseModel.dart';
+// import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDistrictWiseModel.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/liver_scanning/screen/FibroScanningPatientDataDetails.dart';
 import 'package:s2toperational/Screens/s2t_patient_app/controller/s2t_patient_app_controller.dart';

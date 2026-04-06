@@ -7,10 +7,13 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Screens/AdminDashboard/Model/FibroScanningDistrictWiseModel.dart';
+import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningCountModel.dart';
+import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableData.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';
-import '../model/FibroScanningDistrictWiseModel.dart';
-import '../model/LiverScanningCountModel.dart';
-import '../model/LiverScanningTableData.dart';
+// import '../model/FibroScanningDistrictWiseModel.dart';
+// import '../model/LiverScanningCountModel.dart';
+// import '../model/LiverScanningTableData.dart';
 import '../repository/liver_scanning_repository.dart';
 
 class LiverScanningController extends GetxController {

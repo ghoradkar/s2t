@@ -45,6 +45,8 @@ class AttendanceDetailsOutput {
     outDistanceInKM = json['OutDistanceInKM'];
   }
 
-  bool get isInPending => inTime == null || inTime!.isEmpty || inTime == 'Pending';
-  bool get isOutPending => outTime == null || outTime!.isEmpty || outTime == 'Pending';
+  // Native checks: "Pending".equalsIgnoreCase(inTime) — null and empty are NOT
+  // treated as pending. Match that exactly so Flutter does not over-restrict.
+  bool get isInPending => inTime?.toLowerCase() == 'pending';
+  bool get isOutPending => outTime?.toLowerCase() == 'pending';
 }

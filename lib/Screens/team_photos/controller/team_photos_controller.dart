@@ -104,12 +104,12 @@ class TeamPhotosController extends GetxController {
   /// Capture Photo button is always visible once the screen is open.
   bool get canCapturePhoto => true;
 
+  // Native treats an empty attendance list as "all marked" (pending counts stay
+  // at 0), so we match that: [].every(...) returns true in Dart (vacuous truth).
   bool get _allCheckedIn =>
-      attendanceList.isNotEmpty &&
       attendanceList.every((m) => !m.isInPending);
 
   bool get _allCheckedOut =>
-      attendanceList.isNotEmpty &&
       attendanceList.every((m) => !m.isOutPending);
 
   String get mediaBaseUrl => APIManager.kMediaBaseURL;
@@ -301,12 +301,33 @@ class TeamPhotosController extends GetxController {
 
     ToastManager.showLoader();
     try {
-      await Future.wait([
-        _fetchCampImages(camp.campId ?? ''),
-        if (isD2DOrMMU) fetchTeamList(camp.campId ?? '') else _fetchAttendance(),
-      ]);
+      if (isD2DOrMMU && hideTabToggle) {
+        // DESGID 35 in D2D: team is auto-resolved from the server (no picker).
+        await Future.wait([
+          _fetchCampImages(camp.campId ?? ''),
+          _autoResolveTeamAndFetchAttendance(camp.campId ?? ''),
+        ]);
+      } else {
+        await Future.wait([
+          _fetchCampImages(camp.campId ?? ''),
+          if (isD2DOrMMU) fetchTeamList(camp.campId ?? '') else _fetchAttendance(),
+        ]);
+      }
     } finally {
       ToastManager.hideLoader();
+    }
+  }
+
+  /// For DESGID 35 in D2D: calls GetTeamNumberByCampIdAndUSerId to silently
+  /// determine the user's team, then loads attendance for that team.
+  Future<void> _autoResolveTeamAndFetchAttendance(String campId) async {
+    final team = await _repository.getTeamNumberByUser(
+      campId: campId,
+      userId: empCode.toString(),
+    );
+    if (team != null) {
+      selectedTeam.value = team;
+      await _fetchAttendance();
     }
   }
 

@@ -1,9 +1,12 @@
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Screens/health_screening_details/models/camp_closing_model.dart';
-import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
-import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
+// import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
+// import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
+
+import '../models/camp_closing_model.dart';
+import '../models/camp_d2d_model.dart';
+import '../models/camp_regular_model.dart';
 
 class HealthScreeningRepository {
   final APIManager _apiManager = APIManager();

@@ -77,7 +77,6 @@ class _ConsumableConsumptionForCampRowState
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: TextField(
                           textAlign: TextAlign.center,
-                          readOnly: true,
                           controller:
                               widget.consumableOutput?.textEditingController,
                           keyboardType: TextInputType.number,
@@ -108,7 +107,10 @@ class _ConsumableConsumptionForCampRowState
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                              borderSide: BorderSide(
+                                color: kPrimaryColor,
+                                width: 1,
+                              ),
                             ),
                           ),
                         ),

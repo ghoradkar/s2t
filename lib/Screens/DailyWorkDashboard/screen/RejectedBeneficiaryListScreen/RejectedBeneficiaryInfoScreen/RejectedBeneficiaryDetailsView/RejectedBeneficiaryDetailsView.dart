@@ -10,6 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../model/BeneficiaryStatusAndDetailsResponse.dart';
 
+// import '../../../../model/BeneficiaryStatusAndDetailsResponse.dart';
+
 class RejectedBeneficiaryDetailsView extends StatelessWidget {
   RejectedBeneficiaryDetailsView({
     super.key,

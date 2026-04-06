@@ -8,6 +8,8 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 
 import '../../../../model/BeneficiaryStatusAndDetailsResponse.dart';
 
+// import '../../../../model/BeneficiaryStatusAndDetailsResponse.dart';
+
 class RejectionDetailsView extends StatelessWidget {
   RejectionDetailsView({super.key, required this.beneficiaryObj});
 

@@ -3,15 +3,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/RecollectionBeneficiaryToTeamResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/RecollectionBeneficiaryToTeamResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/DailyWorkDashboard/repository/daily_work_dashboard_repository.dart';
+
+import '../model/BindDistrictResponse.dart';
+import '../model/BindDivisionResponse.dart';
+import '../model/LabDataResponse.dart';
+import '../model/LandingLabCampCreationResponse.dart';
+import '../model/RecollectionBeneficiaryToTeamResponse.dart';
+import '../model/SubOrganizationResponse.dart';
 
 class DailyWorkDashboardController extends GetxController {
   final DailyWorkDashboardRepository _repository = DailyWorkDashboardRepository();

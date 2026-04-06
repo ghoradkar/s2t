@@ -15,6 +15,7 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableData.dart';
+// import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableData.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/liver_scanning/controller/liver_scanning_controller.dart';
 import 'package:s2toperational/Screens/liver_scanning/screen/FibroScanningPatientDataDetails.dart';

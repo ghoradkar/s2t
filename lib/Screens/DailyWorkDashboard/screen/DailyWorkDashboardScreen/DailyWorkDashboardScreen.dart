@@ -5,10 +5,10 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
@@ -22,6 +22,11 @@ import 'package:s2toperational/Screens/DailyWorkDashboard/controller/daily_work_
 import 'package:s2toperational/Screens/DailyWorkDashboard/screen/RejectedBeneficiaryListScreen/RejectedBeneficiaryListScreen.dart';
 import 'package:s2toperational/Screens/DailyWorkDashboard/screen/RejectedBeneficiaryTrackingScreen/RejectedBeneficiaryTrackingScreen.dart';
 import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
+
+import '../../model/BindDistrictResponse.dart';
+import '../../model/BindDivisionResponse.dart';
+import '../../model/LandingLabCampCreationResponse.dart';
+import '../../model/SubOrganizationResponse.dart';
 
 class DailyWorkDashboardScreen extends StatelessWidget {
   const DailyWorkDashboardScreen({super.key});

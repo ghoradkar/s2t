@@ -5,6 +5,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../model/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
+// import '../../../model/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
 
 class RejectedBeneficiaryRow extends StatelessWidget {
   RejectedBeneficiaryRow({super.key, required this.index, required this.obj});

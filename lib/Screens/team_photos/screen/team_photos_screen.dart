@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/team_photos/screen/camp_closing_screen.dart';
 import 'package:s2toperational/Screens/team_photos/controller/team_photos_controller.dart';
 import 'package:s2toperational/Screens/team_photos/model/attendance_details_response.dart';
 import 'package:s2toperational/Screens/team_photos/model/camp_list_response.dart';
@@ -153,7 +154,11 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
                           onTap:
                               c.selectedCamp.value == null
                                   ? () => _toast('Please select camp first')
-                                  : () => _showTeamPicker(context, c),
+                                  : c.hideTabToggle
+                                      // DESGID 35: team is auto-resolved on
+                                      // camp selection — no manual picker.
+                                      ? () {}
+                                      : () => _showTeamPicker(context, c),
                           label: _label('Team'),
                           prefixIcon: const Icon(
                             Icons.group_outlined,
@@ -200,6 +205,10 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
             Obx(() {
               if (c.bothPhotosUploaded) {
                 if (c.isD2DOrMMU) {
+                  // Hide if camp already closed (CampConfirmation == "1")
+                  if (c.selectedCamp.value?.isConfirmed == true) {
+                    return const SizedBox.shrink();
+                  }
                   return AppActiveButton(
                     buttontitle: 'Camp Closing Confirmation',
                     onTap: () => _onCampClosingTap(context, c),
@@ -339,7 +348,17 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
   }
 
   static void _onCampClosingTap(BuildContext context, TeamPhotosController c) {
-    _toast('Camp Closing Confirmation coming soon');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => CampClosingScreen(
+              campID: int.tryParse(c.selectedCamp.value?.campId ?? '') ?? 0,
+              campDate: c.selectedDate.value,
+              dISTLGDCODE: 0, // Native always passes "0" (AttendanceDetailsActivity line 573)
+            ),
+      ),
+    );
   }
 }
 

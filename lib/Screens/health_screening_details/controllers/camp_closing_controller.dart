@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Screens/health_screening_details/models/camp_closing_model.dart';
+import '../models/camp_closing_model.dart';
 import '../repository/health_screening_repository.dart';
 
 class CampClosingController extends GetxController {

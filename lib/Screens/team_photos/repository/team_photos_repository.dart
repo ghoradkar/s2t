@@ -151,6 +151,37 @@ class TeamPhotosRepository {
     return completer.future;
   }
 
+  // ─── Auto-resolve team for DESGID 35 in D2D ─────────────────────────────────
+
+  /// Calls GetTeamNumberByCampIdAndUSerId (used for DESGID 35 in D2D).
+  /// Returns the first output item which has TeamNumber + TeamName.
+  Future<TeamsDetailsOutput?> getTeamNumberByUser({
+    required String campId,
+    required String userId,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetTeamNumberByCampIdAndUSerId}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'campid': campId, 'UserID': userId},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body);
+      final result = TeamsDetailsResponse.fromJson(decoded);
+      if (result.status?.toLowerCase() == 'success') {
+        return result.output?.firstOrNull;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
   // ─── Upload check-in or check-out photo ──────────────────────────────────────
 
   /// [statusId]: "1" = check-in, "2" = check-out

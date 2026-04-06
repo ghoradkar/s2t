@@ -2477,7 +2477,7 @@ class APIManager {
       CampCloseCampDetailsResponse person =
           CampCloseCampDetailsResponse.fromJson(json.decode(response.body));
 
-      if (person.status == 'Success') {
+      if (person.status?.toLowerCase() == 'success') {
         callback(person, "", true);
       } else {
         callback(person, person.message, false);
@@ -2511,7 +2511,7 @@ class APIManager {
         json.decode(response.body),
       );
 
-      if (person.status == 'Success') {
+      if (person.status?.toLowerCase() == 'success') {
         callback(person, "", true);
       } else {
         callback(person, person.message, false);
@@ -2544,7 +2544,7 @@ class APIManager {
       ConsumableListDetailsResponse person =
           ConsumableListDetailsResponse.fromJson(json.decode(response.body));
 
-      if (person.status == 'Success') {
+      if (person.status?.toLowerCase() == 'success') {
         callback(person, "", true);
       } else {
         callback(person, person.message, false);

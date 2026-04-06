@@ -1,12 +1,13 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
+// import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';
 import '../../../../../Modules/utilities/SizeConfig.dart';
 
 import '../../../../../Modules/constants/fonts.dart';
+import '../../../models/camp_regular_model.dart';
 
 class CampForHealthScreeningRow extends StatelessWidget {
   Function() onSelectTap;

@@ -382,4 +382,6 @@ class APIConstants {
       "GetTeamMembersAttendanceDetailsCampIDWise";
   static String kGetCampAttendanceImages = "GetCampAttendanceImages";
   static String kGetUserWiseCampList = "GetUserWiseCampList";
+  static String kInsertCampClosingConfirmation =
+      "InsertCampClosingConfirmation";
 }
