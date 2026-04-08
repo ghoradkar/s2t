@@ -6,7 +6,7 @@ import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 
 import '../../../Modules/Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
-import '../../../Modules/Json_Class/TeamNumberByCampIdAndUserIdListResponse/TeamNumberByCampIdAndUserIdListResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';

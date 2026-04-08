@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
@@ -500,7 +501,10 @@ class _AddBillSubmissionScreenState extends State<AddBillSubmissionScreen> {
         ToastManager.showSuccessPopup(
           context,
           icSuccessIcon,
-          "Bill Submitted Successfully.",
+          "Bill Submitted Successfully.",(){
+          Get.back();
+          Get.back();
+        }
         );
       }
     } else {
@@ -536,7 +540,10 @@ class _AddBillSubmissionScreenState extends State<AddBillSubmissionScreen> {
       ToastManager.showSuccessPopup(
         context,
         icSuccessIcon,
-        "Bill Submitted Successfully.",
+        "Bill Submitted Successfully.",(){
+        Get.back();
+        Get.back();
+      }
       );
     } else {
       ToastManager.toast(errorMessage);

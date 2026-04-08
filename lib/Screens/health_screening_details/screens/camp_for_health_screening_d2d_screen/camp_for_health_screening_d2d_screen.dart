@@ -42,11 +42,10 @@ class CampForHealthScreeningD2DScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AppTextField(
-                      controller: TextEditingController(
-                        text: controller.district,
-                      ),
-                      readOnly: !controller.isUserInteractionEnabled,
-                      onTap: () {},
+                      controller: controller.districtController,
+                      // readOnly: !controller.isUserInteractionEnabled,
+                      readOnly: true,
+                      onTap: () => controller.fetchDistrictList(),
                       hint: 'District',
                       label: CommonText(
                         text: 'District',
@@ -73,6 +72,7 @@ class CampForHealthScreeningD2DScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -114,45 +114,51 @@ class CampForHealthScreeningD2DScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Expanded(
                 child: Obx(
-                  () => controller.isLoading.value
-                      ? const CommonSkeletonList()
-                      : controller.campList.isEmpty
+                  () =>
+                      controller.isLoading.value
+                          ? const CommonSkeletonList()
+                          : controller.campList.isEmpty
                           ? NoDataFound().paddingOnly(left: 4.w, right: 4.w)
                           : ListView.builder(
-                              itemCount: controller.campList.length,
-                              itemBuilder: (context, index) {
-                                final obj = controller.campList[index];
-                                return CampForHealthScreeningD2DRow(
-                                  campDetailsonLabForDoorToDoorOutput: obj,
-                                  onSelectTap: () =>
-                                      controller.onCampSelected(obj, () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            HealthScreeningDetailsScreen(
-                                          testID: testID,
-                                          teamid: 0,
-                                          districtID:
-                                              obj.dISTLGDCODE ?? 0,
-                                          districtName:
-                                              obj.dISTNAME ?? '',
-                                          campID: obj.campId ?? 0,
-                                          dISTLGDCODE:
-                                              obj.dISTLGDCODE ?? 0,
-                                          campType: obj.campType ?? 0,
-                                          campDate: controller
-                                              .selectedCampDate.value,
-                                          surveyCoordinatorName: '',
-                                          campTypeDescription:
-                                              obj.campTypeDescription ?? '',
+                            itemCount: controller.campList.length,
+                            itemBuilder: (context, index) {
+                              final obj = controller.campList[index];
+                              return CampForHealthScreeningD2DRow(
+                                campDetailsonLabForDoorToDoorOutput: obj,
+                                onSelectTap:
+                                    () => controller.onCampSelected(obj, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (
+                                                _,
+                                              ) => HealthScreeningDetailsScreen(
+                                                testID: testID,
+                                                teamid: 0,
+                                                districtID:
+                                                    obj.dISTLGDCODE ?? 0,
+                                                districtName:
+                                                    obj.dISTNAME ?? '',
+                                                campID: obj.campId ?? 0,
+                                                dISTLGDCODE:
+                                                    obj.dISTLGDCODE ?? 0,
+                                                campType: obj.campType ?? 0,
+                                                campDate:
+                                                    controller
+                                                        .selectedCampDate
+                                                        .value,
+                                                surveyCoordinatorName: '',
+                                                campTypeDescription:
+                                                    obj.campTypeDescription ??
+                                                    '',
+                                              ),
                                         ),
-                                      ),
-                                    );
-                                  }),
-                                );
-                              },
-                            ),
+                                      );
+                                    }),
+                              );
+                            },
+                          ),
                 ),
               ),
             ],

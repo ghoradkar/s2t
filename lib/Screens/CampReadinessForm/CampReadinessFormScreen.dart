@@ -17,7 +17,7 @@ import '../../Modules/Json_Class/CampIdListResponse/CampIdListResponse.dart';
 import '../../Modules/Json_Class/CampReadinessFormListResponse/CampReadinessFormListResponse.dart';
 import '../../Modules/Json_Class/CampReadinessFormSubmittResponse/CampReadinessFormSubmittResponse.dart';
 import '../../Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import '../../Modules/Json_Class/TeamNumberByCampIdAndUserIdListResponse/TeamNumberByCampIdAndUserIdListResponse.dart';
+import '../../Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/utilities/SizeConfig.dart';

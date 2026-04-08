@@ -12,7 +12,7 @@ import '../../../../../Modules/constants/fonts.dart';
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/PatientStatusDetailsListResponse/PatientStatusDetailsListResponse.dart';
 import '../../../Modules/Json_Class/TeamDetailsListResponse/TeamDetailsListResponse.dart';
-import '../../../Modules/Json_Class/TeamNumberByCampIdAndUserIdListResponse/TeamNumberByCampIdAndUserIdListResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';

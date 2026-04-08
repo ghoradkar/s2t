@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
@@ -27,7 +28,6 @@ import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/DataProvider.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/utilities/WidgetPaddingX.dart';
 import '../../../../Modules/widgets/S2TAppBar.dart';
 import '../../../../Modules/widgets/S2TYesNoAlertView.dart';
 import '../../../../Views/DropDownListScreen/DropDownListScreen.dart';
@@ -818,7 +818,10 @@ class _BeneficiaryVerificationScreenState
       ToastManager.showSuccessPopup(
         context,
         icSuccessIcon,
-        response?.message ?? "",
+        response?.message ?? "",(){
+        Get.back();
+        Get.back();
+      }
       );
     } else {
       ToastManager.toast(errorMessage);

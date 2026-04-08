@@ -34,14 +34,22 @@ class UserAttandanceOutput {
   int? month;
   int? day;
   int? dAYTYPE;
+  String? inOutFlag;
 
-  UserAttandanceOutput({this.year, this.month, this.day, this.dAYTYPE});
+  UserAttandanceOutput({
+    this.year,
+    this.month,
+    this.day,
+    this.dAYTYPE,
+    this.inOutFlag,
+  });
 
   UserAttandanceOutput.fromJson(Map<String, dynamic> json) {
     year = json['Year'];
     month = json['Month'];
     day = json['Day'];
     dAYTYPE = json['DAYTYPE'];
+    inOutFlag = json['InOutFlag']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +58,7 @@ class UserAttandanceOutput {
     data['Month'] = month;
     data['Day'] = day;
     data['DAYTYPE'] = dAYTYPE;
+    data['InOutFlag'] = inOutFlag;
     return data;
   }
 }

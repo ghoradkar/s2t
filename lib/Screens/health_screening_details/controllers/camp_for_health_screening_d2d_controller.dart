@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart' show TextEditingController, VoidCallback;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 // import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 
@@ -27,10 +30,12 @@ class CampForHealthScreeningD2DController extends GetxController {
   CampDetailsonLabForDoorToDoorOutput? selectedCamp;
 
   final TextEditingController dateController = TextEditingController();
+  final TextEditingController districtController = TextEditingController();
 
   @override
   void onClose() {
     dateController.dispose();
+    districtController.dispose();
     super.onClose();
   }
 
@@ -46,13 +51,13 @@ class CampForHealthScreeningD2DController extends GetxController {
     empCode = userData?.empCode ?? 0;
     selectedCampDate.value = FormatterManager.formatDateToString(DateTime.now());
     dateController.text = selectedCampDate.value;
+    districtController.text = district;
 
     isUserInteractionEnabled = !(dESGID == 29 ||
         dESGID == 141 ||
         dESGID == 108 ||
         dESGID == 169 ||
         dESGID == 139 ||
-        dESGID == 35 ||
         dESGID == 92 ||
         dESGID == 136 ||
         dESGID == 146);
@@ -60,8 +65,74 @@ class CampForHealthScreeningD2DController extends GetxController {
     fetchCamps();
   }
 
+  Future<void> fetchDistrictList() async {
+    if (!isUserInteractionEnabled) return;
+    final ctx = Get.context;
+    if (ctx == null) return;
+    ToastManager.showLoader();
+    final response = await _repo.getDistrictByUserID(userId: empCode);
+    ToastManager.hideLoader();
+
+    if (response == null) {
+      ToastManager.toast('Failed to load districts');
+      return;
+    }
+
+    final List<DistrictOutput> districts = response.output ?? [];
+    if (districts.isEmpty) {
+      ToastManager.toast('No districts found');
+      return;
+    }
+
+    _showDistrictBottomSheet(ctx, districts);
+  }
+
+  void _showDistrictBottomSheet(
+    BuildContext ctx,
+    List<DistrictOutput> districts,
+  ) {
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      constraints: const BoxConstraints(minWidth: double.infinity),
+      backgroundColor: Colors.white,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (_) => Container(
+        width: double.infinity,
+        height: MediaQuery.of(ctx).size.width * 1.33,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: DropDownListScreen(
+          titleString: 'District',
+          dropDownList: districts,
+          dropDownMenu: DropDownTypeMenu.District,
+          onApplyTap: (selected) {
+            if (selected is DistrictOutput) {
+              district = selected.dISTNAME ?? '';
+              dISTLGDCODE = selected.dISTLGDCODE ?? 0;
+              districtController.text = district;
+              fetchCamps();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
   Future<void> fetchCamps() async {
     isLoading.value = true;
+    debugPrint('=== fetchCamps ===');
+    debugPrint('campDate: ${selectedCampDate.value}');
+    debugPrint('distLgdCode: $dISTLGDCODE');
+    debugPrint('dESGID: $dESGID');
+    debugPrint('empCode: $empCode');
+    debugPrint('subOrgId: $subOrgId');
     final response = await _repo.getCampDetailsForD2D(
       campDate: selectedCampDate.value,
       labCode: cityCode,
@@ -70,11 +141,12 @@ class CampForHealthScreeningD2DController extends GetxController {
       userId: empCode,
       dESGID: dESGID,
     );
-    if (response != null) {
+    debugPrint('response status: ${response?.status} message: ${response?.message} count: ${response?.output?.length}');
+    if (response != null && response.status?.toLowerCase() == 'success') {
       campList.assignAll(response.output ?? []);
     } else {
       campList.clear();
-      ToastManager.toast('Failed to load camps');
+      ToastManager.toast(response?.message ?? 'Failed to load camps');
     }
     isLoading.value = false;
   }
@@ -131,20 +203,28 @@ class CampForHealthScreeningD2DController extends GetxController {
     final obj = response.output?.first;
     if (obj == null) return;
 
+    if (obj.isOldCampClosed == 0) {
+      ToastManager.toast('मागील दिवसाचा कॅम्प अजूनही सुरू आहे. त्यामुळे नवीन patient registration करता येणार नाही.');
+      return;
+    }
     if (obj.isCampClosed == 1) {
       ToastManager.toast('This camp is closed');
       return;
     }
-    if (obj.isReadinessFormFilled == 1) {
+    if (obj.isReadinessFormFilled == 0) {
       ToastManager.toast('Please fill camp readiness form');
       return;
     }
-    if (obj.attendanceFlag == 1) {
+    if (obj.campFlag == 0) {
+      ToastManager.toast('This camp not mapped to you');
+      return;
+    }
+    if (obj.attendanceFlag == 0) {
       ToastManager.toast('Please mark attendance first');
       return;
     }
-    if (obj.campFlag == 1) {
-      ToastManager.toast('This camp not mapped to you');
+    if (obj.teamMemberAttendance == 1) {
+      ToastManager.toast('टीम मेंबरची attendance अजूनही pending आहे.');
       return;
     }
 

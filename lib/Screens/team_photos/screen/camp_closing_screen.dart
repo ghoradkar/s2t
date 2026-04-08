@@ -6,6 +6,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/widgets/AppButton.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/team_photos/controller/camp_closing_controller.dart';
@@ -84,8 +85,7 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                     () => Column(
                       children: [
                         CampClosingScreeningDetailsView(
-                          facilitedWorkers:
-                              controller.facilitedWorkers.value,
+                          facilitedWorkers: controller.facilitedWorkers.value,
                           approvedBeneficiaries:
                               controller.approvedBeneficiaries.value,
                           rejectedBeneficiaries:
@@ -95,16 +95,13 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                           basicDetails: controller.basicDetails.value,
                           physicalExamination:
                               controller.physicalExamination.value,
-                          lungFunctioinTest:
-                              controller.lungFunctioinTest.value,
+                          lungFunctioinTest: controller.lungFunctioinTest.value,
                           audioScreeningTest:
                               controller.audioScreeningTest.value,
                           visionScreening: controller.visionScreening.value,
-                          sampleCollection:
-                              controller.sampleCollection.value,
+                          sampleCollection: controller.sampleCollection.value,
                           ackowledgement: controller.ackowledgement.value,
-                          totalPhysicalExam:
-                              controller.totalPhysicalExam.value,
+                          totalPhysicalExam: controller.totalPhysicalExam.value,
                           totalLungTest: controller.totalLungTest.value,
                           totalAudioTest: controller.totalAudioTest.value,
                           totalVisionTest: controller.totalVisionTest.value,
@@ -158,31 +155,61 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
   }
 
   void _showBottomPopup(BuildContext parentContext) {
-    showModalBottomSheet(
-      context: parentContext,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      constraints: const BoxConstraints(minWidth: double.infinity),
-      builder: (BuildContext sheetContext) {
-        return GestureDetector(
-          onTap: () => Navigator.of(sheetContext).pop(),
-          child: Container(
-            width: double.infinity,
-            height: MediaQuery.of(sheetContext).size.height,
-            color: Colors.transparent,
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissal by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // title: Text("Alert"),
+          content: Container(
+            // width: double.infinity,
+            // height: MediaQuery.of(sheetContext).size.height,
+            color: kWhiteColor,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: CampClosingColorInfoView(),
-                ),
-              ],
+              mainAxisSize: MainAxisSize.min,
+              children: [CampClosingColorInfoView()],
             ),
           ),
+          actions: [
+            TextButton(
+              child: Text("Okay"),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ],
         );
       },
     );
+
+    // showModalBottomSheet(
+    //   context: parentContext,
+    //   isScrollControlled: true,
+    //   backgroundColor: Colors.transparent,
+    //   constraints: const BoxConstraints(minWidth: double.infinity),
+    //   builder: (BuildContext sheetContext) {
+    //     return GestureDetector(
+    //       onTap: () => Navigator.of(sheetContext).pop(),
+    //       child: Container(
+    //         // width: double.infinity,
+    //         // height: MediaQuery.of(sheetContext).size.height,
+    //         color: kWhiteColor,
+    //         child: Column(
+    //           mainAxisSize: MainAxisSize.min,
+    //           children: [
+    //             CampClosingColorInfoView(),
+    //             AppButtonWithIcon(
+    //               mWidth: 100,
+    //               title: 'Okay',
+    //               onTap: () {
+    //                 Get.back();
+    //               },
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }

@@ -402,12 +402,12 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 35) {
       menuList.add(DashboardMenu.HealthScreeningDetails);
+      menuList.add(DashboardMenu.TeamPhotos);
       menuList.add(DashboardMenu.PatientRegistration);
       menuList.add(DashboardMenu.UserAttendance);
       menuList.add(DashboardMenu.FingerPrintUpload);
       menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
-      menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 29) {
       menuList.add(DashboardMenu.DeviceAndResourceMapping);
       menuList.add(DashboardMenu.ResourceReMapping);
@@ -461,15 +461,17 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.CampCalendar);
       menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 35) {
-      menuList.add(DashboardMenu.HealthScreeningDetails);
-      menuList.add(DashboardMenu.PatientRegistration);
-      menuList.add(DashboardMenu.UserAttendance);
-      menuList.add(DashboardMenu.FingerPrintUpload);
-      menuList.add(DashboardMenu.Acknowledgement);
-      menuList.add(DashboardMenu.MedicineDeliveryMenu);
-      menuList.add(DashboardMenu.ELearning);
-      menuList.add(DashboardMenu.PaymentAndInvoice);
       menuList.add(DashboardMenu.TeamPhotos);
+      menuList.add(DashboardMenu.CampReadinessForm);
+      menuList.add(DashboardMenu.UserAttendance);
+      menuList.add(DashboardMenu.DailyWorkDashboard);
+      menuList.add(DashboardMenu.PatientRegistration);
+      menuList.add(DashboardMenu.HealthScreeningDetails);
+      // menuList.add(DashboardMenu.AppointmentAndSampleCollectionOfCT);
+      menuList.add(DashboardMenu.MedicineDeliveryMenu);
+      menuList.add(DashboardMenu.PaymentAndInvoice);
+      menuList.add(DashboardMenu.Acknowledgement);
+      menuList.add(DashboardMenu.ELearning);
     } else if (dESGID == 29) {
       menuList.add(DashboardMenu.AppointmentConfirmedList);
       menuList.add(DashboardMenu.PacketAllocation);
@@ -768,9 +770,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TeamPhotosScreen(
-              initialCampType: regularCamp ? '1' : '3',
-            ),
+            builder:
+                (context) =>
+                    TeamPhotosScreen(initialCampType: regularCamp ? '1' : '3'),
           ),
         );
         break;

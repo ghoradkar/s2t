@@ -128,7 +128,7 @@ import '../Json_Class/TestListForRejectResponse/TestListForRejectResponse.dart';
 import '../Json_Class/TotalcampAndTotalZeroCampResponse/TotalcampAndTotalZeroCampResponse.dart';
 import '../Json_Class/UpdateSubResourceListResponse/UpdateSubResourceListResponse.dart';
 import '../Json_Class/UserAndroidIDResponse/UserAndroidIDResponse.dart';
-import '../../Screens/user_attendance/Model/user_attandance_response.dart';
+import '../../Screens/user_attendance/model/user_attandance_response.dart';
 import '../Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
 import '../Json_Class/UserCampMappingAndAttendanceDataResponse/UserCampMappingAndAttendanceDataResponse.dart';
 import '../Json_Class/UserCampMappingAndAttendanceStatusResponse/UserCampMappingAndAttendanceStatusResponse.dart';

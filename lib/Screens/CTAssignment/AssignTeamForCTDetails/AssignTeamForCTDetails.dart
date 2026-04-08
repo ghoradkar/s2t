@@ -1051,7 +1051,10 @@ class _AssignTeamForCTDetailsState extends State<AssignTeamForCTDetails> {
       ToastManager.showSuccessPopup(
         context,
         icSuccessIcon,
-        "User Assigned successfully",
+        "User Assigned successfully",(){
+        Get.back();
+        Get.back();
+      }
       );
     } else {
       ToastManager.toast(errorMessage);

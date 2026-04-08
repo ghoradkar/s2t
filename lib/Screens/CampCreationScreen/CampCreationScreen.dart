@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, avoid_print
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -10,6 +11,8 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
@@ -48,6 +51,13 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
   String districtName = "";
   String? _selectedCampDate;
   String? _selectedPostCampDate;
+
+  // Location state
+  double _campLatitude = 0.0;
+  double _campLongitude = 0.0;
+  bool _isManualAddressEntry = false;
+
+  static const _googleMapsApiKey = 'AIzaSyDbtPLpwrcS571PfdJw9ednQAemxBiNhUA';
 
   CampTypeOutput? selectedCampType;
   InitiatedByOutput? selectedInitiatedBy;
@@ -107,7 +117,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
             onApplyTap: (p0) {
               if (dropDownType == DropDownTypeMenu.CampType) {
                 selectedCampType = p0;
-                selectedInitiatedBy = null;
+                selectedInitiatedBy = InitiatedByOutput(iD: 1, initiatedBy: 'Internal');
                 selectedTaluka = null;
                 selectedLandingLab = null;
                 selectedHomeAndHubLab = null;
@@ -567,6 +577,238 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     districtName =
         DataProvider().getParsedUserData()?.output?.first.district ?? "";
     empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
+    // Pre-select "Internal" as default (matching native app behavior)
+    selectedInitiatedBy = InitiatedByOutput(iD: 1, initiatedBy: 'Internal');
+  }
+
+  // ─── Location Methods ───────────────────────────────────────────────────────
+
+  Future<void> _searchOnMap() async {
+    final confirmed = await _showLocationAlertDialog();
+    if (!confirmed) return;
+    _showPlacesSearchBottomSheet();
+  }
+
+  Future<bool> _showLocationAlertDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          builder:
+              (ctx) => AlertDialog(
+                title: const Text('Alert'),
+                content: const Text(
+                  'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text('Ok'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
+  }
+
+  Future<List<Map<String, dynamic>>> _autocomplete(String input) async {
+    try {
+      final uri = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json'
+        '?input=${Uri.encodeComponent(input)}'
+        '&components=country:in'
+        '&location=19.0,76.0&radius=400000'
+        '&key=$_googleMapsApiKey',
+      );
+      final request = await HttpClient().getUrl(uri);
+      final response = await request.close();
+      final body = await response.transform(utf8.decoder).join();
+      final data = json.decode(body) as Map<String, dynamic>;
+      if (data['status'] == 'OK' || data['status'] == 'ZERO_RESULTS') {
+        return List<Map<String, dynamic>>.from(data['predictions'] ?? []);
+      }
+      debugPrint('Autocomplete status: ${data['status']}');
+    } catch (e) {
+      debugPrint('Autocomplete error: $e');
+    }
+    return [];
+  }
+
+  void _showPlacesSearchBottomSheet() {
+    final searchController = TextEditingController();
+    List<Map<String, dynamic>> predictions = [];
+    bool isSearching = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+              ),
+              child: SizedBox(
+                height: MediaQuery.of(ctx).size.height * 0.6,
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        controller: searchController,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          hintText: 'Search location...',
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon:
+                              isSearching
+                                  ? const Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                  : null,
+                        ),
+                        onChanged: (value) async {
+                          if (value.length < 3) {
+                            setSheetState(() => predictions = []);
+                            return;
+                          }
+                          setSheetState(() => isSearching = true);
+                          final results = await _autocomplete(value);
+                          setSheetState(() {
+                            predictions = results;
+                            isSearching = false;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: predictions.length,
+                        separatorBuilder:
+                            (_, index) => const Divider(height: 1),
+                        itemBuilder: (_, index) {
+                          final p = predictions[index];
+                          final fmt = p['structured_formatting']
+                              as Map<String, dynamic>? ?? {};
+                          final primary = fmt['main_text'] as String? ??
+                              p['description'] as String? ?? '';
+                          final secondary =
+                              fmt['secondary_text'] as String? ?? '';
+                          final placeId = p['place_id'] as String? ?? '';
+                          return ListTile(
+                            leading: const Icon(Icons.location_on_outlined),
+                            title: Text(primary),
+                            subtitle: secondary.isNotEmpty
+                                ? Text(
+                                    secondary,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : null,
+                            onTap: () async {
+                              Navigator.pop(ctx);
+                              await _fetchPlaceDetails(placeId);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _fetchPlaceDetails(String placeId) async {
+    ToastManager.showLoader();
+    try {
+      final uri = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/details/json'
+        '?place_id=$placeId'
+        '&fields=name,geometry,formatted_address'
+        '&key=$_googleMapsApiKey',
+      );
+      final request = await HttpClient().getUrl(uri);
+      final response = await request.close();
+      final body = await response.transform(utf8.decoder).join();
+      final data = json.decode(body) as Map<String, dynamic>;
+
+      debugPrint('fetchPlaceDetails status: ${data['status']}');
+
+      if (data['status'] == 'OK') {
+        final result = data['result'] as Map<String, dynamic>;
+        final location = result['geometry']['location'];
+        final lat = (location['lat'] as num).toDouble();
+        final lng = (location['lng'] as num).toDouble();
+        final address = result['formatted_address'] as String? ?? '';
+
+        setState(() {
+          _campLatitude = lat;
+          _campLongitude = lng;
+          campAddressTextField.text = address;
+          _isManualAddressEntry = false;
+        });
+      } else {
+        ToastManager.toast('Place details error: ${data['status']}');
+      }
+    } catch (e) {
+      debugPrint('fetchPlaceDetails error: $e');
+      ToastManager.toast('Failed to fetch place details');
+    } finally {
+      ToastManager.hideLoader();
+    }
+  }
+
+  Future<void> _viewOnMap() async {
+    if (_campLatitude == 0 || _campLongitude == 0) {
+      ToastManager.toast('Please search camp location or use current location');
+      return;
+    }
+    final geoUri =
+        'geo:$_campLatitude,$_campLongitude?q=$_campLatitude,$_campLongitude(Selected Location)';
+    try {
+      // Match native: intent with package = com.google.android.apps.maps
+      final intent = AndroidIntent(
+        action: 'action_view',
+        data: geoUri,
+        package: 'com.google.android.apps.maps',
+      );
+      await intent.launch();
+    } catch (_) {
+      // Fallback: open in browser if Google Maps is not installed
+      final fallback = Uri.parse(
+        'https://maps.google.com/?q=$_campLatitude,$_campLongitude',
+      );
+      if (await canLaunchUrl(fallback)) {
+        await launchUrl(fallback, mode: LaunchMode.externalApplication);
+      } else {
+        ToastManager.toast('Google Maps not installed');
+      }
+    }
   }
 
   @override
@@ -848,10 +1090,108 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 ),
                 // suffixIcon: Icon(Icons.keyboard_arrow_down),
               ).paddingOnly(top: 12),
+              // Location action buttons
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      _searchOnMap();
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.search, size: 22, color: kPrimaryColor).paddingOnly(right: 2.w),
+                        CommonText(
+                          text: "Search On Map",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          textColor: kBlackColor,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ).paddingOnly(top: 8.h, left: 10.w, right: 10.h,bottom: 8.h),
+                  ),
+
+                  SizedBox(width: 12.w),
+
+                  // Expanded(
+                  //   child: OutlinedButton.icon(
+                  //     onPressed: _viewOnMap,
+                  //     icon: const Icon(Icons.map_outlined, size: 15),
+                  //     label: Text(
+                  //       'View On Map',
+                  //       style: TextStyle(fontSize: 11.sp),
+                  //     ),
+                  //   ),
+                  // ),
+                  InkWell(
+                    onTap: () {
+                      _viewOnMap();
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.map_outlined,
+                          size: 22,
+                          color: kPrimaryColor,
+                        ).paddingOnly(right: 2.w),
+                        CommonText(
+                          text: "View On Map",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          textColor: kBlackColor,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ).paddingOnly(top: 8.h, left: 10.w, right: 10.h,bottom: 8.h),
+                  ),
+                ],
+              ).paddingOnly(top: 12),
+              // Enter address manually toggle
+              Row(
+                children: [
+                  Checkbox(
+                    value: _isManualAddressEntry,
+                    onChanged: (val) {
+                      if (val == true) {
+                        showDialog(
+                          context: context,
+                          builder:
+                              (ctx) => AlertDialog(
+                                title: const Text('Alert'),
+                                content: const Text(
+                                  'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text('Ok'),
+                                  ),
+                                ],
+                              ),
+                        );
+                      }
+                      setState(() {
+                        _isManualAddressEntry = val == true;
+                        if (_isManualAddressEntry) {
+                          campAddressTextField.text = '';
+                          _campLatitude = 0;
+                          _campLongitude = 0;
+                        }
+                      });
+                    },
+                  ),
+                  Text(
+                    'Enter Address Manually',
+                    style: TextStyle(fontSize: 12.sp),
+                  ),
+                ],
+              ),
               AppTextField(
                 controller: campAddressTextField,
-                readOnly: false,
+                readOnly: !_isManualAddressEntry,
                 hint: 'Camp Address',
+                maxLines: 4,
+                minLines: 1,
                 label: CommonText(
                   text: 'Camp Address',
                   fontSize: 12.sp,
@@ -877,8 +1217,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                     ),
                   ),
                 ),
-                // suffixIcon: Icon(Icons.keyboard_arrow_down),
-              ).paddingOnly(top: 12),
+              ).paddingOnly(top: 4),
 
               // AppIconTextfield(
               //   icon: icMapPin,

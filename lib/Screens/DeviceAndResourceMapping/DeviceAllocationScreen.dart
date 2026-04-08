@@ -987,14 +987,26 @@ class _DeviceAllocationScreenState extends State<DeviceAllocationScreen> {
   ) async {
     ToastManager.hideLoader();
     if (success) {
-      showAlertmessage("Data Added Successfully.");
+      ToastManager.showSuccessPopup(
+        context,
+        icSuccessIcon,
+        "Data Added Successfully.",
+        () {
+          Get.back();
+          Get.back();
+        },
+      );
+      // showAlertmessage("Data Added Successfully.");
     } else {
       ToastManager.toast(errorMessage);
     }
   }
 
   void showAlertmessage(String message) {
-    ToastManager.showSuccessPopup(context, icSuccessIcon, message);
+    ToastManager.showSuccessPopup(context, icSuccessIcon, message,(){
+      Get.back();
+      Get.back();
+    });
     // Navigator.pop(context);
   }
 
@@ -1584,7 +1596,7 @@ class _DeviceAllocationScreenState extends State<DeviceAllocationScreen> {
                           ),
                         ),
                       ),
-                    ).paddingOnly(top: 12.h)
+                    ).paddingOnly(top: 12.h),
                   ],
                 ),
               ),

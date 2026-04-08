@@ -148,20 +148,26 @@ class UserCampMappingAndAttendanceStatusOutput {
   int? attendanceFlag;
   int? campFlag;
   int? isCampClosed;
+  int? isOldCampClosed;
   int? isReadinessFormFilled;
+  int? teamMemberAttendance;
 
   UserCampMappingAndAttendanceStatusOutput({
     this.attendanceFlag,
     this.campFlag,
     this.isCampClosed,
+    this.isOldCampClosed,
     this.isReadinessFormFilled,
+    this.teamMemberAttendance,
   });
 
   UserCampMappingAndAttendanceStatusOutput.fromJson(Map<String, dynamic> json) {
     attendanceFlag = json['AttendanceFlag'];
     campFlag = json['CampFlag'];
     isCampClosed = json['IsCampClosed'];
+    isOldCampClosed = json['IsOldCampClosed'];
     isReadinessFormFilled = json['IsReadinessFormFilled'];
+    teamMemberAttendance = json['TeamMemberAttendance'];
   }
 
   Map<String, dynamic> toJson() {
@@ -169,7 +175,9 @@ class UserCampMappingAndAttendanceStatusOutput {
     data['AttendanceFlag'] = attendanceFlag;
     data['CampFlag'] = campFlag;
     data['IsCampClosed'] = isCampClosed;
+    data['IsOldCampClosed'] = isOldCampClosed;
     data['IsReadinessFormFilled'] = isReadinessFormFilled;
+    data['TeamMemberAttendance'] = teamMemberAttendance;
     return data;
   }
 }

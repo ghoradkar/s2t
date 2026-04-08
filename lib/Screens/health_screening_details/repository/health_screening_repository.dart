@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/constants/Repository.dart';
 // import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
 // import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
@@ -69,23 +74,32 @@ class HealthScreeningRepository {
     required int userId,
     required int dESGID,
   }) async {
-    CampDetailsonLabForDoorToDoorResponse? result;
-    await _apiManager.getCampDetailsonLabForDoorToDoorV2API(
-      {
-        "CampDate": campDate,
-        "LabCode": labCode.toString(),
-        "SubOrgId": subOrgId.toString(),
-        "Divison": "0",
-        "DISTLGDCODE": distLgdCode.toString(),
-        "USERID": userId.toString(),
-        "dESGID": dESGID.toString(),
-      },
-      (CampDetailsonLabForDoorToDoorResponse? response, String error,
-          bool success) {
-        if (success) result = response;
-      },
-    );
-    return result;
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetCampDetailsonLabForDoorToDoorV2}';
+      final body = {
+        'CampDate': campDate,
+        'LabCode': '0',
+        'SubOrgId': subOrgId.toString(),
+        'Divison': '0',
+        'DISTLGDCODE': distLgdCode.toString(),
+        'USERID': userId.toString(),
+        'DesgId': dESGID.toString(),
+      };
+      debugPrint('getCampDetailsForD2D URL: $uri');
+      debugPrint('getCampDetailsForD2D body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getCampDetailsForD2D raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return CampDetailsonLabForDoorToDoorResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getCampDetailsForD2D error: $e');
+      return null;
+    }
   }
 
   Future<UserCampMappingAndAttendanceStatusResponse?>
@@ -96,21 +110,30 @@ class HealthScreeningRepository {
     required int campType,
     required int campId,
   }) async {
-    UserCampMappingAndAttendanceStatusResponse? result;
-    await _apiManager.getUserCampMappingAndAttendanceStatusD2DAPI(
-      {
-        "CampDATE": campDate,
-        "UserId": userId.toString(),
-        "DISTLGDCODE": distLgdCode.toString(),
-        "CampType": campType.toString(),
-        "CampID": campId.toString(),
-      },
-      (UserCampMappingAndAttendanceStatusResponse? response, String error,
-          bool success) {
-        if (success) result = response;
-      },
-    );
-    return result;
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingAndAttendanceStatusReadinessCampClose}';
+      final body = {
+        'CampDATE': campDate,
+        'UserId': userId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'CampType': campType.toString(),
+        'CampID': campId.toString(),
+      };
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D URL: $uri');
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return UserCampMappingAndAttendanceStatusResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D error: $e');
+      return null;
+    }
   }
 
   // ─── Camp Regular ──────────────────────────────────────────────────────────
@@ -249,6 +272,24 @@ class HealthScreeningRepository {
       params,
       (UserAttendancesUsingSitedetailsIDResponse? response, String error,
           bool success) {
+        if (success) result = response;
+      },
+    );
+    return result;
+  }
+
+  // ─── District List ─────────────────────────────────────────────────────────
+
+  Future<DistrictResponse?> getDistrictByUserID({
+    required int userId,
+  }) async {
+    DistrictResponse? result;
+    await _apiManager.getDistrictByUserIDAPI(
+      {
+        'STATELGDCODE': '2',
+        'USERID': userId.toString(),
+      },
+      (DistrictResponse? response, String error, bool success) {
         if (success) result = response;
       },
     );

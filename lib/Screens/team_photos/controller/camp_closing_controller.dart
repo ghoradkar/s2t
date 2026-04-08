@@ -341,7 +341,10 @@ class CampClosingController extends GetxController {
           ToastManager.showSuccessPopup(
             Get.context!,
             icSuccessIcon,
-            "Camp confirmation done submitted successfully",
+            "Camp confirmation done submitted successfully",(){
+            Get.back();
+            Get.back();
+          }
           );
           // _showSuccessAndFinish();
         } else {

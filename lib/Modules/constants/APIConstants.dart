@@ -232,6 +232,9 @@ class APIConstants {
   static String kGetUserCampMappingAndAttendanceStatusReadiness =
       "GetUserCampMappingAndAttendanceStatus_Readiness";
 
+  static String kGetUserCampMappingAndAttendanceStatusReadinessCampClose =
+      "GetUserCampMappingAndAttendanceStatus_Readiness_CampClose";
+
   static String kGetYear = "GetYear";
   static String kGetMonth = "GetMonth";
   static String kGetMonthWiseInvoiceStatus = "GetMonthWiseInvoiceStatus_V1";

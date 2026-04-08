@@ -295,6 +295,7 @@ class ToastManager {
     BuildContext parentContext,
     String icon,
     String title,
+    Function callB,
   ) {
     showModalBottomSheet(
       context: parentContext,
@@ -312,8 +313,8 @@ class ToastManager {
             icon: icon,
             message: title,
             onTap: () {
-              Navigator.of(sheetContext).pop();
-              Navigator.of(parentContext).pop();
+              callB();
+
             },
           ),
         );
