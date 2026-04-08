@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppButton.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/team_photos/controller/camp_closing_controller.dart';
 import 'package:s2toperational/Views/CampClosingColorInfoView/CampClosingColorInfoView.dart';
 import 'package:s2toperational/Views/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
@@ -52,102 +53,104 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: mAppBar(
-        scTitle: 'Camp Closing Confirmation',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-        showActions: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-            child: GestureDetector(
-              onTap: () => _showBottomPopup(context),
-              child: const Icon(Icons.info, color: Colors.white, size: 24.0),
+    return NetworkWrapper(
+      child: Scaffold(
+        appBar: mAppBar(
+          scTitle: 'Camp Closing Confirmation',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+          showActions: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: GestureDetector(
+                onTap: () => _showBottomPopup(context),
+                child: const Icon(Icons.info, color: Colors.white, size: 24.0),
+              ),
             ),
-          ),
-        ],
-      ),
-      body: KeyboardDismissOnTap(
-        dismissOnCapturedTaps: true,
-        child: SizedBox(
-          height: SizeConfig.screenHeight,
-          width: SizeConfig.screenWidth,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                bottom: 8,
-                left: 8,
-                right: 8,
-                child: SingleChildScrollView(
-                  child: Obx(
-                    () => Column(
-                      children: [
-                        CampClosingScreeningDetailsView(
-                          facilitedWorkers: controller.facilitedWorkers.value,
-                          approvedBeneficiaries:
-                              controller.approvedBeneficiaries.value,
-                          rejectedBeneficiaries:
-                              controller.rejectedBeneficiaries.value,
-                          verifiedBeneficiaries:
-                              controller.verifiedBeneficiaries.value,
-                          basicDetails: controller.basicDetails.value,
-                          physicalExamination:
-                              controller.physicalExamination.value,
-                          lungFunctioinTest: controller.lungFunctioinTest.value,
-                          audioScreeningTest:
-                              controller.audioScreeningTest.value,
-                          visionScreening: controller.visionScreening.value,
-                          sampleCollection: controller.sampleCollection.value,
-                          ackowledgement: controller.ackowledgement.value,
-                          totalPhysicalExam: controller.totalPhysicalExam.value,
-                          totalLungTest: controller.totalLungTest.value,
-                          totalAudioTest: controller.totalAudioTest.value,
-                          totalVisionTest: controller.totalVisionTest.value,
-                          totalUrineCount: controller.totalUrineCount.value,
-                          totalBene: controller.totalBene.value,
-                        ),
-                        ConsumableConsumptionForCampView(
-                          consumableCampList:
-                              controller.consumableCampList.toList(),
-                        ),
-                        SizedBox(height: responsiveHeight(26)),
-                        Center(
-                          child: SizedBox(
-                            width: 146,
-                            height: 40,
-                            child: AppButtonWithIcon(
-                              buttonColor:
-                                  controller.isUserInteractionEnabled.value
-                                      ? kButtonColor
-                                      : Colors.grey,
-                              title: 'Close Camp',
-                              icon: Image.asset(
-                                iconArrow,
-                                height: responsiveHeight(24),
-                                width: responsiveHeight(24),
+          ],
+        ),
+        body: KeyboardDismissOnTap(
+          dismissOnCapturedTaps: true,
+          child: SizedBox(
+            height: SizeConfig.screenHeight,
+            width: SizeConfig.screenWidth,
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  bottom: 8,
+                  left: 8,
+                  right: 8,
+                  child: SingleChildScrollView(
+                    child: Obx(
+                      () => Column(
+                        children: [
+                          CampClosingScreeningDetailsView(
+                            facilitedWorkers: controller.facilitedWorkers.value,
+                            approvedBeneficiaries:
+                                controller.approvedBeneficiaries.value,
+                            rejectedBeneficiaries:
+                                controller.rejectedBeneficiaries.value,
+                            verifiedBeneficiaries:
+                                controller.verifiedBeneficiaries.value,
+                            basicDetails: controller.basicDetails.value,
+                            physicalExamination:
+                                controller.physicalExamination.value,
+                            lungFunctioinTest: controller.lungFunctioinTest.value,
+                            audioScreeningTest:
+                                controller.audioScreeningTest.value,
+                            visionScreening: controller.visionScreening.value,
+                            sampleCollection: controller.sampleCollection.value,
+                            ackowledgement: controller.ackowledgement.value,
+                            totalPhysicalExam: controller.totalPhysicalExam.value,
+                            totalLungTest: controller.totalLungTest.value,
+                            totalAudioTest: controller.totalAudioTest.value,
+                            totalVisionTest: controller.totalVisionTest.value,
+                            totalUrineCount: controller.totalUrineCount.value,
+                            totalBene: controller.totalBene.value,
+                          ),
+                          ConsumableConsumptionForCampView(
+                            consumableCampList:
+                                controller.consumableCampList.toList(),
+                          ),
+                          SizedBox(height: responsiveHeight(26)),
+                          Center(
+                            child: SizedBox(
+                              width: 146,
+                              height: 40,
+                              child: AppButtonWithIcon(
+                                buttonColor:
+                                    controller.isUserInteractionEnabled.value
+                                        ? kButtonColor
+                                        : Colors.grey,
+                                title: 'Close Camp',
+                                icon: Image.asset(
+                                  iconArrow,
+                                  height: responsiveHeight(24),
+                                  width: responsiveHeight(24),
+                                ),
+                                mWidth: SizeConfig.screenWidth,
+                                textStyle: TextStyle(
+                                  fontFamily: FontConstants.interFonts,
+                                  color: Colors.white,
+                                  fontSize: responsiveFont(16),
+                                ),
+                                onTap: () {
+                                  if (controller.isUserInteractionEnabled.value) {
+                                    controller.onCloseCampTap();
+                                  }
+                                },
                               ),
-                              mWidth: SizeConfig.screenWidth,
-                              textStyle: TextStyle(
-                                fontFamily: FontConstants.interFonts,
-                                color: Colors.white,
-                                fontSize: responsiveFont(16),
-                              ),
-                              onTap: () {
-                                if (controller.isUserInteractionEnabled.value) {
-                                  controller.onCloseCampTap();
-                                }
-                              },
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -31,6 +31,8 @@ import 'package:s2toperational/Screens/super_admin/screens/super_admin_dashboard
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/D2DPhysicalExaminationDetailsScreen/D2DPhysicalExaminationDetailsScreen.dart';
 import 'package:s2toperational/Screens/team_camp_mapping/TeamCampMappingScreen/TeamCampMappingScreen.dart';
 import 'package:s2toperational/Screens/team_photos/screen/team_photos_screen.dart';
+import 'package:s2toperational/Screens/patient_registration/controller/select_camp_controller.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/select_camp_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/constants/constants.dart';
@@ -566,6 +568,25 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case DashboardMenu.PatientRegistration:
+        if (regularCamp) {
+          Get.delete<SelectCampController>(force: true);
+          final sc = Get.put(SelectCampController());
+          sc.navCampType = '1';
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SelectCampScreen()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (_) => AppointmentsConfirmedListScreen(
+                    dashboardType: DashboardMenu.PatientRegistration,
+                  ),
+            ),
+          );
+        }
         break;
       case DashboardMenu.D2DTeams:
         Navigator.push(

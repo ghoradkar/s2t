@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Views/AppointmentsConfirmedFilterView/AppointmentsConfirmedFilterView.dart';
 
 import '../../../Modules/Enums/Enums.dart';
@@ -22,6 +24,8 @@ import '../../../Modules/widgets/S2TAppBar.dart';
 import '../../../Views/AppointmentsConfirmedTeamView/AppointmentsConfirmedTeamView.dart';
 import '../AppointmentsConfirmedBeneficiaryDetailsScreen/AppointmentsConfirmedBeneficiaryDetailsScreen.dart';
 import 'AppointmentsConfirmedRow/AppointmentsConfirmedRow.dart';
+import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/d2d_select_camp_screen.dart';
 
 class AppointmentsConfirmedListScreen extends StatefulWidget {
   AppointmentsConfirmedListScreen({super.key, required this.dashboardType});
@@ -261,6 +265,30 @@ class _AppointmentsConfirmedListScreenState
             ),
           ],
         ),
+        floatingActionButton:
+            widget.dashboardType == DashboardMenu.PatientRegistration
+                ? FloatingActionButton.extended(
+                  backgroundColor: kPrimaryColor,
+                  icon: const Icon(Icons.person_add_rounded, color: Colors.white),
+                  label: CommonText(
+                    text: 'Register Patient',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    textColor: Colors.white,
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    Get.delete<D2DSelectCampController>(force: true);
+                    Get.put(D2DSelectCampController());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const D2DSelectCampScreen(),
+                      ),
+                    );
+                  },
+                )
+                : null,
         body: AnnotatedRegion(
           value: const SystemUiOverlayStyle(
             statusBarColor: kPrimaryColor,

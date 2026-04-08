@@ -49,7 +49,7 @@ class ToastManager {
     );
   }
 
-  static void showAlertDialog(
+  static  showAlertDialog(
     BuildContext context,
     String message,
     Function onTap,

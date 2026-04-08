@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/team_photos/screen/camp_closing_screen.dart';
 import 'package:s2toperational/Screens/team_photos/controller/team_photos_controller.dart';
 import 'package:s2toperational/Screens/team_photos/model/attendance_details_response.dart';
@@ -45,192 +46,194 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Team Photos',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Get.back(),
-        showActions: true,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 12.w),
-            child: GestureDetector(
-              onTap: () => _showInfoDialog(context),
-              child: const Icon(
-                Icons.info_outline,
-                color: kWhiteColor,
-                size: 22,
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Team Photos',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Get.back(),
+          showActions: true,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 12.w),
+              child: GestureDetector(
+                onTap: () => _showInfoDialog(context),
+                child: const Icon(
+                  Icons.info_outline,
+                  color: kWhiteColor,
+                  size: 22,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Camp type toggle ──────────────────────────────────────────
-            if (!c.hideTabToggle) ...[
-              _CampTypeToggle(controller: c),
-              SizedBox(height: 14.h),
-            ],
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Camp type toggle ──────────────────────────────────────────
+              if (!c.hideTabToggle) ...[
+                _CampTypeToggle(controller: c),
+                SizedBox(height: 14.h),
+              ],
 
-            // ── Filter card ───────────────────────────────────────────────
-            _SectionCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionHeader(
-                    icon: Icons.tune_rounded,
-                    label: 'Select Filter',
-                  ),
-                  SizedBox(height: 12.h),
-                  Row(
-                    children: [
-                      // Date
-                      Obx(
-                        () => Expanded(
-                          child: AppTextField(
-                            controller: TextEditingController(
-                              text: c.selectedDate.value,
-                            ),
-                            readOnly: true,
-                            onTap: () => c.onDateChanged(context),
-                            label: _label('Date'),
-                            prefixIcon: Image.asset(
-                              icCalendarMonth,
-                              color: kPrimaryColor,
-                              width: 18,
-                              height: 18,
-                            ).paddingOnly(left: 6.w),
-                            suffixIcon: const Icon(
-                              Icons.calendar_today,
-                              size: 18,
-                              color: kPrimaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-
-                      // Camp ID
-                      Obx(
-                        () => Expanded(
-                          child: AppTextField(
-                            controller: TextEditingController(
-                              text: c.selectedCamp.value?.campId ?? '',
-                            ),
-                            readOnly: true,
-                            onTap: () => c.showCampDropdown(context),
-                            label: _label('Camp ID'),
-                            prefixIcon: const Icon(
-                              Icons.location_on_outlined,
-                              color: kPrimaryColor,
-                              size: 18,
-                            ).paddingOnly(left: 6.w),
-                            suffixIcon: const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: kPrimaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // Team (D2D / MMU only)
-                  Obx(() {
-                    if (!c.isD2DOrMMU) return const SizedBox.shrink();
-                    return Column(
+              // ── Filter card ───────────────────────────────────────────────
+              _SectionCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionHeader(
+                      icon: Icons.tune_rounded,
+                      label: 'Select Filter',
+                    ),
+                    SizedBox(height: 12.h),
+                    Row(
                       children: [
-                        SizedBox(height: 10.h),
-                        AppTextField(
-                          controller: TextEditingController(
-                            text: c.selectedTeam.value?.displayName ?? '',
+                        // Date
+                        Obx(
+                          () => Expanded(
+                            child: AppTextField(
+                              controller: TextEditingController(
+                                text: c.selectedDate.value,
+                              ),
+                              readOnly: true,
+                              onTap: () => c.onDateChanged(context),
+                              label: _label('Date'),
+                              prefixIcon: Image.asset(
+                                icCalendarMonth,
+                                color: kPrimaryColor,
+                                width: 18,
+                                height: 18,
+                              ).paddingOnly(left: 6.w),
+                              suffixIcon: const Icon(
+                                Icons.calendar_today,
+                                size: 18,
+                                color: kPrimaryColor,
+                              ),
+                            ),
                           ),
-                          readOnly: true,
-                          onTap:
-                              c.selectedCamp.value == null
-                                  ? () => _toast('Please select camp first')
-                                  : c.hideTabToggle
-                                      // DESGID 35: team is auto-resolved on
-                                      // camp selection — no manual picker.
-                                      ? () {}
-                                      : () => _showTeamPicker(context, c),
-                          label: _label('Team'),
-                          prefixIcon: const Icon(
-                            Icons.group_outlined,
-                            color: kPrimaryColor,
-                            size: 18,
-                          ).paddingOnly(left: 6.w),
-                          suffixIcon:
-                              c.isLoadingTeams.value
-                                  ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ).paddingOnly(right: 8.w)
-                                  : const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: kPrimaryColor,
-                                  ),
+                        ),
+                        SizedBox(width: 10.w),
+
+                        // Camp ID
+                        Obx(
+                          () => Expanded(
+                            child: AppTextField(
+                              controller: TextEditingController(
+                                text: c.selectedCamp.value?.campId ?? '',
+                              ),
+                              readOnly: true,
+                              onTap: () => c.showCampDropdown(context),
+                              label: _label('Camp ID'),
+                              prefixIcon: const Icon(
+                                Icons.location_on_outlined,
+                                color: kPrimaryColor,
+                                size: 18,
+                              ).paddingOnly(left: 6.w),
+                              suffixIcon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                color: kPrimaryColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
-                    );
-                  }),
-                ],
+                    ),
+
+                    // Team (D2D / MMU only)
+                    Obx(() {
+                      if (!c.isD2DOrMMU) return const SizedBox.shrink();
+                      return Column(
+                        children: [
+                          SizedBox(height: 10.h),
+                          AppTextField(
+                            controller: TextEditingController(
+                              text: c.selectedTeam.value?.displayName ?? '',
+                            ),
+                            readOnly: true,
+                            onTap:
+                                c.selectedCamp.value == null
+                                    ? () => _toast('Please select camp first')
+                                    : c.hideTabToggle
+                                        // DESGID 35: team is auto-resolved on
+                                        // camp selection — no manual picker.
+                                        ? () {}
+                                        : () => _showTeamPicker(context, c),
+                            label: _label('Team'),
+                            prefixIcon: const Icon(
+                              Icons.group_outlined,
+                              color: kPrimaryColor,
+                              size: 18,
+                            ).paddingOnly(left: 6.w),
+                            suffixIcon:
+                                c.isLoadingTeams.value
+                                    ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ).paddingOnly(right: 8.w)
+                                    : const Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: kPrimaryColor,
+                                    ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 14.h),
+              SizedBox(height: 14.h),
 
-            // ── Attendance table ──────────────────────────────────────────
-            Obx(() => _AttendanceTable(list: c.attendanceList.value)),
-            SizedBox(height: 14.h),
+              // ── Attendance table ──────────────────────────────────────────
+              Obx(() => _AttendanceTable(list: c.attendanceList.value)),
+              SizedBox(height: 14.h),
 
-            // ── Photo cards ───────────────────────────────────────────────
-            _PhotoCard(title: 'Check-In Photo', isCheckIn: true, controller: c),
-            SizedBox(height: 12.h),
-            _PhotoCard(
-              title: 'Check-Out Photo',
-              isCheckIn: false,
-              controller: c,
-            ),
-            SizedBox(height: 16.h),
+              // ── Photo cards ───────────────────────────────────────────────
+              _PhotoCard(title: 'Check-In Photo', isCheckIn: true, controller: c),
+              SizedBox(height: 12.h),
+              _PhotoCard(
+                title: 'Check-Out Photo',
+                isCheckIn: false,
+                controller: c,
+              ),
+              SizedBox(height: 16.h),
 
-            // ── Upload / Camp Closing button ──────────────────────────────
-            Obx(() {
-              if (c.bothPhotosUploaded) {
-                if (c.isD2DOrMMU) {
-                  // Hide if camp already closed (CampConfirmation == "1")
-                  if (c.selectedCamp.value?.isConfirmed == true) {
-                    return const SizedBox.shrink();
+              // ── Upload / Camp Closing button ──────────────────────────────
+              Obx(() {
+                if (c.bothPhotosUploaded) {
+                  if (c.isD2DOrMMU) {
+                    // Hide if camp already closed (CampConfirmation == "1")
+                    if (c.selectedCamp.value?.isConfirmed == true) {
+                      return const SizedBox.shrink();
+                    }
+                    return AppActiveButton(
+                      buttontitle: 'Camp Closing Confirmation',
+                      onTap: () => _onCampClosingTap(context, c),
+                    );
                   }
-                  return AppActiveButton(
-                    buttontitle: 'Camp Closing Confirmation',
-                    onTap: () => _onCampClosingTap(context, c),
-                  );
+                  return const SizedBox.shrink();
                 }
-                return const SizedBox.shrink();
-              }
-              return AppActiveButton(
-                buttontitle:
-                    c.isMarkInOut.value == '0'
-                        ? 'Upload Check-In Photo'
-                        : 'Upload Check-Out Photo',
-                onTap:
-                    c.isUploadingPhoto.value
-                        ? () {}
-                        : () => c.uploadPhoto(
-                          isCheckIn: c.isMarkInOut.value == '0',
-                        ),
-              );
-            }),
-            SizedBox(height: 20.h),
-          ],
+                return AppActiveButton(
+                  buttontitle:
+                      c.isMarkInOut.value == '0'
+                          ? 'Upload Check-In Photo'
+                          : 'Upload Check-Out Photo',
+                  onTap:
+                      c.isUploadingPhoto.value
+                          ? () {}
+                          : () => c.uploadPhoto(
+                            isCheckIn: c.isMarkInOut.value == '0',
+                          ),
+                );
+              }),
+              SizedBox(height: 20.h),
+            ],
+          ),
         ),
       ),
     );

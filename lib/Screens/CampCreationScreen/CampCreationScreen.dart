@@ -117,7 +117,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
             onApplyTap: (p0) {
               if (dropDownType == DropDownTypeMenu.CampType) {
                 selectedCampType = p0;
-                selectedInitiatedBy = InitiatedByOutput(iD: 1, initiatedBy: 'Internal');
+                selectedInitiatedBy = InitiatedByOutput(
+                  iD: 1,
+                  initiatedBy: 'Internal',
+                );
                 selectedTaluka = null;
                 selectedLandingLab = null;
                 selectedHomeAndHubLab = null;
@@ -590,20 +593,47 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
   }
 
   Future<bool> _showLocationAlertDialog() async {
+    // return ToastManager.showAlertDialog(
+    //       context,
+    //       'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+    //       () {
+    //         Navigator.pop(context, true);
+    //       },
+    //     ) ??
+    //     false;
+
     return await showDialog<bool>(
           context: context,
           builder:
               (ctx) => AlertDialog(
-                title: const Text('Alert'),
-                content: const Text(
-                  'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+                // title: const Text('Alert'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Image.asset(warning, width: 100.w),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.",
+                      ),
+                    ),
+
+                    SizedBox(
+                      width: 80.w,
+                      child: AppActiveButton(
+                        buttontitle: "OK",
+                        onTap: () {
+                          Navigator.pop(ctx, true);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text('Ok'),
-                  ),
-                ],
               ),
         ) ??
         false;
@@ -708,23 +738,28 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                             (_, index) => const Divider(height: 1),
                         itemBuilder: (_, index) {
                           final p = predictions[index];
-                          final fmt = p['structured_formatting']
-                              as Map<String, dynamic>? ?? {};
-                          final primary = fmt['main_text'] as String? ??
-                              p['description'] as String? ?? '';
+                          final fmt =
+                              p['structured_formatting']
+                                  as Map<String, dynamic>? ??
+                              {};
+                          final primary =
+                              fmt['main_text'] as String? ??
+                              p['description'] as String? ??
+                              '';
                           final secondary =
                               fmt['secondary_text'] as String? ?? '';
                           final placeId = p['place_id'] as String? ?? '';
                           return ListTile(
                             leading: const Icon(Icons.location_on_outlined),
                             title: Text(primary),
-                            subtitle: secondary.isNotEmpty
-                                ? Text(
-                                    secondary,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  )
-                                : null,
+                            subtitle:
+                                secondary.isNotEmpty
+                                    ? Text(
+                                      secondary,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                    : null,
                             onTap: () async {
                               Navigator.pop(ctx);
                               await _fetchPlaceDetails(placeId);
@@ -1099,7 +1134,11 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                     },
                     child: Row(
                       children: [
-                        Icon(Icons.search, size: 22, color: kPrimaryColor).paddingOnly(right: 2.w),
+                        Icon(
+                          Icons.search,
+                          size: 22,
+                          color: kPrimaryColor,
+                        ).paddingOnly(right: 2.w),
                         CommonText(
                           text: "Search On Map",
                           fontSize: 14.sp,
@@ -1108,7 +1147,12 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                           textAlign: TextAlign.start,
                         ),
                       ],
-                    ).paddingOnly(top: 8.h, left: 10.w, right: 10.h,bottom: 8.h),
+                    ).paddingOnly(
+                      top: 8.h,
+                      left: 10.w,
+                      right: 10.h,
+                      bottom: 8.h,
+                    ),
                   ),
 
                   SizedBox(width: 12.w),
@@ -1142,7 +1186,12 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                           textAlign: TextAlign.start,
                         ),
                       ],
-                    ).paddingOnly(top: 8.h, left: 10.w, right: 10.h,bottom: 8.h),
+                    ).paddingOnly(
+                      top: 8.h,
+                      left: 10.w,
+                      right: 10.h,
+                      bottom: 8.h,
+                    ),
                   ),
                 ],
               ).paddingOnly(top: 12),
@@ -1157,16 +1206,40 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                           context: context,
                           builder:
                               (ctx) => AlertDialog(
-                                title: const Text('Alert'),
-                                content: const Text(
-                                  'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+                                // title: const Text('Alert'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Image.asset(warning, width: 100.w),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.",
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      width: 80.w,
+                                      child: AppActiveButton(
+                                        buttontitle: "OK",
+                                        onTap: () {
+                                          Navigator.pop(ctx, true);
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(ctx),
-                                    child: const Text('Ok'),
-                                  ),
-                                ],
+                                // actions: [
+                                //   TextButton(
+                                //     onPressed: () => Navigator.pop(ctx),
+                                //     child: const Text('Ok'),
+                                //   ),
+                                // ],
                               ),
                         );
                       }

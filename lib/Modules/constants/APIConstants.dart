@@ -234,6 +234,10 @@ class APIConstants {
 
   static String kGetUserCampMappingAndAttendanceStatusReadinessCampClose =
       "GetUserCampMappingAndAttendanceStatus_Readiness_CampClose";
+  static String kGetUserCampMappingRegularCampClose =
+      "GetUserCampMappingAndAttendanceStatusForRegularCamp_Readiness_CampClose";
+  static String kGetUserCampMappingD2DClose =
+      "GetUserCampMappingAndAttendanceStatus_Readiness_CampClose";
 
   static String kGetYear = "GetYear";
   static String kGetMonth = "GetMonth";
@@ -288,6 +292,9 @@ class APIConstants {
   static String kGetFaceDetectionFlag = "GetFaceDetectionFlag";
 
   static String kGetDistrictByUserID = "GetDistrictByUserID";
+  static String kGetOTPforRegistrationOrg = "GetOTPforRegistration_Org";
+  static String kVerifyRegistrationOTP = "VerifyRegistrationOTP";
+  static String kGetWorkerInfroReRegistration = "GetWorkerInfroRe_Registration";
   static String kGetT2TCTAssignmentRemarks = "Get_T2T_CT_AssignmentRemarks";
   static String kGetT2TCTBeneficiaryDetailsforDistCoordinatorV3 =
       "GetT2T_CT_BeneficiaryDetailsforDistCoordinator_V3";
