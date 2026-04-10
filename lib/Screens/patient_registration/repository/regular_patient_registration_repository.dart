@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Screens/patient_registration/model/attendance_status_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/beneficiary_details_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/patient_details_on_reg_no_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/regular_registration_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/select_camp_response.dart';
 
@@ -145,26 +146,39 @@ class RegularPatientRegistrationRepository {
     File? renewalSlipPhoto,
   }) async {
     final url = Uri.parse(
-      '${APIManager.kConstructionWorkerBaseURL}handler/BeneficiaryRe_RegistrationNew.ashx',
+      '${APIManager.kWebservicesBaseURL}handler/BeneficiaryRe_RegistrationNew.ashx',
     );
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final request = http.MultipartRequest('POST', url);
       fields.forEach((key, value) => request.fields[key] = value);
 
+      final regdNo = fields['RegdNo'] ?? '';
       if (patientPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file1', patientPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file1',
+            patientPhoto.path,
+            filename: '${regdNo}_PR.jpg',
+          ),
         );
       }
       if (healthCardPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file2', healthCardPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file2',
+            healthCardPhoto.path,
+            filename: '${regdNo}_HC.jpg',
+          ),
         );
       }
       if (renewalSlipPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file3', renewalSlipPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file3',
+            renewalSlipPhoto.path,
+            filename: '${regdNo}_RS.jpg',
+          ),
         );
       }
 
@@ -173,6 +187,81 @@ class RegularPatientRegistrationRepository {
       final decoded = json.decode(response.body);
       final result = RegularRegistrationResponse.fromJson(decoded);
       return (result.status?.toLowerCase() == 'success') ? result : result;
+    } catch (e, st) {
+      // ignore: avoid_print
+      print('[saveRegistration] ERROR: $e\n$st');
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  Future<PatientDetailsOnRegNoResponse?> getPatientDetailsByRegNo({
+    required String regNo,
+  }) async {
+    final completer = Completer<PatientDetailsOnRegNoResponse?>();
+    final url = Uri.parse(
+      '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetWorkerInfroFromWorkerRegid}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'EmpCode': regNo},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body);
+      final result = PatientDetailsOnRegNoResponse.fromJson(decoded);
+      completer.complete(result);
+    } catch (_) {
+      completer.complete(null);
+    } finally {
+      ioClient.close();
+    }
+    return completer.future;
+  }
+
+  /// Submits fingerprint image (File1) and signature image (File2) to the server.
+  ///
+  /// [isSignatureApplicable] → `IsSignature` field ("1"/"0")
+  /// [isFingerPrintIssue]    → `IsDeviceIssue` field ("0"/"1") — intentionally inverted
+  Future<Map<String, dynamic>?> insertSignatureAndThumb({
+    required String regdId,
+    required String siteId,
+    required String campId,
+    required bool isSignatureApplicable,
+    required bool isFingerPrintIssue,
+    required String empCode,
+    File? thumbImageFile,
+    File? signatureImageFile,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kWebservicesBaseURL}${APIConstants.kInsertSignatureandThumbDetails}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final request = http.MultipartRequest('POST', url);
+      request.fields['RegdId'] = regdId;
+      request.fields['SiteId'] = siteId;
+      request.fields['CampId'] = campId;
+      request.fields['IsSignature'] = isSignatureApplicable ? '1' : '0';
+      request.fields['IsDeviceIssue'] = isFingerPrintIssue ? '0' : '1';
+      request.fields['CreatedBy'] = empCode;
+
+      if (thumbImageFile != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('File1', thumbImageFile.path),
+        );
+      }
+      if (signatureImageFile != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('File2', signatureImageFile.path),
+        );
+      }
+
+      final streamed = await ioClient.send(request);
+      final response = await http.Response.fromStream(streamed);
+      return json.decode(response.body) as Map<String, dynamic>?;
     } catch (_) {
       return null;
     } finally {

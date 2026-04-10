@@ -156,6 +156,7 @@ class APIManager {
   static String kD2DBaseURL = "";
   static String kCallingBaseURL = "";
   static String kConstructionWorkerBaseURL = "";
+  static String kWebservicesBaseURL = "";
   static String kExpenseBillDetailsHandler = "";
   static String kUploadPostCampFileHandler = "";
   static String kChangeBeneficiaryAndCardImage = "";
@@ -181,6 +182,7 @@ class APIManager {
             "https://mcwwb.janarogyaseva.in/webservices/BeneficiaryCalling.asmx/";
         kConstructionWorkerBaseURL =
             "https://mcwwb.janarogyaseva.in/webservices/ConstructionWorker_V2.asmx/";
+        kWebservicesBaseURL = "https://mcwwb.janarogyaseva.in/webservices/";
         kMahabocwBaseURL = "https://healthcamp.mahabocw.in/api/";
         kExpenseBillDetailsHandler =
             "https://mcwwb.janarogyaseva.in/webservices/handler/ExpenseBillDetailsHandler.ashx";
@@ -205,6 +207,7 @@ class APIManager {
             "https://testmcwwb.myhindlab.com/webservices/BeneficiaryCalling.asmx/";
         kConstructionWorkerBaseURL =
             "https://testmcwwb.myhindlab.com/webservices/ConstructionWorker_V2.asmx/";
+        kWebservicesBaseURL = "https://testmcwwb.myhindlab.com/webservices/";
         kMahabocwBaseURL = "https://healthcamp.mahabocw.in/api/";
         kExpenseBillDetailsHandler =
             "https://testmcwwb.myhindlab.com/webservices/handler/ExpenseBillDetailsHandler.ashx";

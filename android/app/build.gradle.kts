@@ -5,6 +5,10 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+}
+
 android {
     namespace = "com.example.s2toperational"
     compileSdk = flutter.compileSdkVersion

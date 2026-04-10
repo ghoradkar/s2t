@@ -65,8 +65,10 @@ dependencies:
   webview_flutter: ^4.13.0
   month_year_picker: ^0.5.0+1
   flutter_datetime_picker_plus: ^2.2.0
+  http: ^1.4.0
   skeletonizer: ^2.1.2
   flutter_udid: ^4.1.1
+  signature: ^5.5.0
   # table_calendar: ^3.2.0
 
 dev_dependencies:

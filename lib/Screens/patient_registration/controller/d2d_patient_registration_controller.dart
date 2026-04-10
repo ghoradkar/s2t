@@ -1,18 +1,23 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
-import 'package:s2toperational/Screens/patient_registration/model/beneficiary_details_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/patient_finger_signature_screen.dart';
 
@@ -30,7 +35,10 @@ class D2DPatientRegistrationController extends GetxController {
   int empCode = 0;
   int subOrgId = 0;
   String talLgd = '0';
-  String maritalStatusId = '0';
+  String maritalStatusId = '1';
+  String _workerRegdId = '0';
+  String _beneficiaryCount = '0'; // Count from GetBenificiaryRegisterOrNot — appended to RegdNo
+  String _appVersion = '';
 
   final registrationType = 'without_abha'.obs;
   final isDependent = false.obs;
@@ -69,9 +77,12 @@ class D2DPatientRegistrationController extends GetxController {
   final whatsAppMode = '1'.obs;
   final isHCRenewal = false.obs;
   final showRenewal = false.obs;
-  final isFaceDetection = true.obs;
+  final isFaceDetection = false.obs;
   final selectedRelation = Rxn<RelationOutput>();
   final relationList = <RelationOutput>[].obs;
+
+  /// true when the selected relation forces a specific gender (locks the gender toggle)
+  final isGenderLockedByRelation = false.obs;
 
   final abhaVerified = false.obs;
   final abhaOtpSent = false.obs;
@@ -85,6 +96,53 @@ class D2DPatientRegistrationController extends GetxController {
   final mobileOtpSent = false.obs;
   final mobileOtpVerified = false.obs;
   String _generatedOtp = '';
+
+  // ── New state for 4-scenario form logic ────────────────────────────────────
+  /// true after reg-no API returns data → drives field readOnly / visible states
+  final hasApiData = false.obs;
+
+  /// "This Number not belongs to beneficiary" checkbox
+  final isNumberNotBelongsToBeneficiary = false.obs;
+
+  /// Alternate mobile OTP flow
+  final altMobileOtpSent = false.obs;
+  final altMobileOtpVerified = false.obs;
+  String _generatedAltOtp = '';
+
+  /// Alternate mobile belongs to (1=Self, 2=Spouse, 3=Child)
+  final altMobileBelongsTo = '1'.obs;
+
+  /// Worker's gender selected by phlebo (for isDependent=Yes)
+  final workerGenderByPhlebo = ''.obs;
+
+  /// Worker marital status selection (drives relation list)
+  final selectedWorkerMaritalStatusId = '0'.obs;
+  final selectedWorkerMaritalStatusName = ''.obs;
+
+  /// Worker info shown as read-only cards when isDependent=Yes + hasApiData=true
+  final workerNameDisplay = ''.obs;
+  final workerAgeDisplay = ''.obs;
+  final workerGenderDisplay = ''.obs;
+
+  /// Identity card selection (isDependent=Yes)
+  final identityList = <DocumentTypeOutput>[].obs;
+  final selectedIdentityId = '0'.obs;
+  final selectedIdentityName = ''.obs;
+  final isLoadingIdentity = false.obs;
+
+  /// District / Taluka dropdowns (isDependent=No + hasApiData=true)
+  final regDistrictList = <DistrictOutput>[].obs;
+  final regTalukaList = <UserMappedTalukaOutput>[].obs;
+
+  /// true when API returned a non-empty value → field stays readonly
+  final isDistrictLocked = false.obs;
+  final isTalukaLocked = false.obs;
+
+  /// District LGD code used when fetching talukas
+  String _regDistLgdCode = '';
+
+  // New text controllers
+  final tecAltMobileOtp = TextEditingController();
 
   final patientPhotoPath = ''.obs;
   final healthCardPhotoPath = ''.obs;
@@ -104,8 +162,15 @@ class D2DPatientRegistrationController extends GetxController {
     empCode = user?.empCode ?? 0;
     subOrgId = user?.subOrgId ?? 0;
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
-    maritalStatusId = user?.maritialstatusId?.toString() ?? '0';
+    final rawMsId = user?.maritialstatusId?.toString() ?? '';
+    maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
     _captureLocation();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    _appVersion = info.version;
   }
 
   Future<void> _captureLocation() async {
@@ -141,14 +206,34 @@ class D2DPatientRegistrationController extends GetxController {
       _abhaGenderAtVerify = '';
     }
   }
+
   void onDependentToggled(bool val) {
     isDependent.value = val;
+    // Reset the API-data state and clear the form whenever toggled
+    hasApiData.value = false;
+    tecWorkerRegNo.clear();
+    _clearForm();
+    selectedRelation.value = null;
+    relationList.clear();
+    selectedWorkerMaritalStatusId.value = '0';
+    selectedWorkerMaritalStatusName.value = '';
+    workerNameDisplay.value = '';
+    workerAgeDisplay.value = '';
+    workerGenderDisplay.value = '';
     if (val) {
-      fetchRelationList(maritalStatusId, selectedGender.value);
-    } else {
-      selectedRelation.value = null;
-      relationList.clear();
+      // isDependent=Yes → fetch relations with default marital status
+      fetchRelationList(
+        selectedWorkerMaritalStatusId.value,
+        selectedGender.value,
+      );
     }
+  }
+
+  void onWorkerMaritalStatusChanged(String id, String name) {
+    selectedWorkerMaritalStatusId.value = id;
+    selectedWorkerMaritalStatusName.value = name;
+    // Relation list depends on worker's gender, not the dependent's gender
+    fetchRelationList(id, workerGenderByPhlebo.value);
   }
 
   void onWorkerModeChanged(String mode) {
@@ -163,59 +248,230 @@ class D2DPatientRegistrationController extends GetxController {
 
   Future<void> _fetchBeneficiary(String regNo) async {
     isLoadingBeneficiary.value = true;
+    hasApiData.value = false;
     try {
-      final bocwResult = await _repo.getBeneficiaryFromBocw(
-        workerRegNo: regNo,
+      final workerInfo = await _repo.getWorkerInfoWithMaritalStatus(
+        regNo: regNo,
       );
-      final internalResult = await _repo.checkInternalRegistration(
-        workerRegNo: regNo,
-      );
-
-      final internalDate = internalResult?.output?.registrationDate;
-      if (internalDate != null && internalDate.isNotEmpty) {
-        final regDate = _tryParseDate(internalDate);
-        if (regDate != null) {
-          final diff = DateTime.now().difference(regDate).inDays;
-          if (diff < 365) {
-            ToastManager.toast('Cannot re-register within 365 days');
-            tecWorkerRegNo.clear();
-            return;
-          }
-        }
+      final regdInfo = await _repo.getWorkerRegdId(regdNo: regNo);
+      _workerRegdId = regdInfo['regdId']!;
+      _beneficiaryCount = regdInfo['count']!;
+      final data =
+          workerInfo?.output?.isNotEmpty == true
+              ? workerInfo!.output!.first
+              : null;
+      if (data == null) {
+        ToastManager.toast('Beneficiary not found');
+        return;
       }
-
-      final data = internalResult?.output ?? bocwResult?.output;
-      if (data == null) return;
-      _applyBeneficiary(data);
+      _applyWorkerInfo(data);
     } finally {
       isLoadingBeneficiary.value = false;
     }
   }
 
-  void _applyBeneficiary(BeneficiaryOutput data) {
+  // ── Alternate mobile OTP ─────────────────────────────────────────────────
+
+  Future<void> sendAltMobileOtp() async {
+    final mob = tecAltMobileNo.text.trim();
+    if (mob.length != 10) {
+      ToastManager.toast('Enter valid 10-digit alternate mobile number');
+      return;
+    }
+    _generatedAltOtp = FormatterManager.generateRandomDigits(5);
+    final error = await _repo.sendOtp(
+      mobileNo: mob,
+      otp: _generatedAltOtp,
+      regdId: '0',
+      createdBy: empCode.toString(),
+      subOrgId: subOrgId.toString(),
+    );
+    if (error == null) {
+      altMobileOtpSent.value = true;
+      ToastManager.toast('OTP sent to alternate number');
+    } else {
+      ToastManager.showAlertDialog(Get.context!, error, () {
+        Get.back();
+      });
+      // ToastManager.toast(error);
+    }
+  }
+
+  Future<void> verifyAltMobileOtp() async {
+    final otp = tecAltMobileOtp.text.trim();
+    if (otp.isEmpty) return;
+    final success = await _repo.verifyOtp(
+      mobileNo: tecAltMobileNo.text.trim(),
+      otp: otp,
+    );
+    if (success) {
+      altMobileOtpVerified.value = true;
+      ToastManager.toast('Alternate number verified');
+    } else {
+      ToastManager.toast('Invalid OTP');
+    }
+  }
+
+  void _clearForm() {
+    tecFullName.clear();
+    tecFirstName.clear();
+    tecMiddleName.clear();
+    tecLastName.clear();
+    tecMobileNo.clear();
+    tecAltMobileNo.clear();
+    tecAltMobileOtp.clear();
+    tecAadhaarNo.clear();
+    tecDob.clear();
+    tecAge.clear();
+    tecPermAddr.clear();
+    tecLocalAddr.clear();
+    tecCurrentAddr.clear();
+    tecLandmark.clear();
+    tecTaluka.clear();
+    tecDistrict.clear();
+    tecPostOffice.clear();
+    tecPincode.clear();
+    tecRenewalDate.clear();
+    tecCardExpiry.clear();
+    selectedGender.value = '';
+    selectedTitle.value = '';
+    isGenderLockedByRelation.value = false;
+    mobileOtpSent.value = false;
+    mobileOtpVerified.value = false;
+    altMobileOtpSent.value = false;
+    altMobileOtpVerified.value = false;
+    isNumberNotBelongsToBeneficiary.value = false;
+    showRenewal.value = false;
+    isHCRenewal.value = false;
+    isDistrictLocked.value = false;
+    isTalukaLocked.value = false;
+    regDistrictList.clear();
+    regTalukaList.clear();
+    _regDistLgdCode = '';
+    _workerRegdId = '0';
+    _beneficiaryCount = '0';
+    patientPhotoPath.value = '';
+    healthCardPhotoPath.value = '';
+    renewalFormPath.value = '';
+  }
+
+  void _applyWorkerInfo(WorkerInfoOutput data) {
+    hasApiData.value = true;
+
+    final firstName = (data.firstNamePersonal ?? '').trim();
+    final middleName = (data.middleNamePersonal ?? '').trim();
+    final lastName = (data.lastNamePersonal ?? '').trim();
+    final fullName = data.fullName;
+
     if (!isDependent.value) {
-      tecFullName.text = data.name ?? '';
+      // Scenario 2 (No + Data): all name parts pre-filled → UI disables them
+      tecFirstName.text = firstName;
+      tecMiddleName.text = middleName;
+      tecLastName.text = lastName;
+      tecFullName.text = fullName;
+    } else {
+      // Scenario 4 (Yes + Data):
+      // Worker display cards at top show full name, age, gender
+      workerNameDisplay.value = fullName;
+      workerAgeDisplay.value =
+          (int.tryParse(
+            (data.age ?? '').split('.').first.trim(),
+          )?.toString()) ??
+          '';
+      workerGenderDisplay.value = data.gender ?? '';
+      // Pre-select worker gender dropdown (native: benefBoardGender = gender)
+      workerGenderByPhlebo.value =
+          (data.gender ?? '').isNotEmpty ? data.gender! : '';
+      // Last name from API (disabled), first+middle editable
+      tecLastName.text = lastName;
+      // Native: for male → first-name field shows firstName; for female → empty
+      final genderLower = (data.gender ?? '').toLowerCase();
+      tecMiddleName.text = genderLower.startsWith('f') ? '' : firstName;
+      tecFirstName.clear();
+      // Compose full name from available parts
+      onNamePartsChanged();
     }
-    tecMobileNo.text = data.mobileNo ?? '';
-    tecAadhaarNo.text = data.aadhaarNo ?? '';
-    tecDob.text = _normalizeDate(data.dob ?? '');
-    if (tecDob.text.isNotEmpty) onDobChanged(tecDob.text);
-    tecAge.text = data.age ?? tecAge.text;
-    tecPermAddr.text = data.address ?? '';
-    tecLocalAddr.text = data.address ?? '';
-    tecPincode.text = data.pinCode ?? '';
 
-    final gender = (data.gender ?? '').toUpperCase();
-    if (gender.startsWith('M')) {
-      selectedGender.value = 'M';
-    } else if (gender.startsWith('F')) {
-      selectedGender.value = 'F';
+    // Mobile
+    tecMobileNo.text = data.mobile ?? '';
+
+    // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
+    // (isDependent=No). When registering a dependent the phlebo enters these
+    // fields manually for the dependent person.
+    if (!isDependent.value) {
+      // Aadhaar
+      tecAadhaarNo.text = data.aadhaar ?? '';
+
+      // Age + DOB (calculated from age; API has no DOB field)
+      final ageInt =
+          int.tryParse((data.age ?? '').split('.').first.trim()) ?? 0;
+      tecAge.text = ageInt > 0 ? ageInt.toString() : '';
+      if (ageInt > 0) {
+        final now = DateTime.now();
+        final approxDob = DateTime(now.year - ageInt, now.month, now.day);
+        tecDob.text = _normalizeDate(
+          '${approxDob.year.toString().padLeft(4, '0')}/${approxDob.month.toString().padLeft(2, '0')}/${approxDob.day.toString().padLeft(2, '0')}',
+        );
+      }
+
+      // Gender
+      final genderStr = (data.gender ?? '').toLowerCase();
+      if (genderStr.startsWith('m')) {
+        selectedGender.value = 'M';
+      } else if (genderStr.startsWith('f')) {
+        selectedGender.value = 'F';
+      }
     }
-    selectedTitle.value = data.title ?? selectedTitle.value;
 
-    if (data.expiryDate != null && data.expiryDate!.isNotEmpty) {
-      tecCardExpiry.text = _normalizeDate(data.expiryDate!);
-      onCardExpiryChanged(tecCardExpiry.text);
+    // Marital status (drives relation list for isDependent=Yes)
+    final msId =
+        (int.tryParse(data.maritalStatusID ?? '') != null)
+            ? data.maritalStatusID!
+            : '1';
+    final msName = data.maritalStatus ?? 'Married';
+    selectedWorkerMaritalStatusId.value = msId;
+    selectedWorkerMaritalStatusName.value = msName;
+    maritalStatusId =
+        msId; // update from worker data (native: maritalStatus = maritalStatusId)
+    if (isDependent.value) {
+      fetchRelationList(msId, data.gender ?? '');
+    }
+
+    // LGD codes
+    if (data.talLgdCode?.isNotEmpty == true) talLgd = data.talLgdCode!;
+    _regDistLgdCode = data.distLgdCode ?? '';
+
+    // District / Taluka lock state (both dependent and non-dependent)
+    isDistrictLocked.value = (data.residentialDistrict ?? '').isNotEmpty;
+    isTalukaLocked.value =
+        (data.residentialTaluka ?? '').isNotEmpty &&
+        (data.talLgdCode ?? '').isNotEmpty;
+
+    // Addresses — native exact format
+    final localAddr = data.localAddress;
+    final permAddr = data.permanentAddressFormatted;
+
+    tecPermAddr.text = permAddr;
+    tecLocalAddr.text = localAddr;
+    tecCurrentAddr.text = localAddr;
+
+    // Separate address component fields
+    tecTaluka.text = data.residentialTaluka ?? '';
+    tecDistrict.text = data.residentialDistrict ?? '';
+    // Landmark = permanent_address_area (native: edt_landMark.setText(permArea))
+    tecLandmark.text = data.permanentArea ?? '';
+    // Post office = permanent_address_postOffice (native: edt_postOffice.setText(postoffice))
+    tecPostOffice.text = data.permanentPostOffice ?? '';
+    // Pincode = residential pincode
+    final pin = data.residentialPincode ?? '';
+    tecPincode.text = (pin == '0') ? '' : pin;
+
+    // Renewal date / card expiry — do NOT auto-trigger showRenewal here;
+    // renewal section is user-controlled via the switch in the form.
+    final renewal = (data.nextRenewalDate ?? '').trim();
+    if (renewal.isNotEmpty) {
+      tecRenewalDate.text = _normalizeDate(renewal);
+      tecCardExpiry.text = _normalizeDate(renewal);
     }
   }
 
@@ -230,37 +486,210 @@ class D2DPatientRegistrationController extends GetxController {
     }
     tecAge.text = age.toString();
 
-    final min = isDependent.value ? 10 : 18;
-    final max = isDependent.value ? 99 : 60;
-    if (age < min || age > max) {
-      if (Get.context != null) {
-        ToastManager.showAlertDialog(
-          Get.context!,
-          'Age must be between $min and $max',
-          () => Navigator.of(Get.context!, rootNavigator: true).pop(),
-        );
-      } else {
-        ToastManager.toast('Age must be between $min and $max');
+    if (isDependent.value) {
+      final msg = _dependentAgeMessage(age);
+      if (msg != null) {
+        if (Get.context != null) {
+          ToastManager.showAlertDialog(
+            Get.context!,
+            msg,
+            () => Navigator.of(Get.context!, rootNavigator: true).pop(),
+          );
+        } else {
+          ToastManager.toast(msg);
+        }
+      }
+    } else {
+      if (age < 18 || age > 60) {
+        final msg = 'Age must be between 18 and 60';
+        if (Get.context != null) {
+          ToastManager.showAlertDialog(
+            Get.context!,
+            msg,
+            () => Navigator.of(Get.context!, rootNavigator: true).pop(),
+          );
+        } else {
+          ToastManager.toast(msg);
+        }
       }
     }
   }
 
+  /// Returns the exact native validation message if [age] is invalid for the
+  /// currently selected relation, or null if the age is acceptable.
+  ///
+  /// Relation IDs (from native D2DPatientRegistration_Activity):
+  ///   Children   : 5, 6, 7, 8  (Son / Daughter)
+  ///   Parents/IL : 1, 2, 21, 22 (Father / Mother / Father-in-law / Mother-in-law)
+  ///   Spouse/etc : 9, 10, 17, 18 (Husband / Wife and variants)
+  String? _dependentAgeMessage(int age) {
+    final rel = selectedRelation.value;
+    if (rel == null) return null;
+
+    final relId = rel.relId ?? 0;
+    final workerAge = int.tryParse(workerAgeDisplay.value) ?? 0;
+
+    // ── Children: Son / Daughter ──────────────────────────────────────────
+    const _childIds = {5, 6, 7, 8};
+    if (_childIds.contains(relId)) {
+      final ageDiff = workerAge > 0 ? workerAge - age : 999;
+      if (age < 10 || age > 17 || ageDiff < 15) {
+        return '१. नोंदणीकृत बांधकाम कामगाराच्या मुलगा/मुलीचे वय १० वर्षापेक्षा जास्त व '
+            '१८ वर्षांपर्यंत असावे आणि\n'
+            '२. मुलगा/मुलगी आणि नोंदणीकृत बांधकाम कामगार यांच्या वयातील फरक किमान '
+            '१५ वर्ष असावा.';
+      }
+      return null;
+    }
+
+    // ── Parents / In-laws ────────────────────────────────────────────────
+    const _parentIds = {1, 2, 21, 22};
+    if (_parentIds.contains(relId)) {
+      if (age < 18 || (workerAge > 0 && age <= workerAge)) {
+        return 'आई,वडील,सासू,सासरे यांचे वय नोंदणीकृत बांधकाम कामगारापेक्षा जास्त असावे.';
+      }
+      return null;
+    }
+
+    // ── Spouse / other adult relations ────────────────────────────────────
+    if (age < 18 || age > 75) {
+      return 'Dependent age should not be less than 18 years or more than 75 years';
+    }
+    return null;
+  }
+
   void onNamePartsChanged() {
-    final parts = [
-      tecFirstName.text.trim(),
-      tecMiddleName.text.trim(),
-      tecLastName.text.trim(),
-    ].where((e) => e.isNotEmpty).toList();
+    final parts =
+        [
+          tecFirstName.text.trim(),
+          tecMiddleName.text.trim(),
+          tecLastName.text.trim(),
+        ].where((e) => e.isNotEmpty).toList();
     tecFullName.text = parts.join(' ');
   }
 
-  Future<void> fetchRelationList(String maritalStatusId, String genderId) async {
-    final g = genderId.isEmpty ? '0' : genderId;
+  Future<void> fetchIdentityList() async {
+    if (identityList.isNotEmpty) return; // already loaded
+    isLoadingIdentity.value = true;
+    try {
+      final result = await _repo.getDocumentTypeList();
+      identityList.value = result?.output ?? [];
+    } finally {
+      isLoadingIdentity.value = false;
+    }
+  }
+
+  void onIdentitySelected(String id, String name) {
+    selectedIdentityId.value = id;
+    selectedIdentityName.value = name;
+    // Clear the number field whenever the identity type changes
+    tecAadhaarNo.clear();
+  }
+
+  /// True when no identity card selected OR the selected card is Aadhaar.
+  bool get isAadhaarMode =>
+      selectedIdentityId.value == '0' ||
+      selectedIdentityName.value.toLowerCase().contains('aadh');
+
+  /// Max character length for the identity number field (matches native).
+  ///   Aadhaar / default : 12
+  ///   PAN Card          : 10
+  ///   Driving Licence   : 16
+  ///   Passport          : 12
+  int get identityMaxLength {
+    final name = selectedIdentityName.value.toLowerCase();
+    if (name.contains('pan')) return 10;
+    if (name.contains('driving') ||
+        name.contains('licence') ||
+        name.contains('license'))
+      return 16;
+    return 12; // Aadhaar, Passport, and default
+  }
+
+  Future<void> fetchRegDistrictList() async {
+    if (regDistrictList.isNotEmpty) return; // cached
+    final result = await _repo.getDistrictListForReg();
+    regDistrictList.value = result?.output ?? [];
+  }
+
+  Future<void> fetchRegTalukaList() async {
+    regTalukaList.clear();
+    final code = _regDistLgdCode.isNotEmpty ? _regDistLgdCode : '0';
+    final result = await _repo.getTalukaListForReg(distLgdCode: code);
+    regTalukaList.value = result?.output ?? [];
+  }
+
+  void selectRegDistrict(DistrictOutput district) {
+    tecDistrict.text = district.distName ?? '';
+    _regDistLgdCode = district.distLgdCode ?? '';
+    // Clear taluka when district changes
+    tecTaluka.clear();
+    isTalukaLocked.value = false;
+    regTalukaList.clear();
+  }
+
+  void selectRegTaluka(UserMappedTalukaOutput taluka) {
+    tecTaluka.text = taluka.tALNAME ?? '';
+    talLgd = taluka.tALLGDCODE?.toString() ?? '0';
+  }
+
+  Future<void> fetchRelationList(
+    String maritalStatusId,
+    String genderId,
+  ) async {
+    // Normalize to "Male"/"Female" — the API expects these exact strings (matches native)
+    String g;
+    final gl = genderId.toLowerCase();
+    if (gl.startsWith('f')) {
+      g = 'Female';
+    } else if (gl.startsWith('m')) {
+      g = 'Male';
+    } else {
+      g = '0';
+    }
     final result = await _repo.getRelationList(
       maritalStatusId: maritalStatusId,
       genderId: g,
     );
     relationList.value = result?.output ?? [];
+  }
+
+  /// Called when user picks a relation from the bottom sheet.
+  /// Mirrors native D2DPatientRegistration_Activity openNationalityListDialog switch block:
+  ///   Male  relations (1,5,7,9,17,22)  → force gender M, lock female option
+  ///   Female relations (2,6,8,10,18,21) → force gender F, lock male option
+  ///   Default                           → clear gender lock, both options free
+  /// In all cases: clear DOB + Age (native clears edt_dob / edt_age).
+  /// For parent IDs (1,2,21,22): also clear middle name (native clears txt_beneficiary_Mname).
+  void onRelationSelected(RelationOutput relation) {
+    selectedRelation.value = relation;
+
+    const _maleRelIds = {1, 5, 7, 9, 17, 22};
+    const _femaleRelIds = {2, 6, 8, 10, 18, 21};
+    const _parentRelIds = {1, 2, 21, 22};
+
+    final id = relation.relId ?? 0;
+
+    if (_maleRelIds.contains(id)) {
+      selectedGender.value = 'M';
+      isGenderLockedByRelation.value = true;
+    } else if (_femaleRelIds.contains(id)) {
+      selectedGender.value = 'F';
+      isGenderLockedByRelation.value = true;
+    } else {
+      selectedGender.value = '';
+      isGenderLockedByRelation.value = false;
+    }
+
+    // Clear DOB + Age on every relation change (matches native)
+    tecDob.clear();
+    tecAge.clear();
+
+    // Clear middle name for parent / parent-in-law relations (matches native)
+    if (_parentRelIds.contains(id)) {
+      tecMiddleName.clear();
+      onNamePartsChanged();
+    }
   }
 
   Future<void> sendMobileOtp() async {
@@ -270,18 +699,20 @@ class D2DPatientRegistrationController extends GetxController {
       return;
     }
     _generatedOtp = FormatterManager.generateRandomDigits(5);
-    final success = await _repo.sendOtp(
+    final error = await _repo.sendOtp(
       mobileNo: mob,
       otp: _generatedOtp,
       regdId: '0',
       createdBy: empCode.toString(),
       subOrgId: subOrgId.toString(),
     );
-    if (success) {
+    if (error == null) {
       mobileOtpSent.value = true;
       ToastManager.toast('OTP sent successfully');
     } else {
-      ToastManager.toast('Failed to send OTP');
+      // ToastManager.toast(error);
+      ToastManager.showAlertDialog(Get.context!, error, () {
+        Get.back();});
     }
   }
 
@@ -392,8 +823,10 @@ class D2DPatientRegistrationController extends GetxController {
       return false;
     }
     if (isDependent.value) {
-      if (tecFirstName.text.trim().isEmpty || tecLastName.text.trim().isEmpty) {
-        ToastManager.toast('First and Last name are required');
+      if (tecFirstName.text.trim().isEmpty ||
+          tecMiddleName.text.trim().isEmpty ||
+          tecLastName.text.trim().isEmpty) {
+        ToastManager.toast('First, Middle and Last name are required');
         return false;
       }
     } else if (tecFullName.text.trim().isEmpty) {
@@ -411,12 +844,9 @@ class D2DPatientRegistrationController extends GetxController {
         ToastManager.toast('Please select relation');
         return false;
       }
-      final relId = selectedRelation.value?.relId ?? 0;
-      final isChild = relId == 7 || relId == 8;
-      final minAge = isChild ? 10 : 18;
-      final maxAge = isChild ? 18 : 99;
-      if (age < minAge || age > maxAge) {
-        ToastManager.toast('Age must be between $minAge and $maxAge');
+      final ageMsg = _dependentAgeMessage(age);
+      if (ageMsg != null) {
+        ToastManager.toast(ageMsg);
         return false;
       }
     } else if (age < 18 || age > 60) {
@@ -430,7 +860,8 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     if (registrationType.value == 'without_abha' &&
-        !mobileOtpVerified.value) {
+        !mobileOtpVerified.value &&
+        !altMobileOtpVerified.value) {
       ToastManager.toast('Please verify mobile number');
       return false;
     }
@@ -491,6 +922,12 @@ class D2DPatientRegistrationController extends GetxController {
       }
     }
 
+    // Patient photo is required when face detection is enabled
+    if (isFaceDetection.value && patientPhotoPath.value.isEmpty) {
+      ToastManager.toast('Please capture patient photo (Face Detection is enabled)');
+      return false;
+    }
+
     final needsCardPhoto =
         !isDependent.value || registrationType.value == 'without_abha';
     if (needsCardPhoto && healthCardPhotoPath.value.isEmpty) {
@@ -498,18 +935,9 @@ class D2DPatientRegistrationController extends GetxController {
       return false;
     }
 
-    if (isFaceDetection.value && patientPhotoPath.value.isEmpty) {
-      ToastManager.toast('Patient photo is required');
-      return false;
-    }
-
-    if (showRenewal.value && renewalFormPath.value.isEmpty) {
-      ToastManager.toast('Renewal slip photo is required');
-      return false;
-    }
-
     return true;
   }
+
   void showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -545,7 +973,7 @@ class D2DPatientRegistrationController extends GetxController {
       final fields = <String, String>{
         'SiteId': navSiteId,
         'CampId': navCampId,
-        'RegdNo': tecWorkerRegNo.text.trim(),
+        'RegdNo': '${tecWorkerRegNo.text.trim()}$_beneficiaryCount',
         'Title': selectedTitle.value,
         'EnglishName': tecFullName.text.trim(),
         'MobileNo': tecMobileNo.text.trim(),
@@ -558,14 +986,18 @@ class D2DPatientRegistrationController extends GetxController {
         'PinCode': tecPincode.text.trim(),
         'CreatedBy': empCode.toString(),
         'IsHCRenewal': isHCRenewal.value ? '1' : '0',
-        'RenewalDate': tecRenewalDate.text.trim(),
+        'RenewalDate':
+            isHCRenewal.value ? _toApiDate(tecRenewalDate.text.trim()) : '',
         'IsDependent': isDependent.value ? '1' : '0',
         'Education': tecEducation.text.trim(),
         'ReleationID': selectedRelation.value?.relId?.toString() ?? '0',
-        'DependREGID': '0',
-        'IndentityId': '0',
-        'CW_WorkerName': tecFullName.text.trim(),
-        'next_renewal_date': tecRenewalDate.text.trim(),
+        'DependREGID': _workerRegdId,
+        'IndentityId': selectedIdentityId.value,
+        'CW_WorkerName':
+            isDependent.value
+                ? workerNameDisplay.value
+                : tecFullName.text.trim(),
+        'next_renewal_date': _toApiDate(tecCardExpiry.text.trim()),
         'residential_address_postOffice': tecPostOffice.text.trim(),
         'residential_address_taluka': tecTaluka.text.trim(),
         'residential_address_district': tecDistrict.text.trim(),
@@ -573,10 +1005,13 @@ class D2DPatientRegistrationController extends GetxController {
         'LandMark': tecLandmark.text.trim(),
         'AlternateMobNo': tecAltMobileNo.text.trim(),
         'IsMobNoVerified': mobileOtpVerified.value ? '1' : '0',
-        'IsSelfMobNo': selfMobNoMode.value,
-        'MobNoOf': selfMobNoMode.value,
-        'OptionMode': registrationType.value == 'with_abha' ? '2' : '1',
-        'VersionNo': isFaceDetection.value ? '14' : '15',
+        'IsSelfMobNo': isNumberNotBelongsToBeneficiary.value ? '0' : '1',
+        'MobNoOf': altMobileBelongsTo.value,
+        'OptionMode': isDependent.value ? '2' : '1',
+        'VersionNo':
+            _appVersion.isNotEmpty
+                ? _appVersion
+                : (isFaceDetection.value ? '14' : '15'),
         'Isrecollection': navType == '5' ? '1' : '0',
         'Rej_Regdid': '0',
         'Rej_CampID': '0',
@@ -588,10 +1023,22 @@ class D2DPatientRegistrationController extends GetxController {
         'ABHANumber': tecAbhaNumber.text.trim(),
         'ABHAAddress': tecAbhaAddress.text.trim(),
         'IsWhatsAppNo': whatsAppMode.value,
-        'WorkerGenderByPhlebo': selectedGender.value,
-        'WorkerAgeByPhlebo': tecAge.text.trim(),
+        'WorkerGenderByPhlebo':
+            isDependent.value
+                ? (workerGenderByPhlebo.value.toLowerCase().startsWith('f')
+                    ? 'Female'
+                    : 'Male')
+                : (selectedGender.value == 'F' ? 'Female' : 'Male'),
+        'WorkerAgeByPhlebo':
+            isDependent.value
+                ? (int.tryParse(
+                      workerAgeDisplay.value.split('.').first.trim(),
+                    )?.toString() ??
+                    '0')
+                : tecAge.text.trim(),
       };
-
+      print("===== REQUEST FIELDS =====");
+      print(jsonEncode(fields));
       final result = await _repo.saveD2DRegistration(
         fields: fields,
         isFaceDetectionEnabled: isFaceDetection.value,
@@ -625,12 +1072,28 @@ class D2DPatientRegistrationController extends GetxController {
           ),
         );
       } else {
-        ToastManager.toast(result?.message ?? 'Registration failed');
+        print(result?.message ?? 'Registration failed');
+        ToastManager.showAlertDialog(
+          context,
+          result?.message ?? 'Registration failed',
+          () {
+            Get.back();
+          },
+        );
       }
     } finally {
       isSubmitting.value = false;
       ToastManager.hideLoader();
     }
+  }
+
+  /// Formats a date string to yyyy-MM-dd (hyphen) as expected by the API
+  /// for next_renewal_date and RenewalDate fields — matches native Utilities.dfDate.
+  String _toApiDate(String input) {
+    if (input.isEmpty) return '';
+    final dt = _tryParseDate(input);
+    if (dt == null) return input;
+    return FormatterManager.formatDateToStringInDash(dt);
   }
 
   String _normalizeDate(String input) {
@@ -685,14 +1148,3 @@ class D2DPatientRegistrationController extends GetxController {
     super.onClose();
   }
 }
-
-
-
-
-
-
-
-
-
-
-

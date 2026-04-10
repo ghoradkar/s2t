@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/patient_registration/model/beneficiary_details_response.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/regular_patient_registration_repository.dart';
@@ -74,9 +75,7 @@ class RegularPatientRegistrationController extends GetxController {
   Future<void> _fetchBeneficiary(String regNo) async {
     isLoadingBeneficiary.value = true;
     try {
-      final bocwResult = await _repo.getBeneficiaryFromBocw(
-        workerRegNo: regNo,
-      );
+      final bocwResult = await _repo.getBeneficiaryFromBocw(workerRegNo: regNo);
       final internalResult = await _repo.checkInternalRegistration(
         workerRegNo: regNo,
       );
@@ -112,7 +111,8 @@ class RegularPatientRegistrationController extends GetxController {
     tecAadhaarNo.text = data.aadhaarNo ?? '';
     tecDob.text = _normalizeDate(data.dob ?? '');
     if (tecDob.text.isNotEmpty) onDobChanged(tecDob.text);
-    tecAge.text = data.age ?? tecAge.text;
+    final rawAge = int.tryParse(((data.age ?? '').split('.').first.trim()));
+    if (rawAge != null && rawAge > 0) tecAge.text = rawAge.toString();
 
     final gender = (data.gender ?? '').toUpperCase();
     if (gender.startsWith('M')) {
@@ -128,8 +128,11 @@ class RegularPatientRegistrationController extends GetxController {
 
     if (data.expiryDate != null && data.expiryDate!.isNotEmpty) {
       tecCardExpiry.text = _normalizeDate(data.expiryDate!);
-      onCardExpiryChanged(tecCardExpiry.text);
     }
+    final isRenewal = data.isHCRenewal?.toLowerCase() == 'yes';
+    showRenewal.value = isRenewal;
+    isHCRenewal.value = isRenewal;
+    if (!isRenewal) tecRenewalDate.clear();
 
     if (isReregistration) {
       patientPhotoUrl.value = data.patientPhotoUrl ?? '';
@@ -138,7 +141,7 @@ class RegularPatientRegistrationController extends GetxController {
     }
   }
 
-    void onCardExpiryChanged(String date) {
+  void onCardExpiryChanged(String date) {
     final expiry = _tryParseDate(date);
     if (expiry == null) return;
     final today = DateTime.now();
@@ -210,28 +213,16 @@ class RegularPatientRegistrationController extends GetxController {
   }
 
   void showConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirm'),
-          content: const Text(
-            "Please confirm the beneficiary's details before submitting",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                submitRegistration(context);
-              },
-              child: const Text('Confirm'),
-            ),
-          ],
-        );
+    ToastManager().showConfirmationDialog(
+      context: Get.context!,
+      message: "Please confirm the beneficiary's details before submitting",
+      didSelectYes: (bool p1) {
+        if (p1 == true) {
+          Navigator.pop(context);
+          submitRegistration(context);
+        } else if (p1 == false) {
+          Navigator.pop(context);
+        }
       },
     );
   }
@@ -280,7 +271,8 @@ class RegularPatientRegistrationController extends GetxController {
       ToastManager.toast('Pin code must be 6 digits');
       return false;
     }
-    if (tecCardRegDate.text.trim().isEmpty || tecCardExpiry.text.trim().isEmpty) {
+    if (tecCardRegDate.text.trim().isEmpty ||
+        tecCardExpiry.text.trim().isEmpty) {
       ToastManager.toast('Card registration and expiry dates are required');
       return false;
     }
@@ -345,6 +337,14 @@ class RegularPatientRegistrationController extends GetxController {
 
       if (result?.status?.toLowerCase() == 'success') {
         _syncBocw();
+        // ToastManager.showSuccessPopup(
+        //   Get.context!,
+        //   icSuccessIcon,
+        //   result?.message ?? 'Registration successful',
+        //       () {
+        //     Get.back();
+        //   },
+        // );
         ToastManager.toast(result?.message ?? 'Registration successful');
         Navigator.push(
           context,
@@ -358,7 +358,14 @@ class RegularPatientRegistrationController extends GetxController {
           ),
         );
       } else {
-        ToastManager.toast(result?.message ?? 'Registration failed');
+        // ToastManager.toast(result?.message ?? 'Registration failed');
+        ToastManager.showAlertDialog(
+          context,
+          result?.message ?? 'Registration failed',
+          () {
+            Get.back();
+          },
+        );
       }
     } finally {
       isSubmitting.value = false;
@@ -432,5 +439,3 @@ class RegularPatientRegistrationController extends GetxController {
     super.onClose();
   }
 }
-
-

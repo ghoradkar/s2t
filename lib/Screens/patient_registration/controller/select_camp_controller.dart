@@ -134,9 +134,7 @@ class SelectCampController extends GetxController {
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => const D2DPatientRegistrationScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const D2DPatientRegistrationScreen()),
       );
     } finally {
       isCheckingAttendance.value = false;

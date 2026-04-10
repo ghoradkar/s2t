@@ -341,7 +341,9 @@ class _RegularPatientRegistrationScreenState
               mWidth: double.infinity,
               mHeight: 52,
               icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
-              onTap: () => c.showConfirmationDialog(context),
+              onTap: () {
+                c.showConfirmationDialog(context);
+              },
             ),
             SizedBox(height: 20.h),
           ],

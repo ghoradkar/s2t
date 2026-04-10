@@ -25,6 +25,9 @@ class SelectCampOutput {
   String? siteDetailId;
   String? distLgdCode;
   String? campType;
+  String? campLocation;
+  String? campTypeDescription;
+  String? initiatedBy1;
 
   SelectCampOutput({
     this.campId,
@@ -32,6 +35,9 @@ class SelectCampOutput {
     this.siteDetailId,
     this.distLgdCode,
     this.campType,
+    this.campLocation,
+    this.campTypeDescription,
+    this.initiatedBy1,
   });
 
   SelectCampOutput.fromJson(Map<String, dynamic> json) {
@@ -40,5 +46,8 @@ class SelectCampOutput {
     siteDetailId = json['SiteDetailId']?.toString();
     distLgdCode = json['DISTLGDCODE']?.toString();
     campType = json['CampType']?.toString();
+    campLocation = json['CampLocation']?.toString();
+    campTypeDescription = json['CampTypeDescription']?.toString();
+    initiatedBy1 = json['InitiatedBy1']?.toString();
   }
 }

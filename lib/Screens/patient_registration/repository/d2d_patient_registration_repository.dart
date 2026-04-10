@@ -7,12 +7,15 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/attendance_status_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/beneficiary_details_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_camp_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_registration_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
 
 class D2DPatientRegistrationRepository {
   final _api = APIManager();
@@ -117,6 +120,34 @@ class D2DPatientRegistrationRepository {
     return completer.future;
   }
 
+  /// Calls the native D2D API with "MH" prefix — mirrors GetWorkerInfoNew AsyncTask
+  Future<WorkerInfoResponse?> getWorkerInfoWithMaritalStatus({
+    required String regNo,
+  }) async {
+    final completer = Completer<WorkerInfoResponse?>();
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetBeneficiaryRegistrationDetailsWithMaritalStatus}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'regno': 'MH$regNo'},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body);
+      final result = WorkerInfoResponse.fromJson(decoded);
+      completer.complete(
+        (result.status?.toLowerCase() == 'success') ? result : null,
+      );
+    } catch (_) {
+      completer.complete(null);
+    } finally {
+      ioClient.close();
+    }
+    return completer.future;
+  }
+
   Future<BeneficiaryDetailsResponse?> getBeneficiaryFromBocw({
     required String workerRegNo,
   }) async {
@@ -165,6 +196,28 @@ class D2DPatientRegistrationRepository {
     return completer.future;
   }
 
+  /// GET request — same base as ConstructionWorker_V2.asmx (native: webservice + GetDocumenttype)
+  Future<DocumentTypeResponse?> getDocumentTypeList() async {
+    final completer = Completer<DocumentTypeResponse?>();
+    final url = Uri.parse(
+      '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetDocumenttype}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(url);
+      final decoded = json.decode(response.body);
+      final result = DocumentTypeResponse.fromJson(decoded);
+      completer.complete(
+        (result.status?.toLowerCase() == 'success') ? result : null,
+      );
+    } catch (_) {
+      completer.complete(null);
+    } finally {
+      ioClient.close();
+    }
+    return completer.future;
+  }
+
   Future<RelationModel?> getRelationList({
     required String maritalStatusId,
     required String genderId,
@@ -196,7 +249,8 @@ class D2DPatientRegistrationRepository {
     return completer.future;
   }
 
-  Future<bool> sendOtp({
+  /// Returns `null` on success, or the API error message string on failure.
+  Future<String?> sendOtp({
     required String mobileNo,
     required String otp,
     required String regdId,
@@ -221,9 +275,14 @@ class D2DPatientRegistrationRepository {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       final decoded = json.decode(response.body);
-      return decoded['status']?.toString().toLowerCase() == 'success';
+      if (decoded['status']?.toString().toLowerCase() == 'success') {
+        return null; // success
+      }
+      return decoded['message']?.toString().isNotEmpty == true
+          ? decoded['message'].toString()
+          : 'Failed to send OTP';
     } catch (_) {
-      return false;
+      return 'Failed to send OTP';
     } finally {
       ioClient.close();
     }
@@ -249,6 +308,79 @@ class D2DPatientRegistrationRepository {
     }
   }
 
+  /// GET — returns all districts (no params needed)
+  Future<DistrictListResponse?> getDistrictListForReg() async {
+    final url = Uri.parse(
+      '${APIManager.kConstructionWorkerBaseURL}${APIConstants.getDistrictList}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(url);
+      final decoded = json.decode(response.body);
+      final result = DistrictListResponse.fromJson(decoded);
+      return (result.status?.toLowerCase() == 'success') ? result : null;
+    } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// POST — returns talukas for a given district LGD code
+  Future<UserMappedTalukaResponse?> getTalukaListForReg({
+    required String distLgdCode,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetAllTalukaList}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'STATELGDCODE': '2', 'DISTLGDCODE': distLgdCode},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body);
+      final result = UserMappedTalukaResponse.fromJson(decoded);
+      return (result.status?.toLowerCase() == 'success') ? result : null;
+    } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Returns worker's internal RegdId (DependREGID) and Count from GetBenificiaryRegisterOrNot.
+  /// Native appends Count to the worker reg number to form RegdNo in the submit payload.
+  Future<Map<String, String>> getWorkerRegdId({required String regdNo}) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetBenificiaryRegisterOrNot}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'RegdNo': regdNo},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body);
+      if (decoded['status']?.toString().toLowerCase() == 'success') {
+        final output = decoded['output'];
+        if (output is List && output.isNotEmpty) {
+          final item = output[0] as Map<String, dynamic>;
+          return {
+            'regdId': item['RegdId']?.toString() ?? '0',
+            'count': item['Count']?.toString() ?? '0',
+          };
+        }
+      }
+    } catch (_) {}
+    finally {
+      ioClient.close();
+    }
+    return {'regdId': '0', 'count': '0'};
+  }
+
   Future<D2DRegistrationResponse?> saveD2DRegistration({
     required Map<String, String> fields,
     required bool isFaceDetectionEnabled,
@@ -257,33 +389,51 @@ class D2DPatientRegistrationRepository {
     File? renewalSlipPhoto,
     File? hivLetterPhoto,
   }) async {
-    final endpoint = isFaceDetectionEnabled
-        ? 'handler/DtoDBeneficiaryRe_RegistrationV14.ashx'
-        : 'handler/DtoDBeneficiaryRe_RegistrationV15.ashx';
-    final url = Uri.parse('${APIManager.kConstructionWorkerBaseURL}$endpoint');
+    const endpoint =
+        'handler/DtoDBeneficiaryRe_RegistrationWithVersionNo_MaritalStatus_Taluka_Gender.ashx';
+    final url = Uri.parse('${APIManager.kWebservicesBaseURL}$endpoint');
     final ioClient = _api.getInstanceOfIoClient();
     try {
+      // ignore: avoid_print
+      print('[saveD2DRegistration] FIELDS: ${fields.entries.map((e) => "${e.key}=${e.value}").join(", ")}');
       final request = http.MultipartRequest('POST', url);
       fields.forEach((key, value) => request.fields[key] = value);
 
+      final regdNo = fields['RegdNo'] ?? '';
       if (patientPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file1', patientPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file1',
+            patientPhoto.path,
+            filename: '${regdNo}_PR.jpg',
+          ),
         );
       }
       if (healthCardPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file2', healthCardPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file2',
+            healthCardPhoto.path,
+            filename: '${regdNo}_HC.jpg',
+          ),
         );
       }
       if (renewalSlipPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file3', renewalSlipPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file3',
+            renewalSlipPhoto.path,
+            filename: '${regdNo}_RS.jpg',
+          ),
         );
       }
       if (hivLetterPhoto != null) {
         request.files.add(
-          await http.MultipartFile.fromPath('file4', hivLetterPhoto.path),
+          await http.MultipartFile.fromPath(
+            'file4',
+            hivLetterPhoto.path,
+            filename: '${regdNo}_HIV.jpg',
+          ),
         );
       }
 

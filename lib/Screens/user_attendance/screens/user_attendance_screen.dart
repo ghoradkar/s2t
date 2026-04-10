@@ -159,14 +159,13 @@ class UserAttendanceScreen extends StatelessWidget {
                                         (date) => c.onDateSelected(date),
                                   ),
                         ),
-                        if (c.hasTodayAttendance)
-                          SizedBox(
-                            height: mapH,
-                            child:
-                                c.isMapReady
-                                    ? _MapSection(c: c)
-                                    : const _MapShimmer(),
-                          ),
+                        SizedBox(
+                          height: mapH,
+                          child:
+                              c.isMapReady
+                                  ? _MapSection(c: c)
+                                  : const _MapShimmer(),
+                        ),
                       ],
                     );
                   },
