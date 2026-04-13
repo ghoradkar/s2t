@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
@@ -22,11 +23,10 @@ import 'package:s2toperational/Screens/patient_registration/controller/d2d_patie
 /// Forces every character to uppercase as the user types.
 class _UpperCaseFormatter extends TextInputFormatter {
   const _UpperCaseFormatter();
+
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) =>
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue,) =>
       newValue.copyWith(text: newValue.text.toUpperCase());
 }
 
@@ -76,12 +76,11 @@ class _D2DPatientRegistrationScreenState
 
   // ── Date picker helper ────────────────────────────────────────────────────
 
-  Future<void> _pickDate(
-    BuildContext context,
-    TextEditingController tec,
-    void Function(String) onPicked, {
-    bool readOnly = false,
-  }) async {
+  Future<void> _pickDate(BuildContext context,
+      TextEditingController tec,
+      void Function(String) onPicked, {
+        bool readOnly = false,
+      }) async {
     if (readOnly) return;
     final now = DateTime.now();
     final picked = await showDatePicker(
@@ -118,21 +117,23 @@ class _D2DPatientRegistrationScreenState
             _sectionLabel('Registration Type'),
             SizedBox(height: 8.h),
             Obx(
-              () => Row(
-                children: [
-                  _radioChip(
-                    label: 'Without ABHA',
-                    selected: c.registrationType.value == 'without_abha',
-                    onTap: () => c.onRegistrationTypeChanged('without_abha'),
+                  () =>
+                  Row(
+                    children: [
+                      _radioChip(
+                        label: 'Without ABHA',
+                        selected: c.registrationType.value == 'without_abha',
+                        onTap: () =>
+                            c.onRegistrationTypeChanged('without_abha'),
+                      ),
+                      SizedBox(width: 10.w),
+                      _radioChip(
+                        label: 'With ABHA',
+                        selected: c.registrationType.value == 'with_abha',
+                        onTap: () => c.onRegistrationTypeChanged('with_abha'),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 10.w),
-                  _radioChip(
-                    label: 'With ABHA',
-                    selected: c.registrationType.value == 'with_abha',
-                    onTap: () => c.onRegistrationTypeChanged('with_abha'),
-                  ),
-                ],
-              ),
             ),
             SizedBox(height: 14.h),
 
@@ -140,21 +141,22 @@ class _D2DPatientRegistrationScreenState
             _sectionLabel('Is Dependent'),
             SizedBox(height: 8.h),
             Obx(
-              () => Row(
-                children: [
-                  _radioChip(
-                    label: 'Yes',
-                    selected: c.isDependent.value,
-                    onTap: () => c.onDependentToggled(true),
+                  () =>
+                  Row(
+                    children: [
+                      _radioChip(
+                        label: 'Yes',
+                        selected: c.isDependent.value,
+                        onTap: () => c.onDependentToggled(true),
+                      ),
+                      SizedBox(width: 10.w),
+                      _radioChip(
+                        label: 'No',
+                        selected: !c.isDependent.value,
+                        onTap: () => c.onDependentToggled(false),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 10.w),
-                  _radioChip(
-                    label: 'No',
-                    selected: !c.isDependent.value,
-                    onTap: () => c.onDependentToggled(false),
-                  ),
-                ],
-              ),
             ),
             SizedBox(height: 14.h),
 
@@ -191,13 +193,13 @@ class _D2DPatientRegistrationScreenState
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChange: _hasData ? null : c.onWorkerRegNoChanged,
                 suffixIcon:
-                    c.isLoadingBeneficiary.value
-                        ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ).paddingOnly(right: 8.w)
-                        : const Icon(Icons.search),
+                c.isLoadingBeneficiary.value
+                    ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ).paddingOnly(right: 8.w)
+                    : const Icon(Icons.search),
               ),
             ),
             SizedBox(width: 8.w),
@@ -276,9 +278,9 @@ class _D2DPatientRegistrationScreenState
           _dropdownField(
             hint: 'Click below to change worker\'s gender',
             value:
-                c.workerGenderByPhlebo.value.isEmpty
-                    ? null
-                    : c.workerGenderByPhlebo.value,
+            c.workerGenderByPhlebo.value.isEmpty
+                ? null
+                : c.workerGenderByPhlebo.value,
             items: const ['Male', 'Female', 'Other'],
             onSelected: (v) => c.workerGenderByPhlebo.value = v,
           ),
@@ -290,9 +292,9 @@ class _D2DPatientRegistrationScreenState
           _dropdownField(
             hint: 'Select worker\'s marital status',
             value:
-                c.selectedWorkerMaritalStatusName.value.isEmpty
-                    ? null
-                    : c.selectedWorkerMaritalStatusName.value,
+            c.selectedWorkerMaritalStatusName.value.isEmpty
+                ? null
+                : c.selectedWorkerMaritalStatusName.value,
             items: _kMaritalStatus.map((e) => e.$2).toList(),
             onSelected: (name) {
               final match = _kMaritalStatus.firstWhere((e) => e.$2 == name);
@@ -306,14 +308,14 @@ class _D2DPatientRegistrationScreenState
         _sectionLabel('Relation with Worker'),
         SizedBox(height: 6.h),
         if (_isNo)
-          // isDependent=No → always "Self", disabled
+        // isDependent=No → always "Self", disabled
           AppTextField(
             controller: TextEditingController(text: 'Self'),
             label: _label('Relation with Worker'),
             readOnly: true,
           )
         else
-          // isDependent=Yes → picker
+        // isDependent=Yes → picker
           GestureDetector(
             onTap: () => _showRelationPicker(context),
             child: AbsorbPointer(
@@ -400,32 +402,33 @@ class _D2DPatientRegistrationScreenState
             !c.isNumberNotBelongsToBeneficiary.value) ...[
           if (c.mobileOtpVerified.value)
             _verifiedBanner('Contact number verified')
-          else ...[
-            AppButtonWithIcon(
-              title: 'Verify Contact Number',
-              mHeight: 40,
-              mWidth: double.infinity,
-              onTap: () => _showWhatsAppDialog(context, isAlternate: false),
-            ),
-            if (c.mobileOtpSent.value) ...[
-              SizedBox(height: 8.h),
-              AppTextField(
-                controller: c.tecMobileOtp,
-                label: _label('Enter OTP *'),
-                hint: '5-digit OTP',
-                textInputType: TextInputType.number,
-                maxLength: 5,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              SizedBox(height: 8.h),
+          else
+            ...[
               AppButtonWithIcon(
-                title: 'Verify OTP',
+                title: 'Verify Contact Number',
                 mHeight: 40,
                 mWidth: double.infinity,
-                onTap: () => c.verifyMobileOtp(c.tecMobileOtp.text.trim()),
+                onTap: () => _showWhatsAppDialog(context, isAlternate: false),
               ),
+              if (c.mobileOtpSent.value) ...[
+                SizedBox(height: 8.h),
+                AppTextField(
+                  controller: c.tecMobileOtp,
+                  label: _label('Enter OTP *'),
+                  hint: '5-digit OTP',
+                  textInputType: TextInputType.number,
+                  maxLength: 5,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+                SizedBox(height: 8.h),
+                AppButtonWithIcon(
+                  title: 'Verify OTP',
+                  mHeight: 40,
+                  mWidth: double.infinity,
+                  onTap: () => c.verifyMobileOtp(c.tecMobileOtp.text.trim()),
+                ),
+              ],
             ],
-          ],
         ],
         SizedBox(height: 10.h),
 
@@ -433,42 +436,42 @@ class _D2DPatientRegistrationScreenState
         // Disabled once any OTP is verified
         GestureDetector(
           onTap:
-              c.mobileOtpVerified.value || c.altMobileOtpVerified.value
-                  ? null
-                  : () {
-                    c.isNumberNotBelongsToBeneficiary.value =
-                        !c.isNumberNotBelongsToBeneficiary.value;
-                    if (!c.isNumberNotBelongsToBeneficiary.value) {
-                      c.tecAltMobileNo.clear();
-                      c.tecAltMobileOtp.clear();
-                      c.altMobileOtpSent.value = false;
-                      c.altMobileOtpVerified.value = false;
-                    }
-                  },
+          c.mobileOtpVerified.value || c.altMobileOtpVerified.value
+              ? null
+              : () {
+            c.isNumberNotBelongsToBeneficiary.value =
+            !c.isNumberNotBelongsToBeneficiary.value;
+            if (!c.isNumberNotBelongsToBeneficiary.value) {
+              c.tecAltMobileNo.clear();
+              c.tecAltMobileOtp.clear();
+              c.altMobileOtpSent.value = false;
+              c.altMobileOtpVerified.value = false;
+            }
+          },
           child: Opacity(
             opacity:
-                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)
-                    ? 0.45
-                    : 1.0,
+            (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)
+                ? 0.45
+                : 1.0,
             child: Row(
               children: [
                 Checkbox(
                   value: c.isNumberNotBelongsToBeneficiary.value,
                   activeColor: kPrimaryColor,
                   onChanged:
-                      (c.mobileOtpVerified.value ||
-                              c.altMobileOtpVerified.value)
-                          ? null
-                          : (v) {
-                            c.isNumberNotBelongsToBeneficiary.value =
-                                v ?? false;
-                            if (!(v ?? false)) {
-                              c.tecAltMobileNo.clear();
-                              c.tecAltMobileOtp.clear();
-                              c.altMobileOtpSent.value = false;
-                              c.altMobileOtpVerified.value = false;
-                            }
-                          },
+                  (c.mobileOtpVerified.value ||
+                      c.altMobileOtpVerified.value)
+                      ? null
+                      : (v) {
+                    c.isNumberNotBelongsToBeneficiary.value =
+                        v ?? false;
+                    if (!(v ?? false)) {
+                      c.tecAltMobileNo.clear();
+                      c.tecAltMobileOtp.clear();
+                      c.altMobileOtpSent.value = false;
+                      c.altMobileOtpVerified.value = false;
+                    }
+                  },
                 ),
                 Text(
                   'This Number not belongs to beneficiary',
@@ -503,32 +506,33 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 8.h),
           if (c.altMobileOtpVerified.value)
             _verifiedBanner('Alternate number verified')
-          else ...[
-            AppButtonWithIcon(
-              title: 'Verify Alternate Number',
-              mHeight: 40,
-              mWidth: double.infinity,
-              onTap: () => _showWhatsAppDialog(context, isAlternate: true),
-            ),
-            if (c.altMobileOtpSent.value) ...[
-              SizedBox(height: 8.h),
-              AppTextField(
-                controller: c.tecAltMobileOtp,
-                label: _label('Enter OTP *'),
-                hint: '5-digit OTP',
-                textInputType: TextInputType.number,
-                maxLength: 5,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              SizedBox(height: 8.h),
+          else
+            ...[
               AppButtonWithIcon(
-                title: 'Verify OTP',
+                title: 'Verify Alternate Number',
                 mHeight: 40,
                 mWidth: double.infinity,
-                onTap: () => c.verifyAltMobileOtp(),
+                onTap: () => _showWhatsAppDialog(context, isAlternate: true),
               ),
+              if (c.altMobileOtpSent.value) ...[
+                SizedBox(height: 8.h),
+                AppTextField(
+                  controller: c.tecAltMobileOtp,
+                  label: _label('Enter OTP *'),
+                  hint: '5-digit OTP',
+                  textInputType: TextInputType.number,
+                  maxLength: 5,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+                SizedBox(height: 8.h),
+                AppButtonWithIcon(
+                  title: 'Verify OTP',
+                  mHeight: 40,
+                  mWidth: double.infinity,
+                  onTap: () => c.verifyAltMobileOtp(),
+                ),
+              ],
             ],
-          ],
           SizedBox(height: 10.h),
           // "Alternate mobile belongs to" radios
           Text(
@@ -579,13 +583,13 @@ class _D2DPatientRegistrationScreenState
                 label: _label('Identity Card Type *'),
                 readOnly: true,
                 suffixIcon:
-                    c.isLoadingIdentity.value
-                        ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ).paddingOnly(right: 8.w)
-                        : const Icon(Icons.arrow_drop_down),
+                c.isLoadingIdentity.value
+                    ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ).paddingOnly(right: 8.w)
+                    : const Icon(Icons.arrow_drop_down),
               ),
             ),
           ),
@@ -599,9 +603,11 @@ class _D2DPatientRegistrationScreenState
           builder: (_) {
             final isAadhaar = c.isAadhaarMode;
             final sectionTitle =
-                isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
+            isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
             final fieldLabel =
-                isAadhaar ? 'Aadhaar Number *' : '${c.selectedIdentityName.value} Number *';
+            isAadhaar
+                ? 'Aadhaar Number *'
+                : '${c.selectedIdentityName.value} Number *';
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -611,20 +617,24 @@ class _D2DPatientRegistrationScreenState
                   controller: c.tecAadhaarNo,
                   label: _label(fieldLabel),
                   textInputType:
-                      isAadhaar ? TextInputType.number : TextInputType.text,
+                  isAadhaar ? TextInputType.number : TextInputType.text,
                   maxLength: c.identityMaxLength,
                   // isDependent=No → disabled; isDependent=Yes → enabled
                   readOnly: _isNo,
-                  inputFormatters: isAadhaar
+                  inputFormatters:
+                  isAadhaar
                       ? [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(12),
-                        ]
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(12),
+                  ]
                       : [
-                          ..._kUpper,
-                          LengthLimitingTextInputFormatter(c.identityMaxLength),
-                        ],
-                  textCapitalization: isAadhaar
+                    ..._kUpper,
+                    LengthLimitingTextInputFormatter(
+                      c.identityMaxLength,
+                    ),
+                  ],
+                  textCapitalization:
+                  isAadhaar
                       ? TextCapitalization.none
                       : TextCapitalization.characters,
                   prefixIcon: const Icon(
@@ -652,22 +662,24 @@ class _D2DPatientRegistrationScreenState
                 // isDependent=No → always locked (pre-filled from API)
                 // isDependent=Yes → editable via date picker (relation required first)
                 readOnly: _isNo,
-                onTap: _isNo
+                onTap:
+                _isNo
                     ? null
                     : () {
-                        if (_isYes && c.selectedRelation.value == null) {
-                          ToastManager.showAlertDialog(
+                  if (_isYes && c.selectedRelation.value == null) {
+                    ToastManager.showAlertDialog(
+                      context,
+                      'Please select relation first',
+                          () =>
+                          Navigator.of(
                             context,
-                            'Please select relation first',
-                            () => Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).pop(),
-                          );
-                          return;
-                        }
-                        _pickDate(context, c.tecDob, c.onDobChanged);
-                      },
+                            rootNavigator: true,
+                          ).pop(),
+                    );
+                    return;
+                  }
+                  _pickDate(context, c.tecDob, c.onDobChanged);
+                },
                 prefixIcon: const Icon(
                   Icons.cake_rounded,
                   color: kPrimaryColor,
@@ -811,21 +823,21 @@ class _D2DPatientRegistrationScreenState
                   label: _label('District'),
                   readOnly: true,
                   onTap:
-                      (_hasData && !c.isDistrictLocked.value)
-                          ? () => _showDistrictPicker(context)
-                          : null,
+                  (_hasData && !c.isDistrictLocked.value)
+                      ? () => _showDistrictPicker(context)
+                      : null,
                   prefixIcon: const Icon(
                     Icons.map_rounded,
                     color: kPrimaryColor,
                     size: 18,
                   ).paddingOnly(left: 6.w),
                   suffixIcon:
-                      (_hasData && !c.isDistrictLocked.value)
-                          ? const Icon(
-                            Icons.arrow_drop_down,
-                            color: kPrimaryColor,
-                          )
-                          : null,
+                  (_hasData && !c.isDistrictLocked.value)
+                      ? const Icon(
+                    Icons.arrow_drop_down,
+                    color: kPrimaryColor,
+                  )
+                      : null,
                 ),
               ),
               SizedBox(width: 8.w),
@@ -835,21 +847,21 @@ class _D2DPatientRegistrationScreenState
                   label: _label('Taluka'),
                   readOnly: true,
                   onTap:
-                      (_hasData && !c.isTalukaLocked.value)
-                          ? () => _showTalukaPicker(context)
-                          : null,
+                  (_hasData && !c.isTalukaLocked.value)
+                      ? () => _showTalukaPicker(context)
+                      : null,
                   prefixIcon: const Icon(
                     Icons.location_on_rounded,
                     color: kPrimaryColor,
                     size: 18,
                   ).paddingOnly(left: 6.w),
                   suffixIcon:
-                      (_hasData && !c.isTalukaLocked.value)
-                          ? const Icon(
-                            Icons.arrow_drop_down,
-                            color: kPrimaryColor,
-                          )
-                          : null,
+                  (_hasData && !c.isTalukaLocked.value)
+                      ? const Icon(
+                    Icons.arrow_drop_down,
+                    color: kPrimaryColor,
+                  )
+                      : null,
                 ),
               ),
             ],
@@ -903,22 +915,37 @@ class _D2DPatientRegistrationScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Face Detection',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: kTextColor,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    // Text(
+                    //   'Face Detection',
+                    //   style: TextStyle(
+                    //     fontSize: 13.sp,
+                    //     color: kTextColor,
+                    //     fontFamily: FontConstants.interFonts,
+                    //     fontWeight: FontWeight.w500,
+                    //   ),
+                    // ),
+                    CommonText(
+                      text: 'Face Detection',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      textColor: kTextColor,
+                      textAlign: TextAlign.start,
                     ),
-                    Text(
-                      'Turn ON to enable face detection; patient photo required',
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: kLabelTextColor,
-                        fontFamily: FontConstants.interFonts,
-                      ),
+
+                    // Text(
+                    //   'Turn ON to enable face detection; patient photo required',
+                    //   style: TextStyle(
+                    //     fontSize: 11.sp,
+                    //     color: kLabelTextColor,
+                    //     fontFamily: FontConstants.interFonts,
+                    //   ),
+                    // ),
+                    CommonText(
+                      text: 'Turn ON to enable face detection; patient photo required',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.normal,
+                      textColor: kLabelTextColor,
+                      textAlign: TextAlign.start,
                     ),
                   ],
                 ),
@@ -1003,38 +1030,6 @@ class _D2DPatientRegistrationScreenState
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // HELPERS
-  // ══════════════════════════════════════════════════════════════════════════
-
-  // Widget _campBanner() {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-  //     decoration: BoxDecoration(
-  //       color: kPrimaryColor.withValues(alpha: 0.08),
-  //       borderRadius: BorderRadius.circular(8),
-  //       border: Border.all(color: kPrimaryColor.withValues(alpha: 0.25)),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         const Icon(Icons.location_on, color: kPrimaryColor, size: 18),
-  //         SizedBox(width: 8.w),
-  //         Expanded(
-  //           child: Text(
-  //             c.navCampLocation.isEmpty ? 'Selected Camp' : c.navCampLocation,
-  //             style: TextStyle(
-  //               fontFamily: FontConstants.interFonts,
-  //               fontSize: 13.sp,
-  //               fontWeight: FontWeight.w600,
-  //               color: kPrimaryColor,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _sectionLabel(String text) {
     return Row(
       children: [
@@ -1047,27 +1042,43 @@ class _D2DPatientRegistrationScreenState
           ),
         ),
         SizedBox(width: 6.w),
-        Text(
-          text,
-          style: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontWeight: FontWeight.w600,
-            fontSize: 13.sp,
-            color: kTextColor,
-          ),
+        // Text(
+        //   text,
+        //   style: TextStyle(
+        //     fontFamily: FontConstants.interFonts,
+        //     fontWeight: FontWeight.w600,
+        //     fontSize: 13.sp,
+        //     color: kTextColor,
+        //   ),
+        // ),
+        CommonText(
+          text: text,
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          textColor: kTextColor,
+          textAlign: TextAlign.start,
         ),
       ],
     );
   }
 
-  Widget _label(String text) => Text(
-    text,
-    style: TextStyle(
-      color: kLabelTextColor,
-      fontSize: 14.sp,
-      fontFamily: FontConstants.interFonts,
-    ),
-  );
+  Widget _label(String text) =>
+      CommonText(
+        text: text,
+        fontSize: 14.sp * 1.2,
+        fontWeight: FontWeight.w600,
+        textColor: kLabelTextColor,
+        textAlign: TextAlign.start,
+      );
+
+  //     Text(
+  //   text,
+  //   style: TextStyle(
+  //     color: kLabelTextColor,
+  //     fontSize: 14.sp,
+  //     fontFamily: FontConstants.interFonts,
+  //   ),
+  // );
 
   /// Read-only info card (used for worker name/age/gender when Yes+Data)
   Widget _infoCard({
@@ -1089,22 +1100,36 @@ class _D2DPatientRegistrationScreenState
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: 11.sp,
-                  color: kLabelTextColor,
-                ),
+              CommonText(
+                text: label,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+                textColor: kLabelTextColor,
+                textAlign: TextAlign.start,
               ),
-              Text(
-                value.isEmpty ? '—' : value,
-                style: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: kTextColor,
-                ),
+              // Text(
+              //   label,
+              //   style: TextStyle(
+              //     fontFamily: FontConstants.interFonts,
+              //     fontSize: 11.sp,
+              //     color: kLabelTextColor,
+              //   ),
+              // ),
+              // Text(
+              //   value.isEmpty ? '—' : value,
+              //   style: TextStyle(
+              //     fontFamily: FontConstants.interFonts,
+              //     fontSize: 13.sp,
+              //     fontWeight: FontWeight.w600,
+              //     color: kTextColor,
+              //   ),
+              // ),
+              CommonText(
+                text: value.isEmpty ? '—' : value,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                textColor: kTextColor,
+                textAlign: TextAlign.start,
               ),
             ],
           ),
@@ -1122,7 +1147,8 @@ class _D2DPatientRegistrationScreenState
   }) {
     return GestureDetector(
       onTap:
-          () => _showStringPicker(
+          () =>
+          _showStringPicker(
             context,
             items,
             onSelected,
@@ -1140,13 +1166,12 @@ class _D2DPatientRegistrationScreenState
     );
   }
 
-  void _showStringPicker(
-    BuildContext context,
-    List<String> items,
-    void Function(String) onSelected, {
-    String title = '',
-    String? selectedValue,
-  }) {
+  void _showStringPicker(BuildContext context,
+      List<String> items,
+      void Function(String) onSelected, {
+        String title = '',
+        String? selectedValue,
+      }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1155,7 +1180,8 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) => SelectionBottomSheet<String, String>(
+          (_) =>
+          SelectionBottomSheet<String, String>(
             title: title,
             items: items,
             selectedValue: selectedValue,
@@ -1222,14 +1248,22 @@ class _D2DPatientRegistrationScreenState
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            'WhatsApp Number Availability',
-                            style: TextStyle(
-                              fontFamily: FontConstants.interFonts,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: kTextColor,
-                            ),
+                          child:
+                          // Text(
+                          //   'WhatsApp Number Availability',
+                          //   style: TextStyle(
+                          //     fontFamily: FontConstants.interFonts,
+                          //     fontSize: 15.sp,
+                          //     fontWeight: FontWeight.w600,
+                          //     color: kTextColor,
+                          //   ),
+                          // ),
+                          CommonText(
+                            text: 'WhatsApp Number Availability',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            textColor: kTextColor,
+                            textAlign: TextAlign.start,
                           ),
                         ),
                         GestureDetector(
@@ -1256,9 +1290,9 @@ class _D2DPatientRegistrationScreenState
                       selected: selectedMode == '2',
                       enabled: altNo.isNotEmpty,
                       onTap:
-                          altNo.isEmpty
-                              ? null
-                              : () => setDialogState(() => selectedMode = '2'),
+                      altNo.isEmpty
+                          ? null
+                          : () => setDialogState(() => selectedMode = '2'),
                     ),
                     SizedBox(height: 10.h),
 
@@ -1340,25 +1374,25 @@ class _D2DPatientRegistrationScreenState
               ),
             ),
             child:
-                selected
-                    ? Center(
-                      child: Container(
-                        width: 10,
-                        height: 10,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: kPrimaryColor,
-                        ),
-                      ),
-                    )
-                    : null,
+            selected
+                ? Center(
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: kPrimaryColor,
+                ),
+              ),
+            )
+                : null,
           ),
           Expanded(
             child: RichText(
               text: TextSpan(
                 style: TextStyle(
                   fontFamily: FontConstants.interFonts,
-                  fontSize: 13.sp,
+                  fontSize: 14.sp,
                   color: enabled ? kTextColor : kLabelTextColor,
                 ),
                 children: [
@@ -1366,7 +1400,10 @@ class _D2DPatientRegistrationScreenState
                   if (boldSuffix != null)
                     TextSpan(
                       text: boldSuffix,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: FontConstants.interFonts,
+                      ),
                     ),
                 ],
               ),
@@ -1386,7 +1423,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Could not load identity card types. Please try again.',
-        () => Navigator.of(context, rootNavigator: true).pop(),
+            () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1398,7 +1435,8 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) => SelectionBottomSheet(
+          (_) =>
+          SelectionBottomSheet(
             title: 'Select Identity Card',
             items: c.identityList,
             selectedValue: c.selectedIdentityId.value,
@@ -1425,7 +1463,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Could not load district list. Please try again.',
-        () => Navigator.of(context, rootNavigator: true).pop(),
+            () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1437,7 +1475,8 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) => SelectionBottomSheet(
+          (_) =>
+          SelectionBottomSheet(
             title: 'Select District',
             items: c.regDistrictList,
             selectedValue: c.tecDistrict.text,
@@ -1461,7 +1500,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Could not load taluka list. Please select district first.',
-        () => Navigator.of(context, rootNavigator: true).pop(),
+            () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1473,7 +1512,8 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) => SelectionBottomSheet(
+          (_) =>
+          SelectionBottomSheet(
             title: 'Select Taluka',
             items: c.regTalukaList,
             selectedValue: c.tecTaluka.text,
@@ -1500,7 +1540,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Please select marital status and gender first',
-        () => Navigator.of(context, rootNavigator: true).pop(),
+            () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1508,7 +1548,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Please select marital status and gender first',
-        () => Navigator.of(context, rootNavigator: true).pop(),
+            () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1520,7 +1560,8 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) => SelectionBottomSheet<RelationOutput, int?>(
+          (_) =>
+          SelectionBottomSheet<RelationOutput, int?>(
             title: 'Select Relation',
             items: c.relationList,
             selectedValue: c.selectedRelation.value?.relId,
@@ -1578,7 +1619,8 @@ class _D2DPatientRegistrationScreenState
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 9.h),
             decoration: BoxDecoration(
-              color: selected
+              color:
+              selected
                   ? effectiveColor.withValues(alpha: 0.08)
                   : kWhiteColor,
               borderRadius: BorderRadius.circular(8),
@@ -1649,41 +1691,46 @@ class _PhotoTile extends StatelessWidget {
           ),
         ),
         child:
-            hasImage
-                ? ClipRRect(
-                  borderRadius: BorderRadius.circular(7),
-                  child:
-                      localPath.isNotEmpty
-                          ? Image.file(File(localPath), fit: BoxFit.cover)
-                          : Image.network(url!, fit: BoxFit.cover),
-                )
-                : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(icon, color: kPrimaryColor, size: 28),
-                    SizedBox(height: 6.h),
-                    Text(
-                      label,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 11.sp,
-                        color: kLabelTextColor,
-                      ),
-                    ),
-                    if (required) ...[
-                      SizedBox(height: 2.h),
-                      Text(
-                        '(Required)',
-                        style: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          fontSize: 10.sp,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
-                  ],
+        hasImage
+            ? ClipRRect(
+          borderRadius: BorderRadius.circular(7),
+          child:
+          localPath.isNotEmpty
+              ? Image.file(File(localPath), fit: BoxFit.cover)
+              : Image.network(url!, fit: BoxFit.cover),
+        )
+            : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: kPrimaryColor, size: 28),
+            SizedBox(height: 6.h),
+            // Text(
+            //   label,
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(
+            //     fontFamily: FontConstants.interFonts,
+            //     fontSize: 11.sp,
+            //     color: kLabelTextColor,
+            //   ),
+            // ),
+            CommonText(text: label,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.normal,
+                textColor: kLabelTextColor,
+                textAlign: TextAlign.center),
+            if (required) ...[
+              SizedBox(height: 2.h),
+              Text(
+                '(Required)',
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 10.sp,
+                  color: Colors.red,
                 ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

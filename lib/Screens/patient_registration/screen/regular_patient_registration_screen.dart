@@ -229,7 +229,12 @@ class _RegularPatientRegistrationScreenState
                 color: kPrimaryColor,
                 size: 18,
               ).paddingOnly(left: 6.w),
-              onTap: () => _pickDate(context, c.tecCardRegDate, c.onCardRegDateChanged),
+              onTap:
+                  () => _pickDate(
+                    context,
+                    c.tecCardRegDate,
+                    c.onCardRegDateChanged,
+                  ),
             ),
             SizedBox(height: 12.h),
             AppTextField(
@@ -242,7 +247,11 @@ class _RegularPatientRegistrationScreenState
                 size: 18,
               ).paddingOnly(left: 6.w),
               onTap:
-                  () => _pickDate(context, c.tecCardExpiry, c.onCardExpiryChanged),
+                  () => _pickDate(
+                    context,
+                    c.tecCardExpiry,
+                    c.onCardExpiryChanged,
+                  ),
             ),
             SizedBox(height: 12.h),
             Obx(() {
@@ -405,27 +414,42 @@ class _RegularPatientRegistrationScreenState
           child: Icon(icon, color: kPrimaryColor, size: 16),
         ),
         SizedBox(width: 8.w),
-        Text(
-          text,
-          style: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontWeight: FontWeight.w600,
-            fontSize: 13.sp,
-            color: kPrimaryColor,
-          ),
+        // Text(
+        //   text,
+        //   style: TextStyle(
+        //     fontFamily: FontConstants.interFonts,
+        //     fontWeight: FontWeight.w600,
+        //     fontSize: 13.sp,
+        //     color: kPrimaryColor,
+        //   ),
+        // ),
+        CommonText(
+          text: text,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+          textColor: kPrimaryColor,
+          textAlign: TextAlign.start,
         ),
       ],
     );
   }
 
-  Widget _label(String text) => Text(
-        text,
-        style: TextStyle(
-          color: kLabelTextColor,
-          fontSize: 14.sp,
-          fontFamily: FontConstants.interFonts,
-        ),
-      );
+  Widget _label(String text) => CommonText(
+    text: text,
+    fontSize: 14.sp,
+    fontWeight: FontWeight.normal,
+    textColor: kLabelTextColor,
+    textAlign: TextAlign.start,
+  );
+
+  //     Text(
+  //   text,
+  //   style: TextStyle(
+  //     color: kLabelTextColor,
+  //     fontSize: 14.sp,
+  //     fontFamily: FontConstants.interFonts,
+  //   ),
+  // );
 
   Widget _selectionChip({
     required String label,
@@ -448,15 +472,23 @@ class _RegularPatientRegistrationScreenState
               Icon(icon, size: 16, color: selected ? kWhiteColor : kTextColor),
               SizedBox(width: 4.w),
             ],
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: selected ? kWhiteColor : kTextColor,
-              ),
+            CommonText(
+              text: label,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              textColor: selected ? kWhiteColor : kTextColor,
+              textAlign: TextAlign.start,
             ),
+
+            // Text(
+            //   label,
+            //   style: TextStyle(
+            //     fontFamily: FontConstants.interFonts,
+            //     fontSize: 12.sp,
+            //     fontWeight: FontWeight.w600,
+            //     color: selected ? kWhiteColor : kTextColor,
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -511,15 +543,22 @@ class _PhotoTile extends StatelessWidget {
         children: [
           Icon(icon, size: 28, color: kLabelTextColor),
           SizedBox(height: 6.h),
-          Text(
-            label,
+          // Text(
+          //   label,
+          //   textAlign: TextAlign.center,
+          //   style: TextStyle(
+          //     fontFamily: FontConstants.interFonts,
+          //     fontSize: 11.sp,
+          //     color: kLabelTextColor,
+          //   ),
+          // ),
+          CommonText(
+            text: label,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            textColor: kLabelTextColor,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 11.sp,
-              color: kLabelTextColor,
-            ),
-          ),
+          )
         ],
       );
     }
@@ -539,4 +578,3 @@ class _PhotoTile extends StatelessWidget {
     );
   }
 }
-

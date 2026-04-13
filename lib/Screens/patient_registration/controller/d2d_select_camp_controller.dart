@@ -74,7 +74,14 @@ class D2DSelectCampController extends GetxController {
       );
       campList.value = result?.output ?? [];
       if (campList.isEmpty) {
-        ToastManager.toast('No camps found for selected date');
+        // ToastManager.toast('No camps found for selected date');
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'No camps found for selected date',
+              () {
+            Get.back();
+          },
+        );
       }
     } finally {
       isLoadingCamps.value = false;
@@ -119,7 +126,14 @@ class D2DSelectCampController extends GetxController {
       }
       final msg = _getBlockMessage(output);
       if (msg.isNotEmpty) {
-        ToastManager.toast(msg);
+        // ToastManager.toast(msg);
+        ToastManager.showAlertDialog(
+          Get.context!,
+          msg,
+              () {
+            Get.back();
+          },
+        );
         return;
       }
 

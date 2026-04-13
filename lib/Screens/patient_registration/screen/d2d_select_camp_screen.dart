@@ -165,7 +165,11 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.search_off, size: 40, color: kLabelTextColor),
+                        Icon(
+                          Icons.search_off,
+                          size: 40,
+                          color: kLabelTextColor,
+                        ),
                         SizedBox(height: 6.h),
                         CommonText(
                           text: 'No camps found',
@@ -195,14 +199,22 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
     );
   }
 
-  Widget _label(String text) => Text(
-        text,
-        style: TextStyle(
-          color: kLabelTextColor,
-          fontSize: 14.sp,
-          fontFamily: FontConstants.interFonts,
-        ),
-      );
+  Widget _label(String text) => CommonText(
+    text: text,
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w500,
+    textColor: kLabelTextColor,
+    textAlign: TextAlign.start,
+  );
+
+  // Text(
+  //   text,
+  //   style: TextStyle(
+  //     color: kLabelTextColor,
+  //     fontSize: 14.sp,
+  //     fontFamily: FontConstants.interFonts,
+  //   ),
+  // );
 
   void _showDistrictPicker(BuildContext context) {
     if (c.districtList.isEmpty) return;
@@ -223,14 +235,22 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
             itemBuilder: (_, i) {
               final item = c.districtList[i];
               return ListTile(
-                title: Text(
-                  item.distName ?? '--',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
+                title:
+                // Text(
+                //   item.distName ?? '--',
+                //   style: TextStyle(
+                //     fontFamily: FontConstants.interFonts,
+                //     fontSize: 14.sp,
+                //     color: kTextColor,
+                //   ),
+                // ),
+                  CommonText(
+                    text: item.distName ?? '--',
                     fontSize: 14.sp,
-                    color: kTextColor,
+                    fontWeight: FontWeight.w500,
+                    textColor: kTextColor,
+                    textAlign: TextAlign.start,
                   ),
-                ),
                 trailing: const Icon(Icons.chevron_right, color: kPrimaryColor),
                 onTap: () {
                   Navigator.pop(context);
@@ -263,10 +283,7 @@ class _D2DCampCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: kPrimaryColor.withValues(alpha: 0.15)),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8),
         ],
       ),
       child: Column(

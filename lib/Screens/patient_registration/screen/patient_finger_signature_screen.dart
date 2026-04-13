@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
@@ -16,6 +15,7 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
   final String campId;
   final String siteId;
   final String regNo;
+
   /// Called after successful upload when the user taps OK on the success dialog.
   /// Use this to clear the parent registration form.
   final VoidCallback? onSuccess;
@@ -30,6 +30,11 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Always start with a fresh controller so a new patient registration
+    // does not inherit the previous patient's captured photo or API data.
+    if (Get.isRegistered<PatientFingerSignatureController>()) {
+      Get.delete<PatientFingerSignatureController>(force: true);
+    }
     final c = Get.put(
       PatientFingerSignatureController(
         campId: campId,
@@ -39,19 +44,18 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Fingerprint & Signature',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(scTitle: 'Fingerprint & Signature'),
+        body: Obx(() {
+          if (c.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return _Body(c: c);
+        }),
       ),
-      body: Obx(() {
-        if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return _Body(c: c);
-      }),
     );
   }
 }
@@ -72,39 +76,12 @@ class _Body extends StatelessWidget {
           _PatientInfoCard(c: c),
           SizedBox(height: 16.h),
 
-          // ── Device status banner ───────────────────────────────────────
-          Obx(() => _DeviceStatusBanner(isConnected: c.isDeviceConnected.value)),
-          SizedBox(height: 12.h),
-
-          // ── Finger Issue Checkbox ──────────────────────────────────────
-          _SectionCard(
-            child: Obx(
-              () => CheckboxListTile(
-                value: c.isFingerPrintIssue.value,
-                onChanged: (v) => c.onFingerIssueToggled(v ?? false),
-                title: CommonText(
-                  text: 'Finger Issue (use camera instead of scanner)',
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w500,
-                  textColor: kTextColor,
-                  textAlign: TextAlign.start,
-                ),
-                activeColor: kPrimaryColor,
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-          SizedBox(height: 16.h),
-
           // ── Thumb / Fingerprint Capture Area ──────────────────────────
           _sectionLabel('Thumb / Fingerprint Image'),
           SizedBox(height: 8.h),
           Obx(
             () => GestureDetector(
-              onTap: c.isCapturing.value
-                  ? null
-                  : () => c.captureThumbImage(context),
+              onTap: () => c.captureThumbImage(context),
               child: Container(
                 width: double.infinity,
                 height: 180.h,
@@ -130,10 +107,11 @@ class _Body extends StatelessWidget {
           // ── Next Button ───────────────────────────────────────────────
           AppActiveButton(
             buttontitle: 'Next',
-            onTap: () => c.onNextTapped(
-              context,
-              () => const PatientSignatureScreen(),
-            ),
+            onTap:
+                () => c.onNextTapped(
+                  context,
+                  () => const PatientSignatureScreen(),
+                ),
           ),
           SizedBox(height: 16.h),
         ],
@@ -142,24 +120,6 @@ class _Body extends StatelessWidget {
   }
 
   Widget _captureAreaContent(PatientFingerSignatureController c) {
-    // Scanning in progress
-    if (c.isCapturing.value) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          SizedBox(height: 12.h),
-          CommonText(
-            text: 'Place your finger on the sensor…',
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w400,
-            textColor: kLabelTextColor,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-    }
-
     // Image captured
     if (c.thumbImageFile.value != null) {
       return ClipRRect(
@@ -168,21 +128,18 @@ class _Body extends StatelessWidget {
       );
     }
 
-    // Placeholder — show different hint based on mode
-    final useScanner = !c.isFingerPrintIssue.value && c.isDeviceConnected.value;
+    // Placeholder
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          useScanner ? Icons.fingerprint : Icons.camera_alt_outlined,
+          Icons.camera_alt_outlined,
           size: 56,
           color: kPrimaryColor.withValues(alpha: 0.5),
         ),
         SizedBox(height: 8.h),
         CommonText(
-          text: useScanner
-              ? 'Tap to start scanner capture'
-              : 'Tap to capture via camera',
+          text: 'Tap to capture via camera',
           fontSize: 13.sp,
           fontWeight: FontWeight.w400,
           textColor: kLabelTextColor,
@@ -192,63 +149,24 @@ class _Body extends StatelessWidget {
     );
   }
 
-  Widget _sectionLabel(String text) => Text(
-    text,
-    style: TextStyle(
-      color: kLabelTextColor,
-      fontSize: 13.sp,
-      fontFamily: FontConstants.interFonts,
-      fontWeight: FontWeight.w600,
-    ),
+  Widget _sectionLabel(String text) => CommonText(
+    text: text,
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w600,
+    textColor: kLabelTextColor,
+    textAlign: TextAlign.start,
   );
-}
 
-// ── Device status banner ─────────────────────────────────────────────────────
-
-class _DeviceStatusBanner extends StatelessWidget {
-  final bool isConnected;
-
-  const _DeviceStatusBanner({required this.isConnected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: isConnected
-            ? Colors.green.withValues(alpha: 0.1)
-            : Colors.orange.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isConnected
-              ? Colors.green.withValues(alpha: 0.4)
-              : Colors.orange.withValues(alpha: 0.4),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            isConnected
-                ? Icons.usb_rounded
-                : Icons.usb_off_rounded,
-            size: 18,
-            color: isConnected ? Colors.green : Colors.orange,
-          ),
-          SizedBox(width: 8.w),
-          CommonText(
-            text: isConnected
-                ? 'Mantra scanner connected — hardware capture ready'
-                : 'No scanner detected — camera will be used',
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
-            textColor: isConnected ? Colors.green.shade700 : Colors.orange.shade800,
-            textAlign: TextAlign.start,
-          ),
-        ],
-      ),
-    );
-  }
+  // Text(
+  //
+  // text,
+  // style: TextStyle(
+  // color: kLabelTextColor,
+  // fontSize: 13.sp,
+  // fontFamily: FontConstants.interFonts,
+  // fontWeight: FontWeight.w600,
+  // ),
+  // );
 }
 
 // ── Patient info card ─────────────────────────────────────────────────────────

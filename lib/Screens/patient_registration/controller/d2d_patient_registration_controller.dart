@@ -37,7 +37,8 @@ class D2DPatientRegistrationController extends GetxController {
   String talLgd = '0';
   String maritalStatusId = '1';
   String _workerRegdId = '0';
-  String _beneficiaryCount = '0'; // Count from GetBenificiaryRegisterOrNot — appended to RegdNo
+  String _beneficiaryCount =
+      '0'; // Count from GetBenificiaryRegisterOrNot — appended to RegdNo
   String _appVersion = '';
 
   final registrationType = 'without_abha'.obs;
@@ -262,6 +263,13 @@ class D2DPatientRegistrationController extends GetxController {
               : null;
       if (data == null) {
         ToastManager.toast('Beneficiary not found');
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'Beneficiary not found',
+          () {
+            Get.back();
+          },
+        );
         return;
       }
       _applyWorkerInfo(data);
@@ -275,7 +283,14 @@ class D2DPatientRegistrationController extends GetxController {
   Future<void> sendAltMobileOtp() async {
     final mob = tecAltMobileNo.text.trim();
     if (mob.length != 10) {
-      ToastManager.toast('Enter valid 10-digit alternate mobile number');
+      // ToastManager.toast('Enter valid 10-digit alternate mobile number');
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Enter valid 10-digit alternate mobile number',
+            () {
+          Get.back();
+        },
+      );
       return;
     }
     _generatedAltOtp = FormatterManager.generateRandomDigits(5);
@@ -289,6 +304,7 @@ class D2DPatientRegistrationController extends GetxController {
     if (error == null) {
       altMobileOtpSent.value = true;
       ToastManager.toast('OTP sent to alternate number');
+
     } else {
       ToastManager.showAlertDialog(Get.context!, error, () {
         Get.back();
@@ -308,21 +324,45 @@ class D2DPatientRegistrationController extends GetxController {
       altMobileOtpVerified.value = true;
       ToastManager.toast('Alternate number verified');
     } else {
-      ToastManager.toast('Invalid OTP');
+      // ToastManager.toast('Invalid OTP');
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Invalid OTP',
+            () {
+          Get.back();
+        },
+      );
     }
   }
 
   void _clearForm() {
+    // Worker reg no and API-data gate
+    tecWorkerRegNo.clear();
+    hasApiData.value = false;
+
+    // Name fields
     tecFullName.clear();
     tecFirstName.clear();
     tecMiddleName.clear();
     tecLastName.clear();
+
+    // Contact
     tecMobileNo.clear();
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
     tecAadhaarNo.clear();
+    tecAbhaNumber.clear();
+    tecAbhaAddress.clear();
+    tecAbhaOtp.clear();
+    tecMobileOtp.clear();
+
+    // Dates / age
     tecDob.clear();
     tecAge.clear();
+    tecCardExpiry.clear();
+    tecRenewalDate.clear();
+
+    // Address
     tecPermAddr.clear();
     tecLocalAddr.clear();
     tecCurrentAddr.clear();
@@ -331,28 +371,49 @@ class D2DPatientRegistrationController extends GetxController {
     tecDistrict.clear();
     tecPostOffice.clear();
     tecPincode.clear();
-    tecRenewalDate.clear();
-    tecCardExpiry.clear();
+
+    // Dropdowns / toggles
     selectedGender.value = '';
     selectedTitle.value = '';
     isGenderLockedByRelation.value = false;
+    showRenewal.value = false;
+    isHCRenewal.value = false;
+    isNumberNotBelongsToBeneficiary.value = false;
+
+    // OTP flows
     mobileOtpSent.value = false;
     mobileOtpVerified.value = false;
     altMobileOtpSent.value = false;
     altMobileOtpVerified.value = false;
-    isNumberNotBelongsToBeneficiary.value = false;
-    showRenewal.value = false;
-    isHCRenewal.value = false;
+    abhaVerified.value = false;
+    abhaOtpSent.value = false;
+
+    // Worker-info display (isDependent = Yes)
+    workerNameDisplay.value = '';
+    workerAgeDisplay.value = '';
+    workerGenderDisplay.value = '';
+    workerGenderByPhlebo.value = '';
+    selectedWorkerMaritalStatusId.value = '0';
+    selectedWorkerMaritalStatusName.value = '';
+    selectedRelation.value = null;
+    relationList.clear();
+
+    // District / Taluka state
     isDistrictLocked.value = false;
     isTalukaLocked.value = false;
     regDistrictList.clear();
     regTalukaList.clear();
     _regDistLgdCode = '';
+
+    // Internal IDs
     _workerRegdId = '0';
     _beneficiaryCount = '0';
+
+    // Photos
     patientPhotoPath.value = '';
     healthCardPhotoPath.value = '';
     renewalFormPath.value = '';
+    hivLetterPath.value = '';
   }
 
   void _applyWorkerInfo(WorkerInfoOutput data) {
@@ -695,7 +756,14 @@ class D2DPatientRegistrationController extends GetxController {
   Future<void> sendMobileOtp() async {
     final mob = tecMobileNo.text.trim();
     if (mob.length != 10) {
-      ToastManager.toast('Enter valid mobile number');
+      // ToastManager.toast('Enter valid mobile number');
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Enter valid mobile number',
+            () {
+          Get.back();
+        },
+      );
       return;
     }
     _generatedOtp = FormatterManager.generateRandomDigits(5);
@@ -712,7 +780,8 @@ class D2DPatientRegistrationController extends GetxController {
     } else {
       // ToastManager.toast(error);
       ToastManager.showAlertDialog(Get.context!, error, () {
-        Get.back();});
+        Get.back();
+      });
     }
   }
 
@@ -737,7 +806,14 @@ class D2DPatientRegistrationController extends GetxController {
       return;
     }
     if (abhaResendCount >= 3) {
-      ToastManager.toast('Max resends reached');
+      // ToastManager.toast('Max resends reached');
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Max resends reached',
+            () {
+          Get.back();
+        },
+      );
       return;
     }
     _generatedAbhaOtp = FormatterManager.generateRandomDigits(6);
@@ -819,14 +895,28 @@ class D2DPatientRegistrationController extends GetxController {
 
   bool _validateForm() {
     if (tecWorkerRegNo.text.trim().length != 12) {
-      ToastManager.toast('Beneficiary Reg. No must be 12 digits');
+      // ToastManager.toast('Beneficiary Reg. No must be 12 digits');
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Beneficiary Reg. No must be 12 digits',
+            () {
+          Get.back();
+        },
+      );
       return false;
     }
     if (isDependent.value) {
       if (tecFirstName.text.trim().isEmpty ||
           tecMiddleName.text.trim().isEmpty ||
           tecLastName.text.trim().isEmpty) {
-        ToastManager.toast('First, Middle and Last name are required');
+        // ToastManager.toast('First, Middle and Last name are required');
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'First, Middle and Last name are required',
+              () {
+            Get.back();
+          },
+        );
         return false;
       }
     } else if (tecFullName.text.trim().isEmpty) {
@@ -924,7 +1014,9 @@ class D2DPatientRegistrationController extends GetxController {
 
     // Patient photo is required when face detection is enabled
     if (isFaceDetection.value && patientPhotoPath.value.isEmpty) {
-      ToastManager.toast('Please capture patient photo (Face Detection is enabled)');
+      ToastManager.toast(
+        'Please capture patient photo (Face Detection is enabled)',
+      );
       return false;
     }
 

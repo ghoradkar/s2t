@@ -87,7 +87,15 @@ class RegularPatientRegistrationController extends GetxController {
         if (regDate != null) {
           final diff = DateTime.now().difference(regDate).inDays;
           if (diff < 365) {
-            ToastManager.toast('Cannot re-register within 365 days');
+            // ToastManager.toast('Cannot re-register within 365 days');
+
+            ToastManager.showAlertDialog(
+              Get.context!,
+              "Cannot re-register within 365 days",
+                  () {
+                Get.back();
+              },
+            );
             tecWorkerRegNo.clear();
             return;
           }
@@ -230,7 +238,15 @@ class RegularPatientRegistrationController extends GetxController {
   bool _validateForm() {
     final regNo = tecWorkerRegNo.text.trim();
     if (regNo.length != 12) {
-      ToastManager.toast('Beneficiary Reg. No must be 12 digits');
+      // ToastManager.toast('Beneficiary Reg. No must be 12 digits');
+
+      ToastManager.showAlertDialog(
+        Get.context!,
+        "Beneficiary Reg. No must be 12 digits",
+            () {
+          Get.back();
+        },
+      );
       return false;
     }
     final name = tecFullName.text.trim();
@@ -346,6 +362,7 @@ class RegularPatientRegistrationController extends GetxController {
         //   },
         // );
         ToastManager.toast(result?.message ?? 'Registration successful');
+
         Navigator.push(
           context,
           MaterialPageRoute(

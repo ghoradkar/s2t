@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/constants.dart';
 import '../constants/fonts.dart';
 import '../utilities/SizeConfig.dart';
@@ -60,7 +61,7 @@ PreferredSize? mAppBar({
                 scTitle,
                 style: TextStyle(
                   fontFamily: FontConstants.interFonts,
-                  fontSize: responsiveFont(16),
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w500,
                   color: kWhiteColor,
                 ),
