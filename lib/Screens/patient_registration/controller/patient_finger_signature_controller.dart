@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/native/mantra_mfs100_channel.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
@@ -20,11 +21,13 @@ class PatientFingerSignatureController extends GetxController {
   final String campId;
   final String siteId;
   final String regNo; // worker registration number
+  final VoidCallback? onSuccess; // clears the parent registration form on success
 
   PatientFingerSignatureController({
     required this.campId,
     required this.siteId,
     required this.regNo,
+    this.onSuccess,
   });
 
   final _repo = RegularPatientRegistrationRepository();
@@ -95,7 +98,8 @@ class PatientFingerSignatureController extends GetxController {
       if (event.isReady) {
         isDeviceConnected.value = true;
         ToastManager.toast(
-          'Mantra scanner ready — ${event.model ?? ''}  ${event.serial ?? ''}'.trim(),
+          'Mantra scanner ready — ${event.model ?? ''}  ${event.serial ?? ''}'
+              .trim(),
         );
       } else if (event.isDetached) {
         isDeviceConnected.value = false;
@@ -198,10 +202,7 @@ class PatientFingerSignatureController extends GetxController {
       ToastManager.toast('Please capture thumb/fingerprint image first');
       return;
     }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => routeBuilder()),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (_) => routeBuilder()));
   }
 
   // ── Signature screen (Screen 2) ──────────────────────────────────────────
@@ -269,7 +270,20 @@ class PatientFingerSignatureController extends GetxController {
     if (!context.mounted) return;
 
     if (status.toLowerCase() == 'success') {
-      _showSuccessDialog(context, message);
+      // _showSuccessDialog(context, message);
+
+      ToastManager.showSuccessPopup(
+        context,
+        icSuccessIcon,
+        message.isNotEmpty ? message : "Data uploaded successfully",
+        () {
+          onSuccess?.call(); // clear parent registration form
+          Navigator.of(context)
+            ..pop() // dialog
+            ..pop() // signature screen
+            ..pop(); // finger screen
+        },
+      );
     } else {
       ToastManager.showAlertDialog(
         context,
@@ -283,23 +297,25 @@ class PatientFingerSignatureController extends GetxController {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Success'),
-        content: Text(
-          message.isNotEmpty ? message : 'Data uploaded successfully',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(dialogContext)
-                ..pop() // dialog
-                ..pop() // signature screen
-                ..pop(); // finger screen
-            },
-            child: const Text('OK'),
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Success'),
+            content: Text(
+              message.isNotEmpty ? message : 'Data uploaded successfully',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  onSuccess?.call(); // clear parent registration form
+                  Navigator.of(dialogContext)
+                    ..pop() // dialog
+                    ..pop() // signature screen
+                    ..pop(); // finger screen
+                },
+                child: const Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

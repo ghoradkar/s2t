@@ -354,6 +354,7 @@ class RegularPatientRegistrationController extends GetxController {
                   campId: navCampId,
                   siteId: navSiteId,
                   regNo: tecWorkerRegNo.text.trim(),
+                  onSuccess: _clearForm,
                 ),
           ),
         );
@@ -371,6 +372,33 @@ class RegularPatientRegistrationController extends GetxController {
       isSubmitting.value = false;
       ToastManager.hideLoader();
     }
+  }
+
+  void _clearForm() {
+    tecWorkerRegNo.clear();
+    tecFullName.clear();
+    tecMobileNo.clear();
+    tecAadhaarNo.clear();
+    tecDob.clear();
+    tecAge.clear();
+    tecLocalAddr.clear();
+    tecPermAddr.clear();
+    tecPincode.clear();
+    tecRenewalDate.clear();
+    tecCardRegDate.clear();
+    tecCardExpiry.clear();
+    selectedGender.value = '';
+    selectedTitle.value = '';
+    isHCRenewal.value = false;
+    showRenewal.value = false;
+    patientPhotoPath.value = '';
+    healthCardPhotoPath.value = '';
+    renewalFormPath.value = '';
+    patientPhotoUrl.value = '';
+    healthCardPhotoUrl.value = '';
+    renewalPhotoUrl.value = '';
+    isReregistration = false;
+    previousRegDate = '';
   }
 
   Future<void> _syncBocw() async {

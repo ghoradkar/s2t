@@ -363,19 +363,40 @@ class D2DPatientRegistrationRepository {
         body: {'RegdNo': regdNo},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[getWorkerRegdId] raw response: ${response.body}');
       final decoded = json.decode(response.body);
-      if (decoded['status']?.toString().toLowerCase() == 'success') {
+      final status = decoded['status']?.toString().toLowerCase();
+      if (status == 'success') {
         final output = decoded['output'];
         if (output is List && output.isNotEmpty) {
           final item = output[0] as Map<String, dynamic>;
-          return {
-            'regdId': item['RegdId']?.toString() ?? '0',
-            'count': item['Count']?.toString() ?? '0',
-          };
+          // ignore: avoid_print
+          print('[getWorkerRegdId] output[0] keys: ${item.keys.toList()}');
+          // Try all known casing variants for RegdId and Count
+          final regdId = (item['RegdId'] ??
+                  item['REGDID'] ??
+                  item['regdId'] ??
+                  item['RegID'] ??
+                  item['Regdid'])
+              ?.toString() ??
+              '0';
+          final count = (item['Count'] ??
+                  item['COUNT'] ??
+                  item['count'] ??
+                  item['BenCount'] ??
+                  item['BENCOUNT'])
+              ?.toString() ??
+              '0';
+          // ignore: avoid_print
+          print('[getWorkerRegdId] regdId=$regdId  count=$count');
+          return {'regdId': regdId, 'count': count};
         }
       }
-    } catch (_) {}
-    finally {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getWorkerRegdId] error: $e');
+    } finally {
       ioClient.close();
     }
     return {'regdId': '0', 'count': '0'};

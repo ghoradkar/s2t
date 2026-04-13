@@ -1068,6 +1068,7 @@ class D2DPatientRegistrationController extends GetxController {
                   campId: navCampId,
                   siteId: navSiteId,
                   regNo: tecWorkerRegNo.text.trim(),
+                  onSuccess: _clearForm,
                 ),
           ),
         );

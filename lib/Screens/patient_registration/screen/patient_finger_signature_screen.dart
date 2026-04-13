@@ -16,12 +16,16 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
   final String campId;
   final String siteId;
   final String regNo;
+  /// Called after successful upload when the user taps OK on the success dialog.
+  /// Use this to clear the parent registration form.
+  final VoidCallback? onSuccess;
 
   const PatientFingerAndSignatureScreen({
     super.key,
     required this.campId,
     required this.siteId,
     required this.regNo,
+    this.onSuccess,
   });
 
   @override
@@ -31,6 +35,7 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
         campId: campId,
         siteId: siteId,
         regNo: regNo,
+        onSuccess: onSuccess,
       ),
     );
 
@@ -274,9 +279,9 @@ class _PatientInfoCard extends StatelessWidget {
             ),
             _infoRow('Age', info.age ?? '--'),
             _infoRow('DOB', info.dobFormatted ?? '--'),
-            _infoRow('Mobile', info.mobileNo ?? '--'),
-            _infoRow('Aadhaar', info.uid?.replaceAll('-', '') ?? '--'),
-            _infoRow('Address', info.permanentAddress ?? '--'),
+            // _infoRow('Mobile', info.mobileNo ?? '--'),
+            // _infoRow('Aadhaar', info.uid?.replaceAll('-', '') ?? '--'),
+            // _infoRow('Address', info.permanentAddress ?? '--'),
           ],
         ),
       );
