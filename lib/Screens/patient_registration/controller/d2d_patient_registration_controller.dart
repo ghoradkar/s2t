@@ -94,6 +94,17 @@ class D2DPatientRegistrationController extends GetxController {
   String _abhaGenderAtVerify = '';
   Timer? _abhaTimer;
 
+  // ── ABHA create / search sub-mode ────────────────────────────────────────
+  /// 'demographic' or 'aadhaar_otp'
+  final abhaCreateMode = 'aadhaar_otp'.obs;
+  /// 'find' or 'verify'
+  final abhaSearchMode = 'find'.obs;
+  /// 'mobile' or 'aadhaar'
+  final abhaValidateMode = 'mobile'.obs;
+  final abhaOtpAttempts = 0.obs;
+  final tecAbhaLinkedMobile = TextEditingController();
+  final tecAbhaAadhaar = TextEditingController();
+
   final mobileOtpSent = false.obs;
   final mobileOtpVerified = false.obs;
   String _generatedOtp = '';
@@ -203,9 +214,37 @@ class D2DPatientRegistrationController extends GetxController {
     if (type == 'without_abha') {
       abhaVerified.value = false;
       abhaOtpSent.value = false;
+      abhaResendCount = 0;
+      _abhaTimer?.cancel();
+      abhaOtpTimer.value = 120;
       _abhaNameAtVerify = '';
       _abhaGenderAtVerify = '';
+      tecAbhaNumber.clear();
+      tecAbhaAddress.clear();
+      tecAbhaOtp.clear();
+      abhaCreateMode.value = 'aadhaar_otp';
+      abhaSearchMode.value = 'find';
+      abhaValidateMode.value = 'mobile';
+      abhaOtpAttempts.value = 0;
+      tecAbhaLinkedMobile.clear();
+      tecAbhaAadhaar.clear();
     }
+  }
+
+  void clearAbhaSearch() {
+    abhaSearchMode.value = 'find';
+    abhaValidateMode.value = 'mobile';
+    tecAbhaNumber.clear();
+    tecAbhaAddress.clear();
+    tecAbhaLinkedMobile.clear();
+    tecAbhaAadhaar.clear();
+    tecAbhaOtp.clear();
+    abhaOtpSent.value = false;
+    abhaVerified.value = false;
+    abhaResendCount = 0;
+    abhaOtpAttempts.value = 0;
+    _abhaTimer?.cancel();
+    abhaOtpTimer.value = 120;
   }
 
   void onDependentToggled(bool val) {
@@ -387,6 +426,15 @@ class D2DPatientRegistrationController extends GetxController {
     altMobileOtpVerified.value = false;
     abhaVerified.value = false;
     abhaOtpSent.value = false;
+    abhaResendCount = 0;
+    _abhaTimer?.cancel();
+    abhaOtpTimer.value = 120;
+    abhaCreateMode.value = 'aadhaar_otp';
+    abhaSearchMode.value = 'find';
+    abhaValidateMode.value = 'mobile';
+    abhaOtpAttempts.value = 0;
+    tecAbhaLinkedMobile.clear();
+    tecAbhaAadhaar.clear();
 
     // Worker-info display (isDependent = Yes)
     workerNameDisplay.value = '';
@@ -800,17 +848,32 @@ class D2DPatientRegistrationController extends GetxController {
   }
 
   Future<void> sendAbhaOtp() async {
-    if (tecAbhaNumber.text.trim().isEmpty &&
-        tecAbhaAddress.text.trim().isEmpty) {
-      ToastManager.toast('Enter ABHA number or address');
+    final abhaNum = tecAbhaNumber.text.trim();
+    final abhaAddr = tecAbhaAddress.text.trim();
+    final mobile = tecAbhaLinkedMobile.text.trim();
+    final aadhaar = tecAbhaAadhaar.text.trim();
+
+    // Verify mode: need ABHA number or address
+    if (abhaSearchMode.value == 'verify') {
+      if (abhaNum.isEmpty && abhaAddr.isEmpty) {
+        ToastManager.toast('Enter ABHA number or address');
+        return;
+      }
+    }
+    // Find mode: need mobile or aadhaar
+    if (abhaValidateMode.value == 'mobile' && mobile.isEmpty) {
+      ToastManager.toast('Enter ABHA linked mobile number');
+      return;
+    }
+    if (abhaValidateMode.value == 'aadhaar' && aadhaar.isEmpty) {
+      ToastManager.toast('Enter Aadhaar number');
       return;
     }
     if (abhaResendCount >= 3) {
-      // ToastManager.toast('Max resends reached');
       ToastManager.showAlertDialog(
         Get.context!,
         'Max resends reached',
-            () {
+        () {
           Get.back();
         },
       );
@@ -821,17 +884,18 @@ class D2DPatientRegistrationController extends GetxController {
     abhaVerified.value = false;
     abhaResendCount++;
     _startAbhaOtpTimer();
-    ToastManager.toast('ABHA OTP sent');
+    ToastManager.toast('OTP sent');
   }
 
   Future<void> verifyAbhaOtp() async {
+    abhaOtpAttempts.value++;
     if (tecAbhaOtp.text.trim() == _generatedAbhaOtp) {
       abhaVerified.value = true;
       _abhaNameAtVerify = tecFullName.text.trim();
       _abhaGenderAtVerify = selectedGender.value;
       ToastManager.toast('ABHA verified');
     } else {
-      ToastManager.toast('Invalid ABHA OTP');
+      ToastManager.toast('Invalid OTP');
     }
   }
 
@@ -1238,6 +1302,8 @@ class D2DPatientRegistrationController extends GetxController {
     tecAbhaAddress.dispose();
     tecAbhaOtp.dispose();
     tecMobileOtp.dispose();
+    tecAbhaLinkedMobile.dispose();
+    tecAbhaAadhaar.dispose();
     super.onClose();
   }
 }

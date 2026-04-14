@@ -244,18 +244,14 @@ class _CampCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _cardRow(icCampCreation, 'Camp ID', camp.campId ?? '--'),
-              _cardRow(icCampCreation, 'Address', camp.campLocation ?? '--'),
+              _cardRow(icHashIcon, 'Camp ID', camp.campId ?? '--'),
+              _cardRow(icMapPin, 'Address', camp.campLocation ?? '--'),
               _cardRow(
                 icCampCreation,
                 'Camp Type',
                 camp.campTypeDescription ?? '--',
               ),
-              _cardRow(
-                icCampCreation,
-                'Initiated By',
-                camp.initiatedBy1 ?? '--',
-              ),
+              _cardRow(iconFile, 'Initiated By', camp.initiatedBy1 ?? '--'),
               if (isCheckingThis) ...[
                 SizedBox(height: 10.h),
                 LinearProgressIndicator(

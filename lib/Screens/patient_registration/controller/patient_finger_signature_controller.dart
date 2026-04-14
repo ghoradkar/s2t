@@ -201,11 +201,11 @@ class PatientFingerSignatureController extends GetxController {
         icSuccessIcon,
         message.isNotEmpty ? message : "Data uploaded successfully",
         () {
-          onSuccess?.call(); // clear parent registration form
+          onSuccess?.call();
           Navigator.of(context)
-            ..pop() // dialog
-            ..pop() // signature screen
-            ..pop(); // finger screen
+            ..pop()
+            ..pop()
+            ..pop();
         },
       );
     } else {

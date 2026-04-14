@@ -241,6 +241,345 @@ class _D2DPatientRegistrationScreenState
         ),
         SizedBox(height: 12.h),
 
+        // ── 1a. ABHA section (with_abha only) — matches native position ──
+        if (c.registrationType.value == 'with_abha') ...[
+          _sectionLabel('ABHA'),
+          SizedBox(height: 8.h),
+
+          // ── Don't have ABHA No? ────────────────────────────────────────
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: kPrimaryColor.withValues(alpha: 0.2)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: CommonText(
+                    text: "Don't have ABHA No?",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    textColor: kLabelTextColor,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    _radioChip(
+                      label: 'Using Demographic',
+                      selected: c.abhaCreateMode.value == 'demographic',
+                      onTap: () => c.abhaCreateMode.value = 'demographic',
+                    ),
+                    SizedBox(width: 8.w),
+                    _radioChip(
+                      label: 'Using Aadhaar OTP',
+                      selected: c.abhaCreateMode.value == 'aadhaar_otp',
+                      onTap: () => c.abhaCreateMode.value = 'aadhaar_otp',
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                AppButtonWithIcon(
+                  title: 'Create ABHA',
+                  mHeight: 40,
+                  mWidth: double.infinity,
+                  onTap: () => ToastManager.toast('Feature coming soon'),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 12.h),
+
+          // ── Divider ────────────────────────────────────────────────────
+          Divider(thickness: 1, color: Colors.grey.shade300),
+          SizedBox(height: 8.h),
+
+          // ── Search ABHA Details by ─────────────────────────────────────
+          Center(
+            child: CommonText(
+              text: 'Search ABHA Details by',
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
+              textColor: kBlackColor,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(height: 8.h),
+
+          // ── Find ABHA / Verify ABHA toggle ─────────────────────────────
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: kPrimaryColor.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => c.abhaSearchMode.value = 'find',
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      decoration: BoxDecoration(
+                        color: c.abhaSearchMode.value == 'find'
+                            ? kPrimaryColor
+                            : kWhiteColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(7),
+                          bottomLeft: Radius.circular(7),
+                        ),
+                      ),
+                      child: Center(
+                        child: CommonText(
+                          text: 'Find ABHA',
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                          textColor: c.abhaSearchMode.value == 'find'
+                              ? kWhiteColor
+                              : kTextColor,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => c.abhaSearchMode.value = 'verify',
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      decoration: BoxDecoration(
+                        color: c.abhaSearchMode.value == 'verify'
+                            ? kPrimaryColor
+                            : kWhiteColor,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(7),
+                          bottomRight: Radius.circular(7),
+                        ),
+                      ),
+                      child: Center(
+                        child: CommonText(
+                          text: 'Verify ABHA',
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                          textColor: c.abhaSearchMode.value == 'verify'
+                              ? kWhiteColor
+                              : kTextColor,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10.h),
+
+          // ── ABHA Number + Address (Verify ABHA only) ───────────────────
+          if (c.abhaSearchMode.value == 'verify') ...[
+            AppTextField(
+              controller: c.tecAbhaNumber,
+              label: _label('ABHA Number'),
+              hint: '14-digit ABHA number',
+              textInputType: TextInputType.number,
+              maxLength: 14,
+              readOnly: c.abhaVerified.value,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              prefixIcon: const Icon(
+                Icons.health_and_safety_rounded,
+                color: kPrimaryColor,
+                size: 18,
+              ).paddingOnly(left: 6.w),
+            ),
+            SizedBox(height: 6.h),
+            Center(
+              child: CommonText(
+                text: 'OR',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+                textColor: kLabelTextColor,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            AppTextField(
+              controller: c.tecAbhaAddress,
+              label: _label('ABHA Address'),
+              hint: 'yourname@abdm',
+              readOnly: c.abhaVerified.value,
+              prefixIcon: const Icon(
+                Icons.alternate_email_rounded,
+                color: kPrimaryColor,
+                size: 18,
+              ).paddingOnly(left: 6.w),
+            ),
+            SizedBox(height: 10.h),
+          ],
+
+          // ── Using Mobile / Using Aadhaar radio ─────────────────────────
+          if (!c.abhaVerified.value) ...[
+            Row(
+              children: [
+                _radioChip(
+                  label: 'Using Mobile',
+                  selected: c.abhaValidateMode.value == 'mobile',
+                  onTap: () => c.abhaValidateMode.value = 'mobile',
+                ),
+                SizedBox(width: 8.w),
+                _radioChip(
+                  label: 'Using Aadhaar',
+                  selected: c.abhaValidateMode.value == 'aadhaar',
+                  onTap: () => c.abhaValidateMode.value = 'aadhaar',
+                ),
+              ],
+            ),
+            SizedBox(height: 8.h),
+
+            if (c.abhaValidateMode.value == 'mobile')
+              AppTextField(
+                controller: c.tecAbhaLinkedMobile,
+                label: _label('ABHA Linked Mobile'),
+                hint: 'Enter ABHA linked mobile',
+                textInputType: TextInputType.phone,
+                maxLength: 10,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                prefixIcon: const Icon(
+                  Icons.phone_android_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+              ),
+
+            if (c.abhaValidateMode.value == 'aadhaar')
+              AppTextField(
+                controller: c.tecAbhaAadhaar,
+                label: _label('Aadhaar Number'),
+                hint: 'Enter Aadhaar number',
+                textInputType: TextInputType.number,
+                maxLength: 12,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                prefixIcon: const Icon(
+                  Icons.credit_card_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+              ),
+
+            SizedBox(height: 10.h),
+
+            // ── Clear + Search ABHA buttons ────────────────────────────
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: c.clearAbhaSearch,
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: kPrimaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                    ),
+                    child: CommonText(
+                      text: 'Clear',
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      textColor: kPrimaryColor,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: c.abhaOtpTimer.value > 0 && c.abhaOtpSent.value
+                        ? null
+                        : c.sendAbhaOtp,
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: kPrimaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                    ),
+                    child: CommonText(
+                      text: c.abhaOtpSent.value ? 'Resend OTP' : 'Search ABHA',
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      textColor: kPrimaryColor,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // ── OTP section ────────────────────────────────────────────
+            if (c.abhaOtpSent.value) ...[
+              SizedBox(height: 8.h),
+              if (c.abhaOtpTimer.value > 0)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 6.h),
+                  child: CommonText(
+                    text: 'Resend OTP in ${c.abhaOtpTimer.value}s',
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: kLabelTextColor,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              AppTextField(
+                controller: c.tecAbhaOtp,
+                label: _label('Enter OTP *'),
+                hint: '6-digit OTP',
+                textInputType: TextInputType.number,
+                maxLength: 6,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              SizedBox(height: 8.h),
+              AppButtonWithIcon(
+                title: 'Verify OTP',
+                mHeight: 40,
+                mWidth: double.infinity,
+                onTap: c.verifyAbhaOtp,
+              ),
+              SizedBox(height: 6.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CommonText(
+                    text: 'OTP Attempts: ',
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    textColor: kTextColor,
+                    textAlign: TextAlign.center,
+                  ),
+                  CommonText(
+                    text: '${c.abhaOtpAttempts.value}',
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    textColor: kBlackColor,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ],
+          ],
+
+          // ── Verified banner ────────────────────────────────────────────
+          if (c.abhaVerified.value) ...[
+            SizedBox(height: 10.h),
+            _verifiedBanner('ABHA verified'),
+          ],
+
+          SizedBox(height: 14.h),
+        ],
+
         // ── 2. Worker info cards (Scenario 4: Yes+Data) ─────────────────
         if (_isYes && _hasData) ...[
           _infoCard(
@@ -569,7 +908,7 @@ class _D2DPatientRegistrationScreenState
         ],
         SizedBox(height: 14.h),
 
-        // ── 9. Identity card (isDependent=Yes: Scenarios 3 & 4) ─────────
+        // ── 9b. Identity card (isDependent=Yes: Scenarios 3 & 4) ────────
         if (_isYes) ...[
           _sectionLabel('Identity Card'),
           SizedBox(height: 6.h),
@@ -596,58 +935,61 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 12.h),
         ],
 
-        // ── 10. Aadhaar / Identity Number ────────────────────────────────
+        // ── 10. Aadhaar / Identity Number (without_abha only) ───────────
         // Label and input behaviour change when a non-Aadhaar identity card
         // is selected from the identity card picker above.
-        Builder(
-          builder: (_) {
-            final isAadhaar = c.isAadhaarMode;
-            final sectionTitle =
-            isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
-            final fieldLabel =
-            isAadhaar
-                ? 'Aadhaar Number *'
-                : '${c.selectedIdentityName.value} Number *';
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _sectionLabel(sectionTitle),
-                SizedBox(height: 6.h),
-                AppTextField(
-                  controller: c.tecAadhaarNo,
-                  label: _label(fieldLabel),
-                  textInputType:
-                  isAadhaar ? TextInputType.number : TextInputType.text,
-                  maxLength: c.identityMaxLength,
-                  // isDependent=No → disabled; isDependent=Yes → enabled
-                  readOnly: _isNo,
-                  inputFormatters:
-                  isAadhaar
-                      ? [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(12),
-                  ]
-                      : [
-                    ..._kUpper,
-                    LengthLimitingTextInputFormatter(
-                      c.identityMaxLength,
-                    ),
-                  ],
-                  textCapitalization:
-                  isAadhaar
-                      ? TextCapitalization.none
-                      : TextCapitalization.characters,
-                  prefixIcon: const Icon(
-                    Icons.credit_card_rounded,
-                    color: kPrimaryColor,
-                    size: 18,
-                  ).paddingOnly(left: 6.w),
-                ),
-              ],
-            );
-          },
-        ),
-        SizedBox(height: 14.h),
+        // Hidden for with_abha — ABHA itself serves as identity.
+        if (c.registrationType.value == 'without_abha') ...[
+          Builder(
+            builder: (_) {
+              final isAadhaar = c.isAadhaarMode;
+              final sectionTitle =
+              isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
+              final fieldLabel =
+              isAadhaar
+                  ? 'Aadhaar Number *'
+                  : '${c.selectedIdentityName.value} Number *';
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionLabel(sectionTitle),
+                  SizedBox(height: 6.h),
+                  AppTextField(
+                    controller: c.tecAadhaarNo,
+                    label: _label(fieldLabel),
+                    textInputType:
+                    isAadhaar ? TextInputType.number : TextInputType.text,
+                    maxLength: c.identityMaxLength,
+                    // isDependent=No → disabled; isDependent=Yes → enabled
+                    readOnly: _isNo,
+                    inputFormatters:
+                    isAadhaar
+                        ? [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(12),
+                    ]
+                        : [
+                      ..._kUpper,
+                      LengthLimitingTextInputFormatter(
+                        c.identityMaxLength,
+                      ),
+                    ],
+                    textCapitalization:
+                    isAadhaar
+                        ? TextCapitalization.none
+                        : TextCapitalization.characters,
+                    prefixIcon: const Icon(
+                      Icons.credit_card_rounded,
+                      color: kPrimaryColor,
+                      size: 18,
+                    ).paddingOnly(left: 6.w),
+                  ),
+                ],
+              );
+            },
+          ),
+          SizedBox(height: 14.h),
+        ],
 
         // ── 11. DOB + Age ────────────────────────────────────────────────
         _sectionLabel('Date of Birth'),
@@ -1000,8 +1342,13 @@ class _D2DPatientRegistrationScreenState
         // ],
         SizedBox(height: 20.h),
 
-        // ── Register Patient button — visible only after OTP is verified ──
-        if (c.mobileOtpVerified.value || c.altMobileOtpVerified.value) ...[
+        // ── Register Patient button ──────────────────────────────────────
+        // without_abha → visible after mobile OTP verified
+        // with_abha    → visible after ABHA verified
+        if ((c.registrationType.value == 'without_abha' &&
+                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)) ||
+            (c.registrationType.value == 'with_abha' &&
+                c.abhaVerified.value)) ...[
           AppButtonWithIcon(
             title: 'Register Patient',
             mWidth: double.infinity,
