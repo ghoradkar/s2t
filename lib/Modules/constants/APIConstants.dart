@@ -401,4 +401,7 @@ class APIConstants {
   static String kGetUserWiseCampList = "GetUserWiseCampList";
   static String kInsertCampClosingConfirmation =
       "InsertCampClosingConfirmation";
+
+  // ABHA
+  static String kInsertAbhaRegistration = "InsertAbhaRegistration";
 }

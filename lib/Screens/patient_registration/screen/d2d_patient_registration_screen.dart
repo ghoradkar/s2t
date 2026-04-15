@@ -19,15 +19,17 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/abha_creation_screen.dart';
 
 /// Forces every character to uppercase as the user types.
 class _UpperCaseFormatter extends TextInputFormatter {
   const _UpperCaseFormatter();
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
-      TextEditingValue newValue,) =>
-      newValue.copyWith(text: newValue.text.toUpperCase());
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) => newValue.copyWith(text: newValue.text.toUpperCase());
 }
 
 const _kUpper = [_UpperCaseFormatter()];
@@ -76,11 +78,12 @@ class _D2DPatientRegistrationScreenState
 
   // ── Date picker helper ────────────────────────────────────────────────────
 
-  Future<void> _pickDate(BuildContext context,
-      TextEditingController tec,
-      void Function(String) onPicked, {
-        bool readOnly = false,
-      }) async {
+  Future<void> _pickDate(
+    BuildContext context,
+    TextEditingController tec,
+    void Function(String) onPicked, {
+    bool readOnly = false,
+  }) async {
     if (readOnly) return;
     final now = DateTime.now();
     final picked = await showDatePicker(
@@ -117,23 +120,21 @@ class _D2DPatientRegistrationScreenState
             _sectionLabel('Registration Type'),
             SizedBox(height: 8.h),
             Obx(
-                  () =>
-                  Row(
-                    children: [
-                      _radioChip(
-                        label: 'Without ABHA',
-                        selected: c.registrationType.value == 'without_abha',
-                        onTap: () =>
-                            c.onRegistrationTypeChanged('without_abha'),
-                      ),
-                      SizedBox(width: 10.w),
-                      _radioChip(
-                        label: 'With ABHA',
-                        selected: c.registrationType.value == 'with_abha',
-                        onTap: () => c.onRegistrationTypeChanged('with_abha'),
-                      ),
-                    ],
+              () => Row(
+                children: [
+                  _radioChip(
+                    label: 'Without ABHA',
+                    selected: c.registrationType.value == 'without_abha',
+                    onTap: () => c.onRegistrationTypeChanged('without_abha'),
                   ),
+                  SizedBox(width: 10.w),
+                  _radioChip(
+                    label: 'With ABHA',
+                    selected: c.registrationType.value == 'with_abha',
+                    onTap: () => c.onRegistrationTypeChanged('with_abha'),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 14.h),
 
@@ -141,22 +142,21 @@ class _D2DPatientRegistrationScreenState
             _sectionLabel('Is Dependent'),
             SizedBox(height: 8.h),
             Obx(
-                  () =>
-                  Row(
-                    children: [
-                      _radioChip(
-                        label: 'Yes',
-                        selected: c.isDependent.value,
-                        onTap: () => c.onDependentToggled(true),
-                      ),
-                      SizedBox(width: 10.w),
-                      _radioChip(
-                        label: 'No',
-                        selected: !c.isDependent.value,
-                        onTap: () => c.onDependentToggled(false),
-                      ),
-                    ],
+              () => Row(
+                children: [
+                  _radioChip(
+                    label: 'Yes',
+                    selected: c.isDependent.value,
+                    onTap: () => c.onDependentToggled(true),
                   ),
+                  SizedBox(width: 10.w),
+                  _radioChip(
+                    label: 'No',
+                    selected: !c.isDependent.value,
+                    onTap: () => c.onDependentToggled(false),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 14.h),
 
@@ -193,13 +193,13 @@ class _D2DPatientRegistrationScreenState
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChange: _hasData ? null : c.onWorkerRegNoChanged,
                 suffixIcon:
-                c.isLoadingBeneficiary.value
-                    ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ).paddingOnly(right: 8.w)
-                    : const Icon(Icons.search),
+                    c.isLoadingBeneficiary.value
+                        ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ).paddingOnly(right: 8.w)
+                        : const Icon(Icons.search),
               ),
             ),
             SizedBox(width: 8.w),
@@ -268,316 +268,404 @@ class _D2DPatientRegistrationScreenState
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Row(
-                  children: [
-                    _radioChip(
-                      label: 'Using Demographic',
-                      selected: c.abhaCreateMode.value == 'demographic',
-                      onTap: () => c.abhaCreateMode.value = 'demographic',
+                // Controls disabled until Beneficiary Reg No API returns data
+                AbsorbPointer(
+                  absorbing: !_hasData,
+                  child: Opacity(
+                    opacity: _hasData ? 1.0 : 0.5,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            _radioChip(
+                              label: 'Using Demographic',
+                              selected: c.abhaCreateMode.value == 'demographic',
+                              onTap:
+                                  () => c.abhaCreateMode.value = 'demographic',
+                            ),
+                            SizedBox(width: 8.w),
+                            _radioChip(
+                              label: 'Using Aadhaar OTP',
+                              selected: c.abhaCreateMode.value == 'aadhaar_otp',
+                              onTap:
+                                  () => c.abhaCreateMode.value = 'aadhaar_otp',
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        AppButtonWithIcon(
+                          title: 'Create ABHA',
+                          mHeight: 40,
+                          mWidth: double.infinity,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AbhaCreationScreen(
+                                  campId: c.navCampId,
+                                  siteId: c.navSiteId,
+                                  distLgdCode: c.navDistLgd,
+                                  district: c.navCampLocation,
+                                  campType: c.navCampType,
+                                  empCode: c.empCode,
+                                  initialMobile: c.tecMobileNo.text.trim(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 8.w),
-                    _radioChip(
-                      label: 'Using Aadhaar OTP',
-                      selected: c.abhaCreateMode.value == 'aadhaar_otp',
-                      onTap: () => c.abhaCreateMode.value = 'aadhaar_otp',
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                AppButtonWithIcon(
-                  title: 'Create ABHA',
-                  mHeight: 40,
-                  mWidth: double.infinity,
-                  onTap: () => ToastManager.toast('Feature coming soon'),
+                  ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 12.h),
-
-          // ── Divider ────────────────────────────────────────────────────
-          Divider(thickness: 1, color: Colors.grey.shade300),
+          // SizedBox(height: 12.h),
+          //
+          // // ── Divider ────────────────────────────────────────────────────
+          // Divider(thickness: 1, color: Colors.grey.shade300),
           SizedBox(height: 8.h),
 
           // ── Search ABHA Details by ─────────────────────────────────────
-          Center(
-            child: CommonText(
-              text: 'Search ABHA Details by',
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
-              textColor: kBlackColor,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(height: 8.h),
-
-          // ── Find ABHA / Verify ABHA toggle ─────────────────────────────
           Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: kPrimaryColor.withValues(alpha: 0.3)),
+              color: kWhiteColor,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: kPrimaryColor.withValues(alpha: 0.2)),
             ),
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => c.abhaSearchMode.value = 'find',
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                      decoration: BoxDecoration(
-                        color: c.abhaSearchMode.value == 'find'
-                            ? kPrimaryColor
-                            : kWhiteColor,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(7),
-                          bottomLeft: Radius.circular(7),
-                        ),
-                      ),
-                      child: Center(
-                        child: CommonText(
-                          text: 'Find ABHA',
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                          textColor: c.abhaSearchMode.value == 'find'
-                              ? kWhiteColor
-                              : kTextColor,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => c.abhaSearchMode.value = 'verify',
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                      decoration: BoxDecoration(
-                        color: c.abhaSearchMode.value == 'verify'
-                            ? kPrimaryColor
-                            : kWhiteColor,
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(7),
-                          bottomRight: Radius.circular(7),
-                        ),
-                      ),
-                      child: Center(
-                        child: CommonText(
-                          text: 'Verify ABHA',
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                          textColor: c.abhaSearchMode.value == 'verify'
-                              ? kWhiteColor
-                              : kTextColor,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10.h),
-
-          // ── ABHA Number + Address (Verify ABHA only) ───────────────────
-          if (c.abhaSearchMode.value == 'verify') ...[
-            AppTextField(
-              controller: c.tecAbhaNumber,
-              label: _label('ABHA Number'),
-              hint: '14-digit ABHA number',
-              textInputType: TextInputType.number,
-              maxLength: 14,
-              readOnly: c.abhaVerified.value,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              prefixIcon: const Icon(
-                Icons.health_and_safety_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-            ),
-            SizedBox(height: 6.h),
-            Center(
-              child: CommonText(
-                text: 'OR',
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
-                textColor: kLabelTextColor,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: 6.h),
-            AppTextField(
-              controller: c.tecAbhaAddress,
-              label: _label('ABHA Address'),
-              hint: 'yourname@abdm',
-              readOnly: c.abhaVerified.value,
-              prefixIcon: const Icon(
-                Icons.alternate_email_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-            ),
-            SizedBox(height: 10.h),
-          ],
-
-          // ── Using Mobile / Using Aadhaar radio ─────────────────────────
-          if (!c.abhaVerified.value) ...[
-            Row(
-              children: [
-                _radioChip(
-                  label: 'Using Mobile',
-                  selected: c.abhaValidateMode.value == 'mobile',
-                  onTap: () => c.abhaValidateMode.value = 'mobile',
-                ),
-                SizedBox(width: 8.w),
-                _radioChip(
-                  label: 'Using Aadhaar',
-                  selected: c.abhaValidateMode.value == 'aadhaar',
-                  onTap: () => c.abhaValidateMode.value = 'aadhaar',
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-
-            if (c.abhaValidateMode.value == 'mobile')
-              AppTextField(
-                controller: c.tecAbhaLinkedMobile,
-                label: _label('ABHA Linked Mobile'),
-                hint: 'Enter ABHA linked mobile',
-                textInputType: TextInputType.phone,
-                maxLength: 10,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                prefixIcon: const Icon(
-                  Icons.phone_android_rounded,
-                  color: kPrimaryColor,
-                  size: 18,
-                ).paddingOnly(left: 6.w),
-              ),
-
-            if (c.abhaValidateMode.value == 'aadhaar')
-              AppTextField(
-                controller: c.tecAbhaAadhaar,
-                label: _label('Aadhaar Number'),
-                hint: 'Enter Aadhaar number',
-                textInputType: TextInputType.number,
-                maxLength: 12,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                prefixIcon: const Icon(
-                  Icons.credit_card_rounded,
-                  color: kPrimaryColor,
-                  size: 18,
-                ).paddingOnly(left: 6.w),
-              ),
-
-            SizedBox(height: 10.h),
-
-            // ── Clear + Search ABHA buttons ────────────────────────────
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: c.clearAbhaSearch,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: kPrimaryColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                    ),
-                    child: CommonText(
-                      text: 'Clear',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
-                      textColor: kPrimaryColor,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: c.abhaOtpTimer.value > 0 && c.abhaOtpSent.value
-                        ? null
-                        : c.sendAbhaOtp,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: kPrimaryColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                    ),
-                    child: CommonText(
-                      text: c.abhaOtpSent.value ? 'Resend OTP' : 'Search ABHA',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
-                      textColor: kPrimaryColor,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // ── OTP section ────────────────────────────────────────────
-            if (c.abhaOtpSent.value) ...[
-              SizedBox(height: 8.h),
-              if (c.abhaOtpTimer.value > 0)
-                Padding(
-                  padding: EdgeInsets.only(bottom: 6.h),
+                Center(
                   child: CommonText(
-                    text: 'Resend OTP in ${c.abhaOtpTimer.value}s',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    textColor: kLabelTextColor,
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-              AppTextField(
-                controller: c.tecAbhaOtp,
-                label: _label('Enter OTP *'),
-                hint: '6-digit OTP',
-                textInputType: TextInputType.number,
-                maxLength: 6,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              SizedBox(height: 8.h),
-              AppButtonWithIcon(
-                title: 'Verify OTP',
-                mHeight: 40,
-                mWidth: double.infinity,
-                onTap: c.verifyAbhaOtp,
-              ),
-              SizedBox(height: 6.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CommonText(
-                    text: 'OTP Attempts: ',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    textColor: kTextColor,
-                    textAlign: TextAlign.center,
-                  ),
-                  CommonText(
-                    text: '${c.abhaOtpAttempts.value}',
-                    fontSize: 12.sp,
+                    text: 'Search ABHA Details by',
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     textColor: kBlackColor,
                     textAlign: TextAlign.center,
                   ),
-                ],
-              ),
-            ],
-          ],
+                ),
+                SizedBox(height: 8.h),
 
-          // ── Verified banner ────────────────────────────────────────────
-          if (c.abhaVerified.value) ...[
-            SizedBox(height: 10.h),
-            _verifiedBanner('ABHA verified'),
-          ],
+                // Controls disabled until Beneficiary Reg No API returns data
+                AbsorbPointer(
+                  absorbing: !_hasData,
+                  child: Opacity(
+                    opacity: _hasData ? 1.0 : 0.5,
+                    child: Column(
+                      children: [
+                        // ── Find ABHA / Verify ABHA toggle ─────────────────────────────
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: kPrimaryColor.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => c.abhaSearchMode.value = 'find',
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          c.abhaSearchMode.value == 'find'
+                                              ? kPrimaryColor
+                                              : kWhiteColor,
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(7),
+                                        bottomLeft: Radius.circular(7),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: CommonText(
+                                        text: 'Find ABHA',
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                        textColor:
+                                            c.abhaSearchMode.value == 'find'
+                                                ? kWhiteColor
+                                                : kTextColor,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap:
+                                      () => c.abhaSearchMode.value = 'verify',
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          c.abhaSearchMode.value == 'verify'
+                                              ? kPrimaryColor
+                                              : kWhiteColor,
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(7),
+                                        bottomRight: Radius.circular(7),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: CommonText(
+                                        text: 'Verify ABHA',
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                        textColor:
+                                            c.abhaSearchMode.value == 'verify'
+                                                ? kWhiteColor
+                                                : kTextColor,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
 
-          SizedBox(height: 14.h),
+                        // ── ABHA Number + Address (Verify ABHA only) ───────────────────
+                        if (c.abhaSearchMode.value == 'verify') ...[
+                          AppTextField(
+                            controller: c.tecAbhaNumber,
+                            label: _label('ABHA Number'),
+                            hint: '14-digit ABHA number',
+                            textInputType: TextInputType.number,
+                            maxLength: 14,
+                            readOnly: c.abhaVerified.value,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            prefixIcon: const Icon(
+                              Icons.health_and_safety_rounded,
+                              color: kPrimaryColor,
+                              size: 18,
+                            ).paddingOnly(left: 6.w),
+                          ),
+                          SizedBox(height: 6.h),
+                          Center(
+                            child: CommonText(
+                              text: 'OR',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              textColor: kLabelTextColor,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          AppTextField(
+                            controller: c.tecAbhaAddress,
+                            label: _label('ABHA Address'),
+                            hint: 'yourname@abdm',
+                            readOnly: c.abhaVerified.value,
+                            prefixIcon: const Icon(
+                              Icons.alternate_email_rounded,
+                              color: kPrimaryColor,
+                              size: 18,
+                            ).paddingOnly(left: 6.w),
+                          ),
+                          SizedBox(height: 10.h),
+                        ],
+
+                        // ── Using Mobile / Using Aadhaar radio ─────────────────────────
+                        if (!c.abhaVerified.value) ...[
+                          Row(
+                            children: [
+                              _radioChip(
+                                label: 'Using Mobile',
+                                selected: c.abhaValidateMode.value == 'mobile',
+                                onTap:
+                                    () => c.abhaValidateMode.value = 'mobile',
+                              ),
+                              SizedBox(width: 8.w),
+                              _radioChip(
+                                label: 'Using Aadhaar',
+                                selected: c.abhaValidateMode.value == 'aadhaar',
+                                onTap:
+                                    () => c.abhaValidateMode.value = 'aadhaar',
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+
+                          if (c.abhaValidateMode.value == 'mobile')
+                            AppTextField(
+                              controller: c.tecAbhaLinkedMobile,
+                              label: _label('ABHA Linked Mobile'),
+                              hint: 'Enter ABHA linked mobile',
+                              textInputType: TextInputType.phone,
+                              maxLength: 10,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              prefixIcon: const Icon(
+                                Icons.phone_android_rounded,
+                                color: kPrimaryColor,
+                                size: 18,
+                              ).paddingOnly(left: 6.w),
+                            ),
+
+                          if (c.abhaValidateMode.value == 'aadhaar')
+                            AppTextField(
+                              controller: c.tecAbhaAadhaar,
+                              label: _label('Aadhaar Number'),
+                              hint: 'Enter Aadhaar number',
+                              textInputType: TextInputType.number,
+                              maxLength: 12,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              prefixIcon: const Icon(
+                                Icons.credit_card_rounded,
+                                color: kPrimaryColor,
+                                size: 18,
+                              ).paddingOnly(left: 6.w),
+                            ),
+
+                          SizedBox(height: 10.h),
+
+                          // ── Clear + Search ABHA buttons ────────────────────────────
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: c.clearAbhaSearch,
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(
+                                      color: kPrimaryColor,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10.h,
+                                    ),
+                                  ),
+                                  child: CommonText(
+                                    text: 'Clear',
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: kPrimaryColor,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed:
+                                      c.abhaOtpTimer.value > 0 &&
+                                              c.abhaOtpSent.value
+                                          ? null
+                                          : c.sendAbhaOtp,
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(
+                                      color: kPrimaryColor,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10.h,
+                                    ),
+                                  ),
+                                  child: CommonText(
+                                    text:
+                                        c.abhaOtpSent.value
+                                            ? 'Resend OTP'
+                                            : 'Search ABHA',
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: kPrimaryColor,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // ── OTP section ────────────────────────────────────────────
+                          if (c.abhaOtpSent.value) ...[
+                            SizedBox(height: 8.h),
+                            if (c.abhaOtpTimer.value > 0)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 6.h),
+                                child: CommonText(
+                                  text:
+                                      'Resend OTP in ${c.abhaOtpTimer.value}s',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: kLabelTextColor,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            AppTextField(
+                              controller: c.tecAbhaOtp,
+                              label: _label('Enter OTP *'),
+                              hint: '6-digit OTP',
+                              textInputType: TextInputType.number,
+                              maxLength: 6,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
+                            SizedBox(height: 8.h),
+                            AppButtonWithIcon(
+                              title: 'Verify OTP',
+                              mHeight: 40,
+                              mWidth: double.infinity,
+                              onTap: c.verifyAbhaOtp,
+                            ),
+                            SizedBox(height: 6.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CommonText(
+                                  text: 'OTP Attempts: ',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                  textColor: kTextColor,
+                                  textAlign: TextAlign.center,
+                                ),
+                                CommonText(
+                                  text: '${c.abhaOtpAttempts.value}',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  textColor: kBlackColor,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+
+                        // ── Verified banner ────────────────────────────────────────────
+                        if (c.abhaVerified.value) ...[
+                          SizedBox(height: 10.h),
+                          _verifiedBanner('ABHA verified'),
+                        ],
+
+                        SizedBox(height: 14.h),
+                      ], // Column children
+                    ), // Column
+                  ), // Opacity
+                ), // AbsorbPointer
+              ],
+            ),
+          ),
         ],
 
         // ── 2. Worker info cards (Scenario 4: Yes+Data) ─────────────────
@@ -617,9 +705,9 @@ class _D2DPatientRegistrationScreenState
           _dropdownField(
             hint: 'Click below to change worker\'s gender',
             value:
-            c.workerGenderByPhlebo.value.isEmpty
-                ? null
-                : c.workerGenderByPhlebo.value,
+                c.workerGenderByPhlebo.value.isEmpty
+                    ? null
+                    : c.workerGenderByPhlebo.value,
             items: const ['Male', 'Female', 'Other'],
             onSelected: (v) => c.workerGenderByPhlebo.value = v,
           ),
@@ -631,9 +719,9 @@ class _D2DPatientRegistrationScreenState
           _dropdownField(
             hint: 'Select worker\'s marital status',
             value:
-            c.selectedWorkerMaritalStatusName.value.isEmpty
-                ? null
-                : c.selectedWorkerMaritalStatusName.value,
+                c.selectedWorkerMaritalStatusName.value.isEmpty
+                    ? null
+                    : c.selectedWorkerMaritalStatusName.value,
             items: _kMaritalStatus.map((e) => e.$2).toList(),
             onSelected: (name) {
               final match = _kMaritalStatus.firstWhere((e) => e.$2 == name);
@@ -642,19 +730,20 @@ class _D2DPatientRegistrationScreenState
           ),
           SizedBox(height: 12.h),
         ],
+        SizedBox(height: 12.h),
 
         // ── 5. Relation with Worker ──────────────────────────────────────
         _sectionLabel('Relation with Worker'),
         SizedBox(height: 6.h),
         if (_isNo)
-        // isDependent=No → always "Self", disabled
+          // isDependent=No → always "Self", disabled
           AppTextField(
             controller: TextEditingController(text: 'Self'),
             label: _label('Relation with Worker'),
             readOnly: true,
           )
         else
-        // isDependent=Yes → picker
+          // isDependent=Yes → picker
           GestureDetector(
             onTap: () => _showRelationPicker(context),
             child: AbsorbPointer(
@@ -741,33 +830,32 @@ class _D2DPatientRegistrationScreenState
             !c.isNumberNotBelongsToBeneficiary.value) ...[
           if (c.mobileOtpVerified.value)
             _verifiedBanner('Contact number verified')
-          else
-            ...[
+          else ...[
+            AppButtonWithIcon(
+              title: 'Verify Contact Number',
+              mHeight: 40,
+              mWidth: double.infinity,
+              onTap: () => _showWhatsAppDialog(context, isAlternate: false),
+            ),
+            if (c.mobileOtpSent.value) ...[
+              SizedBox(height: 8.h),
+              AppTextField(
+                controller: c.tecMobileOtp,
+                label: _label('Enter OTP *'),
+                hint: '5-digit OTP',
+                textInputType: TextInputType.number,
+                maxLength: 5,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              SizedBox(height: 8.h),
               AppButtonWithIcon(
-                title: 'Verify Contact Number',
+                title: 'Verify OTP',
                 mHeight: 40,
                 mWidth: double.infinity,
-                onTap: () => _showWhatsAppDialog(context, isAlternate: false),
+                onTap: () => c.verifyMobileOtp(c.tecMobileOtp.text.trim()),
               ),
-              if (c.mobileOtpSent.value) ...[
-                SizedBox(height: 8.h),
-                AppTextField(
-                  controller: c.tecMobileOtp,
-                  label: _label('Enter OTP *'),
-                  hint: '5-digit OTP',
-                  textInputType: TextInputType.number,
-                  maxLength: 5,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                SizedBox(height: 8.h),
-                AppButtonWithIcon(
-                  title: 'Verify OTP',
-                  mHeight: 40,
-                  mWidth: double.infinity,
-                  onTap: () => c.verifyMobileOtp(c.tecMobileOtp.text.trim()),
-                ),
-              ],
             ],
+          ],
         ],
         SizedBox(height: 10.h),
 
@@ -775,42 +863,42 @@ class _D2DPatientRegistrationScreenState
         // Disabled once any OTP is verified
         GestureDetector(
           onTap:
-          c.mobileOtpVerified.value || c.altMobileOtpVerified.value
-              ? null
-              : () {
-            c.isNumberNotBelongsToBeneficiary.value =
-            !c.isNumberNotBelongsToBeneficiary.value;
-            if (!c.isNumberNotBelongsToBeneficiary.value) {
-              c.tecAltMobileNo.clear();
-              c.tecAltMobileOtp.clear();
-              c.altMobileOtpSent.value = false;
-              c.altMobileOtpVerified.value = false;
-            }
-          },
-          child: Opacity(
-            opacity:
-            (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)
-                ? 0.45
-                : 1.0,
-            child: Row(
-              children: [
-                Checkbox(
-                  value: c.isNumberNotBelongsToBeneficiary.value,
-                  activeColor: kPrimaryColor,
-                  onChanged:
-                  (c.mobileOtpVerified.value ||
-                      c.altMobileOtpVerified.value)
-                      ? null
-                      : (v) {
+              c.mobileOtpVerified.value || c.altMobileOtpVerified.value
+                  ? null
+                  : () {
                     c.isNumberNotBelongsToBeneficiary.value =
-                        v ?? false;
-                    if (!(v ?? false)) {
+                        !c.isNumberNotBelongsToBeneficiary.value;
+                    if (!c.isNumberNotBelongsToBeneficiary.value) {
                       c.tecAltMobileNo.clear();
                       c.tecAltMobileOtp.clear();
                       c.altMobileOtpSent.value = false;
                       c.altMobileOtpVerified.value = false;
                     }
                   },
+          child: Opacity(
+            opacity:
+                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)
+                    ? 0.45
+                    : 1.0,
+            child: Row(
+              children: [
+                Checkbox(
+                  value: c.isNumberNotBelongsToBeneficiary.value,
+                  activeColor: kPrimaryColor,
+                  onChanged:
+                      (c.mobileOtpVerified.value ||
+                              c.altMobileOtpVerified.value)
+                          ? null
+                          : (v) {
+                            c.isNumberNotBelongsToBeneficiary.value =
+                                v ?? false;
+                            if (!(v ?? false)) {
+                              c.tecAltMobileNo.clear();
+                              c.tecAltMobileOtp.clear();
+                              c.altMobileOtpSent.value = false;
+                              c.altMobileOtpVerified.value = false;
+                            }
+                          },
                 ),
                 Text(
                   'This Number not belongs to beneficiary',
@@ -845,33 +933,32 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 8.h),
           if (c.altMobileOtpVerified.value)
             _verifiedBanner('Alternate number verified')
-          else
-            ...[
+          else ...[
+            AppButtonWithIcon(
+              title: 'Verify Alternate Number',
+              mHeight: 40,
+              mWidth: double.infinity,
+              onTap: () => _showWhatsAppDialog(context, isAlternate: true),
+            ),
+            if (c.altMobileOtpSent.value) ...[
+              SizedBox(height: 8.h),
+              AppTextField(
+                controller: c.tecAltMobileOtp,
+                label: _label('Enter OTP *'),
+                hint: '5-digit OTP',
+                textInputType: TextInputType.number,
+                maxLength: 5,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              SizedBox(height: 8.h),
               AppButtonWithIcon(
-                title: 'Verify Alternate Number',
+                title: 'Verify OTP',
                 mHeight: 40,
                 mWidth: double.infinity,
-                onTap: () => _showWhatsAppDialog(context, isAlternate: true),
+                onTap: () => c.verifyAltMobileOtp(),
               ),
-              if (c.altMobileOtpSent.value) ...[
-                SizedBox(height: 8.h),
-                AppTextField(
-                  controller: c.tecAltMobileOtp,
-                  label: _label('Enter OTP *'),
-                  hint: '5-digit OTP',
-                  textInputType: TextInputType.number,
-                  maxLength: 5,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                SizedBox(height: 8.h),
-                AppButtonWithIcon(
-                  title: 'Verify OTP',
-                  mHeight: 40,
-                  mWidth: double.infinity,
-                  onTap: () => c.verifyAltMobileOtp(),
-                ),
-              ],
             ],
+          ],
           SizedBox(height: 10.h),
           // "Alternate mobile belongs to" radios
           Text(
@@ -922,13 +1009,13 @@ class _D2DPatientRegistrationScreenState
                 label: _label('Identity Card Type *'),
                 readOnly: true,
                 suffixIcon:
-                c.isLoadingIdentity.value
-                    ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ).paddingOnly(right: 8.w)
-                    : const Icon(Icons.arrow_drop_down),
+                    c.isLoadingIdentity.value
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ).paddingOnly(right: 8.w)
+                        : const Icon(Icons.arrow_drop_down),
               ),
             ),
           ),
@@ -944,11 +1031,11 @@ class _D2DPatientRegistrationScreenState
             builder: (_) {
               final isAadhaar = c.isAadhaarMode;
               final sectionTitle =
-              isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
+                  isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
               final fieldLabel =
-              isAadhaar
-                  ? 'Aadhaar Number *'
-                  : '${c.selectedIdentityName.value} Number *';
+                  isAadhaar
+                      ? 'Aadhaar Number *'
+                      : '${c.selectedIdentityName.value} Number *';
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -958,26 +1045,26 @@ class _D2DPatientRegistrationScreenState
                     controller: c.tecAadhaarNo,
                     label: _label(fieldLabel),
                     textInputType:
-                    isAadhaar ? TextInputType.number : TextInputType.text,
+                        isAadhaar ? TextInputType.number : TextInputType.text,
                     maxLength: c.identityMaxLength,
                     // isDependent=No → disabled; isDependent=Yes → enabled
                     readOnly: _isNo,
                     inputFormatters:
-                    isAadhaar
-                        ? [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(12),
-                    ]
-                        : [
-                      ..._kUpper,
-                      LengthLimitingTextInputFormatter(
-                        c.identityMaxLength,
-                      ),
-                    ],
+                        isAadhaar
+                            ? [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(12),
+                            ]
+                            : [
+                              ..._kUpper,
+                              LengthLimitingTextInputFormatter(
+                                c.identityMaxLength,
+                              ),
+                            ],
                     textCapitalization:
-                    isAadhaar
-                        ? TextCapitalization.none
-                        : TextCapitalization.characters,
+                        isAadhaar
+                            ? TextCapitalization.none
+                            : TextCapitalization.characters,
                     prefixIcon: const Icon(
                       Icons.credit_card_rounded,
                       color: kPrimaryColor,
@@ -1005,23 +1092,23 @@ class _D2DPatientRegistrationScreenState
                 // isDependent=Yes → editable via date picker (relation required first)
                 readOnly: _isNo,
                 onTap:
-                _isNo
-                    ? null
-                    : () {
-                  if (_isYes && c.selectedRelation.value == null) {
-                    ToastManager.showAlertDialog(
-                      context,
-                      'Please select relation first',
-                          () =>
-                          Navigator.of(
-                            context,
-                            rootNavigator: true,
-                          ).pop(),
-                    );
-                    return;
-                  }
-                  _pickDate(context, c.tecDob, c.onDobChanged);
-                },
+                    _isNo
+                        ? null
+                        : () {
+                          if (_isYes && c.selectedRelation.value == null) {
+                            ToastManager.showAlertDialog(
+                              context,
+                              'Please select relation first',
+                              () =>
+                                  Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  ).pop(),
+                            );
+                            return;
+                          }
+                          _pickDate(context, c.tecDob, c.onDobChanged);
+                        },
                 prefixIcon: const Icon(
                   Icons.cake_rounded,
                   color: kPrimaryColor,
@@ -1165,21 +1252,21 @@ class _D2DPatientRegistrationScreenState
                   label: _label('District'),
                   readOnly: true,
                   onTap:
-                  (_hasData && !c.isDistrictLocked.value)
-                      ? () => _showDistrictPicker(context)
-                      : null,
+                      (_hasData && !c.isDistrictLocked.value)
+                          ? () => _showDistrictPicker(context)
+                          : null,
                   prefixIcon: const Icon(
                     Icons.map_rounded,
                     color: kPrimaryColor,
                     size: 18,
                   ).paddingOnly(left: 6.w),
                   suffixIcon:
-                  (_hasData && !c.isDistrictLocked.value)
-                      ? const Icon(
-                    Icons.arrow_drop_down,
-                    color: kPrimaryColor,
-                  )
-                      : null,
+                      (_hasData && !c.isDistrictLocked.value)
+                          ? const Icon(
+                            Icons.arrow_drop_down,
+                            color: kPrimaryColor,
+                          )
+                          : null,
                 ),
               ),
               SizedBox(width: 8.w),
@@ -1189,21 +1276,21 @@ class _D2DPatientRegistrationScreenState
                   label: _label('Taluka'),
                   readOnly: true,
                   onTap:
-                  (_hasData && !c.isTalukaLocked.value)
-                      ? () => _showTalukaPicker(context)
-                      : null,
+                      (_hasData && !c.isTalukaLocked.value)
+                          ? () => _showTalukaPicker(context)
+                          : null,
                   prefixIcon: const Icon(
                     Icons.location_on_rounded,
                     color: kPrimaryColor,
                     size: 18,
                   ).paddingOnly(left: 6.w),
                   suffixIcon:
-                  (_hasData && !c.isTalukaLocked.value)
-                      ? const Icon(
-                    Icons.arrow_drop_down,
-                    color: kPrimaryColor,
-                  )
-                      : null,
+                      (_hasData && !c.isTalukaLocked.value)
+                          ? const Icon(
+                            Icons.arrow_drop_down,
+                            color: kPrimaryColor,
+                          )
+                          : null,
                 ),
               ),
             ],
@@ -1283,7 +1370,8 @@ class _D2DPatientRegistrationScreenState
                     //   ),
                     // ),
                     CommonText(
-                      text: 'Turn ON to enable face detection; patient photo required',
+                      text:
+                          'Turn ON to enable face detection; patient photo required',
                       fontSize: 12.sp,
                       fontWeight: FontWeight.normal,
                       textColor: kLabelTextColor,
@@ -1358,7 +1446,7 @@ class _D2DPatientRegistrationScreenState
               ToastManager().showConfirmationDialog(
                 context: Get.context!,
                 message:
-                "Please confirm the beneficiary's details before submitting",
+                    "Please confirm the beneficiary's details before submitting",
                 didSelectYes: (bool p1) {
                   if (p1 == true) {
                     Navigator.pop(context);
@@ -1409,14 +1497,13 @@ class _D2DPatientRegistrationScreenState
     );
   }
 
-  Widget _label(String text) =>
-      CommonText(
-        text: text,
-        fontSize: 14.sp * 1.2,
-        fontWeight: FontWeight.w600,
-        textColor: kLabelTextColor,
-        textAlign: TextAlign.start,
-      );
+  Widget _label(String text) => CommonText(
+    text: text,
+    fontSize: 14.sp * 1.2,
+    fontWeight: FontWeight.w600,
+    textColor: kLabelTextColor,
+    textAlign: TextAlign.start,
+  );
 
   //     Text(
   //   text,
@@ -1494,8 +1581,7 @@ class _D2DPatientRegistrationScreenState
   }) {
     return GestureDetector(
       onTap:
-          () =>
-          _showStringPicker(
+          () => _showStringPicker(
             context,
             items,
             onSelected,
@@ -1513,12 +1599,13 @@ class _D2DPatientRegistrationScreenState
     );
   }
 
-  void _showStringPicker(BuildContext context,
-      List<String> items,
-      void Function(String) onSelected, {
-        String title = '',
-        String? selectedValue,
-      }) {
+  void _showStringPicker(
+    BuildContext context,
+    List<String> items,
+    void Function(String) onSelected, {
+    String title = '',
+    String? selectedValue,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1527,8 +1614,7 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) =>
-          SelectionBottomSheet<String, String>(
+          (_) => SelectionBottomSheet<String, String>(
             title: title,
             items: items,
             selectedValue: selectedValue,
@@ -1637,9 +1723,9 @@ class _D2DPatientRegistrationScreenState
                       selected: selectedMode == '2',
                       enabled: altNo.isNotEmpty,
                       onTap:
-                      altNo.isEmpty
-                          ? null
-                          : () => setDialogState(() => selectedMode = '2'),
+                          altNo.isEmpty
+                              ? null
+                              : () => setDialogState(() => selectedMode = '2'),
                     ),
                     SizedBox(height: 10.h),
 
@@ -1721,18 +1807,18 @@ class _D2DPatientRegistrationScreenState
               ),
             ),
             child:
-            selected
-                ? Center(
-              child: Container(
-                width: 10,
-                height: 10,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: kPrimaryColor,
-                ),
-              ),
-            )
-                : null,
+                selected
+                    ? Center(
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                    )
+                    : null,
           ),
           Expanded(
             child: RichText(
@@ -1770,7 +1856,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Could not load identity card types. Please try again.',
-            () => Navigator.of(context, rootNavigator: true).pop(),
+        () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1782,8 +1868,7 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) =>
-          SelectionBottomSheet(
+          (_) => SelectionBottomSheet(
             title: 'Select Identity Card',
             items: c.identityList,
             selectedValue: c.selectedIdentityId.value,
@@ -1810,7 +1895,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Could not load district list. Please try again.',
-            () => Navigator.of(context, rootNavigator: true).pop(),
+        () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1822,8 +1907,7 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) =>
-          SelectionBottomSheet(
+          (_) => SelectionBottomSheet(
             title: 'Select District',
             items: c.regDistrictList,
             selectedValue: c.tecDistrict.text,
@@ -1847,7 +1931,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Could not load taluka list. Please select district first.',
-            () => Navigator.of(context, rootNavigator: true).pop(),
+        () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1859,8 +1943,7 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) =>
-          SelectionBottomSheet(
+          (_) => SelectionBottomSheet(
             title: 'Select Taluka',
             items: c.regTalukaList,
             selectedValue: c.tecTaluka.text,
@@ -1887,7 +1970,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Please select marital status and gender first',
-            () => Navigator.of(context, rootNavigator: true).pop(),
+        () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1895,7 +1978,7 @@ class _D2DPatientRegistrationScreenState
       ToastManager.showAlertDialog(
         context,
         'Please select marital status and gender first',
-            () => Navigator.of(context, rootNavigator: true).pop(),
+        () => Navigator.of(context, rootNavigator: true).pop(),
       );
       return;
     }
@@ -1907,8 +1990,7 @@ class _D2DPatientRegistrationScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) =>
-          SelectionBottomSheet<RelationOutput, int?>(
+          (_) => SelectionBottomSheet<RelationOutput, int?>(
             title: 'Select Relation',
             items: c.relationList,
             selectedValue: c.selectedRelation.value?.relId,
@@ -1967,9 +2049,9 @@ class _D2DPatientRegistrationScreenState
             padding: EdgeInsets.symmetric(vertical: 9.h),
             decoration: BoxDecoration(
               color:
-              selected
-                  ? effectiveColor.withValues(alpha: 0.08)
-                  : kWhiteColor,
+                  selected
+                      ? effectiveColor.withValues(alpha: 0.08)
+                      : kWhiteColor,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: selected ? effectiveColor : kTextFieldBorder,
@@ -2038,46 +2120,48 @@ class _PhotoTile extends StatelessWidget {
           ),
         ),
         child:
-        hasImage
-            ? ClipRRect(
-          borderRadius: BorderRadius.circular(7),
-          child:
-          localPath.isNotEmpty
-              ? Image.file(File(localPath), fit: BoxFit.cover)
-              : Image.network(url!, fit: BoxFit.cover),
-        )
-            : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: kPrimaryColor, size: 28),
-            SizedBox(height: 6.h),
-            // Text(
-            //   label,
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(
-            //     fontFamily: FontConstants.interFonts,
-            //     fontSize: 11.sp,
-            //     color: kLabelTextColor,
-            //   ),
-            // ),
-            CommonText(text: label,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.normal,
-                textColor: kLabelTextColor,
-                textAlign: TextAlign.center),
-            if (required) ...[
-              SizedBox(height: 2.h),
-              Text(
-                '(Required)',
-                style: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: 10.sp,
-                  color: Colors.red,
+            hasImage
+                ? ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child:
+                      localPath.isNotEmpty
+                          ? Image.file(File(localPath), fit: BoxFit.cover)
+                          : Image.network(url!, fit: BoxFit.cover),
+                )
+                : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, color: kPrimaryColor, size: 28),
+                    SizedBox(height: 6.h),
+                    // Text(
+                    //   label,
+                    //   textAlign: TextAlign.center,
+                    //   style: TextStyle(
+                    //     fontFamily: FontConstants.interFonts,
+                    //     fontSize: 11.sp,
+                    //     color: kLabelTextColor,
+                    //   ),
+                    // ),
+                    CommonText(
+                      text: label,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.normal,
+                      textColor: kLabelTextColor,
+                      textAlign: TextAlign.center,
+                    ),
+                    if (required) ...[
+                      SizedBox(height: 2.h),
+                      Text(
+                        '(Required)',
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          fontSize: 10.sp,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }

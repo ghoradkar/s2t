@@ -3,9 +3,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
+import 'package:pointycastle/export.dart' as pc;
+import 'package:pointycastle/asn1.dart' as asn1;
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
@@ -401,6 +405,494 @@ class D2DPatientRegistrationRepository {
     }
     return {'regdId': '0', 'count': '0'};
   }
+
+  // ────────────────────────────────────────────────────────
+  // ABHA APIs — environment-aware (matches native isBeta flag)
+  // ────────────────────────────────────────────────────────
+
+  bool get _isLive => APIManager().apiMode == APIMode.Live;
+
+  // Session base URL
+  //   Beta  → https://dev.abdm.gov.in/
+  //   Live  → https://abha.abdm.gov.in/
+  String get _abhaSessionUrl => _isLive
+      ? 'https://abha.abdm.gov.in/gateway/v0.5/sessions'
+      : 'https://dev.abdm.gov.in/gateway/v0.5/sessions';
+
+  // ABDM enrollment/profile API base
+  //   Beta  → https://abhasbx.abdm.gov.in/abha/api/v3/
+  //   Live  → https://abha.abdm.gov.in/api/abha/v3/
+  String get _abdmBase => _isLive
+      ? 'https://abha.abdm.gov.in/api/abha/v3/'
+      : 'https://abhasbx.abdm.gov.in/abha/api/v3/';
+
+  // Client credentials
+  String get _abhaClientId => _isLive ? 'HIL_001' : 'SBXID_009192';
+  String get _abhaClientSecret => _isLive
+      ? '8c972582-9723-4c1b-9c25-bb880eb65685'
+      : 'ea0082ef-fcd6-44d9-aa8a-5530b1edfbd4';
+  String get _abhaCmId => _isLive ? 'abdm' : 'sbx';
+
+  // ABDM requires UTC timestamp; native uses SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+  // with TimeZone.getTimeZone("UTC") — Android JDK outputs "Z" suffix for UTC zero-offset
+  String _abdmTimestamp() {
+    final now = DateTime.now().toUtc();
+    final ms = now.millisecond.toString().padLeft(3, '0');
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}-'
+        '${now.day.toString().padLeft(2, '0')}T'
+        '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}:'
+        '${now.second.toString().padLeft(2, '0')}.'
+        '${ms}Z';
+  }
+
+  /// RSA-OAEP with SHA-1 encryption; returns base64-encoded result.
+  String _rsaEncryptBase64(String plainText, String base64PublicKey) {
+    // Decode DER SubjectPublicKeyInfo
+    final keyBytes = base64Decode(base64PublicKey);
+    final parser = asn1.ASN1Parser(keyBytes);
+    final seq = parser.nextObject() as asn1.ASN1Sequence;
+    final bitStr = seq.elements![1] as asn1.ASN1BitString;
+    // stringValues contains the DER bytes of the RSAPublicKey inside the BIT STRING
+    final innerBytes = Uint8List.fromList(bitStr.stringValues!);
+    final innerParser = asn1.ASN1Parser(innerBytes);
+    final innerSeq = innerParser.nextObject() as asn1.ASN1Sequence;
+    final modulus = (innerSeq.elements![0] as asn1.ASN1Integer).integer!;
+    final exponent = (innerSeq.elements![1] as asn1.ASN1Integer).integer!;
+
+    final publicKey = pc.RSAPublicKey(modulus, exponent);
+    final cipher = pc.OAEPEncoding.withSHA1(pc.RSAEngine())
+      ..init(true, pc.PublicKeyParameter<pc.RSAPublicKey>(publicKey));
+
+    final encrypted =
+        cipher.process(Uint8List.fromList(utf8.encode(plainText)));
+    return base64Encode(encrypted);
+  }
+
+  Future<String?> createAbhaSession() async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      // ignore: avoid_print
+      print('[createAbhaSession] url=$_abhaSessionUrl  clientId=$_abhaClientId  cmId=$_abhaCmId');
+      final response = await ioClient.post(
+        Uri.parse(_abhaSessionUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'TIMESTAMP': _abdmTimestamp(),
+          'REQUEST-ID': _uuid(),
+          'X-CM-ID': _abhaCmId,
+        },
+        body: jsonEncode({
+          'clientId': _abhaClientId,
+          'clientSecret': _abhaClientSecret,
+          'grantType': 'client_credentials',
+        }),
+      );
+      // ignore: avoid_print
+      print('[createAbhaSession] status=${response.statusCode}  body=${response.body}');
+      if (response.statusCode == 200) {
+        final j = jsonDecode(response.body);
+        return j['accessToken'] as String?;
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('[createAbhaSession] exception: $e');
+    } finally {
+      ioClient.close();
+    }
+    return null;
+  }
+
+  Future<String?> getAbhaPublicCertificate(String accessToken) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final url = '${_abdmBase}profile/public/certificate';
+      final ts = _abdmTimestamp();
+      // ignore: avoid_print
+      print('[getAbhaPublicCertificate] GET $url  TIMESTAMP=$ts');
+      final response = await ioClient.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': ts,
+          'REQUEST-ID': _uuid(),
+        },
+      );
+      // ignore: avoid_print
+      print('[getAbhaPublicCertificate] status=${response.statusCode}  body=${response.body}');
+      if (response.statusCode == 200) {
+        final j = jsonDecode(response.body);
+        return j['publicKey'] as String?;
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getAbhaPublicCertificate] error: $e');
+    } finally {
+      ioClient.close();
+    }
+    return null;
+  }
+
+  /// Returns `{'txnId': ..., 'message': ...}` on success, or null on failure.
+  Future<Map<String, dynamic>?> generateAadhaarOtp({
+    required String accessToken,
+    required String publicKey,
+    required String aadhaarNumber,
+    String txnId = '',
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final encrypted = _rsaEncryptBase64(aadhaarNumber, publicKey);
+      final response = await ioClient.post(
+        Uri.parse('${_abdmBase}enrollment/request/otp'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': _abdmTimestamp(),
+          'REQUEST-ID': _uuid(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'txnId': txnId,
+          'scope': ['abha-enrol'],
+          'loginHint': 'aadhaar',
+          'loginId': encrypted,
+          'otpSystem': 'aadhaar',
+        }),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {'error': response.body};
+    } catch (e) {
+      return {'error': e.toString()};
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Enrols by Aadhaar OTP. Returns parsed JSON or `{'error': ...}`.
+  Future<Map<String, dynamic>?> enrolByAadhaarOtp({
+    required String accessToken,
+    required String publicKey,
+    required String txnId,
+    required String otpValue,
+    required String mobile,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final encOtp = _rsaEncryptBase64(otpValue, publicKey);
+      final ts = _abdmTimestamp();
+      final response = await ioClient.post(
+        Uri.parse('${_abdmBase}enrollment/enrol/byAadhaar'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': ts,
+          'REQUEST-ID': _uuid(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'authData': {
+            'authMethods': ['otp'],
+            'otp': {
+              'txnId': txnId,
+              'otpValue': encOtp,
+              'mobile': mobile,
+              'timeStamp': ts,
+            },
+          },
+          'consent': {'code': 'abha-enrollment', 'version': '1.4'},
+        }),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {'error': response.body};
+    } catch (e) {
+      return {'error': e.toString()};
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Sends OTP to mobile for verification.
+  Future<Map<String, dynamic>?> sendMobileOtpForAbha({
+    required String accessToken,
+    required String publicKey,
+    required String txnId,
+    required String mobile,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final encMobile = _rsaEncryptBase64(mobile, publicKey);
+      final response = await ioClient.post(
+        Uri.parse('${_abdmBase}enrollment/request/otp'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': _abdmTimestamp(),
+          'REQUEST-ID': _uuid(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'txnId': txnId,
+          'scope': ['abha-enrol', 'mobile-verify'],
+          'loginHint': 'mobile',
+          'loginId': encMobile,
+          'otpSystem': 'abdm',
+        }),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {'error': response.body};
+    } catch (e) {
+      return {'error': e.toString()};
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Verifies mobile OTP for ABHA enrolment.
+  Future<Map<String, dynamic>?> verifyMobileOtpForAbha({
+    required String accessToken,
+    required String publicKey,
+    required String txnId,
+    required String otpValue,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final encOtp = _rsaEncryptBase64(otpValue, publicKey);
+      final ts = _abdmTimestamp();
+      final response = await ioClient.post(
+        Uri.parse('${_abdmBase}enrollment/auth/byAbdm'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': ts,
+          'REQUEST-ID': _uuid(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'scope': ['abha-enrol', 'mobile-verify'],
+          'authData': {
+            'authMethods': ['otp'],
+            'otp': {
+              'timeStamp': ts,
+              'txnId': txnId,
+              'otpValue': encOtp,
+            },
+          },
+        }),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {'error': response.body};
+    } catch (e) {
+      return {'error': e.toString()};
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Saves ABHA details to own server. Returns true on success.
+  Future<bool> insertAbhaRegistration({
+    required Map<String, dynamic> payload,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final url = Uri.parse(
+        '${APIManager.kD2DBaseURL}${APIConstants.kInsertAbhaRegistration}',
+      );
+      final response = await ioClient.post(
+        url,
+        body: {'AbhaRegistrationJSON': jsonEncode(payload)},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = jsonDecode(response.body);
+      return decoded['status']?.toString().toLowerCase() == 'success';
+    } catch (e) {
+      // ignore: avoid_print
+      print('[insertAbhaRegistration] error: $e');
+      return false;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Returns list of ABHA address suggestions.
+  Future<List<String>> getAbhaAddressSuggestions({
+    required String accessToken,
+    required String txnId,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(
+        Uri.parse('${_abdmBase}enrollment/enrol/suggestion'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': _abdmTimestamp(),
+          'REQUEST-ID': _uuid(),
+          'Transaction_Id': txnId,
+        },
+      );
+      if (response.statusCode == 200) {
+        final j = jsonDecode(response.body);
+        final arr = j['abhaAddressList'];
+        if (arr is List) return arr.map((e) => e.toString()).toList();
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getAbhaAddressSuggestions] error: $e');
+    } finally {
+      ioClient.close();
+    }
+    return [];
+  }
+
+  /// Checks if an ABHA address is available.
+  /// Returns true = available, false = taken, null = error.
+  Future<bool?> checkAbhaAddressAvailability({
+    required String accessToken,
+    required String address,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final uri = Uri.parse(
+          '${_abdmBase}enrollment/enrol/abha-address/checkAvailability')
+          .replace(queryParameters: {'abhaAddress': address});
+      final response = await ioClient.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'REQUEST-ID': _uuid(),
+          'TIMESTAMP': _abdmTimestamp(),
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        // API may return {"status":"AVAILABLE"} or {"isAvailable":true}
+        final status = body['status']?.toString().toUpperCase() ?? '';
+        final isAvailable = body['isAvailable'];
+        if (status == 'AVAILABLE') return true;
+        if (status == 'UNAVAILABLE' || status == 'NOT AVAILABLE') return false;
+        if (isAvailable is bool) return isAvailable;
+        return true; // 200 with no conflict field = available
+      }
+      if (response.statusCode == 409 || response.statusCode == 422) {
+        return false; // conflict = taken
+      }
+      return null;
+    } catch (e) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Creates an ABHA address. Returns parsed JSON or `{'error': ...}`.
+  Future<Map<String, dynamic>?> createAbhaAddress({
+    required String accessToken,
+    required String txnId,
+    required String address,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final reqId = _uuid();
+      final ts = _abdmTimestamp();
+      final response = await ioClient.post(
+        Uri.parse('${_abdmBase}enrollment/enrol/abha-address'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'REQUEST-ID': reqId,
+          'TIMESTAMP': ts,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'abhaAddress': address,
+          'txnId': txnId,
+          'preferred': 1,
+        }),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {'error': response.body};
+    } catch (e) {
+      return {'error': e.toString()};
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Downloads the ABHA card as a PNG image.
+  /// Returns raw bytes on success, null on failure.
+  ///
+  /// ABDM v3 sandbox uses the enrollment t-token (authToken) as:
+  ///   Authorization: Bearer {authToken}   (attempt 1)
+  ///   Authorization: Bearer {accessToken} + X-Token: Bearer {authToken} (attempt 2)
+  Future<Uint8List?> downloadAbhaCard({
+    required String accessToken,
+    required String authToken,
+  }) async {
+    final uri = Uri.parse('${_abdmBase}enrollment/enrol/abha-card');
+
+    // Attempt 1 — t-token as bearer (most common for ABDM v3 profile APIs)
+    {
+      final ioClient = _api.getInstanceOfIoClient();
+      try {
+        final response = await ioClient.get(uri, headers: {
+          'Authorization': 'Bearer $authToken',
+          'REQUEST-ID': _uuid(),
+          'TIMESTAMP': _abdmTimestamp(),
+          'Accept': 'image/png',
+        });
+        if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
+          return response.bodyBytes;
+        }
+      } catch (_) {
+        // fall through to attempt 2
+      } finally {
+        ioClient.close();
+      }
+    }
+
+    // Attempt 2 — session token as bearer + t-token in X-Token header
+    {
+      final ioClient = _api.getInstanceOfIoClient();
+      try {
+        final response = await ioClient.get(uri, headers: {
+          'Authorization': 'Bearer $accessToken',
+          'X-Token': 'Bearer $authToken',
+          'REQUEST-ID': _uuid(),
+          'TIMESTAMP': _abdmTimestamp(),
+          'Accept': 'image/png',
+        });
+        if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
+          return response.bodyBytes;
+        }
+        return null;
+      } catch (_) {
+        return null;
+      } finally {
+        ioClient.close();
+      }
+    }
+  }
+
+  String _uuid() {
+    // Simple UUID v4 generation without external package
+    final random = List.generate(16, (_) => (DateTime.now().microsecondsSinceEpoch % 256));
+    random[6] = (random[6] & 0x0f) | 0x40;
+    random[8] = (random[8] & 0x3f) | 0x80;
+    String hex(int n) => n.toRadixString(16).padLeft(2, '0');
+    return '${hex(random[0])}${hex(random[1])}${hex(random[2])}${hex(random[3])}-'
+        '${hex(random[4])}${hex(random[5])}-'
+        '${hex(random[6])}${hex(random[7])}-'
+        '${hex(random[8])}${hex(random[9])}-'
+        '${hex(random[10])}${hex(random[11])}${hex(random[12])}${hex(random[13])}${hex(random[14])}${hex(random[15])}';
+  }
+
+  // ────────────────────────────────────────────────────────
 
   Future<D2DRegistrationResponse?> saveD2DRegistration({
     required Map<String, String> fields,
