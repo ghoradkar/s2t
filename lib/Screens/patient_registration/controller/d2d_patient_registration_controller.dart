@@ -45,6 +45,11 @@ class D2DPatientRegistrationController extends GetxController {
   final isDependent = false.obs;
   final workerMode = 'board'.obs;
 
+  /// Board/beneficiary name and gender stored when worker-info API data loads.
+  /// Used to detect mismatch when ABHA data is filled back.
+  String benefBoardName = '';
+  String benefBoardGender = '';
+
   final tecWorkerRegNo = TextEditingController();
   final tecFullName = TextEditingController();
   final tecFirstName = TextEditingController();
@@ -86,6 +91,7 @@ class D2DPatientRegistrationController extends GetxController {
   final isGenderLockedByRelation = false.obs;
 
   final abhaVerified = false.obs;
+  final abhaFormLocked = false.obs; // true after successful ABHA-creation fill
   final abhaOtpSent = false.obs;
   final abhaOtpTimer = 120.obs;
   int abhaResendCount = 0;
@@ -213,6 +219,7 @@ class D2DPatientRegistrationController extends GetxController {
     registrationType.value = type;
     if (type == 'without_abha') {
       abhaVerified.value = false;
+      abhaFormLocked.value = false;
       abhaOtpSent.value = false;
       abhaResendCount = 0;
       _abhaTimer?.cancel();
@@ -231,6 +238,129 @@ class D2DPatientRegistrationController extends GetxController {
     }
   }
 
+  /// Called from AbhaSuccessScreen "Go-To Registration" to pre-fill the form.
+  ///
+  /// [profile]     = healthCard['ABHAProfile'] from the enrollment response.
+  /// [abhaAddress] = the ABHA address just created (e.g. "john.doe@abdm").
+  /// Returns a mismatch message string if board/ABHA data don't match,
+  /// null if everything is fine and form was pre-filled successfully.
+  String? fillFromAbhaCreation({
+    required Map<String, dynamic> profile,
+    required String abhaAddress,
+  }) {
+    // ── Resolve ABHA name & gender from profile ───────────────────────
+    final firstName = ((profile['firstName'] as String?) ?? '').trim();
+    final middleName = ((profile['middleName'] as String?) ?? '').trim();
+    final lastName = ((profile['lastName'] as String?) ?? '').trim();
+    final fullFromApi = ((profile['name'] as String?) ?? '').trim();
+    final abhaFullName = fullFromApi.isNotEmpty
+        ? fullFromApi
+        : [firstName, middleName, lastName]
+            .where((s) => s.isNotEmpty)
+            .join(' ');
+
+    final genderRaw =
+        ((profile['gender'] as String?) ?? '').trim().toUpperCase();
+    final abhaGender = (genderRaw == 'M' || genderRaw == 'MALE')
+        ? 'Male'
+        : (genderRaw == 'F' || genderRaw == 'FEMALE')
+            ? 'Female'
+            : genderRaw.isNotEmpty
+                ? 'Other'
+                : '';
+
+    // ── Board vs ABHA mismatch check (mirrors native logic) ───────────
+    final boardName = benefBoardName.trim();
+    if (!abhaFullName.toLowerCase().contains(boardName.toLowerCase()) ||
+        (boardName.isEmpty && abhaFullName.isNotEmpty)) {
+      // Return mismatch message — caller must show dialog AFTER navigating back
+      final boardGender = benefBoardGender.isNotEmpty ? benefBoardGender : '—';
+      final abhaGenderDisplay = abhaGender.isNotEmpty ? abhaGender : '—';
+      return 'ABHA and Board details does not match\n\n'
+          'Details:\n'
+          'Board Name: $boardName\n'
+          'ABHA Name: $abhaFullName\n'
+          'Board Gender: $boardGender\n'
+          'ABHA Gender: $abhaGenderDisplay';
+    }
+
+    // ── Switch to "With ABHA" and mark as verified ──────────────────
+    registrationType.value = 'with_abha';
+    abhaVerified.value = true;
+
+    // ── Name ─────────────────────────────────────────────────────────
+    tecFirstName.text = firstName;
+    tecMiddleName.text = middleName;
+    tecLastName.text = lastName;
+    if (fullFromApi.isNotEmpty) {
+      tecFullName.text = fullFromApi;
+    } else {
+      onNamePartsChanged();
+    }
+
+    // ── Mobile ───────────────────────────────────────────────────────
+    final mobile = ((profile['mobile'] as String?) ?? '').trim();
+    if (mobile.isNotEmpty) tecMobileNo.text = mobile;
+
+    // ── DOB & Age ────────────────────────────────────────────────────
+    final dobRaw = ((profile['dob'] as String?) ??
+                    (profile['dateOfBirth'] as String?) ?? '').trim();
+    if (dobRaw.isNotEmpty) {
+      tecDob.text = _normalizeDate(dobRaw);
+      try {
+        final parts = dobRaw.split(RegExp(r'[-/]'));
+        if (parts.length == 3) {
+          final year = int.parse(parts[0].length == 4 ? parts[0] : parts[2]);
+          final age = DateTime.now().year - year;
+          if (age > 0) tecAge.text = age.toString();
+        }
+      } catch (_) {}
+    }
+
+    // ── Gender ────────────────────────────────────────────────────────
+    if (genderRaw == 'M' || genderRaw == 'MALE') {
+      selectedGender.value = 'M';
+    } else if (genderRaw == 'F' || genderRaw == 'FEMALE') {
+      selectedGender.value = 'F';
+    } else if (genderRaw.isNotEmpty) {
+      selectedGender.value = 'O';
+    }
+
+    // ── ABHA Number ───────────────────────────────────────────────────
+    final abhaNumber = ((profile['ABHANumber'] as String?) ??
+                        (profile['healthId'] as String?) ?? '').trim();
+    if (abhaNumber.isNotEmpty) tecAbhaNumber.text = abhaNumber;
+
+    // ── ABHA Address ──────────────────────────────────────────────────
+    tecAbhaAddress.text = abhaAddress;
+
+    // ── Permanent Address (native: address + "," + pincode) ───────────
+    final addr = ((profile['address'] as String?) ?? '').trim();
+    final pin  = ((profile['pincode'] as String?) ?? '').trim();
+    if (addr.isNotEmpty) {
+      tecPermAddr.text = pin.isNotEmpty ? '$addr,$pin' : addr;
+    }
+
+    // ── Pincode ───────────────────────────────────────────────────────
+    if (pin.isNotEmpty) tecPincode.text = pin;
+
+    // ── District (native: set from districtName, then disabled) ───────
+    final district = ((profile['districtName'] as String?) ?? '').trim();
+    if (district.isNotEmpty) tecDistrict.text = district;
+
+    // ── Current Address (native: explicitly cleared) ──────────────────
+    tecCurrentAddr.clear();
+    // Local Address — native does NOT set it from ABHA (left for user entry)
+
+    // ── Lock internal name snapshot (used by submit validation) ───────
+    _abhaNameAtVerify = tecFullName.text.trim();
+    _abhaGenderAtVerify = selectedGender.value;
+
+    // ── Lock form — mirrors native disableABHAFormAfterFill + disableIfFilled
+    abhaFormLocked.value = true;
+    return null;
+  }
+
   void clearAbhaSearch() {
     abhaSearchMode.value = 'find';
     abhaValidateMode.value = 'mobile';
@@ -241,10 +371,48 @@ class D2DPatientRegistrationController extends GetxController {
     tecAbhaOtp.clear();
     abhaOtpSent.value = false;
     abhaVerified.value = false;
+    abhaFormLocked.value = false;
     abhaResendCount = 0;
     abhaOtpAttempts.value = 0;
     _abhaTimer?.cancel();
     abhaOtpTimer.value = 120;
+  }
+
+  /// Called by the Clear button shown in the verified banner after ABHA-creation
+  /// fill. Mirrors native: clearABHA() + clearPatientDetails(3) + enableABHAForm.
+  ///
+  /// clearFlag=3 in native means: clear everything EXCEPT the name fields.
+  void clearAfterAbhaFill() {
+    // ── Reset ABHA section (mirrors clearABHA + enableABHAFormAfterFill) ──
+    clearAbhaSearch();          // resets abhaFormLocked, abhaVerified, ABHA fields
+    abhaCreateMode.value = 'aadhaar_otp';
+
+    // ── Clear patient details — mirrors clearPatientDetails(3) ────────
+    // Name fields (first/middle/last/full) are intentionally NOT cleared
+    // (native clearPatientDetails with flag=3 skips edt_fname)
+
+    tecMobileNo.clear();
+    tecAadhaarNo.clear();
+    tecDob.clear();
+    tecAge.clear();
+    tecPermAddr.clear();
+    tecLocalAddr.clear();
+    tecCurrentAddr.clear();
+    tecPincode.clear();
+    tecRenewalDate.clear();
+    tecEducation.clear();
+
+    // Reset gender so user can re-select
+    selectedGender.value = '';
+    isGenderLockedByRelation.value = false;
+
+    // ── Reset OTP / verification state ───────────────────────────────
+    mobileOtpSent.value = false;
+    mobileOtpVerified.value = false;
+    altMobileOtpSent.value = false;
+    altMobileOtpVerified.value = false;
+    _abhaNameAtVerify = '';
+    _abhaGenderAtVerify = '';
   }
 
   void onDependentToggled(bool val) {
@@ -425,6 +593,7 @@ class D2DPatientRegistrationController extends GetxController {
     altMobileOtpSent.value = false;
     altMobileOtpVerified.value = false;
     abhaVerified.value = false;
+    abhaFormLocked.value = false;
     abhaOtpSent.value = false;
     abhaResendCount = 0;
     _abhaTimer?.cancel();
@@ -456,6 +625,8 @@ class D2DPatientRegistrationController extends GetxController {
     // Internal IDs
     _workerRegdId = '0';
     _beneficiaryCount = '0';
+    benefBoardName = '';
+    benefBoardGender = '';
 
     // Photos
     patientPhotoPath.value = '';
@@ -478,6 +649,8 @@ class D2DPatientRegistrationController extends GetxController {
       tecMiddleName.text = middleName;
       tecLastName.text = lastName;
       tecFullName.text = fullName;
+      // Store board name/gender for ABHA mismatch check
+      benefBoardName = fullName;
     } else {
       // Scenario 4 (Yes + Data):
       // Worker display cards at top show full name, age, gender
@@ -527,8 +700,10 @@ class D2DPatientRegistrationController extends GetxController {
       final genderStr = (data.gender ?? '').toLowerCase();
       if (genderStr.startsWith('m')) {
         selectedGender.value = 'M';
+        benefBoardGender = 'Male';
       } else if (genderStr.startsWith('f')) {
         selectedGender.value = 'F';
+        benefBoardGender = 'Female';
       }
     }
 

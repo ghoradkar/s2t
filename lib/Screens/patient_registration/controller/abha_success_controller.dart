@@ -3,11 +3,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 
 class AbhaSuccessController extends GetxController {
@@ -20,7 +22,7 @@ class AbhaSuccessController extends GetxController {
   Map<String, dynamic> healthCard = {};
 
   // ── State ────────────────────────────────────────────────────────
-  final cardBytes = Rxn<Uint8List>();   // null = loading, set = ready
+  final cardBytes = Rxn<Uint8List>(); // null = loading, set = ready
   final cardLoading = true.obs;
   final cardError = false.obs;
   final downloading = false.obs;
@@ -123,6 +125,60 @@ class AbhaSuccessController extends GetxController {
   }
 
   void onGoToRegistration() {
-    Get.until((route) => route.isFirst);
+    String? mismatchMessage;
+
+    try {
+      final regCtrl = Get.find<D2DPatientRegistrationController>();
+      final profile =
+          (healthCard['ABHAProfile'] as Map<String, dynamic>?) ?? {};
+      mismatchMessage = regCtrl.fillFromAbhaCreation(
+        profile: profile,
+        abhaAddress: abhaAddress,
+      );
+    } catch (_) {
+      // Registration controller not found — navigate anyway
+    }
+
+    // Navigate back first (stack: Home → PatientReg → AbhaSuccess)
+    final ctx = Get.context;
+    if (ctx != null) {
+      Navigator.pop(ctx);
+    }
+
+    // Show mismatch dialog on the registration screen after navigation settles
+    if (mismatchMessage != null) {
+      final msg = mismatchMessage;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ToastManager.showAlertDialog(ctx!, msg, () {
+          Get.back();
+          try {
+            Get.find<D2DPatientRegistrationController>().clearAbhaSearch();
+          } catch (_) {}
+        }, title: "Board and ABHA Details Mismatch");
+
+        // Get.dialog(
+        //   AlertDialog(
+        //     title: const Text(
+        //       'Board and ABHA Details Mismatch',
+        //       style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        //     ),
+        //     content: Text(msg),
+        //     actions: [
+        //       TextButton(
+        //         onPressed: () {
+        //           Get.back();
+        //           try {
+        //             Get.find<D2DPatientRegistrationController>()
+        //                 .clearAbhaSearch();
+        //           } catch (_) {}
+        //         },
+        //         child: const Text('OK'),
+        //       ),
+        //     ],
+        //   ),
+        //   barrierDismissible: false,
+        // );
+      });
+    }
   }
 }

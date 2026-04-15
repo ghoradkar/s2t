@@ -6,8 +6,6 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_success_screen.dart';
 
-enum _AvailStatus { notChecked, available, unavailable }
-
 class AbhaAddressCreationController extends GetxController {
   final _repo = D2DPatientRegistrationRepository();
 
@@ -27,14 +25,12 @@ class AbhaAddressCreationController extends GetxController {
 
   // ── State ───────────────────────────────────────────────────────
   final loading = true.obs;
-  final creating = false.obs;
   final suggestions = <String>[].obs;
   final errorMessage = ''.obs;
-  // notChecked → available / unavailable
-  final availabilityStatus = _AvailStatus.notChecked.obs;
-  bool get isAvailable => availabilityStatus.value == _AvailStatus.available;
-  bool get isUnavailable =>
-      availabilityStatus.value == _AvailStatus.unavailable;
+  /// true when the current address text passes format rules (or is a suggestion)
+  final formatValid = false.obs;
+  /// set to true when address was filled from a suggestion (skips length regex)
+  bool _fromSuggestion = false;
 
   // ── Profile helpers (read from healthCard['ABHAProfile']) ────────
   Map<String, dynamic> get _profile =>
@@ -88,8 +84,17 @@ class AbhaAddressCreationController extends GetxController {
 
   Future<void> _initSession() async {
     ToastManager.showLoader();
+    // ignore: avoid_print
+    print('[AbhaAddr] init: incoming accessToken.len=${accessToken.length}  authToken.len=${authToken.length}  txnId=$txnId');
     final token = await _repo.createAbhaSession();
-    if (token != null) accessToken = token;
+    if (token != null) {
+      accessToken = token;
+      // ignore: avoid_print
+      print('[AbhaAddr] session refreshed OK  new accessToken.len=${accessToken.length}');
+    } else {
+      // ignore: avoid_print
+      print('[AbhaAddr] session refresh FAILED — using incoming accessToken');
+    }
     await _loadSuggestions();
     loading.value = false;
     ToastManager.hideLoader();
@@ -114,17 +119,45 @@ class AbhaAddressCreationController extends GetxController {
   // ── Actions ──────────────────────────────────────────────────────
 
   void selectSuggestion(String s) {
+    _fromSuggestion = true;
     addressCtrl.text = s;
     errorMessage.value = '';
-    // ABDM-provided suggestions are already valid & available — skip check.
-    availabilityStatus.value = _AvailStatus.available;
+    formatValid.value = true; // API-provided suggestions are always valid
   }
 
-  void resetAvailability() {
-    availabilityStatus.value = _AvailStatus.notChecked;
+  /// Called on every keystroke — real-time format validation.
+  void onAddressChanged(String value) {
+    _fromSuggestion = false;
+    if (value.isEmpty) {
+      errorMessage.value = '';
+      formatValid.value = false;
+      return;
+    }
+    // Must start with a letter
+    if (!RegExp(r'^[a-zA-Z]').hasMatch(value)) {
+      errorMessage.value = 'Enter valid ABHA address';
+      formatValid.value = false;
+      return;
+    }
+    // Full check once 4+ chars typed
+    if (value.length >= 4) {
+      if (_isValidAbhaAddress(value)) {
+        errorMessage.value = '';
+        formatValid.value = true;
+      } else {
+        errorMessage.value = 'Enter valid ABHA address';
+        formatValid.value = false;
+      }
+      return;
+    }
+    // Still typing prefix (< 4 chars, starts with letter) — no message yet
     errorMessage.value = '';
+    formatValid.value = false;
   }
 
+  /// "Check Availability" button action.
+  /// ABDM v3 has no separate checkAvailability endpoint — the create API
+  /// itself validates and rejects taken addresses, so we call it directly.
   Future<void> onCheckAvailability() async {
     errorMessage.value = '';
     final address = addressCtrl.text.trim();
@@ -132,52 +165,20 @@ class AbhaAddressCreationController extends GetxController {
       errorMessage.value = 'Please enter an ABHA address';
       return;
     }
-    if (!_isValidAbhaAddress(address)) {
-      errorMessage.value =
-          'Invalid address: 4–14 characters, start with a letter, alphanumeric/dot/underscore only';
+    // Suggestions from ABDM may exceed the manual 14-char limit — skip regex.
+    if (!_fromSuggestion && !_isValidAbhaAddress(address)) {
+      errorMessage.value = 'Enter valid ABHA address';
       return;
     }
-    ToastManager.showLoader();
-    final available = await _repo.checkAbhaAddressAvailability(
-      accessToken: accessToken,
-      address: address,
-    );
-    ToastManager.hideLoader();
-    if (isClosed) return;
-    if (available == true) {
-      availabilityStatus.value = _AvailStatus.available;
-      errorMessage.value = '';
-    } else if (available == false) {
-      availabilityStatus.value = _AvailStatus.unavailable;
-      errorMessage.value =
-          'ABHA address already taken. Please choose another.';
-    } else {
-      availabilityStatus.value = _AvailStatus.notChecked;
-      errorMessage.value = 'Unable to check availability. Please try again.';
-    }
-  }
 
-  Future<void> onCreateAddress() async {
-    errorMessage.value = '';
-    final address = addressCtrl.text.trim();
-    if (address.isEmpty) {
-      errorMessage.value = 'Please enter an ABHA address';
-      return;
-    }
-    // Availability has already been confirmed (either via API check or
-    // suggestion selection), so no further format validation is needed.
-    if (availabilityStatus.value != _AvailStatus.available) {
-      errorMessage.value = 'Please check availability first';
-      return;
-    }
     ToastManager.showLoader();
     final result = await _repo.createAbhaAddress(
       accessToken: accessToken,
       txnId: txnId,
       address: address,
+      authToken: authToken,
     );
     ToastManager.hideLoader();
-    creating.value = false;
     if (isClosed) return;
 
     if (result != null && result['error'] == null) {
@@ -197,9 +198,18 @@ class AbhaAddressCreationController extends GetxController {
       });
     } else {
       final errBody = result?['error']?.toString() ?? '';
-      errorMessage.value = errBody.contains('Invalid ABHA Address')
-          ? 'Invalid ABHA Address'
-          : 'Unable to create ABHA address';
+      // ignore: avoid_print
+      print('[createAbhaAddress] error body: $errBody');
+      if (errBody.toLowerCase().contains('already') ||
+          errBody.contains('ABDM-1073') ||
+          errBody.contains('409')) {
+        errorMessage.value = 'ABHA address already taken. Please choose another.';
+      } else if (errBody.contains('Invalid ABHA Address') ||
+          errBody.contains('ABDM-1074')) {
+        errorMessage.value = 'Invalid ABHA address';
+      } else {
+        errorMessage.value = 'Unable to create ABHA address. Please try again.';
+      }
     }
   }
 

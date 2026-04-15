@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/abha_success_controller.dart';
@@ -48,12 +47,12 @@ class _AbhaSuccessScreenState extends State<AbhaSuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: mAppBar(
         scTitle: 'ABHA Registration',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => ctrl.onGoToRegistration(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
@@ -70,6 +69,7 @@ class _AbhaSuccessScreenState extends State<AbhaSuccessScreen> {
             SizedBox(height: 24.h),
           ],
         ),
+      ),
       ),
     );
   }
@@ -185,7 +185,7 @@ class _AbhaSuccessScreenState extends State<AbhaSuccessScreen> {
             child: Obx(() {
               if (ctrl.cardLoading.value) {
                 return SizedBox(
-                  height: 180.h,
+                  height: 220.h,
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -210,7 +210,7 @@ class _AbhaSuccessScreenState extends State<AbhaSuccessScreen> {
 
               if (ctrl.cardError.value || ctrl.cardBytes.value == null) {
                 return SizedBox(
-                  height: 120.h,
+                  height: 160.h,
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -247,7 +247,8 @@ class _AbhaSuccessScreenState extends State<AbhaSuccessScreen> {
                 child: Image.memory(
                   ctrl.cardBytes.value!,
                   width: double.infinity,
-                  fit: BoxFit.fitWidth,
+                  height: 220.h,
+                  fit: BoxFit.cover,
                 ),
               );
             }),

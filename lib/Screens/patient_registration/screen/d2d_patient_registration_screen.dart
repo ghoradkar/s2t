@@ -20,6 +20,7 @@ import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_creation_screen.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/abha_demographic_creation_screen.dart';
 
 /// Forces every character to uppercase as the user types.
 class _UpperCaseFormatter extends TextInputFormatter {
@@ -69,6 +70,9 @@ class _D2DPatientRegistrationScreenState
   bool get _isYes => c.isDependent.value;
 
   bool get _hasData => c.hasApiData.value;
+
+  /// True after a successful ABHA-creation fill — locks most form fields.
+  bool get _isLocked => c.abhaFormLocked.value;
 
   // Show local/current/landmark/district/taluka section when: isDependent OR hasApiData
   bool get _showExtAddr => _isYes || _hasData;
@@ -298,21 +302,41 @@ class _D2DPatientRegistrationScreenState
                           title: 'Create ABHA',
                           mHeight: 40,
                           mWidth: double.infinity,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AbhaCreationScreen(
-                                  campId: c.navCampId,
-                                  siteId: c.navSiteId,
-                                  distLgdCode: c.navDistLgd,
-                                  district: c.navCampLocation,
-                                  campType: c.navCampType,
-                                  empCode: c.empCode,
-                                  initialMobile: c.tecMobileNo.text.trim(),
+                          onTap: _isLocked ? null : () {
+                            if (_isYes && c.selectedRelation.value == null) {
+                              ToastManager.toast('Please select relation');
+                              return;
+                            }
+                            if (c.abhaCreateMode.value == 'demographic') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AbhaDemographicCreationScreen(
+                                    campId: c.navCampId,
+                                    siteId: c.navSiteId,
+                                    distLgdCode: c.navDistLgd,
+                                    district: c.navCampLocation,
+                                    campType: c.navCampType,
+                                    empCode: c.empCode,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AbhaCreationScreen(
+                                    campId: c.navCampId,
+                                    siteId: c.navSiteId,
+                                    distLgdCode: c.navDistLgd,
+                                    district: c.navCampLocation,
+                                    campType: c.navCampType,
+                                    empCode: c.empCode,
+                                    initialMobile: '',
+                                  ),
+                                ),
+                              );
+                            }
                           },
                         ),
                       ],
@@ -350,11 +374,11 @@ class _D2DPatientRegistrationScreenState
                 ),
                 SizedBox(height: 8.h),
 
-                // Controls disabled until Beneficiary Reg No API returns data
+                // Disabled until API data loads, OR after ABHA-creation fill
                 AbsorbPointer(
-                  absorbing: !_hasData,
+                  absorbing: !_hasData || _isLocked,
                   child: Opacity(
-                    opacity: _hasData ? 1.0 : 0.5,
+                    opacity: (_hasData && !_isLocked) ? 1.0 : 0.5,
                     child: Column(
                       children: [
                         // ── Find ABHA / Verify ABHA toggle ─────────────────────────────
@@ -652,17 +676,44 @@ class _D2DPatientRegistrationScreenState
                           ],
                         ],
 
-                        // ── Verified banner ────────────────────────────────────────────
-                        if (c.abhaVerified.value) ...[
-                          SizedBox(height: 10.h),
-                          _verifiedBanner('ABHA verified'),
-                        ],
-
                         SizedBox(height: 14.h),
                       ], // Column children
                     ), // Column
                   ), // Opacity
                 ), // AbsorbPointer
+
+                        // ── Verified banner (outside AbsorbPointer so Clear stays tappable) ──
+                        if (c.abhaVerified.value) ...[
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              Expanded(child: _verifiedBanner('ABHA verified')),
+                              if (_isLocked) ...[
+                                SizedBox(width: 8.w),
+                                OutlinedButton(
+                                  onPressed: c.clearAfterAbhaFill,
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: kPrimaryColor),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10.h,
+                                      horizontal: 14.w,
+                                    ),
+                                  ),
+                                  child: CommonText(
+                                    text: 'Clear',
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: kPrimaryColor,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
               ],
             ),
           ),
@@ -769,7 +820,7 @@ class _D2DPatientRegistrationScreenState
               child: AppTextField(
                 controller: c.tecFirstName,
                 label: _label('First Name *'),
-                readOnly: _isNo && _hasData,
+                readOnly: (_isNo && _hasData) || _isLocked,
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: _kUpper,
                 onChange: (_) => c.onNamePartsChanged(),
@@ -780,7 +831,7 @@ class _D2DPatientRegistrationScreenState
               child: AppTextField(
                 controller: c.tecMiddleName,
                 label: _label('Middle Name *'),
-                readOnly: _isNo && _hasData,
+                readOnly: (_isNo && _hasData) || _isLocked,
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: _kUpper,
                 onChange: (_) => c.onNamePartsChanged(),
@@ -793,7 +844,7 @@ class _D2DPatientRegistrationScreenState
         AppTextField(
           controller: c.tecLastName,
           label: _label('Last Name *'),
-          readOnly: _hasData,
+          readOnly: _hasData || _isLocked,
           textCapitalization: TextCapitalization.characters,
           inputFormatters: _kUpper,
           onChange: (_) => c.onNamePartsChanged(),
@@ -815,8 +866,8 @@ class _D2DPatientRegistrationScreenState
           label: _label('Contact Number *'),
           maxLength: 10,
           textInputType: TextInputType.phone,
-          // Disabled after either contact or alternate OTP is verified
-          readOnly: c.mobileOtpVerified.value || c.altMobileOtpVerified.value,
+          // Disabled after OTP verified OR after ABHA-creation fill
+          readOnly: c.mobileOtpVerified.value || c.altMobileOtpVerified.value || _isLocked,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           prefixIcon: const Icon(
             Icons.phone_rounded,
@@ -863,7 +914,7 @@ class _D2DPatientRegistrationScreenState
         // Disabled once any OTP is verified
         GestureDetector(
           onTap:
-              c.mobileOtpVerified.value || c.altMobileOtpVerified.value
+              c.mobileOtpVerified.value || c.altMobileOtpVerified.value || _isLocked
                   ? null
                   : () {
                     c.isNumberNotBelongsToBeneficiary.value =
@@ -877,7 +928,7 @@ class _D2DPatientRegistrationScreenState
                   },
           child: Opacity(
             opacity:
-                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)
+                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value || _isLocked)
                     ? 0.45
                     : 1.0,
             child: Row(
@@ -887,7 +938,8 @@ class _D2DPatientRegistrationScreenState
                   activeColor: kPrimaryColor,
                   onChanged:
                       (c.mobileOtpVerified.value ||
-                              c.altMobileOtpVerified.value)
+                              c.altMobileOtpVerified.value ||
+                              _isLocked)
                           ? null
                           : (v) {
                             c.isNumberNotBelongsToBeneficiary.value =
@@ -1090,9 +1142,10 @@ class _D2DPatientRegistrationScreenState
                 hint: 'yyyy/mm/dd',
                 // isDependent=No → always locked (pre-filled from API)
                 // isDependent=Yes → editable via date picker (relation required first)
-                readOnly: _isNo,
+                // abhaFormLocked → locked after ABHA-creation fill
+                readOnly: _isNo || _isLocked,
                 onTap:
-                    _isNo
+                    (_isNo || _isLocked)
                         ? null
                         : () {
                           if (_isYes && c.selectedRelation.value == null) {
@@ -1133,7 +1186,7 @@ class _D2DPatientRegistrationScreenState
         _sectionLabel('Gender'),
         SizedBox(height: 6.h),
         Obx(() {
-          final locked = c.isGenderLockedByRelation.value;
+          final locked = c.isGenderLockedByRelation.value || _isLocked;
           final gender = c.selectedGender.value;
           return Row(
             children: [
@@ -1252,7 +1305,7 @@ class _D2DPatientRegistrationScreenState
                   label: _label('District'),
                   readOnly: true,
                   onTap:
-                      (_hasData && !c.isDistrictLocked.value)
+                      (_hasData && !c.isDistrictLocked.value && !_isLocked)
                           ? () => _showDistrictPicker(context)
                           : null,
                   prefixIcon: const Icon(
@@ -1261,7 +1314,7 @@ class _D2DPatientRegistrationScreenState
                     size: 18,
                   ).paddingOnly(left: 6.w),
                   suffixIcon:
-                      (_hasData && !c.isDistrictLocked.value)
+                      (_hasData && !c.isDistrictLocked.value && !_isLocked)
                           ? const Icon(
                             Icons.arrow_drop_down,
                             color: kPrimaryColor,
@@ -2036,10 +2089,10 @@ class _D2DPatientRegistrationScreenState
   Widget _radioChip({
     required String label,
     required bool selected,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
     bool enabled = true,
   }) {
-    final effectiveColor = enabled ? kPrimaryColor : kLabelTextColor;
+    final effectiveColor = (enabled && onTap != null) ? kPrimaryColor : kLabelTextColor;
     return Expanded(
       child: GestureDetector(
         onTap: enabled ? onTap : null,

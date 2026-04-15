@@ -718,6 +718,66 @@ class D2DPatientRegistrationRepository {
     }
   }
 
+  /// Enrols by demographic data. Returns parsed JSON or `{'error': ...}`.
+  Future<Map<String, dynamic>?> enrolByDemographic({
+    required String accessToken,
+    required String publicKey,
+    required String aadhaarNumber,
+    required String name,
+    required String dob,      // yyyy-MM-dd
+    required String gender,   // M, F, O
+    required String address,
+    required String state,
+    required String district,
+    required String pinCode,
+  }) async {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final encAadhaar = _rsaEncryptBase64(aadhaarNumber, publicKey);
+      final ts = _abdmTimestamp();
+      // ignore: avoid_print
+      print('[enrolByDemographic] name=$name  gender=$gender  dob=$dob  state=$state  district=$district  pinCode=$pinCode');
+      final response = await ioClient.post(
+        Uri.parse('${_abdmBase}enrollment/enrol/byDemographic'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'TIMESTAMP': ts,
+          'REQUEST-ID': _uuid(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'authData': {
+            'authMethods': ['demo'],
+            'demo': {
+              'aadhaarNumber': encAadhaar,
+              'name': name,
+              'gender': gender,
+              'dateOfBirth': dob,
+              'address': {
+                'district': district,
+                'pinCode': pinCode,
+                'state': state,
+              },
+            },
+          },
+          'consent': {'code': 'abha-enrollment', 'version': '1.4'},
+        }),
+      );
+      // ignore: avoid_print
+      print('[enrolByDemographic] status=${response.statusCode}  body=${response.body}');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {'error': response.body};
+    } catch (e) {
+      // ignore: avoid_print
+      print('[enrolByDemographic] exception: $e');
+      return {'error': e.toString()};
+    } finally {
+      ioClient.close();
+    }
+  }
+
   /// Returns list of ABHA address suggestions.
   Future<List<String>> getAbhaAddressSuggestions({
     required String accessToken,
@@ -748,76 +808,51 @@ class D2DPatientRegistrationRepository {
     return [];
   }
 
-  /// Checks if an ABHA address is available.
-  /// Returns true = available, false = taken, null = error.
-  Future<bool?> checkAbhaAddressAvailability({
-    required String accessToken,
-    required String address,
-  }) async {
-    final ioClient = _api.getInstanceOfIoClient();
-    try {
-      final uri = Uri.parse(
-          '${_abdmBase}enrollment/enrol/abha-address/checkAvailability')
-          .replace(queryParameters: {'abhaAddress': address});
-      final response = await ioClient.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'REQUEST-ID': _uuid(),
-          'TIMESTAMP': _abdmTimestamp(),
-          'Content-Type': 'application/json',
-        },
-      );
-      if (response.statusCode == 200) {
-        final body = jsonDecode(response.body) as Map<String, dynamic>;
-        // API may return {"status":"AVAILABLE"} or {"isAvailable":true}
-        final status = body['status']?.toString().toUpperCase() ?? '';
-        final isAvailable = body['isAvailable'];
-        if (status == 'AVAILABLE') return true;
-        if (status == 'UNAVAILABLE' || status == 'NOT AVAILABLE') return false;
-        if (isAvailable is bool) return isAvailable;
-        return true; // 200 with no conflict field = available
-      }
-      if (response.statusCode == 409 || response.statusCode == 422) {
-        return false; // conflict = taken
-      }
-      return null;
-    } catch (e) {
-      return null;
-    } finally {
-      ioClient.close();
-    }
-  }
-
   /// Creates an ABHA address. Returns parsed JSON or `{'error': ...}`.
+  ///
+  /// [accessToken] = client_credentials session token (from createAbhaSession).
+  /// [authToken]   = enrollment t-token (from enrolByAadhaarOtp tokens.token).
+  ///                 Added as X-Token header; required by ABDM v3 sandbox.
   Future<Map<String, dynamic>?> createAbhaAddress({
     required String accessToken,
     required String txnId,
     required String address,
+    String authToken = '',
   }) async {
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final reqId = _uuid();
       final ts = _abdmTimestamp();
+      // ignore: avoid_print
+      print('[createAbhaAddress] accessToken.len=${accessToken.length}  authToken.len=${authToken.length}  txnId=$txnId  address=$address');
+      final headers = <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'REQUEST-ID': reqId,
+        'TIMESTAMP': ts,
+        'Content-Type': 'application/json',
+      };
+      // Add X-Token only when a valid t-token is available
+      if (authToken.isNotEmpty) {
+        headers['X-Token'] = 'Bearer $authToken';
+      }
       final response = await ioClient.post(
         Uri.parse('${_abdmBase}enrollment/enrol/abha-address'),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'REQUEST-ID': reqId,
-          'TIMESTAMP': ts,
-          'Content-Type': 'application/json',
-        },
+        headers: headers,
         body: jsonEncode({
           'abhaAddress': address,
           'txnId': txnId,
           'preferred': 1,
         }),
       );
+      // ignore: avoid_print
+      print('[createAbhaAddress] status: ${response.statusCode}  body: ${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
       return {'error': response.body};
     } catch (e) {
+      // ignore: avoid_print
+      print('[createAbhaAddress] exception: $e');
       return {'error': e.toString()};
     } finally {
       ioClient.close();
@@ -827,55 +862,33 @@ class D2DPatientRegistrationRepository {
   /// Downloads the ABHA card as a PNG image.
   /// Returns raw bytes on success, null on failure.
   ///
-  /// ABDM v3 sandbox uses the enrollment t-token (authToken) as:
-  ///   Authorization: Bearer {authToken}   (attempt 1)
-  ///   Authorization: Bearer {accessToken} + X-Token: Bearer {authToken} (attempt 2)
+  /// ABDM v3: Authorization = session token, X-Token = enrollment t-token.
+  /// The endpoint returns 202 with PNG bytes on success.
   Future<Uint8List?> downloadAbhaCard({
     required String accessToken,
     required String authToken,
   }) async {
-    final uri = Uri.parse('${_abdmBase}enrollment/enrol/abha-card');
-
-    // Attempt 1 — t-token as bearer (most common for ABDM v3 profile APIs)
-    {
-      final ioClient = _api.getInstanceOfIoClient();
-      try {
-        final response = await ioClient.get(uri, headers: {
-          'Authorization': 'Bearer $authToken',
-          'REQUEST-ID': _uuid(),
-          'TIMESTAMP': _abdmTimestamp(),
-          'Accept': 'image/png',
-        });
-        if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
-          return response.bodyBytes;
-        }
-      } catch (_) {
-        // fall through to attempt 2
-      } finally {
-        ioClient.close();
-      }
-    }
-
-    // Attempt 2 — session token as bearer + t-token in X-Token header
-    {
-      final ioClient = _api.getInstanceOfIoClient();
-      try {
-        final response = await ioClient.get(uri, headers: {
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(
+        Uri.parse('${_abdmBase}profile/account/abha-card'),
+        headers: {
           'Authorization': 'Bearer $accessToken',
           'X-Token': 'Bearer $authToken',
           'REQUEST-ID': _uuid(),
           'TIMESTAMP': _abdmTimestamp(),
           'Accept': 'image/png',
-        });
-        if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
-          return response.bodyBytes;
-        }
-        return null;
-      } catch (_) {
-        return null;
-      } finally {
-        ioClient.close();
+        },
+      );
+      if ((response.statusCode == 200 || response.statusCode == 202) &&
+          response.bodyBytes.isNotEmpty) {
+        return response.bodyBytes;
       }
+      return null;
+    } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
     }
   }
 

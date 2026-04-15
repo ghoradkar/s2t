@@ -46,26 +46,27 @@ class AbhaAddressCreationScreen extends StatefulWidget {
       _AbhaAddressCreationScreenState();
 }
 
-class _AbhaAddressCreationScreenState
-    extends State<AbhaAddressCreationScreen> {
+class _AbhaAddressCreationScreenState extends State<AbhaAddressCreationScreen> {
   late final AbhaAddressCreationController ctrl;
 
   @override
   void initState() {
     super.initState();
-    ctrl = Get.put(AbhaAddressCreationController()
-      ..accessToken = widget.accessToken
-      ..txnId = widget.txnId
-      ..authToken = widget.authToken
-      ..healthCard = widget.healthCard
-      ..isNew = widget.isNew
-      ..existingABHAAddress = widget.existingABHAAddress
-      ..mobile = widget.mobile
-      ..campId = widget.campId
-      ..siteId = widget.siteId
-      ..distLgdCode = widget.distLgdCode
-      ..district = widget.district
-      ..campType = widget.campType);
+    ctrl = Get.put(
+      AbhaAddressCreationController()
+        ..accessToken = widget.accessToken
+        ..txnId = widget.txnId
+        ..authToken = widget.authToken
+        ..healthCard = widget.healthCard
+        ..isNew = widget.isNew
+        ..existingABHAAddress = widget.existingABHAAddress
+        ..mobile = widget.mobile
+        ..campId = widget.campId
+        ..siteId = widget.siteId
+        ..distLgdCode = widget.distLgdCode
+        ..district = widget.district
+        ..campType = widget.campType,
+    );
   }
 
   @override
@@ -111,7 +112,7 @@ class _AbhaAddressCreationScreenState
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -130,8 +131,11 @@ class _AbhaAddressCreationScreenState
             ),
             child: Row(
               children: [
-                Icon(Icons.verified_user_rounded,
-                    color: Colors.white, size: 16.sp),
+                Icon(
+                  Icons.verified_user_rounded,
+                  color: Colors.white,
+                  size: 16.sp,
+                ),
                 SizedBox(width: 6.w),
                 CommonText(
                   text: 'Existing Details',
@@ -176,7 +180,8 @@ class _AbhaAddressCreationScreenState
                     foregroundColor: kPrimaryColor,
                     side: BorderSide(color: kPrimaryColor, width: 1.5),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: CommonText(
                     text: 'Continue with Existing Address',
@@ -289,7 +294,7 @@ class _AbhaAddressCreationScreenState
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -308,8 +313,11 @@ class _AbhaAddressCreationScreenState
             ),
             child: Row(
               children: [
-                Icon(Icons.add_circle_outline_rounded,
-                    color: Colors.white, size: 16.sp),
+                Icon(
+                  Icons.add_circle_outline_rounded,
+                  color: Colors.white,
+                  size: 16.sp,
+                ),
                 SizedBox(width: 6.w),
                 CommonText(
                   text: 'Create New ABHA Address',
@@ -349,54 +357,69 @@ class _AbhaAddressCreationScreenState
                         textInputType: TextInputType.text,
                         maxLength: 14,
                         suffixIcon: GestureDetector(
-                          onTap: () => showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Row(
-                                children: [
-                                  Icon(Icons.info_outline_rounded,
-                                      color: kPrimaryColor, size: 20.sp),
-                                  SizedBox(width: 8.w),
-                                  CommonText(
-                                    text: 'ABHA Address Format',
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
-                                    textColor: Colors.black87,
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ],
+                          onTap:
+                              () => showDialog(
+                                context: context,
+                                builder:
+                                    (_) => AlertDialog(
+                                      title: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.info_outline_rounded,
+                                            color: kPrimaryColor,
+                                            size: 20.sp,
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          CommonText(
+                                            text: 'ABHA Address Format',
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600,
+                                            textColor: Colors.black87,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ],
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _infoRow(
+                                            'Length',
+                                            '4 to 14 characters',
+                                          ),
+                                          SizedBox(height: 8.h),
+                                          _infoRow(
+                                            'Start with',
+                                            'A letter (a–z or A–Z)',
+                                          ),
+                                          SizedBox(height: 8.h),
+                                          _infoRow(
+                                            'Allowed',
+                                            'Letters, numbers, dot (.) and underscore (_)',
+                                          ),
+                                          SizedBox(height: 8.h),
+                                          _infoRow(
+                                            'End with',
+                                            'A letter or number (not . or _)',
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: CommonText(
+                                            text: 'OK',
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w600,
+                                            textColor: kPrimaryColor,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                               ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _infoRow('Length',
-                                      '4 to 14 characters'),
-                                  SizedBox(height: 8.h),
-                                  _infoRow('Start with',
-                                      'A letter (a–z or A–Z)'),
-                                  SizedBox(height: 8.h),
-                                  _infoRow('Allowed',
-                                      'Letters, numbers, dot (.) and underscore (_)'),
-                                  SizedBox(height: 8.h),
-                                  _infoRow('End with',
-                                      'A letter or number (not . or _)'),
-                                ],
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: CommonText(
-                                    text: 'OK',
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                    textColor: kPrimaryColor,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                           child: Icon(
                             Icons.info_outline_rounded,
                             size: 18.sp,
@@ -405,16 +428,17 @@ class _AbhaAddressCreationScreenState
                         ),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'[a-zA-Z0-9._]')),
+                            RegExp(r'[a-zA-Z0-9._]'),
+                          ),
                         ],
-                        onChange: (_) => ctrl.resetAvailability(),
+                        onChange: ctrl.onAddressChanged,
                       ),
                     ),
                     SizedBox(width: 8.w),
                     Padding(
                       padding: EdgeInsets.only(top: 14.h),
                       child: CommonText(
-                        text: '@abdm',
+                        text: '@sbx',
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         textColor: Colors.grey.shade600,
@@ -424,144 +448,131 @@ class _AbhaAddressCreationScreenState
                   ],
                 ),
 
-                // Availability result banner
-                Obx(() {
-                  if (ctrl.isAvailable) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 8.h),
-                      child: Row(
-                        children: [
-                          Icon(Icons.check_circle_rounded,
-                              color: Colors.green.shade600, size: 16.sp),
-                          SizedBox(width: 6.w),
-                          CommonText(
-                            text: 'ABHA address is available',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.green.shade700,
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
+                // Green banner — format valid or suggestion selected
+                Obx(
+                  () =>
+                      ctrl.formatValid.value
+                          ? Padding(
+                            padding: EdgeInsets.only(top: 8.h),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.check_circle_rounded,
+                                  color: Colors.green.shade600,
+                                  size: 16.sp,
+                                ),
+                                SizedBox(width: 6.w),
+                                CommonText(
+                                  text: 'ABHA address is available',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.green.shade700,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                          )
+                          : const SizedBox.shrink(),
+                ),
 
-                // Error / unavailable message
-                Obx(() => ctrl.errorMessage.value.isNotEmpty
-                    ? Padding(
-                        padding: EdgeInsets.only(top: 6.h),
-                        child: CommonText(
-                          text: ctrl.errorMessage.value,
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w400,
-                          textColor: Colors.red.shade600,
-                          textAlign: TextAlign.start,
-                        ),
-                      )
-                    : const SizedBox.shrink()),
+                // Error / validation message (red)
+                Obx(
+                  () =>
+                      ctrl.errorMessage.value.isNotEmpty
+                          ? Padding(
+                            padding: EdgeInsets.only(top: 6.h),
+                            child: CommonText(
+                              text: ctrl.errorMessage.value,
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w400,
+                              textColor: Colors.red.shade600,
+                              textAlign: TextAlign.start,
+                            ),
+                          )
+                          : const SizedBox.shrink(),
+                ),
 
                 // Suggestions
-                Obx(() => ctrl.suggestions.isNotEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 14.h),
-                          CommonText(
-                            text: 'Suggestions',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            textColor: Colors.grey.shade700,
-                            textAlign: TextAlign.start,
-                          ),
-                          SizedBox(height: 8.h),
-                          Wrap(
-                            spacing: 8.w,
-                            runSpacing: 6.h,
-                            children: ctrl.suggestions.map((s) {
-                              return GestureDetector(
-                                onTap: () => ctrl.selectSuggestion(s),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12.w, vertical: 6.h),
-                                  decoration: BoxDecoration(
-                                    color: kPrimaryColor.withOpacity(0.07),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                        color: kPrimaryColor.withOpacity(0.3)),
-                                  ),
-                                  child: CommonText(
-                                    text: s,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    textColor: kPrimaryColor,
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink()),
+                Obx(
+                  () =>
+                      ctrl.suggestions.isNotEmpty
+                          ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 14.h),
+                              CommonText(
+                                text: 'Suggestions',
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.grey.shade700,
+                                textAlign: TextAlign.start,
+                              ),
+                              SizedBox(height: 8.h),
+                              Wrap(
+                                spacing: 8.w,
+                                runSpacing: 6.h,
+                                children:
+                                    ctrl.suggestions.map((s) {
+                                      return GestureDetector(
+                                        onTap: () => ctrl.selectSuggestion(s),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w,
+                                            vertical: 6.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: kPrimaryColor.withValues(
+                                              alpha: 0.07,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                            border: Border.all(
+                                              color: kPrimaryColor.withValues(
+                                                alpha: 0.3,
+                                              ),
+                                            ),
+                                          ),
+                                          child: CommonText(
+                                            text: s,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w400,
+                                            textColor: kPrimaryColor,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
+                            ],
+                          )
+                          : const SizedBox.shrink(),
+                ),
 
                 SizedBox(height: 16.h),
 
-                // Check Availability button
-                Obx(() => !ctrl.isAvailable
-                    ? SizedBox(
-                        width: double.infinity,
-                        height: 44.h,
-                        child: OutlinedButton(
-                          onPressed: ctrl.onCheckAvailability,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: kPrimaryColor,
-                            side: BorderSide(
-                                color: kPrimaryColor, width: 1.5),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: CommonText(
-                            text: 'Check Availability',
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                            textColor: kPrimaryColor,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink()),
-
-                // Create ABHA Address button (shown only when available)
-                Obx(() => ctrl.isAvailable
-                    ? Column(
-                        children: [
-                          SizedBox(height: 10.h),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 44.h,
-                            child: ElevatedButton(
-                              onPressed: ctrl.onCreateAddress,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kPrimaryColor,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(8)),
-                              ),
-                              child: CommonText(
-                                text: 'Create ABHA Address',
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w600,
-                                textColor: Colors.white,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink()),
+                // Single button — checks availability AND creates in one tap
+                SizedBox(
+                  width: double.infinity,
+                  height: 44.h,
+                  child: OutlinedButton(
+                    onPressed: ctrl.onCheckAvailability,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: kPrimaryColor,
+                      side: BorderSide(color: kPrimaryColor, width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: CommonText(
+                      text: 'Check Availability',
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                      textColor: kPrimaryColor,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

@@ -44,6 +44,7 @@ class _AbhaCreationScreenState extends State<AbhaCreationScreen> {
   @override
   void initState() {
     super.initState();
+    Get.delete<AbhaCreationController>(force: true);
     ctrl = Get.put(AbhaCreationController()
       ..campId = widget.campId
       ..siteId = widget.siteId
