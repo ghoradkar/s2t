@@ -28,22 +28,28 @@ class AbhaSuccessController extends GetxController {
   final downloading = false.obs;
 
   // ── Profile helpers ──────────────────────────────────────────────
+  // OTP flow: fields are under healthCard['ABHAProfile']
+  // Demographic flow: fields are at healthCard root level
   Map<String, dynamic> get _profile =>
-      (healthCard['ABHAProfile'] as Map<String, dynamic>?) ?? {};
+      (healthCard['ABHAProfile'] as Map<String, dynamic>?) ?? healthCard;
 
   String get profileName {
     final p = _profile;
+    // Try root-level "name" first (demographic), then ABHAProfile fields
+    final rootName = (healthCard['name'] as String?)?.trim() ?? '';
+    if (rootName.isNotEmpty) return rootName;
     final full = (p['name'] as String?)?.trim() ?? '';
     if (full.isNotEmpty) return full;
     final parts = [
-      p['firstName'] as String? ?? '',
-      p['middleName'] as String? ?? '',
-      p['lastName'] as String? ?? '',
+      p['firstName'] as String? ?? healthCard['firstName'] as String? ?? '',
+      p['middleName'] as String? ?? healthCard['middleName'] as String? ?? '',
+      p['lastName'] as String? ?? healthCard['lastName'] as String? ?? '',
     ].where((s) => s.isNotEmpty).join(' ');
     return parts.isNotEmpty ? parts : '—';
   }
 
   String get profileAbhaNumber =>
+      (healthCard['healthIdNumber'] as String?) ??
       (_profile['ABHANumber'] as String?) ??
       (_profile['healthId'] as String?) ??
       '—';
@@ -129,8 +135,9 @@ class AbhaSuccessController extends GetxController {
 
     try {
       final regCtrl = Get.find<D2DPatientRegistrationController>();
+      // OTP flow: fields under ABHAProfile. Demographic: fields at root.
       final profile =
-          (healthCard['ABHAProfile'] as Map<String, dynamic>?) ?? {};
+          (healthCard['ABHAProfile'] as Map<String, dynamic>?) ?? healthCard;
       mismatchMessage = regCtrl.fillFromAbhaCreation(
         profile: profile,
         abhaAddress: abhaAddress,

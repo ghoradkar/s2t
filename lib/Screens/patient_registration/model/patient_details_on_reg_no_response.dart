@@ -50,4 +50,22 @@ class PatientDetailsOnRegNoOutput {
     pincode = json['Pincode']?.toString();
     isThumbExist = json['isThumbExist']?.toString() ?? '0';
   }
+
+  /// Constructs directly from pre-filled values (no API call needed).
+  PatientDetailsOnRegNoOutput.fromPrefill({
+    required String regdId,
+    required String regdNo,
+    required String name,
+    required String gender,
+    required String age,
+    required String dob,
+  }) {
+    this.regdId = regdId;
+    this.regdNo = regdNo;
+    englishName = name;
+    this.gender = gender;
+    this.age = age;
+    dobFormatted = dob;
+    isThumbExist = '0';
+  }
 }

@@ -22,11 +22,26 @@ class PatientFingerSignatureController extends GetxController {
   final VoidCallback?
   onSuccess; // clears the parent registration form on success
 
+  /// Optional pre-filled patient data (D2D registration passes these to avoid
+  /// a redundant API call immediately after saving the patient).
+  final String? prefillRegdId;
+  final String? prefillRegdNo;
+  final String? prefillName;
+  final String? prefillGender;
+  final String? prefillAge;
+  final String? prefillDob;
+
   PatientFingerSignatureController({
     required this.campId,
     required this.siteId,
     required this.regNo,
     this.onSuccess,
+    this.prefillRegdId,
+    this.prefillRegdNo,
+    this.prefillName,
+    this.prefillGender,
+    this.prefillAge,
+    this.prefillDob,
   });
 
   final _repo = RegularPatientRegistrationRepository();
@@ -73,6 +88,21 @@ class PatientFingerSignatureController extends GetxController {
   // ── Fetch patient info ───────────────────────────────────────────────────
 
   Future<void> _fetchPatientInfo() async {
+    // If pre-filled data was passed (e.g. from D2D registration after save),
+    // use it directly and skip the API call.
+    if (prefillRegdId != null && prefillRegdId!.isNotEmpty) {
+      regdId = prefillRegdId!;
+      patientInfo.value = PatientDetailsOnRegNoOutput.fromPrefill(
+        regdId: prefillRegdId!,
+        regdNo: prefillRegdNo ?? regNo,
+        name: prefillName ?? '',
+        gender: prefillGender ?? '',
+        age: prefillAge ?? '',
+        dob: prefillDob ?? '',
+      );
+      return;
+    }
+
     isLoading.value = true;
     final result = await _repo.getPatientDetailsByRegNo(regNo: regNo);
     isLoading.value = false;

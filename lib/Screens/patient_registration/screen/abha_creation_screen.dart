@@ -523,7 +523,7 @@ class _AbhaCreationScreenState extends State<AbhaCreationScreen> {
                     EdgeInsets.only(top: 10.h, right: 8.w, bottom: 6.h),
                 child: CommonText(
                   text: text,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   textColor: Colors.black87,
                   textAlign: TextAlign.start,

@@ -20,12 +20,27 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
   /// Use this to clear the parent registration form.
   final VoidCallback? onSuccess;
 
+  /// Optional pre-filled patient data (used by D2D registration to avoid
+  /// a redundant API round-trip after the patient was just registered).
+  final String? prefillRegdId;
+  final String? prefillRegdNo;
+  final String? prefillName;
+  final String? prefillGender;
+  final String? prefillAge;
+  final String? prefillDob;
+
   const PatientFingerAndSignatureScreen({
     super.key,
     required this.campId,
     required this.siteId,
     required this.regNo,
     this.onSuccess,
+    this.prefillRegdId,
+    this.prefillRegdNo,
+    this.prefillName,
+    this.prefillGender,
+    this.prefillAge,
+    this.prefillDob,
   });
 
   @override
@@ -41,6 +56,12 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
         siteId: siteId,
         regNo: regNo,
         onSuccess: onSuccess,
+        prefillRegdId: prefillRegdId,
+        prefillRegdNo: prefillRegdNo,
+        prefillName: prefillName,
+        prefillGender: prefillGender,
+        prefillAge: prefillAge,
+        prefillDob: prefillDob,
       ),
     );
 

@@ -468,10 +468,11 @@ class _D2DPatientRegistrationScreenState
                             label: _label('ABHA Number'),
                             hint: '14-digit ABHA number',
                             textInputType: TextInputType.number,
-                            maxLength: 14,
+                            maxLength: 17, // 14 digits + 3 hyphens (XX-XXXX-XXXX-XXXX)
                             readOnly: c.abhaVerified.value,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[\d\-]')),
                             ],
                             prefixIcon: const Icon(
                               Icons.health_and_safety_rounded,
@@ -525,7 +526,10 @@ class _D2DPatientRegistrationScreenState
                           ),
                           SizedBox(height: 8.h),
 
-                          if (c.abhaValidateMode.value == 'mobile')
+                          // Mobile field: Find ABHA + Using Mobile only
+                          // (Verify ABHA uses ABHA number/address directly)
+                          if (c.abhaSearchMode.value == 'find' &&
+                              c.abhaValidateMode.value == 'mobile')
                             AppTextField(
                               controller: c.tecAbhaLinkedMobile,
                               label: _label('ABHA Linked Mobile'),
@@ -542,7 +546,10 @@ class _D2DPatientRegistrationScreenState
                               ).paddingOnly(left: 6.w),
                             ),
 
-                          if (c.abhaValidateMode.value == 'aadhaar')
+                          // Aadhaar field: Find ABHA + Using Aadhaar only
+                          // (Verify ABHA uses ABHA number/address directly)
+                          if (c.abhaSearchMode.value == 'find' &&
+                              c.abhaValidateMode.value == 'aadhaar')
                             AppTextField(
                               controller: c.tecAbhaAadhaar,
                               label: _label('Aadhaar Number'),
@@ -712,6 +719,36 @@ class _D2DPatientRegistrationScreenState
                                 ),
                               ],
                             ],
+                          ),
+                        ],
+                        // ── View ABHA Card button (Find ABHA flow only) ────────────────
+                        if (c.abhaCardAvailable.value) ...[
+                          SizedBox(height: 10.h),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 44.h,
+                            child: OutlinedButton.icon(
+                              onPressed: c.onViewAbhaCard,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: kPrimaryColor,
+                                side: const BorderSide(color: kPrimaryColor, width: 1.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              icon: Icon(
+                                Icons.credit_card_rounded,
+                                color: kPrimaryColor,
+                                size: 18.sp,
+                              ),
+                              label: CommonText(
+                                text: 'View ABHA Card',
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                textColor: kPrimaryColor,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
                         ],
               ],

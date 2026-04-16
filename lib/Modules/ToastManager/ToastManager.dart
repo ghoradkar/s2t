@@ -73,11 +73,26 @@ class ToastManager {
                 visible: title != null,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(message),
+                  child: CommonText(
+                    text: title!,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    textColor: kBlackColor,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
 
-              Padding(padding: const EdgeInsets.all(8.0), child: Text(message)),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CommonText(
+                  text: message,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.normal,
+                  textColor: kBlackColor,
+                  textAlign: TextAlign.center,
+                ),
+              ),
 
               SizedBox(
                 width: 80.w,

@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
@@ -83,9 +81,7 @@ class _AbhaDemographicCreationScreenState
               _buildLogosCard(),
               Padding(
                 padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 20.h),
-                child: Obx(() => ctrl.phase.value == AbhaDemoPhase.mobileOtp
-                    ? _buildOtpPhase(context)
-                    : _buildFormPhase(context)),
+                child: _buildFormPhase(context),
               ),
             ],
           ),
@@ -295,119 +291,6 @@ class _AbhaDemographicCreationScreenState
     );
   }
 
-  // ── Mobile OTP phase ──────────────────────────────────────────────
-
-  Widget _buildOtpPhase(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Info banner
-        Obx(() => ctrl.otpInfoMsg.value.isNotEmpty
-            ? Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10.w),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: CommonText(
-                  text: ctrl.otpInfoMsg.value,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  textColor: Colors.black87,
-                  textAlign: TextAlign.start,
-                ),
-              )
-            : const SizedBox.shrink()),
-        SizedBox(height: 14.h),
-
-        // OTP pin field
-        Center(
-          child: PinCodeTextField(
-            appContext: context,
-            length: 6,
-            controller: ctrl.otpCtrl,
-            keyboardType: TextInputType.number,
-            onChanged: (_) {},
-            pinTheme: PinTheme(
-              shape: PinCodeFieldShape.box,
-              borderRadius: BorderRadius.circular(4),
-              fieldHeight: 48.h,
-              fieldWidth: 48.w,
-              activeFillColor: Colors.white,
-              inactiveFillColor: Colors.white,
-              selectedFillColor: Colors.white,
-              activeColor: kPrimaryColor,
-              inactiveColor: kPrimaryColor,
-              selectedColor: kPrimaryColor,
-            ),
-            enableActiveFill: true,
-            textStyle: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-              fontFamily: FontConstants.interFonts,
-            ),
-          ),
-        ),
-        SizedBox(height: 6.h),
-
-        // Timer
-        Obx(() => Center(
-              child: CommonText(
-                text: ctrl.timerFinished.value
-                    ? ''
-                    : '${ctrl.timerSeconds.value} Sec',
-                fontSize: 17.sp,
-                fontWeight: FontWeight.bold,
-                textColor: Colors.black87,
-                textAlign: TextAlign.center,
-              ),
-            )),
-        SizedBox(height: 6.h),
-
-        // Resend
-        Obx(() => Center(
-              child: TextButton(
-                onPressed:
-                    ctrl.timerFinished.value ? ctrl.onResend : null,
-                child: CommonText(
-                  text: 'Resend OTP',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  textColor:
-                      ctrl.timerFinished.value ? kPrimaryColor : Colors.grey,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )),
-        SizedBox(height: 14.h),
-
-        // Verify OTP button
-        Center(
-          child: OutlinedButton(
-            onPressed: ctrl.onVerifyMobileOtp,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: kPrimaryColor,
-              side: const BorderSide(color: kPrimaryColor, width: 1.5),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6)),
-              padding:
-                  EdgeInsets.symmetric(horizontal: 28.w, vertical: 12.h),
-            ),
-            child: CommonText(
-              text: 'Verify OTP',
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-              textColor: kPrimaryColor,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        SizedBox(height: 20.h),
-      ],
-    );
-  }
-
   // ── Terms & Conditions ────────────────────────────────────────────
 
   Widget _buildTermsSection() {
@@ -581,7 +464,8 @@ class _AbhaDemographicCreationScreenState
         onItemTap: (item) {
           Navigator.pop(context);
           ctrl.selectedState.value = item;
-          ctrl.districtCtrl.clear(); // reset district when state changes
+          ctrl.districtCtrl.clear();
+          ctrl.selectedDistrictCode = '';
         },
         height: 350.h,
         padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
@@ -619,6 +503,7 @@ class _AbhaDemographicCreationScreenState
         onItemTap: (item) {
           Navigator.pop(context);
           ctrl.districtCtrl.text = item.distName ?? '';
+          ctrl.selectedDistrictCode = item.distLgdCode ?? '';
         },
         height: 350.h,
         padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),

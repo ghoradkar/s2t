@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -12,13 +13,17 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/abha_success_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/patient_finger_signature_screen.dart';
 
 class D2DPatientRegistrationController extends GetxController {
@@ -100,11 +105,23 @@ class D2DPatientRegistrationController extends GetxController {
   String _abhaGenderAtVerify = '';
   Timer? _abhaTimer;
 
+  // ── Find ABHA Using Mobile — real ABDM API state ──────────────────────────
+  String _findAbhaTxnId = '';
+  String _findAbhaSelectedIndex = '';
+  String _findAbhaAccessToken = '';
+  String _findAbhaPublicKey = '';
+  String _findAbhaAuthToken = '';
+  Map<String, dynamic> _findAbhaHealthCard = {};
+  String _findAbhaAddress = '';
+  final abhaCardAvailable = false.obs;
+
   // ── ABHA create / search sub-mode ────────────────────────────────────────
   /// 'demographic' or 'aadhaar_otp'
   final abhaCreateMode = 'aadhaar_otp'.obs;
+
   /// 'find' or 'verify'
   final abhaSearchMode = 'find'.obs;
+
   /// 'mobile' or 'aadhaar'
   final abhaValidateMode = 'mobile'.obs;
   final abhaOtpAttempts = 0.obs;
@@ -235,6 +252,14 @@ class D2DPatientRegistrationController extends GetxController {
       abhaOtpAttempts.value = 0;
       tecAbhaLinkedMobile.clear();
       tecAbhaAadhaar.clear();
+      abhaCardAvailable.value = false;
+      _findAbhaTxnId = '';
+      _findAbhaSelectedIndex = '';
+      _findAbhaAccessToken = '';
+      _findAbhaPublicKey = '';
+      _findAbhaAuthToken = '';
+      _findAbhaHealthCard = {};
+      _findAbhaAddress = '';
     }
   }
 
@@ -253,27 +278,36 @@ class D2DPatientRegistrationController extends GetxController {
     final middleName = ((profile['middleName'] as String?) ?? '').trim();
     final lastName = ((profile['lastName'] as String?) ?? '').trim();
     final fullFromApi = ((profile['name'] as String?) ?? '').trim();
-    final abhaFullName = fullFromApi.isNotEmpty
-        ? fullFromApi
-        : [firstName, middleName, lastName]
-            .where((s) => s.isNotEmpty)
-            .join(' ');
+    final abhaFullName =
+        fullFromApi.isNotEmpty
+            ? fullFromApi
+            : [
+              firstName,
+              middleName,
+              lastName,
+            ].where((s) => s.isNotEmpty).join(' ');
 
     final genderRaw =
         ((profile['gender'] as String?) ?? '').trim().toUpperCase();
-    final abhaGender = (genderRaw == 'M' || genderRaw == 'MALE')
-        ? 'Male'
-        : (genderRaw == 'F' || genderRaw == 'FEMALE')
+    final abhaGender =
+        (genderRaw == 'M' || genderRaw == 'MALE')
+            ? 'Male'
+            : (genderRaw == 'F' || genderRaw == 'FEMALE')
             ? 'Female'
             : genderRaw.isNotEmpty
-                ? 'Other'
-                : '';
+            ? 'Other'
+            : '';
 
     // ── Board vs ABHA mismatch check (mirrors native logic) ───────────
-    final boardName = benefBoardName.trim();
-    if (!abhaFullName.toLowerCase().contains(boardName.toLowerCase()) ||
-        (boardName.isEmpty && abhaFullName.isNotEmpty)) {
-      // Return mismatch message — caller must show dialog AFTER navigating back
+    // Use benefBoardName if set; fall back to the current full-name field value
+    // (native: edt_fname holds board name after worker-info loads).
+    final boardName =
+        benefBoardName.trim().isNotEmpty
+            ? benefBoardName.trim()
+            : tecFullName.text.trim();
+    // Skip check entirely when there is no board name to compare against.
+    if (boardName.isNotEmpty &&
+        !abhaFullName.toLowerCase().contains(boardName.toLowerCase())) {
       final boardGender = benefBoardGender.isNotEmpty ? benefBoardGender : '—';
       final abhaGenderDisplay = abhaGender.isNotEmpty ? abhaGender : '—';
       return 'ABHA and Board details does not match\n\n'
@@ -303,8 +337,11 @@ class D2DPatientRegistrationController extends GetxController {
     if (mobile.isNotEmpty) tecMobileNo.text = mobile;
 
     // ── DOB & Age ────────────────────────────────────────────────────
-    final dobRaw = ((profile['dob'] as String?) ??
-                    (profile['dateOfBirth'] as String?) ?? '').trim();
+    final dobRaw =
+        ((profile['dob'] as String?) ??
+                (profile['dateOfBirth'] as String?) ??
+                '')
+            .trim();
     if (dobRaw.isNotEmpty) {
       tecDob.text = _normalizeDate(dobRaw);
       try {
@@ -327,8 +364,11 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // ── ABHA Number ───────────────────────────────────────────────────
-    final abhaNumber = ((profile['ABHANumber'] as String?) ??
-                        (profile['healthId'] as String?) ?? '').trim();
+    final abhaNumber =
+        ((profile['ABHANumber'] as String?) ??
+                (profile['healthId'] as String?) ??
+                '')
+            .trim();
     if (abhaNumber.isNotEmpty) tecAbhaNumber.text = abhaNumber;
 
     // ── ABHA Address ──────────────────────────────────────────────────
@@ -336,7 +376,7 @@ class D2DPatientRegistrationController extends GetxController {
 
     // ── Permanent Address (native: address + "," + pincode) ───────────
     final addr = ((profile['address'] as String?) ?? '').trim();
-    final pin  = ((profile['pincode'] as String?) ?? '').trim();
+    final pin = ((profile['pincode'] as String?) ?? '').trim();
     if (addr.isNotEmpty) {
       tecPermAddr.text = pin.isNotEmpty ? '$addr,$pin' : addr;
     }
@@ -376,6 +416,15 @@ class D2DPatientRegistrationController extends GetxController {
     abhaOtpAttempts.value = 0;
     _abhaTimer?.cancel();
     abhaOtpTimer.value = 120;
+    // Reset Find ABHA state
+    _findAbhaTxnId = '';
+    _findAbhaSelectedIndex = '';
+    _findAbhaAccessToken = '';
+    _findAbhaPublicKey = '';
+    _findAbhaAuthToken = '';
+    _findAbhaHealthCard = {};
+    _findAbhaAddress = '';
+    abhaCardAvailable.value = false;
   }
 
   /// Called by the Clear button shown in the verified banner after ABHA-creation
@@ -384,7 +433,7 @@ class D2DPatientRegistrationController extends GetxController {
   /// clearFlag=3 in native means: clear everything EXCEPT the name fields.
   void clearAfterAbhaFill() {
     // ── Reset ABHA section (mirrors clearABHA + enableABHAFormAfterFill) ──
-    clearAbhaSearch();          // resets abhaFormLocked, abhaVerified, ABHA fields
+    clearAbhaSearch(); // resets abhaFormLocked, abhaVerified, ABHA fields
     abhaCreateMode.value = 'aadhaar_otp';
 
     // ── Clear patient details — mirrors clearPatientDetails(3) ────────
@@ -449,12 +498,13 @@ class D2DPatientRegistrationController extends GetxController {
   }
 
   void onWorkerRegNoChanged(String val) {
-    if (val.length == 12) {
+    if (val.length == 12 && !isLoadingBeneficiary.value) {
       _fetchBeneficiary(val);
     }
   }
 
   Future<void> _fetchBeneficiary(String regNo) async {
+    if (isLoadingBeneficiary.value) return;
     isLoadingBeneficiary.value = true;
     hasApiData.value = false;
     try {
@@ -470,15 +520,38 @@ class D2DPatientRegistrationController extends GetxController {
               : null;
       if (data == null) {
         ToastManager.toast('Beneficiary not found');
-        ToastManager.showAlertDialog(
-          Get.context!,
-          'Beneficiary not found',
-          () {
-            Get.back();
-          },
-        );
+        ToastManager.showAlertDialog(Get.context!, 'Beneficiary not found', () {
+          Get.back();
+        });
         return;
       }
+
+      // ── 365-day re-registration check (mirrors native GetWorkerInfroRe_Registration)
+      // Only applies when registering the worker themselves (not a dependent)
+      if (!isDependent.value) {
+        final regDate = await _repo.getReRegistrationDate(workerRegNo: regNo);
+        if (regDate != null && regDate.isNotEmpty) {
+          final parsed = _tryParseDate(regDate);
+          if (parsed != null && DateTime.now().difference(parsed).inDays < 365) {
+            tecWorkerRegNo.clear();
+            _clearForm();
+            // Re-enable ABHA section so the user can still perform ABHA
+            // operations even though re-registration is blocked.
+            hasApiData.value = true;
+            final ctx = Get.context;
+            if (ctx != null) {
+              ToastManager.showAlertDialog(
+                ctx,
+                'You have done registration on $regDate',
+                () => Get.back(),
+                title: 'Cannot re-register the Labour',
+              );
+            }
+            return;
+          }
+        }
+      }
+
       _applyWorkerInfo(data);
     } finally {
       isLoadingBeneficiary.value = false;
@@ -494,7 +567,7 @@ class D2DPatientRegistrationController extends GetxController {
       ToastManager.showAlertDialog(
         Get.context!,
         'Enter valid 10-digit alternate mobile number',
-            () {
+        () {
           Get.back();
         },
       );
@@ -511,7 +584,6 @@ class D2DPatientRegistrationController extends GetxController {
     if (error == null) {
       altMobileOtpSent.value = true;
       ToastManager.toast('OTP sent to alternate number');
-
     } else {
       ToastManager.showAlertDialog(Get.context!, error, () {
         Get.back();
@@ -532,13 +604,9 @@ class D2DPatientRegistrationController extends GetxController {
       ToastManager.toast('Alternate number verified');
     } else {
       // ToastManager.toast('Invalid OTP');
-      ToastManager.showAlertDialog(
-        Get.context!,
-        'Invalid OTP',
-            () {
-          Get.back();
-        },
-      );
+      ToastManager.showAlertDialog(Get.context!, 'Invalid OTP', () {
+        Get.back();
+      });
     }
   }
 
@@ -604,6 +672,14 @@ class D2DPatientRegistrationController extends GetxController {
     abhaOtpAttempts.value = 0;
     tecAbhaLinkedMobile.clear();
     tecAbhaAadhaar.clear();
+    abhaCardAvailable.value = false;
+    _findAbhaTxnId = '';
+    _findAbhaSelectedIndex = '';
+    _findAbhaAccessToken = '';
+    _findAbhaPublicKey = '';
+    _findAbhaAuthToken = '';
+    _findAbhaHealthCard = {};
+    _findAbhaAddress = '';
 
     // Worker-info display (isDependent = Yes)
     workerNameDisplay.value = '';
@@ -983,7 +1059,7 @@ class D2DPatientRegistrationController extends GetxController {
       ToastManager.showAlertDialog(
         Get.context!,
         'Enter valid mobile number',
-            () {
+        () {
           Get.back();
         },
       );
@@ -1028,42 +1104,604 @@ class D2DPatientRegistrationController extends GetxController {
     final mobile = tecAbhaLinkedMobile.text.trim();
     final aadhaar = tecAbhaAadhaar.text.trim();
 
-    // Verify mode: need ABHA number or address
+    // ── Verify mode (ABHA number/address): real ABDM API ─────────────────────
     if (abhaSearchMode.value == 'verify') {
       if (abhaNum.isEmpty && abhaAddr.isEmpty) {
         ToastManager.toast('Enter ABHA number or address');
         return;
       }
-    }
-    // Find mode: need mobile or aadhaar
-    if (abhaValidateMode.value == 'mobile' && mobile.isEmpty) {
-      ToastManager.toast('Enter ABHA linked mobile number');
+      if (abhaResendCount >= 3) {
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'Max resends reached',
+          () => Get.back(),
+        );
+        return;
+      }
+      if (abhaValidateMode.value == 'mobile') {
+        await _sendAbhaVerifyMobileOtp(abhaNum, abhaAddr);
+      } else {
+        await _sendAbhaVerifyAadhaarOtp(abhaNum, abhaAddr);
+      }
       return;
     }
-    if (abhaValidateMode.value == 'aadhaar' && aadhaar.isEmpty) {
-      ToastManager.toast('Enter Aadhaar number');
+
+    // ── Find mode, Using Aadhaar: real ABDM API ──────────────────────────────
+    if (abhaValidateMode.value == 'aadhaar') {
+      if (aadhaar.length != 12) {
+        ToastManager.toast('Enter valid 12-digit Aadhaar number');
+        return;
+      }
+      if (abhaResendCount >= 3) {
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'Max resends reached',
+          () => Get.back(),
+        );
+        return;
+      }
+      await _sendAbhaAadhaarOtp(aadhaar);
+      return;
+    }
+
+    // ── Find mode, Using Mobile: real ABDM API ───────────────────────────────
+    if (mobile.length != 10) {
+      ToastManager.toast('Enter valid 10-digit mobile number');
       return;
     }
     if (abhaResendCount >= 3) {
       ToastManager.showAlertDialog(
         Get.context!,
         'Max resends reached',
-        () {
-          Get.back();
-        },
+        () => Get.back(),
       );
       return;
     }
-    _generatedAbhaOtp = FormatterManager.generateRandomDigits(6);
+
+    // Resend: skip search, re-send OTP to same selected index
+    if (abhaOtpSent.value &&
+        _findAbhaTxnId.isNotEmpty &&
+        _findAbhaSelectedIndex.isNotEmpty) {
+      await _sendAbhaMobileOtpToSelectedIndex();
+      return;
+    }
+
+    // First time: search ABHA accounts linked to this mobile
+    await _searchAbhaByMobile(mobile);
+  }
+
+  /// Returns true if the ABDM API result indicates an expired/invalid token
+  /// (HTTP 401 / code 900901). Used to trigger a one-shot token refresh + retry.
+  bool _isAbdmAuthError(Map<String, dynamic>? result) {
+    if (result == null) return false;
+    final err = result['error']?.toString() ?? '';
+    return err.contains('900901') || err.contains('Invalid Credentials');
+  }
+
+  /// Forces a fresh ABDM session token + public certificate.
+  /// Returns true on success, false if either step fails.
+  Future<bool> _refreshAbhaSession() async {
+    _findAbhaAccessToken = await _repo.createAbhaSession() ?? '';
+    if (_findAbhaAccessToken.isEmpty) return false;
+    _findAbhaPublicKey =
+        await _repo.getAbhaPublicCertificate(_findAbhaAccessToken) ?? '';
+    return _findAbhaPublicKey.isNotEmpty;
+  }
+
+  /// Parses an ABDM error body (which may be a JSON string like
+  /// `{"message":"..."}` or a plain string) into a human-readable message.
+  String _extractAbdmErrorMessage(String? raw) {
+    if (raw == null || raw.isEmpty) return 'Failed to send OTP. Please try again.';
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      // ABDM wraps errors as {"error":{"message":"..."}} or {"message":"..."}
+      final inner = decoded['error'];
+      if (inner is Map) {
+        return inner['message']?.toString() ?? raw;
+      }
+      return decoded['message']?.toString() ?? raw;
+    } catch (_) {
+      return raw;
+    }
+  }
+
+  Future<void> _searchAbhaByMobile(String mobile) async {
+    ToastManager.showLoader();
+    if (_findAbhaAccessToken.isEmpty || _findAbhaPublicKey.isEmpty) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+    }
+
+    var result = await _repo.findAbhaByMobile(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      mobile: mobile,
+    );
+
+    if (_isAbdmAuthError(result)) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+      result = await _repo.findAbhaByMobile(
+        accessToken: _findAbhaAccessToken,
+        publicKey: _findAbhaPublicKey,
+        mobile: mobile,
+      );
+    }
+
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (result == null || result['error'] != null) {
+      final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
+      ToastManager.showAlertDialog(Get.context!, errMsg, () => Get.back());
+      return;
+    }
+
+    _findAbhaTxnId = result['txnId'] as String? ?? '';
+    // Response field is 'ABHA' (native uses same key)
+    final rawAddresses = result['ABHA'] ?? result['ABHAAddresses'];
+    final addresses =
+        (rawAddresses is List)
+            ? rawAddresses.whereType<Map<String, dynamic>>().toList()
+            : <Map<String, dynamic>>[];
+
+    if (addresses.isEmpty) {
+      ToastManager.toast('No ABHA accounts found for this mobile number.');
+      return;
+    }
+
+    final ctx = Get.context;
+    if (ctx == null) return;
+    _showAbhaSelectionDialog(ctx, addresses);
+  }
+
+  void _showAbhaSelectionDialog(
+    BuildContext context,
+    List<Map<String, dynamic>> results,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder:
+          (_) => AlertDialog(
+            title: CommonText(
+              text: "Select ABHA Account",
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              textColor: kBlackColor,
+              textAlign: TextAlign.start,
+            ),
+
+            // const Text(
+            //   'Select ABHA Account',
+            //   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+            // ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: results.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
+                itemBuilder: (ctx, i) {
+                  final item = results[i];
+                  final name =
+                      (item['name'] as String?) ??
+                      (item['fullName'] as String?) ??
+                      '—';
+                  final abhaNum =
+                      (item['ABHANumber'] as String?) ??
+                      (item['abhaNumber'] as String?) ??
+                      '—';
+                  final gender = (item['gender'] as String?) ?? '—';
+                  return ListTile(
+                    title: CommonText(
+                      text: name,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      textColor: kBlackColor,
+                      textAlign: TextAlign.start,
+                    ),
+
+                    // Text(
+                    //   name,
+                    //   style: const TextStyle(
+                    //     fontWeight: FontWeight.w600,
+                    //     fontSize: 14,
+                    //   ),
+                    // ),
+                    subtitle: CommonText(
+                      text: 'ABHA: $abhaNum  |  Gender: $gender',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.normal,
+                      textColor: kTextColor,
+                      textAlign: TextAlign.start,
+                    ),
+
+                    // Text(
+                    //   'ABHA: $abhaNum  |  Gender: $gender',
+                    //   style: const TextStyle(fontSize: 12),
+                    // ),
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      // Use the 'index' from the response entry (1-based, matches native)
+                      _findAbhaSelectedIndex =
+                          (item['index'] ?? i + 1).toString();
+                      _sendAbhaMobileOtpToSelectedIndex();
+                    },
+                  );
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: CommonText(
+                  text: 'Cancel',
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  textColor: kPrimaryColor,
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Future<void> _sendAbhaMobileOtpToSelectedIndex() async {
+    if (_findAbhaTxnId.isEmpty || _findAbhaSelectedIndex.isEmpty) return;
+    ToastManager.showLoader();
+    final result = await _repo.sendAbhaMobileOtpByIndex(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      txnId: _findAbhaTxnId,
+      index: _findAbhaSelectedIndex,
+    );
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (result == null || result['error'] != null) {
+      final errMsg = result?['error']?.toString() ?? '';
+      ToastManager.toast(
+        errMsg.isNotEmpty ? errMsg : 'Failed to send OTP. Please try again.',
+      );
+      return;
+    }
+
+    // API may return an updated txnId
+    if (result['txnId'] != null) _findAbhaTxnId = result['txnId'] as String;
     abhaOtpSent.value = true;
     abhaVerified.value = false;
     abhaResendCount++;
-    _startAbhaOtpTimer();
-    ToastManager.toast('OTP sent');
+    _startAbhaOtpTimer(60);
+    ToastManager.toast('OTP sent to registered mobile');
+  }
+
+  Future<void> _sendAbhaAadhaarOtp(String aadhaar) async {
+    ToastManager.showLoader();
+    if (_findAbhaAccessToken.isEmpty || _findAbhaPublicKey.isEmpty) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+    }
+
+    var result = await _repo.sendAbhaAadhaarLoginOtp(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      aadhaarNumber: aadhaar,
+      txnId: _findAbhaTxnId,
+    );
+
+    if (_isAbdmAuthError(result)) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+      result = await _repo.sendAbhaAadhaarLoginOtp(
+        accessToken: _findAbhaAccessToken,
+        publicKey: _findAbhaPublicKey,
+        aadhaarNumber: aadhaar,
+        txnId: _findAbhaTxnId,
+      );
+    }
+
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (result == null || result['error'] != null) {
+      final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
+      ToastManager.showAlertDialog(Get.context!, errMsg, () => Get.back());
+      return;
+    }
+
+    if (result['txnId'] != null) _findAbhaTxnId = result['txnId'] as String;
+    abhaOtpSent.value = true;
+    abhaVerified.value = false;
+    abhaResendCount++;
+    _startAbhaOtpTimer(60);
+    ToastManager.toast('OTP sent to Aadhaar-linked mobile');
+  }
+
+  Future<void> _verifyFindAbhaAadhaarOtp() async {
+    final otpVal = tecAbhaOtp.text.trim();
+    if (otpVal.length != 6) {
+      ToastManager.toast('Enter valid 6-digit OTP');
+      return;
+    }
+    if (_findAbhaTxnId.isEmpty) {
+      ToastManager.toast('Session expired. Please search again.');
+      clearAbhaSearch();
+      return;
+    }
+
+    ToastManager.showLoader();
+    final verifyResult = await _repo.verifyAbhaAadhaarLoginOtp(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      txnId: _findAbhaTxnId,
+      otpValue: otpVal,
+    );
+    if (isClosed) {
+      ToastManager.hideLoader();
+      return;
+    }
+
+    if (verifyResult == null || verifyResult['error'] != null) {
+      ToastManager.hideLoader();
+      final errMsg = verifyResult?['error']?.toString() ?? '';
+      ToastManager.toast(
+        errMsg.isNotEmpty
+            ? errMsg
+            : 'OTP verification failed. Please try again.',
+      );
+      return;
+    }
+
+    // Check authResult field (native checks authResult == "success")
+    final authResult = (verifyResult['authResult'] as String?) ?? '';
+    if (authResult.isNotEmpty && authResult.toLowerCase() != 'success') {
+      ToastManager.hideLoader();
+      final msg =
+          (verifyResult['message'] as String?) ?? 'OTP verification failed';
+      ToastManager.toast(msg);
+      return;
+    }
+
+    // Extract auth token
+    String authToken = (verifyResult['token'] as String?) ?? '';
+    if (authToken.isEmpty) {
+      final tokens = verifyResult['tokens'] as Map<String, dynamic>?;
+      authToken = (tokens?['token'] as String?) ?? '';
+    }
+
+    if (authToken.isEmpty) {
+      ToastManager.hideLoader();
+      ToastManager.toast('Verification failed. Please try again.');
+      return;
+    }
+    _findAbhaAuthToken = authToken;
+
+    // Fetch account profile
+    final profile = await _repo.getAbhaAccountProfile(
+      accessToken: _findAbhaAccessToken,
+      authToken: _findAbhaAuthToken,
+    );
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (profile == null || profile['error'] != null) {
+      ToastManager.toast('Failed to fetch ABHA profile. Please try again.');
+      return;
+    }
+
+    _findAbhaHealthCard = Map<String, dynamic>.from(profile);
+    // profile/account returns 'preferredAbhaAddress' as the ABHA address
+    _findAbhaAddress =
+        (profile['preferredAbhaAddress'] as String?) ??
+        (profile['healthId'] as String?) ??
+        (profile['ABHAAddress'] as String?) ??
+        '';
+
+    // profile/account splits DOB into yearOfBirth/monthOfBirth/dayOfBirth.
+    // Synthesise a 'dob' key so fillFromAbhaCreation can parse it.
+    if (_findAbhaHealthCard['dob'] == null) {
+      final y = _findAbhaHealthCard['yearOfBirth'] as String?;
+      final m = _findAbhaHealthCard['monthOfBirth'] as String?;
+      final d = _findAbhaHealthCard['dayOfBirth'] as String?;
+      if (y != null && m != null && d != null) {
+        _findAbhaHealthCard['dob'] =
+            '$y-${m.padLeft(2, '0')}-${d.padLeft(2, '0')}';
+      }
+    }
+
+    // Always make card available so user can view it
+    abhaCardAvailable.value = true;
+
+    // Fill the registration form; show mismatch dialog if names don't match
+    final mismatch = fillFromAbhaCreation(
+      profile: profile,
+      abhaAddress: _findAbhaAddress,
+    );
+
+    if (mismatch != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = Get.context;
+        if (ctx == null) return;
+        ToastManager.showAlertDialog(ctx, mismatch, () {
+          Get.back();
+          clearAbhaSearch();
+        }, title: 'Board and ABHA Details Mismatch');
+      });
+    } else {
+      ToastManager.toast('ABHA verified successfully');
+    }
+  }
+
+  Future<void> _sendAbhaVerifyMobileOtp(
+    String abhaNumber,
+    String abhaAddress,
+  ) async {
+    ToastManager.showLoader();
+    // Ensure session + cert are available
+    if (_findAbhaAccessToken.isEmpty || _findAbhaPublicKey.isEmpty) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+    }
+
+    var result = await _repo.sendAbhaVerifyMobileOtp(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      abhaAddress: abhaAddress,
+      abhaNumber: abhaNumber,
+      txnId: _findAbhaTxnId,
+    );
+
+    // Token may have expired — refresh once and retry
+    if (_isAbdmAuthError(result)) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+      result = await _repo.sendAbhaVerifyMobileOtp(
+        accessToken: _findAbhaAccessToken,
+        publicKey: _findAbhaPublicKey,
+        abhaAddress: abhaAddress,
+        abhaNumber: abhaNumber,
+        txnId: _findAbhaTxnId,
+      );
+    }
+
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (result == null || result['error'] != null) {
+      final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
+      ToastManager.showAlertDialog(
+        Get.context!,
+        errMsg,
+        () => Get.back(),
+      );
+      return;
+    }
+
+    if (result['txnId'] != null) _findAbhaTxnId = result['txnId'] as String;
+    abhaOtpSent.value = true;
+    abhaVerified.value = false;
+    abhaResendCount++;
+    _startAbhaOtpTimer(60);
+    ToastManager.toast('OTP sent to ABHA-linked mobile');
+  }
+
+  Future<void> _sendAbhaVerifyAadhaarOtp(
+    String abhaNumber,
+    String abhaAddress,
+  ) async {
+    ToastManager.showLoader();
+    if (_findAbhaAccessToken.isEmpty || _findAbhaPublicKey.isEmpty) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+    }
+
+    var result = await _repo.sendAbhaVerifyAadhaarOtp(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      abhaAddress: abhaAddress,
+      abhaNumber: abhaNumber,
+      txnId: _findAbhaTxnId,
+    );
+
+    // Token may have expired — refresh once and retry
+    if (_isAbdmAuthError(result)) {
+      final ok = await _refreshAbhaSession();
+      if (!ok) {
+        ToastManager.hideLoader();
+        ToastManager.toast('Session creation failed. Please retry.');
+        return;
+      }
+      result = await _repo.sendAbhaVerifyAadhaarOtp(
+        accessToken: _findAbhaAccessToken,
+        publicKey: _findAbhaPublicKey,
+        abhaAddress: abhaAddress,
+        abhaNumber: abhaNumber,
+        txnId: _findAbhaTxnId,
+      );
+    }
+
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (result == null || result['error'] != null) {
+      final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
+      ToastManager.showAlertDialog(
+        Get.context!,
+        errMsg,
+        () => Get.back(),
+      );
+      return;
+    }
+
+    if (result['txnId'] != null) _findAbhaTxnId = result['txnId'] as String;
+    abhaOtpSent.value = true;
+    abhaVerified.value = false;
+    abhaResendCount++;
+    _startAbhaOtpTimer(60);
+    ToastManager.toast('OTP sent to ABHA-linked Aadhaar');
   }
 
   Future<void> verifyAbhaOtp() async {
     abhaOtpAttempts.value++;
+
+    // ── Find mode, Using Mobile: real ABDM verify ────────────────────────────
+    if (abhaSearchMode.value == 'find' && abhaValidateMode.value == 'mobile') {
+      await _verifyFindAbhaMobileOtp();
+      return;
+    }
+
+    // ── Find mode, Using Aadhaar: real ABDM verify ───────────────────────────
+    if (abhaSearchMode.value == 'find' && abhaValidateMode.value == 'aadhaar') {
+      await _verifyFindAbhaAadhaarOtp();
+      return;
+    }
+
+    // ── Verify mode, Using Mobile: real ABDM verify ──────────────────────────
+    if (abhaSearchMode.value == 'verify' && abhaValidateMode.value == 'mobile') {
+      await _verifyFindAbhaMobileOtp();
+      return;
+    }
+
+    // ── Verify mode, Using Aadhaar: real ABDM verify ──────────────────────────
+    if (abhaSearchMode.value == 'verify' && abhaValidateMode.value == 'aadhaar') {
+      await _verifyFindAbhaAadhaarOtp();
+      return;
+    }
+
+    // ── Fallback: existing mock verify ───────────────────────────────────────
     if (tecAbhaOtp.text.trim() == _generatedAbhaOtp) {
       abhaVerified.value = true;
       _abhaNameAtVerify = tecFullName.text.trim();
@@ -1074,9 +1712,142 @@ class D2DPatientRegistrationController extends GetxController {
     }
   }
 
-  void _startAbhaOtpTimer() {
+  Future<void> _verifyFindAbhaMobileOtp() async {
+    final otpVal = tecAbhaOtp.text.trim();
+    if (otpVal.length != 6) {
+      ToastManager.toast('Enter valid 6-digit OTP');
+      return;
+    }
+    if (_findAbhaTxnId.isEmpty) {
+      ToastManager.toast('Session expired. Please search again.');
+      clearAbhaSearch();
+      return;
+    }
+
+    ToastManager.showLoader();
+    final verifyResult = await _repo.verifyAbhaMobileLoginOtp(
+      accessToken: _findAbhaAccessToken,
+      publicKey: _findAbhaPublicKey,
+      txnId: _findAbhaTxnId,
+      otpValue: otpVal,
+    );
+    if (isClosed) {
+      ToastManager.hideLoader();
+      return;
+    }
+
+    if (verifyResult == null || verifyResult['error'] != null) {
+      ToastManager.hideLoader();
+      final errMsg = verifyResult?['error']?.toString() ?? '';
+      ToastManager.toast(
+        errMsg.isNotEmpty
+            ? errMsg
+            : 'OTP verification failed. Please try again.',
+      );
+      return;
+    }
+
+    // Check authResult field (native checks authResult == "success")
+    final authResult = (verifyResult['authResult'] as String?) ?? '';
+    if (authResult.isNotEmpty && authResult.toLowerCase() != 'success') {
+      ToastManager.hideLoader();
+      final msg = (verifyResult['message'] as String?) ??
+          'OTP verification failed';
+      ToastManager.toast(msg);
+      return;
+    }
+
+    // Extract auth token
+    String authToken = (verifyResult['token'] as String?) ?? '';
+    if (authToken.isEmpty) {
+      final tokens = verifyResult['tokens'] as Map<String, dynamic>?;
+      authToken = (tokens?['token'] as String?) ?? '';
+    }
+
+    if (authToken.isEmpty) {
+      ToastManager.hideLoader();
+      ToastManager.toast('Verification failed. Please try again.');
+      return;
+    }
+    _findAbhaAuthToken = authToken;
+
+    // Fetch account profile
+    final profile = await _repo.getAbhaAccountProfile(
+      accessToken: _findAbhaAccessToken,
+      authToken: _findAbhaAuthToken,
+    );
+    ToastManager.hideLoader();
+    if (isClosed) return;
+
+    if (profile == null || profile['error'] != null) {
+      ToastManager.toast('Failed to fetch ABHA profile. Please try again.');
+      return;
+    }
+
+    _findAbhaHealthCard = Map<String, dynamic>.from(profile);
+    // profile/account returns 'preferredAbhaAddress' as the ABHA address
+    _findAbhaAddress =
+        (profile['preferredAbhaAddress'] as String?) ??
+        (profile['healthId'] as String?) ??
+        (profile['ABHAAddress'] as String?) ??
+        '';
+
+    // profile/account splits DOB into yearOfBirth/monthOfBirth/dayOfBirth.
+    // Synthesise a 'dob' key so fillFromAbhaCreation can parse it.
+    if (_findAbhaHealthCard['dob'] == null) {
+      final y = _findAbhaHealthCard['yearOfBirth'] as String?;
+      final m = _findAbhaHealthCard['monthOfBirth'] as String?;
+      final d = _findAbhaHealthCard['dayOfBirth'] as String?;
+      if (y != null && m != null && d != null) {
+        _findAbhaHealthCard['dob'] =
+            '$y-${m.padLeft(2, '0')}-${d.padLeft(2, '0')}';
+      }
+    }
+
+    // Always make card available so user can view it
+    abhaCardAvailable.value = true;
+
+    // Fill the registration form; show mismatch dialog if names don't match
+    final mismatch = fillFromAbhaCreation(
+      profile: profile,
+      abhaAddress: _findAbhaAddress,
+    );
+
+    if (mismatch != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = Get.context;
+        if (ctx == null) return;
+        ToastManager.showAlertDialog(ctx, mismatch, () {
+          Get.back();
+          clearAbhaSearch();
+        }, title: 'Board and ABHA Details Mismatch');
+      });
+    } else {
+      ToastManager.toast('ABHA verified successfully');
+    }
+  }
+
+  /// Navigates to AbhaSuccessScreen to show the ABHA card after Find ABHA verification.
+  void onViewAbhaCard() {
+    final ctx = Get.context;
+    if (ctx == null) return;
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder:
+            (_) => AbhaSuccessScreen(
+              abhaAddress: _findAbhaAddress,
+              accessToken: _findAbhaAccessToken,
+              authToken: _findAbhaAuthToken,
+              healthCard: _findAbhaHealthCard,
+            ),
+      ),
+    );
+  }
+
+  void _startAbhaOtpTimer([int seconds = 120]) {
     _abhaTimer?.cancel();
-    abhaOtpTimer.value = 120;
+    abhaOtpTimer.value = seconds;
     _abhaTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (abhaOtpTimer.value <= 0) {
         timer.cancel();
@@ -1138,7 +1909,7 @@ class D2DPatientRegistrationController extends GetxController {
       ToastManager.showAlertDialog(
         Get.context!,
         'Beneficiary Reg. No must be 12 digits',
-            () {
+        () {
           Get.back();
         },
       );
@@ -1152,7 +1923,7 @@ class D2DPatientRegistrationController extends GetxController {
         ToastManager.showAlertDialog(
           Get.context!,
           'First, Middle and Last name are required',
-              () {
+          () {
             Get.back();
           },
         );
@@ -1391,6 +2162,16 @@ class D2DPatientRegistrationController extends GetxController {
 
       if (result?.status?.toLowerCase() == 'success') {
         ToastManager.toast(result?.message ?? 'Registration successful');
+
+        // Build display name (Title + Full Name)
+        final title = selectedTitle.value;
+        final fullName = tecFullName.text.trim();
+        final displayName =
+            title.isNotEmpty ? '$title $fullName' : fullName;
+
+        // Gender display value
+        final genderVal = selectedGender.value; // 'M', 'F', or 'O'
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -1400,6 +2181,12 @@ class D2DPatientRegistrationController extends GetxController {
                   siteId: navSiteId,
                   regNo: tecWorkerRegNo.text.trim(),
                   onSuccess: _clearForm,
+                  prefillRegdId: result!.regdId ?? '',
+                  prefillRegdNo: tecWorkerRegNo.text.trim(),
+                  prefillName: displayName,
+                  prefillGender: genderVal,
+                  prefillAge: tecAge.text.trim(),
+                  prefillDob: tecDob.text.trim(),
                 ),
           ),
         );

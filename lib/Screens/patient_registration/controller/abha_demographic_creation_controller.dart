@@ -1,6 +1,6 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
-import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,9 +8,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
-import 'package:s2toperational/Screens/patient_registration/screen/abha_address_creation_screen.dart';
-
-enum AbhaDemoPhase { form, mobileOtp }
+import 'package:s2toperational/Screens/patient_registration/screen/abha_success_screen.dart';
 
 class AbhaDemographicCreationController extends GetxController {
   final _repo = D2DPatientRegistrationRepository();
@@ -87,6 +85,46 @@ class AbhaDemographicCreationController extends GetxController {
     'West Bengal',
   ];
 
+  // ── State LGD code map ───────────────────────────────────────────
+  static const Map<String, String> kStateLgdCodes = {
+    'Andaman and Nicobar Islands': '35',
+    'Andhra Pradesh': '28',
+    'Arunachal Pradesh': '12',
+    'Assam': '18',
+    'Bihar': '10',
+    'Chandigarh': '4',
+    'Chhattisgarh': '22',
+    'Dadra and Nagar Haveli and Daman and Diu': '38',
+    'Delhi': '7',
+    'Goa': '30',
+    'Gujarat': '24',
+    'Haryana': '6',
+    'Himachal Pradesh': '2',
+    'Jammu and Kashmir': '1',
+    'Jharkhand': '20',
+    'Karnataka': '29',
+    'Kerala': '32',
+    'Ladakh': '37',
+    'Lakshadweep': '31',
+    'Madhya Pradesh': '23',
+    'Maharashtra': '27',
+    'Manipur': '14',
+    'Meghalaya': '17',
+    'Mizoram': '15',
+    'Nagaland': '13',
+    'Odisha': '21',
+    'Puducherry': '34',
+    'Punjab': '3',
+    'Rajasthan': '8',
+    'Sikkim': '11',
+    'Tamil Nadu': '33',
+    'Telangana': '36',
+    'Tripura': '16',
+    'Uttar Pradesh': '9',
+    'Uttarakhand': '5',
+    'West Bengal': '19',
+  };
+
   // ── Route arguments ──────────────────────────────────────────────
   String campId = '';
   String siteId = '';
@@ -99,10 +137,6 @@ class AbhaDemographicCreationController extends GetxController {
   final sessionLoading = true.obs;
   final sessionReady = false.obs;
   final sessionError = ''.obs;
-
-  // ── Flow state ───────────────────────────────────────────────────
-  final phase = AbhaDemoPhase.form.obs;
-  final otpInfoMsg = ''.obs;
 
   // ── API tokens / data ────────────────────────────────────────────
   String? accessToken;
@@ -119,12 +153,12 @@ class AbhaDemographicCreationController extends GetxController {
   final districtCtrl = TextEditingController();
   final pincodeCtrl = TextEditingController();
   final mobileCtrl = TextEditingController();
-  final otpCtrl = TextEditingController();
 
   // ── Dropdown selections ──────────────────────────────────────────
   final selectedGender = ''.obs; // 'M', 'F', 'O'
   final selectedState = ''.obs;
   final districtList = <DistrictOutput>[].obs;
+  String selectedDistrictCode = ''; // LGD code of the selected district
 
   // ── Consent checkboxes ───────────────────────────────────────────
   final cbAadhaar = false.obs;
@@ -142,12 +176,6 @@ class AbhaDemographicCreationController extends GetxController {
       cbAnon1.value &&
       cbAnon2.value;
 
-  // ── Timer ────────────────────────────────────────────────────────
-  Timer? _timer;
-  final timerSeconds = 60.obs;
-  final timerFinished = false.obs;
-  int resendMobileCount = 0;
-
   // ── Lifecycle ────────────────────────────────────────────────────
 
   @override
@@ -158,7 +186,6 @@ class AbhaDemographicCreationController extends GetxController {
 
   @override
   void onClose() {
-    _timer?.cancel();
     aadhaarCtrl.dispose();
     nameCtrl.dispose();
     dobCtrl.dispose();
@@ -166,7 +193,6 @@ class AbhaDemographicCreationController extends GetxController {
     districtCtrl.dispose();
     pincodeCtrl.dispose();
     mobileCtrl.dispose();
-    otpCtrl.dispose();
     super.onClose();
   }
 
@@ -202,32 +228,17 @@ class AbhaDemographicCreationController extends GetxController {
     cbAnon2.value = value;
   }
 
-  // ── Timer ────────────────────────────────────────────────────────
-
-  void _startTimer() {
-    _timer?.cancel();
-    timerSeconds.value = 60;
-    timerFinished.value = false;
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      timerSeconds.value--;
-      if (timerSeconds.value <= 0) {
-        timerFinished.value = true;
-        t.cancel();
-      }
-    });
-  }
-
   // ── District list ────────────────────────────────────────────────
 
   Future<void> fetchDistrictList() async {
-    if (districtList.isNotEmpty) return; // already loaded
+    if (districtList.isNotEmpty) return;
     final result = await _repo.getDistrictListForReg();
     if (!isClosed && result?.output != null) {
       districtList.assignAll(result!.output!);
     }
   }
 
-  // ── Validate & submit demographic form ───────────────────────────
+  // ── Validate & submit ────────────────────────────────────────────
 
   Future<void> onCreateAbha() async {
     if (aadhaarCtrl.text.trim().length != 12) {
@@ -255,7 +266,7 @@ class AbhaDemographicCreationController extends GetxController {
       return;
     }
     if (districtCtrl.text.trim().isEmpty) {
-      ToastManager.toast('Please enter district');
+      ToastManager.toast('Please select district');
       return;
     }
     if (pincodeCtrl.text.trim().length != 6) {
@@ -271,8 +282,19 @@ class AbhaDemographicCreationController extends GetxController {
       return;
     }
 
-    // Convert DOB from yyyy/MM/dd → yyyy-MM-dd for ABDM API
-    final dobDash = dobCtrl.text.trim().replaceAll('/', '-');
+    // Convert DOB from yyyy/MM/dd → dd-MM-yyyy (matches native app API format)
+    final parts = dobCtrl.text.trim().split('/');
+    final dobForApi = parts.length == 3 ? '${parts[2]}-${parts[1]}-${parts[0]}' : dobCtrl.text.trim();
+
+    final stateCode = kStateLgdCodes[selectedState.value] ?? '';
+    if (stateCode.isEmpty) {
+      ToastManager.toast('State code not found. Please re-select state.');
+      return;
+    }
+    if (selectedDistrictCode.isEmpty) {
+      ToastManager.toast('Please re-select district');
+      return;
+    }
 
     ToastManager.showLoader();
     final result = await _repo.enrolByDemographic(
@@ -280,37 +302,25 @@ class AbhaDemographicCreationController extends GetxController {
       publicKey: publicKey!,
       aadhaarNumber: aadhaarCtrl.text.trim(),
       name: nameCtrl.text.trim(),
-      dob: dobDash,
+      dob: dobForApi,
       gender: selectedGender.value,
       address: addressCtrl.text.trim(),
-      state: selectedState.value,
-      district: districtCtrl.text.trim(),
+      stateCode: stateCode,
+      districtCode: selectedDistrictCode,
       pinCode: pincodeCtrl.text.trim(),
+      mobile: mobileCtrl.text.trim(),
     );
     ToastManager.hideLoader();
     if (isClosed) return;
 
-    if (result != null && result['error'] == null && result['txnId'] != null) {
-      txnId = result['txnId'] as String;
-      final tokens = result['tokens'] as Map<String, dynamic>?;
-      authToken = tokens?['token'] as String?;
+    // Demographic flow response has healthIdNumber at root level (no txnId at root).
+    // txnId is embedded inside the JWT token claims.
+    if (result != null && result['error'] == null && result['healthIdNumber'] != null) {
+      authToken = result['token'] as String?;
+      txnId = _txnIdFromJwt(authToken) ?? '';
       enrollResponse = Map<String, dynamic>.from(result);
-
-      final profile = result['ABHAProfile'] as Map<String, dynamic>?;
-      final profileMobile = profile?['mobile'] as String?;
-      final enteredMobile = mobileCtrl.text.trim();
-
-      if (profileMobile == null ||
-          profileMobile.isEmpty ||
-          profileMobile != enteredMobile) {
-        otpCtrl.clear();
-        otpInfoMsg.value =
-            'Entered mobile is not linked with Aadhaar. Please enter OTP to verify.';
-        resendMobileCount = 0;
-        await _sendMobileOtp();
-      } else {
-        await _saveToServer();
-      }
+      // Demographic flow: no OTP step, no server save — navigate directly
+      await _navigateToAddressCreation();
     } else {
       final err = result?['error']?.toString() ?? '';
       ToastManager.toast(
@@ -319,120 +329,48 @@ class AbhaDemographicCreationController extends GetxController {
     }
   }
 
-  // ── Mobile OTP ───────────────────────────────────────────────────
+  // ── Save to server & navigate to address creation ────────────────
 
-  Future<void> _sendMobileOtp() async {
-    final mobile = mobileCtrl.text.trim();
-    ToastManager.showLoader();
-    final result = await _repo.sendMobileOtpForAbha(
-      accessToken: accessToken!,
-      publicKey: publicKey!,
-      txnId: txnId!,
-      mobile: mobile,
-    );
-    ToastManager.hideLoader();
+  // Native app navigates directly to ABHAHealthIDActivity (success/card screen)
+  // after demographic enrollment — no address creation step needed.
+  Future<void> _navigateToAddressCreation() async {
+    if (enrollResponse == null) return;
     if (isClosed) return;
-    if (result != null && result['error'] == null && result['txnId'] != null) {
-      txnId = result['txnId'] as String;
-      resendMobileCount++;
-      _startTimer();
-      otpInfoMsg.value =
-          result['message']?.toString() ?? 'OTP sent to your mobile number';
-      phase.value = AbhaDemoPhase.mobileOtp;
-    } else {
-      ToastManager.toast('Unable to send OTP to mobile');
-    }
-  }
-
-  Future<void> onVerifyMobileOtp() async {
-    final otp = otpCtrl.text.trim();
-    if (otp.length != 6) {
-      ToastManager.toast('Please enter the 6-digit OTP');
-      return;
-    }
-    ToastManager.showLoader();
-    final result = await _repo.verifyMobileOtpForAbha(
-      accessToken: accessToken!,
-      publicKey: publicKey!,
-      txnId: txnId!,
-      otpValue: otp,
-    );
-    ToastManager.hideLoader();
-    if (isClosed) return;
-    if (result != null &&
-        result['error'] == null &&
-        result['txnId'] != null &&
-        result['authResult']?.toString().toLowerCase() == 'success') {
-      txnId = result['txnId'] as String;
-      await _saveToServer();
-    } else {
-      ToastManager.toast(
-          'Unable to verify OTP: ${result?['message'] ?? ''}');
-    }
-  }
-
-  Future<void> onResend() async {
-    if (resendMobileCount >= 3) {
-      Get.dialog(
-        AlertDialog(
-          content: const Text('You have reached the OTP resend limit'),
-          actions: [
-            TextButton(onPressed: Get.back, child: const Text('OK')),
-          ],
+    final snapshot = Map<String, dynamic>.from(enrollResponse!);
+    final abhaAddress = snapshot['healthId'] as String? ?? '';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.context == null) return;
+      Navigator.pushReplacement(
+        Get.context!,
+        MaterialPageRoute(
+          builder: (_) => AbhaSuccessScreen(
+            abhaAddress: abhaAddress,
+            accessToken: accessToken!,
+            authToken: authToken ?? '',
+            healthCard: snapshot,
+          ),
         ),
       );
-      return;
-    }
-    await _sendMobileOtp();
+    });
   }
 
-  // ── Save to server & navigate ─────────────────────────────────────
+  // ── JWT helper ───────────────────────────────────────────────────
 
-  Future<void> _saveToServer() async {
-    if (enrollResponse == null) return;
-    ToastManager.showLoader();
-    final payload = Map<String, dynamic>.from(enrollResponse!);
-    payload['createdBy'] = empCode;
-    payload['campId'] = int.tryParse(campId) ?? 0;
-    final ok = await _repo.insertAbhaRegistration(payload: payload);
-    ToastManager.hideLoader();
-    if (isClosed) return;
-    if (ok) {
-      _timer?.cancel();
-      final snapshot = Map<String, dynamic>.from(enrollResponse!);
-      final mobile = mobileCtrl.text.trim();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (Get.context == null) return;
-        Navigator.pushReplacement(
-          Get.context!,
-          MaterialPageRoute(
-            builder: (_) => AbhaAddressCreationScreen(
-              accessToken: accessToken!,
-              txnId: txnId!,
-              authToken: authToken ?? '',
-              healthCard: snapshot,
-              isNew: snapshot['isNew'] == false ||
-                      snapshot['isNew']?.toString() == 'false'
-                  ? false
-                  : true,
-              existingABHAAddress:
-                  snapshot['existingABHAAddress'] as String? ?? '',
-              mobile: mobile,
-              campId: campId,
-              siteId: siteId,
-              distLgdCode: distLgdCode,
-              district: district,
-              campType: campType,
-            ),
-          ),
-        );
-      });
-    } else {
-      ToastManager.toast('Failed to save ABHA details. Please try again.');
+  /// Extracts `txnId` from the JWT payload (middle part, base64-decoded).
+  String? _txnIdFromJwt(String? token) {
+    if (token == null || token.isEmpty) return null;
+    try {
+      final parts = token.split('.');
+      if (parts.length < 2) return null;
+      final payload = base64.normalize(parts[1]);
+      final claims = jsonDecode(utf8.decode(base64.decode(payload))) as Map<String, dynamic>;
+      return claims['txnId'] as String?;
+    } catch (_) {
+      return null;
     }
   }
 
-  // ── DOB helper: picks date and formats as yyyy/MM/dd ─────────────
+  // ── DOB picker ───────────────────────────────────────────────────
 
   Future<void> pickDob(BuildContext context) async {
     final now = DateTime.now();
