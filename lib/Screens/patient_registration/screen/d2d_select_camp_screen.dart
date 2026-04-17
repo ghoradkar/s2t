@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
@@ -217,7 +218,14 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
   // );
 
   void _showDistrictPicker(BuildContext context) {
-    if (c.districtList.isEmpty) return;
+    if (c.isLoadingDist.value) {
+      ToastManager.toast('Loading districts, please wait...');
+      return;
+    }
+    if (c.districtList.isEmpty) {
+      ToastManager.toast('No districts available');
+      return;
+    }
     showModalBottomSheet(
       context: context,
       backgroundColor: kWhiteColor,
@@ -225,40 +233,61 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) {
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.55,
-          ),
-          child: ListView.separated(
-            itemCount: c.districtList.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemBuilder: (_, i) {
-              final item = c.districtList[i];
-              return ListTile(
-                title:
-                // Text(
-                //   item.distName ?? '--',
-                //   style: TextStyle(
-                //     fontFamily: FontConstants.interFonts,
-                //     fontSize: 14.sp,
-                //     color: kTextColor,
-                //   ),
-                // ),
-                  CommonText(
-                    text: item.distName ?? '--',
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    textColor: kTextColor,
-                    textAlign: TextAlign.start,
-                  ),
-                trailing: const Icon(Icons.chevron_right, color: kPrimaryColor),
-                onTap: () {
-                  Navigator.pop(context);
-                  c.onDistrictSelected(item);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 10.h),
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: kTextFieldBorder,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            SizedBox(height: 12.h),
+            CommonText(
+              text: 'Select District',
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w600,
+              textColor: kTextColor,
+              textAlign: TextAlign.center,
+            ),
+            const Divider(),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: c.districtList.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
+                itemBuilder: (_, i) {
+                  final item = c.districtList[i];
+                  final isSelected =
+                      c.selectedDistrict.value?.distLgdCode == item.distLgdCode;
+                  return ListTile(
+                    title: CommonText(
+                      text: item.distName ?? '--',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      textColor: isSelected ? kPrimaryColor : kTextColor,
+                      textAlign: TextAlign.start,
+                    ),
+                    trailing:
+                        isSelected
+                            ? const Icon(Icons.check, color: kPrimaryColor)
+                            : const Icon(
+                              Icons.chevron_right,
+                              color: kPrimaryColor,
+                            ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      c.onDistrictSelected(item);
+                    },
+                  );
                 },
-              );
-            },
-          ),
+              ),
+            ),
+            SizedBox(height: 16.h),
+          ],
         );
       },
     );
@@ -276,78 +305,86 @@ class _D2DCampCard extends StatelessWidget {
     final isCheckingThis =
         controller.isCheckingAttendance.value &&
         controller.checkingCampId.value == (camp.campId ?? '');
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: kWhiteColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: kPrimaryColor.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: kPrimaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: CommonText(
-                  text: camp.campId ?? '--',
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  textColor: kPrimaryColor,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const Spacer(),
-              CommonText(
-                text: camp.distLgdCode ?? '--',
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
-                textColor: kLabelTextColor,
-                textAlign: TextAlign.right,
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            children: [
-              Icon(Icons.map_rounded, color: kPrimaryColor, size: 16),
-              SizedBox(width: 6.w),
-              Expanded(
-                child: CommonText(
-                  text: camp.campLocation ?? '--',
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  textColor: kTextColor,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          if (isCheckingThis)
-            LinearProgressIndicator(
-              color: kPrimaryColor,
-              backgroundColor: kPrimaryColor.withValues(alpha: 0.2),
-            ).paddingOnly(bottom: 8.h),
-          AppButtonWithIcon(
-            title: 'Select This Camp',
-            mHeight: 40,
-            mWidth: double.infinity,
-            icon: const Icon(
-              Icons.arrow_forward_rounded,
-              color: Colors.white,
-              size: 18,
+    return InkWell(
+      onTap: () {
+        controller.onCampTapped(camp, context);
+      },
+      child: Container(
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: kWhiteColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: kPrimaryColor.withValues(alpha: 0.15)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
             ),
-            onTap: () => controller.onCampTapped(camp, context),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _cardRow(icHashIcon, 'Camp ID', camp.campId ?? '--'),
+            _cardRow(icMapPin, 'District', camp.distName ?? '--'),
+            _cardRow(
+              icCampCreation,
+              'Camp Type',
+              camp.campTypeDescription ?? '--',
+            ),
+            _cardRow(iconFile, 'Camp Name', camp.campName ?? '--'),
+            _cardRow(iconFile, 'Initiated By', camp.initiatedBy ?? '--'),
+            _cardRow(iconFile, 'Created By', camp.campCreatedBy ?? '--'),
+            SizedBox(height: 12.h),
+            if (isCheckingThis)
+              LinearProgressIndicator(
+                color: kPrimaryColor,
+                backgroundColor: kPrimaryColor.withValues(alpha: 0.2),
+              ).paddingOnly(bottom: 8.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _cardRow(String icon, String heading, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 6.h),
+      child: Row(
+        children: [
+          Image.asset(icon, width: 20.w, height: 20.h).paddingOnly(right: 6.w),
+          CommonText(
+            text: '$heading : ',
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+            textColor: kBlackColor,
+            textAlign: TextAlign.start,
           ),
+          Expanded(
+            child: CommonText(
+              text: value,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.normal,
+              textColor: kTextColor,
+              textAlign: TextAlign.start,
+            ),
+          ),
+          if (heading == 'Camp ID')
+            Container(
+              width: 28.w,
+              height: 28.w,
+              decoration: BoxDecoration(
+                color: kPrimaryColor.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.remove_red_eye_outlined,
+                  color: kWhiteColor,
+                  size: 16,
+                ),
+              ),
+            ),
         ],
       ),
     );

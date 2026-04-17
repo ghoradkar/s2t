@@ -66,6 +66,15 @@ class UserAttendancesUsingSitedetailsIDOutput {
   int? campTypeID;
   int? screeningPatientID;
 
+  // Extended fields for D2D patient registration list
+  String? abhaNumber;
+  String? abhaAddress;
+  String? localAddress;
+  String? permanentAddress;
+  int? isDependent;
+  String? isCall;
+  String? relName;
+
   UserAttendancesUsingSitedetailsIDOutput({
     this.createdDate,
     this.campId,
@@ -128,6 +137,28 @@ class UserAttendancesUsingSitedetailsIDOutput {
     campType = json['CampType'];
     campTypeID = json['CampTypeID'];
     screeningPatientID = json['ScreeningPatientID'];
+    abhaNumber = json['ABHANumber']?.toString();
+    abhaAddress = json['ABHAAddress']?.toString();
+    localAddress = json['LocalAddress']?.toString();
+    permanentAddress = json['PermanentAddress']?.toString();
+    // Handle int, bool, string, and fallback to lowercase key
+    final depRaw = json['IsDependent'] ?? json['isDependent'];
+    if (depRaw is int) {
+      isDependent = depRaw;
+    } else if (depRaw is bool) {
+      isDependent = depRaw ? 1 : 0;
+    } else if (depRaw != null) {
+      final s = depRaw.toString().toLowerCase().trim();
+      if (s == 'true' || s == '1') {
+        isDependent = 1;
+      } else if (s == 'false' || s == '0') {
+        isDependent = 0;
+      } else {
+        isDependent = int.tryParse(s);
+      }
+    }
+    isCall = json['IsCall']?.toString();
+    relName = json['RelName']?.toString();
   }
 
   Map<String, dynamic> toJson() {

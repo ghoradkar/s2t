@@ -19,29 +19,47 @@ import 'package:s2toperational/Screens/patient_registration/model/d2d_camp_respo
 import 'package:s2toperational/Screens/patient_registration/model/d2d_registration_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
+import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
+import 'package:s2toperational/Screens/patient_registration/model/get_queue_response_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
 
 class D2DPatientRegistrationRepository {
   final _api = APIManager();
 
-  Future<DistrictListResponse?> getDistrictList({required String empCode}) async {
+  Future<DistrictListResponse?> getDistrictList({
+    required String empCode,
+    required String subOrgId,
+    required String desgId,
+  }) async {
     final completer = Completer<DistrictListResponse?>();
     final url = Uri.parse(
-      '${APIManager.kD2DBaseURL}${APIConstants.kGetDistrictByUserID}',
+      '${APIManager.kD2DBaseURL}${APIConstants.kBindDistrict}',
     );
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
         url,
-        body: {'STATELGDCODE': '27', 'USERID': empCode},
+        body: {
+          'SubOrgId': subOrgId,
+          'UserID': empCode,
+          'DESGID': desgId,
+          'DIVID': '0',
+          'DISTLGDCODE': '0',
+        },
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[D2D-dist] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 500))}');
       final decoded = json.decode(response.body);
       final result = DistrictListResponse.fromJson(decoded);
+      // ignore: avoid_print
+      print('[D2D-dist] parsed status=${result.status} count=${result.output?.length}');
       completer.complete(
-        (result.status?.toLowerCase() == 'success') ? result : null,
+        (result.output?.isNotEmpty == true) ? result : null,
       );
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[D2D-dist] error=$e');
       completer.complete(null);
     } finally {
       ioClient.close();
@@ -55,37 +73,61 @@ class D2DPatientRegistrationRepository {
     required String distLgdCode,
     required String userId,
     required String desgId,
+    String labCode = '0',
   }) async {
-    final completer = Completer<D2DCampResponse?>();
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetCampDetailsonLabForDoorToDoorV2}',
     );
+    final body = {
+      'CampDate': campDate,
+      'LabCode': labCode,
+      'SubOrgId': subOrgId,
+      'Divison': '0',
+      'DISTLGDCODE': distLgdCode,
+      'USERID': userId,
+      'DesgId': desgId,
+    };
+    // ignore: avoid_print
+    print('[D2D-camp] url=$url params=$body');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
         url,
-        body: {
-          'CampDate': campDate,
-          'LabCode': '0',
-          'SubOrgId': subOrgId,
-          'Param4': '0',
-          'DistLgdCode': distLgdCode,
-          'UserId': userId,
-          'DesignId': desgId,
-        },
+        body: body,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
-      final decoded = json.decode(response.body);
-      final result = D2DCampResponse.fromJson(decoded);
-      completer.complete(
-        (result.status?.toLowerCase() == 'success') ? result : null,
-      );
-    } catch (_) {
-      completer.complete(null);
+      // ignore: avoid_print
+      print('[D2D-camp] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 600))}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final status = decoded['status']?.toString();
+      final rawList = decoded['output'] as List<dynamic>?;
+      // ignore: avoid_print
+      print('[D2D-camp] parsed status=$status rawCount=${rawList?.length}');
+      if (status?.toLowerCase() != 'success' || rawList == null) return null;
+      final camps = rawList.map((e) {
+        final m = e as Map<String, dynamic>;
+        return D2DCampOutput(
+          campId: m['CampId']?.toString(),
+          campLocation: m['CampLocation']?.toString(),
+          siteDetailId: m['SiteDetailId']?.toString(),
+          distLgdCode: m['DISTLGDCODE']?.toString(),
+          distName: m['DISTNAME']?.toString(),
+          campType: m['CampType']?.toString(),
+          campTypeDescription: m['CampTypeDescription']?.toString(),
+          campName: m['CampName']?.toString(),
+          initiatedBy: m['InitiatedBy1']?.toString(),
+          campCreatedBy: m['CampCreatedBy']?.toString(),
+          isCampClosed: m['IsCampClosed']?.toString() ?? '0',
+        );
+      }).toList();
+      return D2DCampResponse(status: status, output: camps);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[D2D-camp] error=$e');
+      return null;
     } finally {
       ioClient.close();
     }
-    return completer.future;
   }
 
   Future<AttendanceStatusResponse?> checkAttendanceStatus({
@@ -1435,6 +1477,81 @@ class D2DPatientRegistrationRepository {
       final result = D2DRegistrationResponse.fromJson(decoded);
       return (result.status?.toLowerCase() == 'success') ? result : result;
     } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Fetches registered patient list for the given camp.
+  /// [campType]: '1' = Regular Camp, '3' = D2D Camp.
+  /// Mirrors native AttendanceMarkedPatients_Activity GetUserAttendancesUsingSitedetailsID.
+  Future<UserAttendancesUsingSitedetailsIDResponse?> getRegisteredPatientList({
+    required String campId,
+    required String empCode,
+    required String campType,
+  }) async {
+    // Regular camp → GetUserAttendancesUsingSitedetailsID_New
+    // D2D camp     → GetUserAttendancesUsingSitedetailsID_Anti
+    final isRegular = campType == '1';
+    final method = isRegular
+        ? APIConstants.kGetUserAttendancesUsingSitedetailsIDNew
+        : APIConstants.kGetUserAttendancesUsingSitedetailsIDAnti;
+    final url = Uri.parse('${APIManager.kConstructionWorkerBaseURL}$method');
+
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {
+          'EmpCode': campId,
+          'DistrictId': '0',
+          'TestId': '0',
+          'UserId': empCode,
+          'TeamId': '',
+        },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      // ignore: avoid_print
+      print('[getRegisteredPatientList] url=$url status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 400))}');
+      final decoded = json.decode(response.body);
+      final decodedMap = decoded as Map<String, dynamic>;
+      // Debug: log first item keys to verify field names
+      if (decodedMap['output'] is List && (decodedMap['output'] as List).isNotEmpty) {
+        final first = (decodedMap['output'] as List).first as Map<String, dynamic>;
+        // ignore: avoid_print
+        print('[getRegisteredPatientList] first item IsDependent=${first['IsDependent']} (${first['IsDependent']?.runtimeType}) isDependent=${first['isDependent']}');
+      }
+      return UserAttendancesUsingSitedetailsIDResponse.fromJson(decodedMap);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getRegisteredPatientList] error=$e');
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  Future<GetQueueResponseModel?> getPatientQueue({
+    required String campId,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetPatientQueue}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'Campid': campId},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      // ignore: avoid_print
+      print('[getPatientQueue] status=${response.statusCode} body=${response.body}');
+      final decoded = json.decode(response.body);
+      return GetQueueResponseModel.fromJson(decoded as Map<String, dynamic>);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getPatientQueue] error=$e');
       return null;
     } finally {
       ioClient.close();

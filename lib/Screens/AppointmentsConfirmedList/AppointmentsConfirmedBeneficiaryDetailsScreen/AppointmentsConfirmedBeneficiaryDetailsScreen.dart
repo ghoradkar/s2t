@@ -3,10 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppDropdownTextfield.dart';
+import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/d2d_select_camp_screen.dart';
 
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/AppoinmentExpectedBeneficiariesResponse/AppoinmentExpectedBeneficiariesResponse.dart';
@@ -28,9 +32,11 @@ class AppointmentsConfirmedBeneficiaryDetailsScreen extends StatefulWidget {
   AppointmentsConfirmedBeneficiaryDetailsScreen({
     super.key,
     required this.selectedBeneficiary,
+    this.isPatientRegistration = false,
   });
 
   AppoinmentExpectedBeneficiariesOutput selectedBeneficiary;
+  final bool isPatientRegistration;
   @override
   State<AppointmentsConfirmedBeneficiaryDetailsScreen> createState() =>
       _AppointmentsConfirmedBeneficiaryDetailsScreenState();
@@ -216,7 +222,9 @@ class _AppointmentsConfirmedBeneficiaryDetailsScreenState
                         child: AppActiveButton(
                           buttontitle: "Register Beneficiary",
                           onTap: () {
-                            // saveDidPressed();
+                            if (widget.isPatientRegistration) {
+                              _showRegisterBeneficiaryAlert();
+                            }
                           },
                         ),
                       ),
@@ -232,6 +240,134 @@ class _AppointmentsConfirmedBeneficiaryDetailsScreenState
     );
   }
 
+
+  void _showRegisterBeneficiaryAlert() {
+    final beneficiaryNo = widget.selectedBeneficiary.beneficiaryNo ?? '';
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          contentPadding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
+          actionsPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'नोंद',
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                'कृपया खालील लाभार्थी नोंदणी क्रमांक नोंद करा किंवा कॉपी करा. '
+                'पेशंट नोंदणी स्क्रीनमध्ये Beneficiary Reg No. फील्डमध्ये हा क्रमांक वापरा.',
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 13.sp,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Container(
+                width: double.infinity,
+                padding:
+                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Text(
+                  beneficiaryNo,
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                    letterSpacing: 0.5,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(height: 16.h),
+            ],
+          ),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: beneficiaryNo));
+                      ToastManager.toast('Copied to clipboard');
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: kPrimaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      'Copy',
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      Get.delete<D2DSelectCampController>(force: true);
+                      final sc = Get.put(D2DSelectCampController());
+                      sc.navBeneficiaryNo = beneficiaryNo.toString();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const D2DSelectCampScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      'Next',
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void getBeneficiaryData() {
     Map<String, String> params = {

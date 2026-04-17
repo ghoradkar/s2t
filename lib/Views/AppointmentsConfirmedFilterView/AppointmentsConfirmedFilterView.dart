@@ -24,6 +24,7 @@ class AppointmentsConfirmedFilterView extends StatefulWidget {
   AppointmentStatusOutput? selectedAppointmentStatus;
   String selectedCampDate = "";
   TeamCCOutput? selectedTeam;
+  final bool showTeam;
 
   AppointmentsConfirmedFilterView({
     super.key,
@@ -31,6 +32,7 @@ class AppointmentsConfirmedFilterView extends StatefulWidget {
     required this.selectedCampDate,
     required this.selectedTeam,
     required this.onTapApply,
+    this.showTeam = true,
   });
 
   @override
@@ -155,51 +157,45 @@ class _AppointmentsConfirmedFilterViewState
             ),
           ),
 
-          const SizedBox(height: 15),
-          // AppDropdownTextfield(
-          //   icon: icUsersGroup,
-          //   titleHeaderString: "Team",
-          //   valueString: widget.selectedTeam?.teamName ?? "",
-          //   onTap: () {
-          //     fetchTeamData();
-          //   },
-          // ),
-          AppTextField(
-            onTap: () {
-              fetchTeamData();
-            },
-            controller: TextEditingController(
-              text: widget.selectedTeam?.teamName ?? "",
-            ),
-            readOnly: true,
-            hint: 'Team',
-            label: CommonText(
-              text: 'Team',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.normal,
-              textColor: kBlackColor,
-              textAlign: TextAlign.start,
-            ),
-            hintStyle: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-              fontFamily: FontConstants.interFonts,
-            ),
-            fieldRadius: 10,
-            prefixIcon: SizedBox(
-              height: 20.h,
-              width: 20.w,
-              child: Center(
-                child: Image.asset(
-                  icUsersGroup,
-                  height: 24.h,
-                  width: 24.w,
-                  fit: BoxFit.contain,
+          if (widget.showTeam) ...[
+            const SizedBox(height: 15),
+            AppTextField(
+              onTap: () {
+                fetchTeamData();
+              },
+              controller: TextEditingController(
+                text: widget.selectedTeam?.teamName ?? "",
+              ),
+              readOnly: true,
+              hint: 'Team',
+              label: CommonText(
+                text: 'Team',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.normal,
+                textColor: kBlackColor,
+                textAlign: TextAlign.start,
+              ),
+              hintStyle: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                fontFamily: FontConstants.interFonts,
+              ),
+              fieldRadius: 10,
+              prefixIcon: SizedBox(
+                height: 20.h,
+                width: 20.w,
+                child: Center(
+                  child: Image.asset(
+                    icUsersGroup,
+                    height: 24.h,
+                    width: 24.w,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
+              suffixIcon: Icon(Icons.keyboard_arrow_down),
             ),
-            suffixIcon: Icon(Icons.keyboard_arrow_down),
-          ),
+          ],
           const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),

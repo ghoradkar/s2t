@@ -68,6 +68,185 @@ class _AppointmentsConfirmedListScreenState
     callAPI();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    return KeyboardDismissOnTap(
+      child: Scaffold(
+        appBar: mAppBar(
+          scTitle: 'Appointments Confirmed List',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () {
+            Navigator.pop(context);
+          },
+          showActions: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: GestureDetector(
+                onTap: () {
+                  showAppointmentFilterBottomSheet();
+                },
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Image.asset(icFilter),
+                ),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton:
+            widget.dashboardType == DashboardMenu.PatientRegistration
+                ? FloatingActionButton.extended(
+                  backgroundColor: kPrimaryColor,
+                  icon: const Icon(
+                    Icons.person_add_rounded,
+                    color: Colors.white,
+                  ),
+                  label: CommonText(
+                    text: 'Register Patient',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    textColor: Colors.white,
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    Get.delete<D2DSelectCampController>(force: true);
+                    Get.put(D2DSelectCampController());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const D2DSelectCampScreen(),
+                      ),
+                    );
+                  },
+                )
+                : null,
+        body: AnnotatedRegion(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: kPrimaryColor,
+            statusBarBrightness: Brightness.light,
+            statusBarIconBrightness: Brightness.light,
+          ),
+
+          child: Container(
+            color: Colors.white,
+            height: SizeConfig.screenHeight,
+            width: SizeConfig.screenWidth,
+            child: Column(
+              children: [
+                Container(
+                  width: SizeConfig.screenWidth,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 4,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: kBlackColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.w500,
+                            fontSize: responsiveFont(14),
+                          ),
+                          controller: searchTextField,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 6),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            hintText:
+                                "Search Beneficiary No/Worker Name/MobileNo/Area/Pincode",
+                          ),
+                          onChanged: (text) {
+                            print('Entered text: $text');
+                            listOfSearchBeneficiaries = searchByDescEn(text);
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Image.asset(icSearch),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Total Beneficaires : ${listOfSearchBeneficiaries.length}",
+                    style: TextStyle(
+                      color: kBlackColor,
+                      fontFamily: FontConstants.interFonts,
+                      fontWeight: FontWeight.bold,
+                      fontSize: responsiveFont(16),
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                const SizedBox(height: 4),
+
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
+                    child: ListView.builder(
+                      itemCount: listOfSearchBeneficiaries.length,
+                      itemBuilder: (context, index) {
+                        AppoinmentExpectedBeneficiariesOutput obj =
+                            listOfSearchBeneficiaries[index];
+                        return GestureDetector(
+                          onTap: () {
+                            final canNavigate =
+                                dESGID == 35 ||
+                                widget.dashboardType ==
+                                    DashboardMenu.PatientRegistration;
+                            if (canNavigate) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          AppointmentsConfirmedBeneficiaryDetailsScreen(
+                                            selectedBeneficiary: obj,
+                                            isPatientRegistration:
+                                                widget.dashboardType ==
+                                                DashboardMenu
+                                                    .PatientRegistration,
+                                          ),
+                                ),
+                              );
+                            }
+                          },
+                          child: AppointmentsConfirmedRow(obj: obj),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ).paddingSymmetric(vertical: 6, horizontal: 12),
+          ),
+        ),
+      ),
+    );
+  }
+
   void callAPI() {
     ToastManager.showLoader();
     if (DataProvider().getRegularCamp()) {
@@ -172,6 +351,7 @@ class _AppointmentsConfirmedListScreenState
             selectedAppointmentStatus: selectedAppointmentStatus,
             selectedCampDate: selectedCampDate,
             selectedTeam: selectedTeam,
+            showTeam: widget.dashboardType != DashboardMenu.PatientRegistration,
             onTapApply: (p0, p1, p2) {
               selectedAppointmentStatus = p0;
               selectedCampDate = p1;
@@ -235,201 +415,6 @@ class _AppointmentsConfirmedListScreenState
           mobNo.contains(lowerQuery) ||
           area.contains(lowerQuery);
     }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return KeyboardDismissOnTap(
-      child: Scaffold(
-        appBar: mAppBar(
-          scTitle: 'Appointments Confirmed List',
-          leadingIcon: iconBackArrow,
-          onLeadingIconClick: () {
-            Navigator.pop(context);
-          },
-          showActions: true,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-              child: GestureDetector(
-                onTap: () {
-                  showAppointmentFilterBottomSheet();
-                },
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: Image.asset(icFilter),
-                ),
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton:
-            widget.dashboardType == DashboardMenu.PatientRegistration
-                ? FloatingActionButton.extended(
-                  backgroundColor: kPrimaryColor,
-                  icon: const Icon(Icons.person_add_rounded, color: Colors.white),
-                  label: CommonText(
-                    text: 'Register Patient',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                    textColor: Colors.white,
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () {
-                    Get.delete<D2DSelectCampController>(force: true);
-                    Get.put(D2DSelectCampController());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const D2DSelectCampScreen(),
-                      ),
-                    );
-                  },
-                )
-                : null,
-        body: AnnotatedRegion(
-          value: const SystemUiOverlayStyle(
-            statusBarColor: kPrimaryColor,
-            statusBarBrightness: Brightness.light,
-            statusBarIconBrightness: Brightness.light,
-          ),
-
-          child: Container(
-            color: Colors.white,
-            height: SizeConfig.screenHeight,
-            width: SizeConfig.screenWidth,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 14,
-                  right: 8,
-                  left: 8,
-                  bottom: 0,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: SizeConfig.screenWidth,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.15),
-                              blurRadius: 4,
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  color: kBlackColor,
-                                  fontFamily: FontConstants.interFonts,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: responsiveFont(14),
-                                ),
-                                controller: searchTextField,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.only(left: 6),
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  hintText:
-                                      "Search Beneficiary No/Worker Name/MobileNo/Area/Pincode",
-                                ),
-                                onChanged: (text) {
-                                  print('Entered text: $text');
-                                  listOfSearchBeneficiaries = searchByDescEn(
-                                    text,
-                                  );
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: Image.asset(icSearch),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Total Beneficaires : ${listOfSearchBeneficiaries.length}",
-                          style: TextStyle(
-                            color: kBlackColor,
-                            fontFamily: FontConstants.interFonts,
-                            fontWeight: FontWeight.bold,
-                            fontSize: responsiveFont(16),
-                          ),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-
-                      // showTeamDropDown == true
-                      //     ? const SizedBox(height: 12)
-                      //     : Container(),
-                      // showTeamDropDown == true
-                      //     ? AppDropdownTextfield(
-                      //       icon: icUsersGroup,
-                      //       titleHeaderString: "Team",
-                      //       valueString:
-                      //           selectedAppointmentStatus?.appointmentStatus ??
-                      //           "",
-                      //       onTap: () {
-                      //         fetchTeamData();
-                      //       },
-                      //     )
-                      //     : Container(),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
-                          child: ListView.builder(
-                            itemCount: listOfSearchBeneficiaries.length,
-                            itemBuilder: (context, index) {
-                              AppoinmentExpectedBeneficiariesOutput obj =
-                                  listOfSearchBeneficiaries[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  if (dESGID == 35) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                AppointmentsConfirmedBeneficiaryDetailsScreen(
-                                                  selectedBeneficiary: obj,
-                                                ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: AppointmentsConfirmedRow(obj: obj),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ).paddingSymmetric(vertical: 6, horizontal: 6),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

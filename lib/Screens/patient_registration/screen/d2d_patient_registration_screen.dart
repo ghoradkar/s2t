@@ -21,6 +21,7 @@ import 'package:s2toperational/Screens/calling_modules/models/relation_model.dar
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_creation_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_demographic_creation_screen.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/registered_patient_list_screen.dart';
 
 /// Forces every character to uppercase as the user types.
 class _UpperCaseFormatter extends TextInputFormatter {
@@ -103,6 +104,19 @@ class _D2DPatientRegistrationScreenState
     }
   }
 
+  void _onViewQueueTapped() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => RegisteredPatientListScreen(
+              campId: c.navCampId,
+              campType: c.navCampType,
+            ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +125,35 @@ class _D2DPatientRegistrationScreenState
         scTitle: 'Patient Registration',
         leadingIcon: iconBackArrow,
         onLeadingIconClick: () => Navigator.pop(context),
+        showActions: true,
+        actions: [
+          Container(
+            padding: EdgeInsets.only(
+              left: 6.w,
+              right: 6.w,
+              top: 4.h,
+              bottom: 4.h,
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(color: kWhiteColor),
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: InkWell(
+              onTap: () {
+                _onViewQueueTapped();
+              },
+              child: Text(
+                'View',
+                style: TextStyle(
+                  color: kWhiteColor,
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ).paddingOnly(right: 6.w),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
@@ -302,42 +345,52 @@ class _D2DPatientRegistrationScreenState
                           title: 'Create ABHA',
                           mHeight: 40,
                           mWidth: double.infinity,
-                          onTap: _isLocked ? null : () {
-                            if (_isYes && c.selectedRelation.value == null) {
-                              ToastManager.toast('Please select relation');
-                              return;
-                            }
-                            if (c.abhaCreateMode.value == 'demographic') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => AbhaDemographicCreationScreen(
-                                    campId: c.navCampId,
-                                    siteId: c.navSiteId,
-                                    distLgdCode: c.navDistLgd,
-                                    district: c.navCampLocation,
-                                    campType: c.navCampType,
-                                    empCode: c.empCode,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => AbhaCreationScreen(
-                                    campId: c.navCampId,
-                                    siteId: c.navSiteId,
-                                    distLgdCode: c.navDistLgd,
-                                    district: c.navCampLocation,
-                                    campType: c.navCampType,
-                                    empCode: c.empCode,
-                                    initialMobile: '',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                          onTap:
+                              _isLocked
+                                  ? null
+                                  : () {
+                                    if (_isYes &&
+                                        c.selectedRelation.value == null) {
+                                      ToastManager.toast(
+                                        'Please select relation',
+                                      );
+                                      return;
+                                    }
+                                    if (c.abhaCreateMode.value ==
+                                        'demographic') {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) =>
+                                                  AbhaDemographicCreationScreen(
+                                                    campId: c.navCampId,
+                                                    siteId: c.navSiteId,
+                                                    distLgdCode: c.navDistLgd,
+                                                    district: c.navCampLocation,
+                                                    campType: c.navCampType,
+                                                    empCode: c.empCode,
+                                                  ),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => AbhaCreationScreen(
+                                                campId: c.navCampId,
+                                                siteId: c.navSiteId,
+                                                distLgdCode: c.navDistLgd,
+                                                district: c.navCampLocation,
+                                                campType: c.navCampType,
+                                                empCode: c.empCode,
+                                                initialMobile: '',
+                                              ),
+                                        ),
+                                      );
+                                    }
+                                  },
                         ),
                       ],
                     ),
@@ -468,11 +521,13 @@ class _D2DPatientRegistrationScreenState
                             label: _label('ABHA Number'),
                             hint: '14-digit ABHA number',
                             textInputType: TextInputType.number,
-                            maxLength: 17, // 14 digits + 3 hyphens (XX-XXXX-XXXX-XXXX)
+                            maxLength: 17,
+                            // 14 digits + 3 hyphens (XX-XXXX-XXXX-XXXX)
                             readOnly: c.abhaVerified.value,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'[\d\-]')),
+                                RegExp(r'[\d\-]'),
+                              ),
                             ],
                             prefixIcon: const Icon(
                               Icons.health_and_safety_rounded,
@@ -687,70 +742,74 @@ class _D2DPatientRegistrationScreenState
                       ], // Column children
                     ), // Column
                   ), // Opacity
-                ), // AbsorbPointer
+                ),
+                // AbsorbPointer
 
-                        // ── Verified banner (outside AbsorbPointer so Clear stays tappable) ──
-                        if (c.abhaVerified.value) ...[
-                          SizedBox(height: 10.h),
-                          Row(
-                            children: [
-                              Expanded(child: _verifiedBanner('ABHA verified')),
-                              if (_isLocked) ...[
-                                SizedBox(width: 8.w),
-                                OutlinedButton(
-                                  onPressed: c.clearAfterAbhaFill,
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: kPrimaryColor),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 10.h,
-                                      horizontal: 14.w,
-                                    ),
-                                  ),
-                                  child: CommonText(
-                                    text: 'Clear',
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: kPrimaryColor,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ],
-                        // ── View ABHA Card button (Find ABHA flow only) ────────────────
-                        if (c.abhaCardAvailable.value) ...[
-                          SizedBox(height: 10.h),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 44.h,
-                            child: OutlinedButton.icon(
-                              onPressed: c.onViewAbhaCard,
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: kPrimaryColor,
-                                side: const BorderSide(color: kPrimaryColor, width: 1.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              icon: Icon(
-                                Icons.credit_card_rounded,
-                                color: kPrimaryColor,
-                                size: 18.sp,
-                              ),
-                              label: CommonText(
-                                text: 'View ABHA Card',
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w600,
-                                textColor: kPrimaryColor,
-                                textAlign: TextAlign.center,
-                              ),
+                // ── Verified banner (outside AbsorbPointer so Clear stays tappable) ──
+                if (c.abhaVerified.value) ...[
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      Expanded(child: _verifiedBanner('ABHA verified')),
+                      if (_isLocked) ...[
+                        SizedBox(width: 8.w),
+                        OutlinedButton(
+                          onPressed: c.clearAfterAbhaFill,
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: kPrimaryColor),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10.h,
+                              horizontal: 14.w,
                             ),
                           ),
-                        ],
+                          child: CommonText(
+                            text: 'Clear',
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: kPrimaryColor,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+                // ── View ABHA Card button (Find ABHA flow only) ────────────────
+                if (c.abhaCardAvailable.value) ...[
+                  SizedBox(height: 10.h),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 44.h,
+                    child: OutlinedButton.icon(
+                      onPressed: c.onViewAbhaCard,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: kPrimaryColor,
+                        side: const BorderSide(
+                          color: kPrimaryColor,
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.credit_card_rounded,
+                        color: kPrimaryColor,
+                        size: 18.sp,
+                      ),
+                      label: CommonText(
+                        text: 'View ABHA Card',
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        textColor: kPrimaryColor,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -904,7 +963,10 @@ class _D2DPatientRegistrationScreenState
           maxLength: 10,
           textInputType: TextInputType.phone,
           // Disabled after OTP verified OR after ABHA-creation fill
-          readOnly: c.mobileOtpVerified.value || c.altMobileOtpVerified.value || _isLocked,
+          readOnly:
+              c.mobileOtpVerified.value ||
+              c.altMobileOtpVerified.value ||
+              _isLocked,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           prefixIcon: const Icon(
             Icons.phone_rounded,
@@ -951,7 +1013,9 @@ class _D2DPatientRegistrationScreenState
         // Disabled once any OTP is verified
         GestureDetector(
           onTap:
-              c.mobileOtpVerified.value || c.altMobileOtpVerified.value || _isLocked
+              c.mobileOtpVerified.value ||
+                      c.altMobileOtpVerified.value ||
+                      _isLocked
                   ? null
                   : () {
                     c.isNumberNotBelongsToBeneficiary.value =
@@ -965,7 +1029,9 @@ class _D2DPatientRegistrationScreenState
                   },
           child: Opacity(
             opacity:
-                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value || _isLocked)
+                (c.mobileOtpVerified.value ||
+                        c.altMobileOtpVerified.value ||
+                        _isLocked)
                     ? 0.45
                     : 1.0,
             child: Row(
@@ -2129,7 +2195,8 @@ class _D2DPatientRegistrationScreenState
     VoidCallback? onTap,
     bool enabled = true,
   }) {
-    final effectiveColor = (enabled && onTap != null) ? kPrimaryColor : kLabelTextColor;
+    final effectiveColor =
+        (enabled && onTap != null) ? kPrimaryColor : kLabelTextColor;
     return Expanded(
       child: GestureDetector(
         onTap: enabled ? onTap : null,

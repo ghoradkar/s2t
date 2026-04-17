@@ -24,6 +24,12 @@ class D2DCampOutput {
   String? campLocation;
   String? siteDetailId;
   String? distLgdCode;
+  String? distName;
+  String? campType;
+  String? campTypeDescription;
+  String? campName;
+  String? initiatedBy;
+  String? campCreatedBy;
   String? isCampClosed;
 
   D2DCampOutput({
@@ -31,6 +37,12 @@ class D2DCampOutput {
     this.campLocation,
     this.siteDetailId,
     this.distLgdCode,
+    this.distName,
+    this.campType,
+    this.campTypeDescription,
+    this.campName,
+    this.initiatedBy,
+    this.campCreatedBy,
     this.isCampClosed,
   });
 
@@ -39,6 +51,12 @@ class D2DCampOutput {
     campLocation = json['CampLocation']?.toString();
     siteDetailId = json['SiteDetailId']?.toString();
     distLgdCode = json['DistlgdCode']?.toString();
+    distName = json['DISTNAME']?.toString();
+    campType = json['CampType']?.toString();
+    campTypeDescription = json['CampTypeDescription']?.toString();
+    campName = json['CampName']?.toString();
+    initiatedBy = json['InitiatedBy1']?.toString();
+    campCreatedBy = json['CampCreatedBy']?.toString();
     isCampClosed = json['IsCampClosed']?.toString();
   }
 

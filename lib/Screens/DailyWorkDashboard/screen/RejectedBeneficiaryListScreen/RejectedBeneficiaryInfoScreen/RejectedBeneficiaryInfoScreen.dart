@@ -93,7 +93,7 @@ class _RejectedBeneficiaryInfoScreenState
     return GetBuilder<RejectedBeneficiaryInfoController>(
       builder: (c) => Scaffold(
         appBar: mAppBar(
-          scTitle: "Beneficiary Details",
+          scTitle: "Beneficiary ",
           leadingIcon: iconBackArrow,
           onLeadingIconClick: () => Navigator.pop(context),
         ),

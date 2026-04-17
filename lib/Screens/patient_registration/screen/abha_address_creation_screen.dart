@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
@@ -184,7 +185,7 @@ class _AbhaAddressCreationScreenState extends State<AbhaAddressCreationScreen> {
                     ),
                   ),
                   child: CommonText(
-                    text: 'Continue with Existing Address',
+                    text: 'Continue With Existing Address',
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     textColor: kPrimaryColor,
@@ -263,7 +264,7 @@ class _AbhaAddressCreationScreenState extends State<AbhaAddressCreationScreen> {
                     fontWeight: FontWeight.w600,
                     fontSize: 13.sp,
                     color: Colors.black87,
-                    fontFamily: 'Inter',
+                    fontFamily: FontConstants.interFonts,
                   ),
                 ),
                 TextSpan(
@@ -272,7 +273,7 @@ class _AbhaAddressCreationScreenState extends State<AbhaAddressCreationScreen> {
                     fontWeight: FontWeight.w400,
                     fontSize: 13.sp,
                     color: Colors.black54,
-                    fontFamily: 'Inter',
+                    fontFamily: FontConstants.interFonts,
                   ),
                 ),
               ],

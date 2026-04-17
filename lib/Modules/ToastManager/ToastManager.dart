@@ -74,7 +74,7 @@ class ToastManager {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CommonText(
-                    text: title!,
+                    text: title ?? '',
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     textColor: kBlackColor,

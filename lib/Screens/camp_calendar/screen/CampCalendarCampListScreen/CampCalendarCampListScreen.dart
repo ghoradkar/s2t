@@ -43,8 +43,6 @@ class CampCalendarCampListScreen extends StatelessWidget {
     required this.isTodayCount,
   });
 
-
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -174,19 +172,20 @@ class CampCalendarCampListScreen extends StatelessWidget {
                   ).paddingOnly(top: 6.h, bottom: 0.h, right: 4.w),
 
                   Expanded(
-                    child: ctrl.isLoading
-                        ? const CommonSkeletonPatientList()
-                        : ListView.builder(
-                            itemCount: ctrl.campList.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return CampCalendarCampListRow(
-                                obj: ctrl.campList[index],
-                                selectedCampType: ctrl.selectedCampType,
-                                index: index,
-                              );
-                            },
-                          ),
+                    child:
+                        ctrl.isLoading
+                            ? const CommonSkeletonPatientList()
+                            : ListView.builder(
+                              itemCount: ctrl.campList.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return CampCalendarCampListRow(
+                                  obj: ctrl.campList[index],
+                                  selectedCampType: ctrl.selectedCampType,
+                                  index: index,
+                                );
+                              },
+                            ),
                   ),
                 ],
               ).paddingSymmetric(vertical: 10.h, horizontal: 10.w),

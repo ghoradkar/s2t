@@ -404,4 +404,7 @@ class APIConstants {
 
   // ABHA
   static String kInsertAbhaRegistration = "InsertAbhaRegistration";
+
+  // Patient Queue
+  static String kGetPatientQueue = "CreateQueusingCampid";
 }

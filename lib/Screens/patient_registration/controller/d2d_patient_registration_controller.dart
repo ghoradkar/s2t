@@ -36,6 +36,7 @@ class D2DPatientRegistrationController extends GetxController {
   String navDistLgd = '';
   String navType = '6';
   String navCampType = '3'; // '1' = Regular Camp, '3' = D2D Camp
+  String navBeneficiaryNo = '';
 
   int empCode = 0;
   int subOrgId = 0;
@@ -298,39 +299,77 @@ class D2DPatientRegistrationController extends GetxController {
             ? 'Other'
             : '';
 
-    // ── Board vs ABHA mismatch check (mirrors native logic) ───────────
-    // Use benefBoardName if set; fall back to the current full-name field value
-    // (native: edt_fname holds board name after worker-info loads).
-    final boardName =
-        benefBoardName.trim().isNotEmpty
-            ? benefBoardName.trim()
-            : tecFullName.text.trim();
-    // Skip check entirely when there is no board name to compare against.
-    if (boardName.isNotEmpty &&
-        !abhaFullName.toLowerCase().contains(boardName.toLowerCase())) {
-      final boardGender = benefBoardGender.isNotEmpty ? benefBoardGender : '—';
-      final abhaGenderDisplay = abhaGender.isNotEmpty ? abhaGender : '—';
-      return 'ABHA and Board details does not match\n\n'
-          'Details:\n'
-          'Board Name: $boardName\n'
-          'ABHA Name: $abhaFullName\n'
-          'Board Gender: $boardGender\n'
-          'ABHA Gender: $abhaGenderDisplay';
+    // ── Board vs ABHA mismatch check + name fill ─────────────────────
+    if (isDependent.value) {
+      // ── Dependent: last-name-only check (mirrors native line 9773) ──
+      // Native takes the last word of the ABHA name and the last word of
+      // txt_beneficiary_name (worker display name) and compares them.
+      final abhaWords = abhaFullName.trim().split(RegExp(r'\s+'));
+      final abhaLastWord = abhaWords.isNotEmpty ? abhaWords.last : '';
+
+      // Use worker display name first; fall back to pre-filled last-name field.
+      final workerDisplay = workerNameDisplay.value.trim();
+      final boardWords = workerDisplay.isNotEmpty
+          ? workerDisplay.split(RegExp(r'\s+'))
+          : tecLastName.text.trim().split(RegExp(r'\s+'));
+      final boardLastWord = boardWords.isNotEmpty ? boardWords.last : '';
+
+      if (boardLastWord.isNotEmpty &&
+          abhaLastWord.toLowerCase() != boardLastWord.toLowerCase()) {
+        return 'ABHA and Board details does not match\n\n'
+            'Details:\n'
+            'Worker Board Last Name: $boardLastWord\n'
+            'ABHA Last Name: $abhaLastWord';
+      }
+
+      // ── Match: fill dependent name from ABHA parts ───────────────
+      // Native (lines 9792–9814): splits ABHA full name into
+      // first / middle / last and sets txt_beneficiary_Fname/Mname/Lname.
+      final nameParts = abhaFullName.trim().split(RegExp(r'\s+'));
+      final depFirst = nameParts.isNotEmpty ? nameParts[0] : firstName;
+      final depMiddle = nameParts.length > 2 ? nameParts[1] : '';
+      final depLast =
+          nameParts.length > 1 ? nameParts[nameParts.length - 1] : lastName;
+
+      tecFirstName.text = depFirst;
+      tecMiddleName.text = depMiddle;
+      tecLastName.text = depLast;
+      tecFullName.text = abhaFullName.isNotEmpty ? abhaFullName : depFirst;
+    } else {
+      // ── Non-dependent: full-name check ───────────────────────────
+      // Use benefBoardName if set; fall back to the full-name field value.
+      final boardName =
+          benefBoardName.trim().isNotEmpty
+              ? benefBoardName.trim()
+              : tecFullName.text.trim();
+      // Skip check if we have no board name to compare against.
+      if (boardName.isNotEmpty &&
+          !abhaFullName.toLowerCase().contains(boardName.toLowerCase())) {
+        final boardGender =
+            benefBoardGender.isNotEmpty ? benefBoardGender : '—';
+        final abhaGenderDisplay = abhaGender.isNotEmpty ? abhaGender : '—';
+        return 'ABHA and Board details does not match\n\n'
+            'Details:\n'
+            'Board Name: $boardName\n'
+            'ABHA Name: $abhaFullName\n'
+            'Board Gender: $boardGender\n'
+            'ABHA Gender: $abhaGenderDisplay';
+      }
+
+      // ── Match: fill name fields ───────────────────────────────────
+      tecFirstName.text = firstName;
+      tecMiddleName.text = middleName;
+      tecLastName.text = lastName;
+      if (fullFromApi.isNotEmpty) {
+        tecFullName.text = fullFromApi;
+      } else {
+        onNamePartsChanged();
+      }
     }
 
     // ── Switch to "With ABHA" and mark as verified ──────────────────
     registrationType.value = 'with_abha';
     abhaVerified.value = true;
-
-    // ── Name ─────────────────────────────────────────────────────────
-    tecFirstName.text = firstName;
-    tecMiddleName.text = middleName;
-    tecLastName.text = lastName;
-    if (fullFromApi.isNotEmpty) {
-      tecFullName.text = fullFromApi;
-    } else {
-      onNamePartsChanged();
-    }
 
     // ── Mobile ───────────────────────────────────────────────────────
     final mobile = ((profile['mobile'] as String?) ?? '').trim();
@@ -2267,5 +2306,102 @@ class D2DPatientRegistrationController extends GetxController {
     tecAbhaLinkedMobile.dispose();
     tecAbhaAadhaar.dispose();
     super.onClose();
+  }
+
+  // ── Fill form from patient queue item ─────────────────────────────────────
+
+  /// Called when the user taps "Go To Registration" from the patient queue
+  /// view screen. Parses [response] JSON (same structure as `profile` from
+  /// ABDM getAccountProfile) and pre-fills the registration form.
+  void fillFromQueueResponse({
+    required String response,
+    required String authToken,
+  }) {
+    try {
+      final responseObj = json.decode(response) as Map<String, dynamic>;
+      final profileObj =
+          responseObj['profile'] as Map<String, dynamic>? ?? {};
+      final patientObj =
+          profileObj['patient'] as Map<String, dynamic>? ?? {};
+
+      final abhaNumber = patientObj['abhaNumber']?.toString() ?? '';
+      final abhaAddress = patientObj['abhaAddress']?.toString() ?? '';
+      final name = patientObj['name']?.toString() ?? '';
+      final gender = patientObj['gender']?.toString() ?? '';
+      final yearOfBirth = patientObj['yearOfBirth']?.toString() ?? '';
+      final monthOfBirth = patientObj['monthOfBirth']?.toString() ?? '';
+      final dayOfBirth = patientObj['dayOfBirth']?.toString() ?? '';
+      final phoneNumber = patientObj['phoneNumber']?.toString() ?? '';
+
+      final addressObj =
+          patientObj['address'] as Map<String, dynamic>? ?? {};
+      final addressLine = addressObj['line']?.toString() ?? '';
+      final pincode = addressObj['pincode']?.toString() ?? '';
+
+      // Store auth token
+      _findAbhaAuthToken = authToken;
+
+      // Fill ABHA fields
+      tecAbhaNumber.text = abhaNumber;
+      tecAbhaAddress.text = abhaAddress;
+
+      // Fill name
+      tecFullName.text = name;
+      final nameParts = name.trim().split(RegExp(r'\s+'));
+      tecFirstName.text = nameParts.isNotEmpty ? nameParts[0] : '';
+      tecMiddleName.text = nameParts.length > 2 ? nameParts[1] : '';
+      tecLastName.text =
+          nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
+
+      // Fill gender
+      if (gender.toUpperCase() == 'M') {
+        selectedGender.value = 'Male';
+      } else if (gender.toUpperCase() == 'F') {
+        selectedGender.value = 'Female';
+      } else if (gender.toUpperCase() == 'O') {
+        selectedGender.value = 'Other';
+      }
+
+      // Fill DOB + Age
+      if (yearOfBirth.isNotEmpty &&
+          monthOfBirth.isNotEmpty &&
+          dayOfBirth.isNotEmpty) {
+        final y = int.tryParse(yearOfBirth) ?? 0;
+        final mo = int.tryParse(monthOfBirth) ?? 0;
+        final d = int.tryParse(dayOfBirth) ?? 0;
+        if (y > 0 && mo > 0 && d > 0) {
+          final dob = DateTime(y, mo, d);
+          tecDob.text =
+              '${dob.year}/${dob.month.toString().padLeft(2, '0')}/${dob.day.toString().padLeft(2, '0')}';
+          final now = DateTime.now();
+          int age = now.year - dob.year;
+          if (now.month < dob.month ||
+              (now.month == dob.month && now.day < dob.day)) {
+            age--;
+          }
+          tecAge.text = age.toString();
+        }
+      }
+
+      // Fill mobile
+      if (phoneNumber.isNotEmpty) {
+        tecMobileNo.text = phoneNumber;
+      }
+
+      // Fill address
+      if (addressLine.isNotEmpty) {
+        tecPermAddr.text = addressLine;
+        if (pincode.isNotEmpty && pincode != 'null') {
+          tecPermAddr.text = '$addressLine, $pincode';
+          tecPincode.text = pincode;
+        }
+      }
+
+      // Mark ABHA as verified and lock the form
+      abhaVerified.value = true;
+      abhaFormLocked.value = true;
+    } catch (_) {
+      // Parsing failed — leave form as-is
+    }
   }
 }

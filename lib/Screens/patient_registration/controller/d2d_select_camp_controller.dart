@@ -18,6 +18,10 @@ class D2DSelectCampController extends GetxController {
   int empCode = 0;
   int dESGID = 0;
   int subOrgId = 0;
+  int cityCode = 0;
+  String userDistLgdCode = '0';
+  String divisionId = '0';
+  String navBeneficiaryNo = '';
 
   final selectedDate = ''.obs;
   final districtList = <DistrictOutput>[].obs;
@@ -41,6 +45,11 @@ class D2DSelectCampController extends GetxController {
     empCode = user?.empCode ?? 0;
     dESGID = user?.dESGID ?? 0;
     subOrgId = user?.subOrgId ?? 0;
+    cityCode = user?.cityCode ?? 0;
+    userDistLgdCode = user?.dISTLGDCODE?.toString() ?? '0';
+    divisionId = user?.divid?.toString() ?? '0';
+    // ignore: avoid_print
+    print('[D2D-ctrl] _loadSession empCode=$empCode dESGID=$dESGID subOrgId=$subOrgId cityCode=$cityCode userDistLgdCode=$userDistLgdCode divisionId=$divisionId');
   }
 
   void _setDefaultDate() {
@@ -50,10 +59,25 @@ class D2DSelectCampController extends GetxController {
   Future<void> fetchDistrictList() async {
     isLoadingDist.value = true;
     try {
-      final result = await _repo.getDistrictList(empCode: empCode.toString());
+      // ignore: avoid_print
+      print('[D2D-ctrl] fetchDistrictList empCode=$empCode userDistLgdCode=$userDistLgdCode');
+      final result = await _repo.getDistrictList(
+        empCode: empCode.toString(),
+        subOrgId: subOrgId.toString(),
+        desgId: dESGID.toString(),
+      );
       districtList.value = result?.output ?? [];
+      // ignore: avoid_print
+      print('[D2D-ctrl] districtList count=${districtList.length}');
       if (districtList.isNotEmpty) {
-        selectedDistrict.value = districtList.first;
+        // Pre-select the district matching the user's own district code,
+        // falling back to the first item if no match found.
+        selectedDistrict.value = districtList.firstWhereOrNull(
+              (d) => d.distLgdCode?.toString() == userDistLgdCode,
+            ) ??
+            districtList.first;
+        // ignore: avoid_print
+        print('[D2D-ctrl] selectedDistrict=${selectedDistrict.value?.distLgdCode}/${selectedDistrict.value?.distName}');
         await fetchCampList();
       }
     } finally {
@@ -64,6 +88,8 @@ class D2DSelectCampController extends GetxController {
   Future<void> fetchCampList() async {
     if (selectedDate.value.isEmpty || selectedDistrict.value == null) return;
     isLoadingCamps.value = true;
+    // ignore: avoid_print
+    print('[D2D-ctrl] fetchCampList date=${selectedDate.value} dist=${selectedDistrict.value?.distLgdCode} cityCode=$cityCode desgId=$dESGID subOrgId=$subOrgId');
     try {
       final result = await _repo.getCampList(
         campDate: selectedDate.value,
@@ -71,6 +97,7 @@ class D2DSelectCampController extends GetxController {
         distLgdCode: selectedDistrict.value?.distLgdCode ?? '0',
         userId: empCode.toString(),
         desgId: dESGID.toString(),
+        labCode: cityCode.toString(),
       );
       campList.value = result?.output ?? [];
       if (campList.isEmpty) {
@@ -144,6 +171,11 @@ class D2DSelectCampController extends GetxController {
       rc.navDistLgd = camp.distLgdCode ?? '';
       rc.navCampLocation = camp.campLocation ?? '';
       rc.navType = '6';
+      rc.navBeneficiaryNo = navBeneficiaryNo;
+      if (navBeneficiaryNo.isNotEmpty) {
+        rc.tecWorkerRegNo.text = navBeneficiaryNo;
+        rc.onWorkerRegNoChanged(navBeneficiaryNo);
+      }
 
       Navigator.push(
         context,
