@@ -1732,22 +1732,23 @@ class APIManager {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       );
-      print(url);
-      print(data);
-      //campid
-      print(response.body);
+      print('=== getApprovedCampListDetailsForAppFlexiCampAPI ===');
+      print('URL: $url');
+      print('Body: $data');
+      print('Response: ${response.body}');
+      final decoded = json.decode(response.body);
       ResourceReMappingCampResponse person =
-          ResourceReMappingCampResponse.fromJson(json.decode(response.body));
+          ResourceReMappingCampResponse.fromJson(decoded as Map<String, dynamic>);
+      print('Status: ${person.status} | Message: ${person.message} | OutputCount: ${person.output?.length}');
 
-      if (person.status == 'Success') {
+      if (person.status?.toLowerCase() == 'success') {
         callback(person, "", true);
       } else {
-        callback(person, person.message, false);
+        callback(person, person.message ?? '', false);
       }
-    } catch (e) {
-      // Handle error
-      print(e.toString());
-      callback(null, "Expections: $e", false);
+    } catch (e, st) {
+      print('getApprovedCampListDetailsForAppFlexiCampAPI error: $e\n$st');
+      callback(null, "Exception: $e", false);
     }
   }
 
@@ -4200,15 +4201,15 @@ class APIManager {
         },
       );
       print(url);
+      print(data);
       String body = response.body;
       print(body);
-      print(json.decode(response.body));
       UserAttendancesUsingSitedetailsIDResponse person =
           UserAttendancesUsingSitedetailsIDResponse.fromJson(
             json.decode(response.body),
           );
 
-      if (person.status == 'Success') {
+      if (person.status?.toLowerCase() == 'success') {
         callback(person, "", true);
       } else {
         callback(person, person.message, false);
@@ -4356,6 +4357,32 @@ class APIManager {
     } catch (e) {
       // Handle error
       callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> insertBasicHealthInfoNewAPI(
+    Map<String, String> data,
+    dynamic callback,
+  ) async {
+    final url = Uri.parse(
+        '$kD2DBaseURL${APIConstants.kInsertBasicHealthInfoNewWithVersionFastingHrs}');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final status = decoded['status'] as String? ?? '';
+      final message = decoded['message'] as String? ?? '';
+      if (status == 'Success') {
+        callback(null, message, true);
+      } else {
+        callback(null, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
     }
   }
 

@@ -8,6 +8,7 @@ import '../../../../Modules/widgets/S2TAppBar.dart';
 import '../../../CampDetailsScreen/CampDetailsScreen.dart';
 import '../../controllers/health_screening_details_controller.dart';
 import '../camp_closing_screen/camp_closing_screen.dart';
+import '../basic_health_info_screen/basic_health_info_patient_list_screen.dart';
 import '../health_screening_patient_list_screen/health_screening_patient_list_screen.dart';
 import 'health_screening_menu_row/health_screening_menu_row.dart';
 
@@ -127,8 +128,19 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         );
         break;
 
-      case HealthScreeningDetailsMenu.SampleCollection:
       case HealthScreeningDetailsMenu.BasicHealthInfo:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BasicHealthInfoPatientListScreen(
+              campID: campID,
+              siteDetailId: siteDetailId,
+            ),
+          ),
+        );
+        break;
+
+      case HealthScreeningDetailsMenu.SampleCollection:
       case HealthScreeningDetailsMenu.D2DPhysicalExamination:
       case HealthScreeningDetailsMenu.LungFunctionTest:
       case HealthScreeningDetailsMenu.AudioScreeningTest:

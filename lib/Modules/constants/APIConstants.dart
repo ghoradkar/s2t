@@ -265,6 +265,8 @@ class APIConstants {
       "GetUserDataforPhysicalExamnination";
   static String kInsertPhysicalExaminationForHSCCV1 =
       "InsertPhysicalExaminationForHSCC_V1";
+  static String kInsertBasicHealthInfoNewWithVersionFastingHrs =
+      "InsertBasicHealthInfo_New_WithVersion_FastingHrs";
   static String kGetAllDistrictListForPhyExam = "GetAllDistrictListForPhyExam";
   static String kGetD2DPhysicalExamDetails = "GetD2DPhysicalExamDetails";
   static String kGetD2DTeamWisePhyExamDetails = "GetD2DTeamWisePhyExamDetails";

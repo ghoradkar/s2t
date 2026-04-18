@@ -58,13 +58,15 @@ class CampForHealthScreeningController extends GetxController {
       userId: empCode,
       dESGID: dESGID,
     );
-    if (response != null) {
+    debugPrint('fetchCamps response: status=${response?.status} outputCount=${response?.output?.length} message=${response?.message}');
+    if (response != null && response.status?.toLowerCase() == 'success') {
       campList.assignAll(response.output ?? []);
       searchList.assignAll(campList);
     } else {
       campList.clear();
       searchList.clear();
-      ToastManager.toast('Failed to load camps');
+      final msg = response?.message;
+      ToastManager.toast(msg != null && msg.isNotEmpty ? msg : 'Failed to load camps');
     }
     isLoading.value = false;
   }

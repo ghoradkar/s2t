@@ -71,6 +71,7 @@ dependencies:
   signature: ^5.5.0
   pointycastle: ^3.9.1
   uuid: ^4.5.1
+  flutter_blue_plus: ^1.35.5
   # table_calendar: ^3.2.0
 
 dev_dependencies:

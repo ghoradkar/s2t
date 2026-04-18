@@ -57,25 +57,7 @@ class HealthScreeningMenuRow extends StatelessWidget {
           const SizedBox(height: 6),
         ],
       ),
-      // Column(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: [
-      //     const Spacer(),
-      //     SizedBox(width: 80, height: 80, child: Image.asset(getIconName())),
-      //     const Spacer(),
-      //     Text(
-      //       getTitleName(),
-      //       textAlign: TextAlign.center,
-      //       style: TextStyle(
-      //         fontFamily: FontConstants.interFonts,
-      //         fontSize: 12,
-      //         color: kPrimaryColor,
-      //         fontWeight: FontWeight.bold,
-      //       ),
-      //     ),
-      //     const Spacer(),
-      //   ],
-      // ),
+
     );
   }
 

@@ -144,21 +144,30 @@ class HealthScreeningRepository {
     required int userId,
     required int dESGID,
   }) async {
-    ResourceReMappingCampResponse? result;
-    await _apiManager.getApprovedCampListDetailsForAppFlexiCampAPI(
-      {
-        "CampDATE": campDate,
-        "SubOrgId": subOrgId.toString(),
-        "Divison": "0",
-        "DISTLGDCODE": "0",
-        "USERID": userId.toString(),
-        "DesgId": dESGID.toString(),
-      },
-      (ResourceReMappingCampResponse? response, String error, bool success) {
-        if (success) result = response;
-      },
-    );
-    return result;
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetApprovedCampListDetailsForAppFlexiCampV1}';
+      final body = {
+        'CampDATE': campDate,
+        'SubOrgId': subOrgId.toString(),
+        'Divison': '0',
+        'DISTLGDCODE': '0',
+        'USERID': userId.toString(),
+        'DesgId': dESGID.toString(),
+      };
+      debugPrint('getApprovedCampList URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getApprovedCampList raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return ResourceReMappingCampResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getApprovedCampList error: $e');
+      return null;
+    }
   }
 
   Future<UserCampMappingAndAttendanceDataResponse?>
@@ -169,23 +178,30 @@ class HealthScreeningRepository {
     required int campType,
     required int campId,
   }) async {
-    UserCampMappingAndAttendanceDataResponse? result;
-    await _apiManager
-        .getUserCampMappingAndAttendanceStatusForRegularCampReadinessAPI(
-      {
-        "CampDATE": campDate,
-        "UserId": userId.toString(),
-        "DISTLGDCODE": distLgdCode.toString(),
-        "CampType": campType.toString(),
-        "CampID": campId.toString(),
-        "TestId": "1",
-      },
-      (UserCampMappingAndAttendanceDataResponse? response, String error,
-          bool success) {
-        if (success) result = response;
-      },
-    );
-    return result;
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingAndAttendanceStatusForRegularCampReadiness}';
+      final body = {
+        'CampDATE': campDate,
+        'UserId': userId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'CampType': campType.toString(),
+        'CampID': campId.toString(),
+        'TestId': '1',
+      };
+      debugPrint('getUserCampMappingAndAttendanceStatusRegular URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getUserCampMappingAndAttendanceStatusRegular raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return UserCampMappingAndAttendanceDataResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getUserCampMappingAndAttendanceStatusRegular error: $e');
+      return null;
+    }
   }
 
   Future<UserCampMappingAndAttendanceDataResponse?>
@@ -196,21 +212,29 @@ class HealthScreeningRepository {
     required int campType,
     required int campId,
   }) async {
-    UserCampMappingAndAttendanceDataResponse? result;
-    await _apiManager.getUserCampMappingAndAttendanceStatusReadinessAPI(
-      {
-        "CampDATE": campDate,
-        "UserId": userId.toString(),
-        "DISTLGDCODE": distLgdCode.toString(),
-        "CampType": campType.toString(),
-        "CampID": campId.toString(),
-      },
-      (UserCampMappingAndAttendanceDataResponse? response, String error,
-          bool success) {
-        if (success) result = response;
-      },
-    );
-    return result;
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingAndAttendanceStatusReadiness}';
+      final body = {
+        'CampDATE': campDate,
+        'UserId': userId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'CampType': campType.toString(),
+        'CampID': campId.toString(),
+      };
+      debugPrint('getUserCampMappingAndAttendanceStatusReadiness URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getUserCampMappingAndAttendanceStatusReadiness raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return UserCampMappingAndAttendanceDataResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getUserCampMappingAndAttendanceStatusReadiness error: $e');
+      return null;
+    }
   }
 
   // ─── Patient List ──────────────────────────────────────────────────────────
@@ -267,6 +291,32 @@ class HealthScreeningRepository {
       };
     }
 
+    await _apiManager.getUserAttendancesUsingSitedetailsIDAPI(
+      urlString,
+      params,
+      (UserAttendancesUsingSitedetailsIDResponse? response, String error,
+          bool success) {
+        if (success) result = response;
+      },
+    );
+    return result;
+  }
+
+  Future<UserAttendancesUsingSitedetailsIDResponse?> getPatientListForBasicHealthInfo({
+    required int siteDetailId,
+    required int userId,
+    required String teamId,
+  }) async {
+    UserAttendancesUsingSitedetailsIDResponse? result;
+    final urlString =
+        "${APIManager.kD2DBaseURL}${APIConstants.kGetuserAttendanceForSitedetailsIDPhysicalExam}";
+    final params = {
+      "SiteDetailId": siteDetailId.toString(),
+      "DistrictId": "0",
+      "TestId": "1",
+      "UserId": userId.toString(),
+      "TeamId": teamId,
+    };
     await _apiManager.getUserAttendancesUsingSitedetailsIDAPI(
       urlString,
       params,
