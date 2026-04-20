@@ -107,38 +107,34 @@ class BasicHealthInfoPatientListScreen extends StatelessWidget {
   }
 
   Widget _searchBarDisabled() {
-    return Container(
-      color: kWhiteColor,
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-      child: TextField(
-        enabled: false,
-        style: TextStyle(
+    return TextField(
+      // enabled: false,
+      style: TextStyle(
+        fontFamily: FontConstants.interFonts,
+        fontSize: 14.sp,
+        color: kTextColor,
+      ),
+      decoration: InputDecoration(
+        hintText: 'Search by Name / Reg. No.',
+        hintStyle: TextStyle(
           fontFamily: FontConstants.interFonts,
-          fontSize: 13.sp,
-          color: kTextColor,
+          fontSize: 14.sp,
+          color: kLabelTextColor,
         ),
-        decoration: InputDecoration(
-          hintText: 'Search by Name / Reg. No.',
-          hintStyle: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontSize: 13.sp,
-            color: kLabelTextColor,
-          ),
-          prefixIcon: Icon(Icons.search, color: kLabelTextColor, size: 20.r),
-          filled: true,
-          fillColor: kBackground,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-            vertical: 10.h,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: kTextFieldBorder),
-          ),
-          disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: kTextFieldBorder),
-          ),
+        prefixIcon: Icon(Icons.search, color: kLabelTextColor, size: 20.r),
+        filled: true,
+        fillColor: kBackground,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 12.w,
+          vertical: 10.h,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: kTextFieldBorder),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: kTextFieldBorder),
         ),
       ),
     );
@@ -154,14 +150,14 @@ class BasicHealthInfoPatientListScreen extends StatelessWidget {
           controller: controller.searchController,
           style: TextStyle(
             fontFamily: FontConstants.interFonts,
-            fontSize: 13.sp,
+            fontSize: 14.sp,
             color: kTextColor,
           ),
           decoration: InputDecoration(
             hintText: 'Search by Name / Reg. No.',
             hintStyle: TextStyle(
               fontFamily: FontConstants.interFonts,
-              fontSize: 13.sp,
+              fontSize: 14.sp,
               color: kLabelTextColor,
             ),
             prefixIcon: Icon(Icons.search, color: kLabelTextColor, size: 20.r),

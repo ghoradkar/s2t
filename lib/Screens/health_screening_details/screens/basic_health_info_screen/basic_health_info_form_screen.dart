@@ -18,6 +18,10 @@ import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_
 import 'package:s2toperational/Screens/health_screening_details/controllers/basic_health_info_form_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/basic_health_info_screen/ble_device_list_screen.dart';
+import 'package:s2toperational/Screens/health_screening_details/controllers/glucose_device_controller.dart';
+import 'package:s2toperational/Screens/health_screening_details/screens/basic_health_info_screen/glucose_device_screen.dart';
+import 'package:s2toperational/Screens/health_screening_details/controllers/smart_scale_device_controller.dart';
+import 'package:s2toperational/Screens/health_screening_details/screens/basic_health_info_screen/smart_scale_device_screen.dart';
 
 class BasicHealthInfoFormScreen extends StatelessWidget {
   final int regdId;
@@ -41,44 +45,45 @@ class BasicHealthInfoFormScreen extends StatelessWidget {
         patientItem: patientItem,
       ),
       dispose: (_) => Get.delete<BasicHealthInfoFormController>(),
-      builder: (ctrl) => NetworkWrapper(
-        child: Scaffold(
-          backgroundColor: kBackground,
-          appBar: mAppBar(
-            scTitle: 'Basic Health Information',
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-          ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                left: 14.w,
-                right: 14.w,
-                bottom: MediaQuery.of(context).viewPadding.bottom + 24.h,
+      builder:
+          (ctrl) => NetworkWrapper(
+            child: Scaffold(
+              backgroundColor: kBackground,
+              appBar: mAppBar(
+                scTitle: 'Basic Health Information',
+                leadingIcon: iconBackArrow,
+                onLeadingIconClick: () => Navigator.pop(context),
               ),
-              child: Column(
-                children: [
-                  SizedBox(height: 12.h),
-                  _PatientDetailsSection(ctrl: ctrl),
-                  _BasicHealthInfoSection(ctrl: ctrl),
-                  _BloodSugarSection(ctrl: ctrl),
-                  _BloodPressureSection(ctrl: ctrl),
-                  _DeviceInfoSection(ctrl: ctrl),
-                  SizedBox(height: 24.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AppActiveButton(
-                      buttontitle: 'Save',
-                      onTap: ctrl.onSave,
-                    ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    left: 14.w,
+                    right: 14.w,
+                    bottom: MediaQuery.of(context).viewPadding.bottom + 24.h,
                   ),
-                  SizedBox(height: 20.h),
-                ],
+                  child: Column(
+                    children: [
+                      SizedBox(height: 12.h),
+                      _PatientDetailsSection(ctrl: ctrl),
+                      _BasicHealthInfoSection(ctrl: ctrl),
+                      _BloodSugarSection(ctrl: ctrl),
+                      _BloodPressureSection(ctrl: ctrl),
+                      _DeviceInfoSection(ctrl: ctrl),
+                      SizedBox(height: 24.h),
+                      SizedBox(
+                        width: double.infinity,
+                        child: AppActiveButton(
+                          buttontitle: 'Save',
+                          onTap: ctrl.onSave,
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 }
@@ -89,7 +94,12 @@ class _ExpandableCard extends StatefulWidget {
   final String title;
   final Widget content;
   final IconData? icon;
-  const _ExpandableCard({required this.title, required this.content, this.icon});
+
+  const _ExpandableCard({
+    required this.title,
+    required this.content,
+    this.icon,
+  });
 
   @override
   State<_ExpandableCard> createState() => _ExpandableCardState();
@@ -109,9 +119,10 @@ class _ExpandableCardState extends State<_ExpandableCard>
       duration: const Duration(milliseconds: 200),
       value: 1,
     );
-    _rotateAnim = Tween<double>(begin: 0, end: 0.5).animate(
-      CurvedAnimation(parent: _animCtrl, curve: Curves.easeInOut),
-    );
+    _rotateAnim = Tween<double>(
+      begin: 0,
+      end: 0.5,
+    ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -152,17 +163,22 @@ class _ExpandableCardState extends State<_ExpandableCard>
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                 decoration: BoxDecoration(
                   color: kPrimaryColor,
-                  borderRadius: _expanded
-                      ? BorderRadius.only(
-                          topLeft: Radius.circular(12.r),
-                          topRight: Radius.circular(12.r),
-                        )
-                      : BorderRadius.circular(12.r),
+                  borderRadius:
+                      _expanded
+                          ? BorderRadius.only(
+                            topLeft: Radius.circular(12.r),
+                            topRight: Radius.circular(12.r),
+                          )
+                          : BorderRadius.circular(12.r),
                 ),
                 child: Row(
                   children: [
                     if (widget.icon != null) ...[
-                      Icon(widget.icon, color: kWhiteColor.withValues(alpha: 0.85), size: 18.r),
+                      Icon(
+                        widget.icon,
+                        color: kWhiteColor.withValues(alpha: 0.85),
+                        size: 18.r,
+                      ),
                       SizedBox(width: 8.w),
                     ],
                     Expanded(
@@ -179,12 +195,16 @@ class _ExpandableCardState extends State<_ExpandableCard>
                     ),
                     AnimatedBuilder(
                       animation: _rotateAnim,
-                      builder: (_, child) => Transform.rotate(
-                        angle: _rotateAnim.value * math.pi,
-                        child: child,
+                      builder:
+                          (_, child) => Transform.rotate(
+                            angle: _rotateAnim.value * math.pi,
+                            child: child,
+                          ),
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: kWhiteColor,
+                        size: 22.r,
                       ),
-                      child: Icon(Icons.keyboard_arrow_down,
-                          color: kWhiteColor, size: 22.r),
                     ),
                   ],
                 ),
@@ -193,9 +213,10 @@ class _ExpandableCardState extends State<_ExpandableCard>
             // Content
             AnimatedCrossFade(
               duration: const Duration(milliseconds: 200),
-              crossFadeState: _expanded
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
+              crossFadeState:
+                  _expanded
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
               firstChild: Padding(
                 padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 14.h),
                 child: widget.content,
@@ -212,29 +233,29 @@ class _ExpandableCardState extends State<_ExpandableCard>
 // ── Shared helpers ───────────────────────────────────────────────────────────
 
 Widget _label(String text) => RichText(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          color: kBlackColor,
-          fontSize: 14 * 1.33,
-          fontFamily: FontConstants.interFonts,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
+  text: TextSpan(
+    text: text,
+    style: TextStyle(
+      color: kBlackColor,
+      fontSize: 14 * 1.2,
+      fontFamily: FontConstants.interFonts,
+      fontWeight: FontWeight.w600,
+    ),
+  ),
+);
 
 Widget _fieldLabel(String text) => Padding(
-      padding: EdgeInsets.only(bottom: 6.h),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontFamily: FontConstants.interFonts,
-          fontSize: 13.sp,
-          fontWeight: FontWeight.w600,
-          color: kTextColor,
-        ),
-      ),
-    );
+  padding: EdgeInsets.only(bottom: 6.h),
+  child: Text(
+    text,
+    style: TextStyle(
+      fontFamily: FontConstants.interFonts,
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w600,
+      color: kTextColor,
+    ),
+  ),
+);
 
 Widget _gap([double? h]) => SizedBox(height: (h ?? 12).h);
 
@@ -273,26 +294,29 @@ class _ChipSelector extends StatelessWidget {
                   color: selected ? kPrimaryColor : kWhiteColor,
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: selected ? kPrimaryColor : kTextColor.withValues(alpha: 0.5),
+                    color:
+                        selected
+                            ? kPrimaryColor
+                            : kTextColor.withValues(alpha: 0.5),
                     width: selected ? 1.5 : 1,
                   ),
-                  boxShadow: selected
-                      ? [
-                          BoxShadow(
-                            color: kPrimaryColor.withValues(alpha: 0.25),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          )
-                        ]
-                      : [],
+                  boxShadow:
+                      selected
+                          ? [
+                            BoxShadow(
+                              color: kPrimaryColor.withValues(alpha: 0.25),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                          : [],
                 ),
                 child: Text(
                   options[i],
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
-                    fontSize: 13.sp,
-                    fontWeight:
-                        selected ? FontWeight.w600 : FontWeight.w400,
+                    fontSize: 14.sp,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                     color: selected ? kWhiteColor : kTextColor,
                   ),
                 ),
@@ -328,9 +352,11 @@ Widget _monthYearRow(
             textInputType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             label: _label('Since Month'),
-            prefixIcon: Icon(Icons.calendar_today_outlined,
-                    color: kPrimaryColor, size: 18.r)
-                .paddingOnly(left: 6.w),
+            prefixIcon: Icon(
+              Icons.calendar_today_outlined,
+              color: kPrimaryColor,
+              size: 18.r,
+            ).paddingOnly(left: 6.w),
           ),
         ),
         SizedBox(width: 10.w),
@@ -342,9 +368,11 @@ Widget _monthYearRow(
             textInputType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             label: _label('Since Year'),
-            prefixIcon: Icon(Icons.calendar_month_outlined,
-                    color: kPrimaryColor, size: 18.r)
-                .paddingOnly(left: 6.w),
+            prefixIcon: Icon(
+              Icons.calendar_month_outlined,
+              color: kPrimaryColor,
+              size: 18.r,
+            ).paddingOnly(left: 6.w),
           ),
         ),
       ],
@@ -367,7 +395,7 @@ Widget _btSearchButton({
         label,
         style: TextStyle(
           fontFamily: FontConstants.interFonts,
-          fontSize: 13.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w600,
           color: kPrimaryColor,
         ),
@@ -390,18 +418,19 @@ Widget _sectionDivider(String title) {
     child: Row(
       children: [
         Container(
-            width: 3.w,
-            height: 16.h,
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(2),
-            )),
+          width: 3.w,
+          height: 16.h,
+          decoration: BoxDecoration(
+            color: kPrimaryColor,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
         SizedBox(width: 7.w),
         Text(
           title,
           style: TextStyle(
             fontFamily: FontConstants.interFonts,
-            fontSize: 13.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
             color: kTextColor,
             letterSpacing: 0.2,
@@ -416,6 +445,7 @@ Widget _sectionDivider(String title) {
 
 class _PatientDetailsSection extends StatelessWidget {
   final BasicHealthInfoFormController ctrl;
+
   const _PatientDetailsSection({required this.ctrl});
 
   @override
@@ -430,9 +460,12 @@ class _PatientDetailsSection extends StatelessWidget {
             readOnly: true,
             onTap: () {},
             label: _label('Beneficiary Name'),
-            prefixIcon: Image.asset(icInitiatedBy,
-                    color: kPrimaryColor, width: 20.w, height: 20.h)
-                .paddingOnly(left: 6.w),
+            prefixIcon: Image.asset(
+              icInitiatedBy,
+              color: kPrimaryColor,
+              width: 20.w,
+              height: 20.h,
+            ).paddingOnly(left: 6.w),
           ),
           _gap(),
           Row(
@@ -443,9 +476,12 @@ class _PatientDetailsSection extends StatelessWidget {
                   readOnly: true,
                   onTap: () {},
                   label: _label('Beneficiary No.'),
-                  prefixIcon: Image.asset(icHashIcon,
-                          color: kPrimaryColor, width: 20.w, height: 20.h)
-                      .paddingOnly(left: 6.w),
+                  prefixIcon: Image.asset(
+                    icHashIcon,
+                    color: kPrimaryColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ).paddingOnly(left: 6.w),
                 ),
               ),
               SizedBox(width: 10.w),
@@ -455,9 +491,12 @@ class _PatientDetailsSection extends StatelessWidget {
                   readOnly: true,
                   onTap: () {},
                   label: _label('Mobile No.'),
-                  prefixIcon: Image.asset(iconMobile,
-                          color: kPrimaryColor, width: 20.w, height: 20.h)
-                      .paddingOnly(left: 6.w),
+                  prefixIcon: Image.asset(
+                    iconMobile,
+                    color: kPrimaryColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ).paddingOnly(left: 6.w),
                 ),
               ),
             ],
@@ -472,6 +511,7 @@ class _PatientDetailsSection extends StatelessWidget {
 
 class _BasicHealthInfoSection extends StatelessWidget {
   final BasicHealthInfoFormController ctrl;
+
   const _BasicHealthInfoSection({required this.ctrl});
 
   @override
@@ -495,9 +535,12 @@ class _BasicHealthInfoSection extends StatelessWidget {
                       readOnly: true,
                       onTap: () {},
                       label: _label('Gender'),
-                      prefixIcon: Image.asset(icGenderIcon,
-                              color: kPrimaryColor, width: 20.w, height: 20.h)
-                          .paddingOnly(left: 6.w),
+                      prefixIcon: Image.asset(
+                        icGenderIcon,
+                        color: kPrimaryColor,
+                        width: 20.w,
+                        height: 20.h,
+                      ).paddingOnly(left: 6.w),
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -507,9 +550,12 @@ class _BasicHealthInfoSection extends StatelessWidget {
                       readOnly: true,
                       onTap: () {},
                       label: _label('Age'),
-                      prefixIcon: Image.asset(icCalendarMonth,
-                              color: kPrimaryColor, width: 20.w, height: 20.h)
-                          .paddingOnly(left: 6.w),
+                      prefixIcon: Image.asset(
+                        icCalendarMonth,
+                        color: kPrimaryColor,
+                        width: 20.w,
+                        height: 20.h,
+                      ).paddingOnly(left: 6.w),
                     ),
                   ),
                 ],
@@ -517,15 +563,23 @@ class _BasicHealthInfoSection extends StatelessWidget {
               _gap(),
 
               AppTextField(
-                controller: TextEditingController(text: c.selectedBloodGroup ?? ''),
+                controller: TextEditingController(
+                  text: c.selectedBloodGroup ?? '',
+                ),
                 readOnly: true,
                 onTap: () => _showBloodGroupPicker(context, c),
                 label: _label('Select Blood Group'),
-                prefixIcon: Image.asset(icBloodGroup,
-                        color: kPrimaryColor, width: 20.w, height: 20.h)
-                    .paddingOnly(left: 6.w),
-                suffixIcon: Icon(Icons.keyboard_arrow_down,
-                    color: kLabelTextColor, size: 20.r),
+                prefixIcon: Image.asset(
+                  icBloodGroup,
+                  color: kPrimaryColor,
+                  width: 20.w,
+                  height: 20.h,
+                ).paddingOnly(left: 6.w),
+                suffixIcon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: kLabelTextColor,
+                  size: 20.r,
+                ),
               ),
               _gap(),
 
@@ -537,15 +591,21 @@ class _BasicHealthInfoSection extends StatelessWidget {
                       readOnly: !editable,
                       onTap: () {},
                       onChange: (_) => c.recalculateBMI(),
-                      textInputType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      textInputType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d*\.?\d*'),
+                        ),
                       ],
                       label: _label('Height (cms)'),
-                      prefixIcon: Image.asset(icHeightIcon,
-                              color: kPrimaryColor, width: 20.w, height: 20.h)
-                          .paddingOnly(left: 6.w),
+                      prefixIcon: Image.asset(
+                        icHeightIcon,
+                        color: kPrimaryColor,
+                        width: 20.w,
+                        height: 20.h,
+                      ).paddingOnly(left: 6.w),
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -555,15 +615,21 @@ class _BasicHealthInfoSection extends StatelessWidget {
                       readOnly: !editable,
                       onTap: () {},
                       onChange: (_) => c.recalculateBMI(),
-                      textInputType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      textInputType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d*\.?\d*'),
+                        ),
                       ],
                       label: _label('Weight (kgs)'),
-                      prefixIcon: Image.asset(icWeightIcon,
-                              color: kPrimaryColor, width: 20.w, height: 20.h)
-                          .paddingOnly(left: 6.w),
+                      prefixIcon: Image.asset(
+                        icWeightIcon,
+                        color: kPrimaryColor,
+                        width: 20.w,
+                        height: 20.h,
+                      ).paddingOnly(left: 6.w),
                     ),
                   ),
                 ],
@@ -573,19 +639,31 @@ class _BasicHealthInfoSection extends StatelessWidget {
               _btSearchButton(
                 label: 'Search Weight Machine',
                 onPressed: () async {
+                  if (c.heightCtrl.text.trim().isEmpty) {
+                    ToastManager.toast('Please enter height');
+                    return;
+                  }
                   if (!await c.isBluetoothOn()) {
                     ToastManager.toast('Please enable Bluetooth first');
                     return;
                   }
-                  final device = await Navigator.push<BluetoothDevice?>(
+                  final result = await Navigator.push<SmartScaleResult?>(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const BleDeviceListScreen(title: 'Smart Scale'),
+                      builder:
+                          (_) => SmartScaleDeviceScreen(
+                            heightCm:
+                                double.tryParse(c.heightCtrl.text.trim()) ?? 0,
+                            patientItem: c.patientItem,
+                          ),
                     ),
                   );
-                  if (device != null && context.mounted) {
-                    await c.connectWeightDevice(device);
+                  if (result != null && context.mounted) {
+                    c.applyWeightData(
+                      weight: result.weight,
+                      bmi: result.bmi,
+                      deviceNameStr: result.deviceNameStr,
+                    );
                   }
                 },
               ),
@@ -599,15 +677,16 @@ class _BasicHealthInfoSection extends StatelessWidget {
                       readOnly: true,
                       onTap: () {},
                       label: _label('BMI'),
-                      prefixIcon: Image.asset(icBMI,
-                              color: kPrimaryColor, width: 20.w, height: 20.h)
-                          .paddingOnly(left: 6.w),
+                      prefixIcon: Image.asset(
+                        icBMI,
+                        color: kPrimaryColor,
+                        width: 20.w,
+                        height: 20.h,
+                      ).paddingOnly(left: 6.w),
                     ),
                   ),
                   SizedBox(width: 10.w),
-                  Expanded(
-                    child: _BmiStatusBadge(index: c.bmiStatusIndex),
-                  ),
+                  Expanded(child: _BmiStatusBadge(index: c.bmiStatusIndex)),
                 ],
               ),
               _gap(),
@@ -641,15 +720,18 @@ class _BasicHealthInfoSection extends StatelessWidget {
                   controller: c.fastingHrsInputCtrl,
                   readOnly: false,
                   onTap: () {},
-                  textInputType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  textInputType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                   ],
                   label: _label('Enter Hours'),
-                  prefixIcon: Icon(Icons.access_time_outlined,
-                          color: kPrimaryColor, size: 18.r)
-                      .paddingOnly(left: 6.w),
+                  prefixIcon: Icon(
+                    Icons.access_time_outlined,
+                    color: kPrimaryColor,
+                    size: 18.r,
+                  ).paddingOnly(left: 6.w),
                 ),
               ],
               _gap(14),
@@ -675,9 +757,12 @@ class _BasicHealthInfoSection extends StatelessWidget {
                   textInputType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   label: _label('Number of Children (if any)'),
-                  prefixIcon: Image.asset(iconPerson,
-                          color: kPrimaryColor, width: 20.w, height: 20.h)
-                      .paddingOnly(left: 6.w),
+                  prefixIcon: Image.asset(
+                    iconPerson,
+                    color: kPrimaryColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ).paddingOnly(left: 6.w),
                 ),
               ],
               _gap(10),
@@ -765,25 +850,29 @@ class _BasicHealthInfoSection extends StatelessWidget {
   }
 
   void _showBloodGroupPicker(
-      BuildContext context, BasicHealthInfoFormController c) {
+    BuildContext context,
+    BasicHealthInfoFormController c,
+  ) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (_) => SelectionBottomSheet<String, String>(
-        title: 'Select Blood Group',
-        items: BasicHealthInfoFormController.bloodGroups,
-        valueFor: (item) => item,
-        labelFor: (item) => item,
-        selectedValue: c.selectedBloodGroup,
-        height: 420.h,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        onItemTap: (item) {
-          c.selectedBloodGroup = item;
-          c.update();
-          Navigator.pop(context);
-        },
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
+      builder:
+          (_) => SelectionBottomSheet<String, String>(
+            title: 'Select Blood Group',
+            items: BasicHealthInfoFormController.bloodGroups,
+            valueFor: (item) => item,
+            labelFor: (item) => item,
+            selectedValue: c.selectedBloodGroup,
+            height: 420.h,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            onItemTap: (item) {
+              c.selectedBloodGroup = item;
+              c.update();
+              Navigator.pop(context);
+            },
+          ),
     );
   }
 }
@@ -792,14 +881,27 @@ class _BasicHealthInfoSection extends StatelessWidget {
 
 class _BmiStatusBadge extends StatelessWidget {
   final int index;
+
   const _BmiStatusBadge({required this.index});
 
   @override
   Widget build(BuildContext context) {
     const labels = ['Underweight', 'Normal', 'Overweight'];
-    final colors = [Colors.orange.shade600, Colors.green.shade600, Colors.red.shade500];
-    final bgColors = [Colors.orange.shade50, Colors.green.shade50, Colors.red.shade50];
-    final icons = [Icons.arrow_downward, Icons.check_circle_outline, Icons.arrow_upward];
+    final colors = [
+      Colors.orange.shade600,
+      Colors.green.shade600,
+      Colors.red.shade500,
+    ];
+    final bgColors = [
+      Colors.orange.shade50,
+      Colors.green.shade50,
+      Colors.red.shade50,
+    ];
+    final icons = [
+      Icons.arrow_downward,
+      Icons.check_circle_outline,
+      Icons.arrow_upward,
+    ];
 
     if (index < 0 || index >= labels.length) return const SizedBox.shrink();
 
@@ -854,10 +956,11 @@ class _HabitRow extends StatelessWidget {
     final isNo = selectedIndex == 0;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: isNo ? Colors.grey.shade100 : Colors.transparent,
         borderRadius: BorderRadius.circular(8.r),
+        // border: Border.all(color: kTextColor.withValues(alpha: 0.1))
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -869,11 +972,11 @@ class _HabitRow extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: isNo ? kLabelTextColor : kTextColor,
                   ),
-                ),
+                ).paddingOnly(left: 6.w),
               ),
               _CompactChipSelector(
                 options: const ['No', 'Yes'],
@@ -882,10 +985,7 @@ class _HabitRow extends StatelessWidget {
               ),
             ],
           ),
-          if (showSince) ...[
-            _gap(8),
-            _monthYearRow(monthCtrl, yearCtrl),
-          ],
+          if (showSince) ...[_gap(8), _monthYearRow(monthCtrl, yearCtrl)],
         ],
       ),
     );
@@ -911,7 +1011,7 @@ class _CompactChipSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: kWhiteColor,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: kTextColor.withValues(alpha: 0.4)),
+        border: Border.all(color: kTextColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -921,7 +1021,7 @@ class _CompactChipSelector extends StatelessWidget {
             onTap: () => onChanged(i),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: selected ? kPrimaryColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(20.r),
@@ -939,7 +1039,7 @@ class _CompactChipSelector extends StatelessWidget {
           );
         }),
       ),
-    );
+    ).paddingOnly(right: 6.w);
   }
 }
 
@@ -947,6 +1047,7 @@ class _CompactChipSelector extends StatelessWidget {
 
 class _BloodSugarSection extends StatelessWidget {
   final BasicHealthInfoFormController ctrl;
+
   const _BloodSugarSection({required this.ctrl});
 
   @override
@@ -963,12 +1064,15 @@ class _BloodSugarSection extends StatelessWidget {
             onTap: () {},
             textInputType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
             ],
             label: _label('Blood Sugar (R) mg/dL'),
-            prefixIcon: Image.asset(icBloodGroup,
-                    color: kPrimaryColor, width: 20.w, height: 20.h)
-                .paddingOnly(left: 6.w),
+            prefixIcon: Image.asset(
+              icBloodGroup,
+              color: kPrimaryColor,
+              width: 20.w,
+              height: 20.h,
+            ).paddingOnly(left: 6.w),
           ),
           _gap(10),
           _btSearchButton(
@@ -978,15 +1082,19 @@ class _BloodSugarSection extends StatelessWidget {
                 ToastManager.toast('Please enable Bluetooth first');
                 return;
               }
-              final device = await Navigator.push<BluetoothDevice?>(
+              final result = await Navigator.push<GlucoseResult?>(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      const BleDeviceListScreen(title: 'Glucose Device'),
+                  builder: (_) => GlucoseDeviceScreen(
+                    patientItem: ctrl.patientItem,
+                  ),
                 ),
               );
-              if (device != null && context.mounted) {
-                await ctrl.connectSugarDevice(device);
+              if (result != null && context.mounted) {
+                ctrl.applySugarData(
+                  glucose: result.glucose,
+                  deviceNameStr: result.deviceNameStr,
+                );
               }
             },
           ),
@@ -1000,6 +1108,7 @@ class _BloodSugarSection extends StatelessWidget {
 
 class _BloodPressureSection extends StatelessWidget {
   final BasicHealthInfoFormController ctrl;
+
   const _BloodPressureSection({required this.ctrl});
 
   @override
@@ -1018,9 +1127,12 @@ class _BloodPressureSection extends StatelessWidget {
               textInputType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               label: _label('Systolic (mmHg)'),
-              prefixIcon: Image.asset(icBloodGroup,
-                      color: kPrimaryColor, width: 20.w, height: 20.h)
-                  .paddingOnly(left: 6.w),
+              prefixIcon: Image.asset(
+                icBloodGroup,
+                color: kPrimaryColor,
+                width: 20.w,
+                height: 20.h,
+              ).paddingOnly(left: 6.w),
             ),
           ),
           SizedBox(width: 10.w),
@@ -1032,13 +1144,16 @@ class _BloodPressureSection extends StatelessWidget {
               textInputType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               label: _label('Diastolic (mmHg)'),
-              prefixIcon: Image.asset(icBloodGroup,
-                      color: kPrimaryColor, width: 20.w, height: 20.h)
-                  .paddingOnly(left: 6.w),
+              prefixIcon: Image.asset(
+                icBloodGroup,
+                color: kPrimaryColor,
+                width: 20.w,
+                height: 20.h,
+              ).paddingOnly(left: 6.w),
             ),
           ),
         ],
-      ),
+      ).paddingOnly(top: 4.h),
     );
   }
 }
@@ -1047,6 +1162,7 @@ class _BloodPressureSection extends StatelessWidget {
 
 class _DeviceInfoSection extends StatelessWidget {
   final BasicHealthInfoFormController ctrl;
+
   const _DeviceInfoSection({required this.ctrl});
 
   @override
@@ -1061,11 +1177,15 @@ class _DeviceInfoSection extends StatelessWidget {
           Obx(() {
             final status = ctrl.deviceStatus.value;
             final error = ctrl.deviceError.value;
-            final connected = status.contains('Connected') || status.contains(':');
+            final connected =
+                status.contains('Connected') || status.contains(':');
             return Column(
               children: [
                 _DeviceStatusTile(
-                  icon: connected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                  icon:
+                      connected
+                          ? Icons.bluetooth_connected
+                          : Icons.bluetooth_disabled,
                   label: 'Status',
                   value: status.isEmpty ? 'No devices connected' : status,
                   color: connected ? Colors.green.shade700 : kLabelTextColor,
@@ -1096,24 +1216,30 @@ class _DeviceInfoSection extends StatelessWidget {
                       ToastManager.toast('Please enable Bluetooth first');
                       return;
                     }
+                    if (!context.mounted) return;
                     final device = await Navigator.push<BluetoothDevice?>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            const BleDeviceListScreen(title: 'Device Pairing'),
+                        builder:
+                            (_) => const BleDeviceListScreen(
+                              title: 'Device Pairing',
+                            ),
                       ),
                     );
                     if (device != null && context.mounted) {
                       await ctrl.connectGeneralDevice(device);
                     }
                   },
-                  icon: Icon(Icons.bluetooth_searching,
-                      size: 17.r, color: kPrimaryColor),
+                  icon: Icon(
+                    Icons.bluetooth_searching,
+                    size: 17.r,
+                    color: kPrimaryColor,
+                  ),
                   label: Text(
                     'SCAN',
                     style: TextStyle(
                       fontFamily: FontConstants.interFonts,
-                      fontSize: 13.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
                       color: kPrimaryColor,
                     ),
@@ -1123,71 +1249,84 @@ class _DeviceInfoSection extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 11.h),
                     backgroundColor: kPrimaryColor.withValues(alpha: 0.04),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r)),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
                   ),
                 ),
               ),
               SizedBox(width: 10.w),
               Expanded(
-                child: Obx(() => ElevatedButton.icon(
-                      onPressed:
-                          ctrl.isTransferring.value ? null : ctrl.transferData,
-                      icon: ctrl.isTransferring.value
-                          ? SizedBox(
+                child: Obx(
+                  () => ElevatedButton.icon(
+                    onPressed:
+                        ctrl.isTransferring.value ? null : ctrl.transferData,
+                    icon:
+                        ctrl.isTransferring.value
+                            ? SizedBox(
                               width: 15.r,
                               height: 15.r,
                               child: const CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white),
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
                             )
-                          : Icon(Icons.sync, size: 17.r),
-                      label: Text(
-                        ctrl.isTransferring.value ? 'Transferring...' : 'TRANSFER',
-                        style: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
+                            : Icon(Icons.sync, size: 17.r),
+                    label: Text(
+                      ctrl.isTransferring.value
+                          ? 'Transferring...'
+                          : 'TRANSFER',
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryColor,
-                        foregroundColor: kWhiteColor,
-                        padding: EdgeInsets.symmetric(vertical: 11.h),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r)),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      foregroundColor: kWhiteColor,
+                      padding: EdgeInsets.symmetric(vertical: 11.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
 
-          if (!ctrl.isLive) ...[
-            _gap(10),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: Colors.amber.shade50,
-                borderRadius: BorderRadius.circular(6.r),
-                border: Border.all(color: Colors.amber.shade300),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, size: 14.r, color: Colors.amber.shade800),
-                  SizedBox(width: 6.w),
-                  Expanded(
-                    child: Text(
-                      'Beta mode: manual entry allowed without device.',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 11.sp,
-                        color: Colors.amber.shade800,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          // if (!ctrl.isLive) ...[
+          //   _gap(10),
+          //   Container(
+          //     width: double.infinity,
+          //     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          //     decoration: BoxDecoration(
+          //       color: Colors.amber.shade50,
+          //       borderRadius: BorderRadius.circular(6.r),
+          //       border: Border.all(color: Colors.amber.shade300),
+          //     ),
+          //     child: Row(
+          //       children: [
+          //         Icon(
+          //           Icons.info_outline,
+          //           size: 14.r,
+          //           color: Colors.amber.shade800,
+          //         ),
+          //         SizedBox(width: 6.w),
+          //         Expanded(
+          //           child: Text(
+          //             'Beta mode: manual entry allowed without device.',
+          //             style: TextStyle(
+          //               fontFamily: FontConstants.interFonts,
+          //               fontSize: 11.sp,
+          //               color: Colors.amber.shade800,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ],
         ],
       ),
     );

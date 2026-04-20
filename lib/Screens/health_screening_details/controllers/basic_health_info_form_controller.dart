@@ -80,13 +80,15 @@ class BasicHealthInfoFormController extends GetxController {
   final RxString deviceStatus = 'No devices connected'.obs;
   final RxString deviceError = ''.obs;
   final RxBool isTransferring = false.obs;
+  final RxBool isWeightDataReceived = false.obs;
+  final RxBool isSugarDataReceived = false.obs;
 
   BluetoothDevice? _weightDevice;
   BluetoothDevice? _sugarDevice;
 
-  bool get isWeightConnected => _weightDevice != null;
+  bool get isWeightConnected => _weightDevice != null || isWeightDataReceived.value;
 
-  bool get isSugarConnected => _sugarDevice != null;
+  bool get isSugarConnected => _sugarDevice != null || isSugarDataReceived.value;
 
   int _empCode = 0;
 
@@ -513,8 +515,8 @@ class BasicHealthInfoFormController extends GetxController {
         title: 'Success',
         message: 'Saved successfully',
         onTap: () {
-          Get.back(); // close dialog
-          Get.back(); // pop form screen → back to patient list
+          Get.back();
+          Get.back();
           try {
             Get.find<BasicHealthInfoPatientListController>().fetchPatients();
           } catch (_) {}
@@ -525,15 +527,50 @@ class BasicHealthInfoFormController extends GetxController {
     }
   }
 
+  void applyWeightData({
+    required String weight,
+    required String bmi,
+    required String deviceNameStr,
+  }) {
+    weightCtrl.text = weight;
+    if (bmi.isNotEmpty) {
+      bmiCtrl.text = bmi;
+      final bmiVal = double.tryParse(bmi);
+      if (bmiVal != null) {
+        if (bmiVal < 18.5) {
+          bmiStatusIndex = 0;
+        } else if (bmiVal < 25) {
+          bmiStatusIndex = 1;
+        } else {
+          bmiStatusIndex = 2;
+        }
+      }
+    }
+    isWeightDataReceived.value = true;
+    update();
+  }
+
+  void applySugarData({
+    required String glucose,
+    required String deviceNameStr,
+  }) {
+    // Extract just the numeric mg/dL value from "123.00 mg/dL 2025-01-01 09:30"
+    final parts = glucose.split(' ');
+    final numericValue = parts.isNotEmpty ? parts[0] : glucose;
+    bloodSugarRCtrl.text = numericValue;
+    isSugarDataReceived.value = true;
+    update();
+  }
+
   // ── Validation ──────────────────────────────────────────────────────────
 
   bool _validate() {
     if (isLive) {
-      if (_weightDevice == null) {
+      if (_weightDevice == null && !isWeightDataReceived.value) {
         ToastManager.toast('Please connect weight machine');
         return false;
       }
-      if (_sugarDevice == null) {
+      if (_sugarDevice == null && !isSugarDataReceived.value) {
         ToastManager.toast('Please connect sugar device');
         return false;
       }
