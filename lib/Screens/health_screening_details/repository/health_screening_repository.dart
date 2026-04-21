@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/Json_Class/DishaResponse/DishaResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/SpecimenTypeResponse/SpecimenTypeResponse.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/constants/Repository.dart';
-// import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
-// import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 
 import '../models/camp_closing_model.dart';
@@ -253,7 +254,7 @@ class HealthScreeningRepository {
 
     if (testId == 11) {
       urlString =
-          "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDUrineChange}";
+          "${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDUrineChange}";
       params = {
         "EmpCode": campId.toString(),
         "DistrictId": "0",
@@ -344,5 +345,171 @@ class HealthScreeningRepository {
       },
     );
     return result;
+  }
+
+  // ─── Sample Collection ─────────────────────────────────────────────────────
+
+  Future<List<SpecimenTypeOutput>> getSpecimenTypes() async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetSpecimenType}';
+      debugPrint('getSpecimenTypes URL: $uri');
+      final response = await Repository.postResponse(
+        uri,
+        {},
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getSpecimenTypes raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final model = SpecimenTypeResponse.fromJson(decoded);
+      if ((model.status ?? '').toLowerCase() == 'success') {
+        return model.output ?? [];
+      }
+      return [];
+    } catch (e) {
+      debugPrint('getSpecimenTypes error: $e');
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> submitSampleCollection({
+    required int regdId,
+    required int siteId,
+    required int campId,
+    required String sampleCount,
+    required String barcode1,
+    required String barcode2,
+    required int createdBy,
+    required String sampleDate,
+    required String sampleTime,
+    required String specTypeId,
+    required String versionNo,
+    required String isScannedBy,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kInsertCWPatientBarcodeDetails}';
+      final body = {
+        'RegdId': regdId.toString(),
+        'SiteId': siteId.toString(),
+        'CampId': campId.toString(),
+        'SampleCount': sampleCount.isEmpty ? '3' : sampleCount,
+        'Barcode1': barcode1,
+        'Barcode2': barcode2,
+        'CreatedBy': createdBy.toString(),
+        'Type': '1',
+        'sampledate': sampleDate,
+        'sampletime': sampleTime,
+        'SPECTYPEID': specTypeId,
+        'VersionNo': versionNo,
+        'IsScannedBy': isScannedBy,
+      };
+      debugPrint('submitSampleCollection URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitSampleCollection raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitSampleCollection error: $e');
+      return null;
+    }
+  }
+
+  // ─── Urine Sample Collection ───────────────────────────────────────────────
+
+  Future<Map<String, dynamic>?> submitUrineSampleCollection({
+    required int regdId,
+    required int campId,
+    required String barcode1,
+    required int sampleReceiveFlag,
+    required int createdBy,
+    required String remark,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kInsertUrineSampleReceived}';
+      final body = {
+        'RegdId': regdId.toString(),
+        'CampId': campId.toString(),
+        'Barcode1': barcode1,
+        'SampleReciveFlag': sampleReceiveFlag.toString(),
+        'CreatedBy': createdBy.toString(),
+        'Remark': remark,
+      };
+      debugPrint('submitUrineSampleCollection URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitUrineSampleCollection raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitUrineSampleCollection error: $e');
+      return null;
+    }
+  }
+
+  // ─── Disha LIS ─────────────────────────────────────────────────────────────
+
+  static const String _dishaBase = 'http://103.251.94.38:8080/DISHA_API';
+
+  Future<String?> dishaLogin() async {
+    try {
+      final uri = Uri.parse('$_dishaBase/auth/login');
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {'username': 'Suvarna', 'password': 'Suvarna@123'},
+      );
+      debugPrint('dishaLogin status: ${response.statusCode}');
+      debugPrint('dishaLogin raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return DishaLoginResponse.fromJson(decoded).token;
+    } catch (e) {
+      debugPrint('dishaLogin error: $e');
+      return null;
+    }
+  }
+
+  Future<DishaTestsResponse?> dishaGetTests(String token) async {
+    try {
+      final uri = Uri.parse('$_dishaBase/api/v1/getTestbyCustomerId?customerCode=NHO');
+      final response = await http.get(
+        uri,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint('dishaGetTests raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return DishaTestsResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('dishaGetTests error: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> dishaRegisterPatient({
+    required String token,
+    required Map<String, dynamic> body,
+  }) async {
+    try {
+      final uri = Uri.parse('$_dishaBase/api/v1/registerPatientFromHMIS');
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(body),
+      );
+      debugPrint('dishaRegisterPatient raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('dishaRegisterPatient error: $e');
+      return null;
+    }
   }
 }

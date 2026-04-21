@@ -94,6 +94,7 @@ enum HealthScreeningDetailsMenu {
   CampClosing,
   PhysicalExamination,
   SampleCollection,
+  UrineSampleCollection,
   BasicHealthInfo,
   D2DPhysicalExamination,
   LungFunctionTest,

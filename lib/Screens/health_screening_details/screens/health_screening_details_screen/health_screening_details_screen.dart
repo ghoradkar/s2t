@@ -141,6 +141,41 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         break;
 
       case HealthScreeningDetailsMenu.SampleCollection:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HealthScreeningPatientListScreen(
+              screeningMenu: menu,
+              testId: 7,
+              teamid: 0,
+              districtID: dISTLGDCODE,
+              districtName: dISTNAME,
+              campID: campID,
+              dISTLGDCODE: dISTLGDCODE,
+              siteDetailId: siteDetailId,
+            ),
+          ),
+        );
+        break;
+
+      case HealthScreeningDetailsMenu.UrineSampleCollection:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HealthScreeningPatientListScreen(
+              screeningMenu: menu,
+              testId: 11,
+              teamid: 0,
+              districtID: dISTLGDCODE,
+              districtName: dISTNAME,
+              campID: campID,
+              dISTLGDCODE: dISTLGDCODE,
+              siteDetailId: siteDetailId,
+            ),
+          ),
+        );
+        break;
+
       case HealthScreeningDetailsMenu.D2DPhysicalExamination:
       case HealthScreeningDetailsMenu.LungFunctionTest:
       case HealthScreeningDetailsMenu.AudioScreeningTest:

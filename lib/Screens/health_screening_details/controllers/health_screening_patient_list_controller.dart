@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show TextEditingController;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
@@ -8,22 +8,31 @@ import 'package:s2toperational/Screens/health_screening_details/repository/healt
 class HealthScreeningPatientListController extends GetxController {
   final HealthScreeningRepository _repo = HealthScreeningRepository();
 
-  final RxList<UserAttendancesUsingSitedetailsIDOutput> patientList =
+  final RxList<UserAttendancesUsingSitedetailsIDOutput> allList =
+      <UserAttendancesUsingSitedetailsIDOutput>[].obs;
+  final RxList<UserAttendancesUsingSitedetailsIDOutput> filteredList =
       <UserAttendancesUsingSitedetailsIDOutput>[].obs;
   final RxBool isLoading = false.obs;
-  final TextEditingController searchController = TextEditingController();
 
-  @override
-  void onClose() {
-    searchController.dispose();
-    super.onClose();
-  }
+  final TextEditingController searchController = TextEditingController();
 
   int _testId = 0;
   int _campId = 0;
   String _teamNumber = '0';
   bool _isRegularCamp = false;
   int _empCode = 0;
+
+  @override
+  void onInit() {
+    super.onInit();
+    searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
+  }
 
   void loadData({
     required int testId,
@@ -36,16 +45,11 @@ class HealthScreeningPatientListController extends GetxController {
     _teamNumber = teamNumber;
     _isRegularCamp = isRegularCamp;
     _empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
-
-    if (_isRegularCamp) {
-      fetchPatients();
-    }
+    fetchPatients();
   }
 
   Future<void> fetchPatients() async {
     isLoading.value = true;
-    ToastManager.showLoader();
-
     final response = await _repo.getPatientList(
       testId: _testId,
       campId: _campId,
@@ -53,23 +57,31 @@ class HealthScreeningPatientListController extends GetxController {
       teamNumber: _teamNumber,
       isRegularCamp: _isRegularCamp,
     );
-
-    ToastManager.hideLoader();
-
-    if (response != null) {
-      patientList.assignAll(response.output ?? []);
+    if (response != null && (response.output?.isNotEmpty ?? false)) {
+      allList.assignAll(response.output!);
+      filteredList.assignAll(allList);
     } else {
-      patientList.clear();
-      ToastManager.toast('Failed to load patients');
+      allList.clear();
+      filteredList.clear();
+      ToastManager.toast('No patients found.');
     }
     isLoading.value = false;
   }
 
-  @override
-  Future<void> refresh() async {
-    if (_isRegularCamp) {
-      _teamNumber = '0';
-      await fetchPatients();
+  void _onSearchChanged() {
+    final query = searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      filteredList.assignAll(allList);
+    } else {
+      filteredList.assignAll(
+        allList.where((p) {
+          final name = (p.englishName ?? '').toLowerCase();
+          final regNo = (p.regdNo?.toString() ?? '').toLowerCase();
+          return name.contains(query) || regNo.contains(query);
+        }).toList(),
+      );
     }
   }
+
+  Future<void> refresh() async => fetchPatients();
 }

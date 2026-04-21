@@ -74,6 +74,9 @@ class UserAttendancesUsingSitedetailsIDOutput {
   int? isDependent;
   String? isCall;
   String? relName;
+  String? antiBarcode;
+  String? barcode1;
+  String? antigenResult;
 
   UserAttendancesUsingSitedetailsIDOutput({
     this.createdDate,
@@ -159,6 +162,9 @@ class UserAttendancesUsingSitedetailsIDOutput {
     }
     isCall = json['IsCall']?.toString();
     relName = json['RelName']?.toString();
+    antiBarcode = json['AntiBarcode']?.toString();
+    barcode1 = json['Barcode1']?.toString();
+    antigenResult = json['AntigenResult']?.toString();
   }
 
   Map<String, dynamic> toJson() {

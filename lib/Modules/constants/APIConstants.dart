@@ -409,4 +409,12 @@ class APIConstants {
 
   // Patient Queue
   static String kGetPatientQueue = "CreateQueusingCampid";
+
+  // Sample Collection
+  static String kGetSpecimenType = "GetSpecimenType";
+  static String kInsertCWPatientBarcodeDetails =
+      "InsertCW_PatientBarcodeDetails_WithUrineTest_VersionNo_ScanningFlag";
+
+  // Urine Sample Collection
+  static String kInsertUrineSampleReceived = "InsertCW_UrineSampleRecived";
 }

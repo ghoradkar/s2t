@@ -76,6 +76,9 @@ class HealthScreeningMenuRow extends StatelessWidget {
       case HealthScreeningDetailsMenu.SampleCollection:
         icon = icSampleCollection;
         break;
+      case HealthScreeningDetailsMenu.UrineSampleCollection:
+        icon = icSampleCollection;
+        break;
       case HealthScreeningDetailsMenu.BasicHealthInfo:
         icon = icBasicHealthInfo;
         break;
@@ -110,6 +113,9 @@ class HealthScreeningMenuRow extends StatelessWidget {
         break;
       case HealthScreeningDetailsMenu.SampleCollection:
         title = "Sample Collection";
+        break;
+      case HealthScreeningDetailsMenu.UrineSampleCollection:
+        title = "Urine Sample Collection";
         break;
       case HealthScreeningDetailsMenu.BasicHealthInfo:
         title = "Basic Health Info";

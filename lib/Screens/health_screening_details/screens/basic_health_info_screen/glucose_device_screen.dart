@@ -30,14 +30,17 @@ class GlucoseDeviceScreen extends StatelessWidget {
             ),
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _PatientDetailsCard(patientItem: patientItem),
-                    SizedBox(height: 12.h),
-                    _DeviceDataCard(ctrl: ctrl),
-                    SizedBox(height: 20.h),
-                    _ScanButton(ctrl: ctrl, context: context),
+                    _PatientCard(patientItem: patientItem),
+                    SizedBox(height: 14.h),
+                    _GlucoseReadingCard(ctrl: ctrl),
+                    SizedBox(height: 14.h),
+                    _DeviceInfoCard(ctrl: ctrl),
+                    SizedBox(height: 24.h),
+                    _ScanButton(ctrl: ctrl),
                     SizedBox(height: 12.h),
                     Obx(() {
                       if (!ctrl.dataReceived.value)
@@ -63,7 +66,6 @@ class GlucoseDeviceScreen extends StatelessWidget {
                         ),
                       );
                     }),
-                    SizedBox(height: 24.h),
                   ],
                 ),
               ),
@@ -73,62 +75,208 @@ class GlucoseDeviceScreen extends StatelessWidget {
   }
 }
 
-// ── Patient Details Card ──────────────────────────────────────────────────────
+// ── Patient Card ──────────────────────────────────────────────────────────────
 
-class _PatientDetailsCard extends StatelessWidget {
+class _PatientCard extends StatelessWidget {
   final UserAttendancesUsingSitedetailsIDOutput? patientItem;
 
-  const _PatientDetailsCard({this.patientItem});
+  const _PatientCard({this.patientItem});
 
   @override
   Widget build(BuildContext context) {
     final p = patientItem;
-    return _Card(
+    return _SectionCard(
       title: 'Patient Details',
-      icon: Icons.person_outline,
+      icon: Icons.person_outline_rounded,
+      child: _gridRow(
+        label1: 'Name',
+        value1: (p?.englishName ?? '—').toUpperCase(),
+        label2: 'Reg. No.',
+        value2: p?.regdNo?.toString() ?? '—',
+      ),
+    );
+  }
+}
+
+// ── Glucose Reading Card ──────────────────────────────────────────────────────
+
+class _GlucoseReadingCard extends StatelessWidget {
+  final GlucoseDeviceController ctrl;
+
+  const _GlucoseReadingCard({required this.ctrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionCard(
+      title: 'Glucose Reading',
+      icon: Icons.biotech_outlined,
+      child: Obx(() {
+        final hasData =
+            ctrl.dataStr.value != '—' && ctrl.dataStr.value.isNotEmpty;
+        return Column(
+          children: [_GlucoseTile(value: ctrl.dataStr.value, hasData: hasData)],
+        );
+      }),
+    );
+  }
+}
+
+// ── Glucose Value Tile ────────────────────────────────────────────────────────
+
+class _GlucoseTile extends StatelessWidget {
+  final String value;
+  final bool hasData;
+
+  const _GlucoseTile({required this.value, required this.hasData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 18.h),
+      decoration: BoxDecoration(
+        color:
+            hasData
+                ? kPrimaryColor.withValues(alpha: 0.07)
+                : Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color:
+              hasData
+                  ? kPrimaryColor.withValues(alpha: 0.3)
+                  : Colors.grey.shade200,
+        ),
+      ),
       child: Column(
         children: [
-          _infoRow('Name', (p?.englishName ?? '').toUpperCase()),
-          // _divider(),
-          _infoRow('Reg. No.', p?.regdNo?.toString() ?? '—'),
-          // _divider(),
-          // _infoRow('Mobile', p?.mobileNo ?? '—'),
-          // _divider(),
-          // _infoRow('Gender', p?.gender ?? '—'),
-          // _divider(),
-          // _infoRow('Age', p?.age != null ? '${p!.age} yrs' : '—'),
+          Icon(
+            Icons.water_drop_outlined,
+            size: 28.r,
+            color: hasData ? kPrimaryColor : kLabelTextColor,
+          ),
+          SizedBox(height: 8.h),
+          if (hasData) ...[
+            _GlucoseValueText(value: value),
+          ] else ...[
+            Text(
+              '—',
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w800,
+                color: kLabelTextColor,
+              ),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              'No data yet',
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 11.sp,
+                color: kLabelTextColor,
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-// ── Device Data Card ──────────────────────────────────────────────────────────
+class _GlucoseValueText extends StatelessWidget {
+  final String value;
 
-class _DeviceDataCard extends StatelessWidget {
-  final GlucoseDeviceController ctrl;
-
-  const _DeviceDataCard({required this.ctrl});
+  const _GlucoseValueText({required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return _Card(
-      title: 'Device Data',
-      icon: Icons.biotech_outlined,
+    // "123.00 mg/dL 2025-01-01 09:30" — split on space
+    final parts = value.split(' ');
+    final numeric = parts.isNotEmpty ? parts[0] : value;
+    final unit = parts.length > 1 ? parts[1] : '';
+    final timestamp = parts.length > 2 ? parts.sublist(2).join(' ') : '';
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              numeric,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 32.sp,
+                fontWeight: FontWeight.w800,
+                color: kPrimaryColor,
+              ),
+            ),
+            if (unit.isNotEmpty) ...[
+              SizedBox(width: 4.w),
+              Padding(
+                padding: EdgeInsets.only(bottom: 4.h),
+                child: Text(
+                  unit,
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: kPrimaryColor.withValues(alpha: 0.8),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        if (timestamp.isNotEmpty) ...[
+          SizedBox(height: 4.h),
+          Text(
+            timestamp,
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 11.sp,
+              color: kLabelTextColor,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// ── Device Info Card ──────────────────────────────────────────────────────────
+
+class _DeviceInfoCard extends StatelessWidget {
+  final GlucoseDeviceController ctrl;
+
+  const _DeviceInfoCard({required this.ctrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionCard(
+      title: 'Device Info',
+      icon: Icons.bluetooth_rounded,
       child: Obx(
         () => Column(
           children: [
-            _infoRow('Device Name', ctrl.deviceName.value),
-            // _divider(),
-            _infoRow('MAC Address', ctrl.macAddress.value),
-            // _divider(),
-            _infoRow('Battery Level', ctrl.batteryLevel.value),
-            // _divider(),
-            _infoRowStatus('Status', ctrl.statusStr.value),
-            // _divider(),
-            _infoRowHighlight('Data', ctrl.dataStr.value),
-            // _divider(),
-            _infoRow('Raw Data', ctrl.rawDataStr.value),
+            _infoRow(Icons.device_hub_rounded, 'Device', ctrl.deviceName.value),
+            _thinDivider(),
+            _infoRow(
+              Icons.wifi_tethering_rounded,
+              'MAC Address',
+              ctrl.macAddress.value,
+            ),
+            _thinDivider(),
+            _infoRow(
+              Icons.battery_std_outlined,
+              'Battery',
+              ctrl.batteryLevel.value,
+            ),
+            _thinDivider(),
+            _infoRow(Icons.memory_outlined, 'Raw Data', ctrl.rawDataStr.value),
+            _thinDivider(),
+
+            _StatusRow(status: ctrl.statusStr.value),
           ],
         ),
       ),
@@ -140,179 +288,84 @@ class _DeviceDataCard extends StatelessWidget {
 
 class _ScanButton extends StatelessWidget {
   final GlucoseDeviceController ctrl;
-  final BuildContext context;
 
-  const _ScanButton({required this.ctrl, required this.context});
+  const _ScanButton({required this.ctrl});
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final scanning = ctrl.isScanning.value;
       final disabled = ctrl.scanButtonDisabled.value;
+
       return SizedBox(
         width: double.infinity,
-        child: ElevatedButton.icon(
+        child: ElevatedButton(
           onPressed:
               disabled
                   ? null
-                  : () {
-                    if (scanning) {
-                      ctrl.stopScan();
-                    } else {
-                      ctrl.startScan();
-                      // _showPairingBottomSheet(context, ctrl);
-                    }
-                  },
-          icon: Icon(
-            scanning ? Icons.stop_circle_outlined : Icons.bluetooth_searching,
-            size: 20.r,
-          ),
-          label: Text(
-            scanning ? 'STOP SCAN' : 'SCAN',
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+                  : () => scanning ? ctrl.stopScan() : ctrl.startScan(),
           style: ElevatedButton.styleFrom(
             backgroundColor: scanning ? Colors.red.shade600 : kPrimaryColor,
             foregroundColor: Colors.white,
-            disabledBackgroundColor: Colors.grey.shade400,
-            disabledForegroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 14.h),
+            disabledBackgroundColor: Colors.grey.shade300,
+            disabledForegroundColor: Colors.grey.shade500,
+            padding: EdgeInsets.symmetric(vertical: 15.h),
+            elevation: disabled ? 0 : 2,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(12.r),
             ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (scanning) ...[
+                _PulsingDot(),
+                SizedBox(width: 10.w),
+              ] else ...[
+                Icon(Icons.bluetooth_searching_rounded, size: 20.r),
+                SizedBox(width: 8.w),
+              ],
+              Text(
+                scanning ? 'STOP SCAN' : 'SCAN FOR DEVICE',
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
           ),
         ),
       );
     });
   }
-
-  // void _showPairingBottomSheet(BuildContext context, GlucoseDeviceController ctrl) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-  //     ),
-  //     backgroundColor: kWhiteColor,
-  //     builder: (ctx) => Padding(
-  //       padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
-  //       child: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Row(
-  //             children: [
-  //               Icon(Icons.bluetooth_searching, color: kPrimaryColor, size: 22.r),
-  //               SizedBox(width: 10.w),
-  //               Text(
-  //                 'Pairing Code',
-  //                 style: TextStyle(
-  //                   fontFamily: FontConstants.interFonts,
-  //                   fontSize: 16.sp,
-  //                   fontWeight: FontWeight.w700,
-  //                   color: kTextColor,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           SizedBox(height: 12.h),
-  //           Container(
-  //             width: double.infinity,
-  //             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-  //             decoration: BoxDecoration(
-  //               color: Colors.blue.shade50,
-  //               borderRadius: BorderRadius.circular(8.r),
-  //               border: Border.all(color: Colors.blue.shade200),
-  //             ),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Row(
-  //                   children: [
-  //                     Icon(Icons.info_outline, color: Colors.blue.shade700, size: 16.r),
-  //                     SizedBox(width: 6.w),
-  //                     Text(
-  //                       'How to pair:',
-  //                       style: TextStyle(
-  //                         fontFamily: FontConstants.interFonts,
-  //                         fontSize: 13.sp,
-  //                         fontWeight: FontWeight.w700,
-  //                         color: Colors.blue.shade700,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 SizedBox(height: 6.h),
-  //                 Text(
-  //                   '1. Make sure your Glucose Meter is turned ON.\n'
-  //                   '2. Tap "Start Scan" below to begin scanning.\n'
-  //                   '3. When a pairing PIN dialog appears, enter the PIN shown on the glucose meter screen.',
-  //                   style: TextStyle(
-  //                     fontFamily: FontConstants.interFonts,
-  //                     fontSize: 12.sp,
-  //                     color: Colors.blue.shade800,
-  //                     height: 1.6,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           SizedBox(height: 16.h),
-  //           SizedBox(
-  //             width: double.infinity,
-  //             child: ElevatedButton(
-  //               onPressed: () {
-  //                 Navigator.pop(ctx);
-  //                 ctrl.startScan();
-  //               },
-  //               style: ElevatedButton.styleFrom(
-  //                 backgroundColor: kPrimaryColor,
-  //                 foregroundColor: Colors.white,
-  //                 padding: EdgeInsets.symmetric(vertical: 14.h),
-  //                 shape: RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.circular(10.r),
-  //                 ),
-  //               ),
-  //               child: Text(
-  //                 'Start Scan',
-  //                 style: TextStyle(
-  //                   fontFamily: FontConstants.interFonts,
-  //                   fontSize: 14.sp,
-  //                   fontWeight: FontWeight.w700,
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }
 
-// ── Shared Card wrapper ───────────────────────────────────────────────────────
+// ── Shared Section Card ───────────────────────────────────────────────────────
 
-class _Card extends StatelessWidget {
+class _SectionCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final Widget child;
 
-  const _Card({required this.title, required this.icon, required this.child});
+  const _SectionCard({
+    required this.title,
+    required this.icon,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: kWhiteColor,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -321,20 +374,20 @@ class _Card extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
             decoration: BoxDecoration(
               color: kPrimaryColor,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.r),
-                topRight: Radius.circular(12.r),
+                topLeft: Radius.circular(14.r),
+                topRight: Radius.circular(14.r),
               ),
             ),
             child: Row(
               children: [
                 Icon(
                   icon,
-                  color: Colors.white.withValues(alpha: 0.85),
-                  size: 18.r,
+                  color: Colors.white.withValues(alpha: 0.9),
+                  size: 22.r,
                 ),
                 SizedBox(width: 8.w),
                 Text(
@@ -344,14 +397,74 @@ class _Card extends StatelessWidget {
                     fontFamily: FontConstants.interFonts,
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
+                    letterSpacing: 0.2,
                   ),
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-            child: child,
+          Padding(padding: EdgeInsets.all(14.w), child: child),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Status Row ────────────────────────────────────────────────────────────────
+
+class _StatusRow extends StatelessWidget {
+  final String status;
+
+  const _StatusRow({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final lower = status.toLowerCase();
+    Color color;
+    IconData icon;
+
+    if (lower.contains('success') ||
+        lower.contains('received') ||
+        lower.contains('connected') ||
+        lower.contains('enabled')) {
+      color = Colors.green.shade600;
+      icon = Icons.check_circle_rounded;
+    } else if (lower.contains('fail') ||
+        lower.contains('error') ||
+        lower.contains('not found') ||
+        lower.contains('retry')) {
+      color = Colors.red.shade600;
+      icon = Icons.error_outline_rounded;
+    } else if (lower.contains('scanning') ||
+        lower.contains('connecting') ||
+        lower.contains('reading') ||
+        lower.contains('requested') ||
+        lower.contains('pairing') ||
+        lower.contains('pin') ||
+        lower.contains('discovering')) {
+      color = Colors.orange.shade600;
+      icon = Icons.pending_outlined;
+    } else {
+      color = kLabelTextColor;
+      icon = Icons.info_outline_rounded;
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(top: 4.h),
+      child: Row(
+        children: [
+          Icon(icon, size: 20.r, color: color),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              status,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+            ),
           ),
         ],
       ),
@@ -359,20 +472,117 @@ class _Card extends StatelessWidget {
   }
 }
 
-// ── Info row helpers ──────────────────────────────────────────────────────────
+// ── Pulsing Dot (scan animation) ──────────────────────────────────────────────
 
-Widget _infoRow(String label, String value) {
+class _PulsingDot extends StatefulWidget {
+  @override
+  State<_PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+    _anim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder:
+          (context, child) => Opacity(
+            opacity: _anim.value,
+            child: Container(
+              width: 10.r,
+              height: 10.r,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+    );
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+Widget _gridRow({
+  required String label1,
+  required String value1,
+  required String label2,
+  required String value2,
+}) {
+  return Row(
+    children: [
+      Expanded(child: _gridCell(label1, value1)),
+      SizedBox(width: 12.w),
+      Expanded(child: _gridCell(label2, value2)),
+    ],
+  );
+}
+
+Widget _gridCell(String label, String value) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          fontFamily: FontConstants.interFonts,
+          fontSize: 14.sp,
+          color: kBlackColor,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      SizedBox(height: 2.h),
+      Text(
+        value.isEmpty ? '—' : value,
+        style: TextStyle(
+          fontFamily: FontConstants.interFonts,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w700,
+          color: kTextColor,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    ],
+  );
+}
+
+Widget _infoRow(IconData icon, String label, String value) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 7),
+    padding: EdgeInsets.symmetric(vertical: 8.h),
     child: Row(
       children: [
+        Icon(icon, size: 20.r, color: kPrimaryColor.withValues(alpha: 0.7)),
+        SizedBox(width: 10.w),
         SizedBox(
-          width: 110,
+          width: 100.w,
           child: Text(
             label,
             style: TextStyle(
               fontFamily: FontConstants.interFonts,
-              fontSize: 13,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: kLabelTextColor,
             ),
@@ -383,10 +593,12 @@ Widget _infoRow(String label, String value) {
             value.isEmpty ? '—' : value,
             style: TextStyle(
               fontFamily: FontConstants.interFonts,
-              fontSize: 13,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               color: kTextColor,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -394,91 +606,5 @@ Widget _infoRow(String label, String value) {
   );
 }
 
-Widget _infoRowHighlight(String label, String value) {
-  final hasData = value != '—' && value.isNotEmpty;
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 7),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 110,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: kLabelTextColor,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value.isEmpty ? '—' : value,
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 14,
-              fontWeight: hasData ? FontWeight.w700 : FontWeight.w500,
-              color: hasData ? kPrimaryColor : kTextColor,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _infoRowStatus(String label, String value) {
-  Color statusColor = kLabelTextColor;
-  final lower = value.toLowerCase();
-  if (lower.contains('success') ||
-      lower.contains('connected') ||
-      lower.contains('received') ||
-      lower.contains('enabled')) {
-    statusColor = Colors.green.shade700;
-  } else if (lower.contains('fail') ||
-      lower.contains('error') ||
-      lower.contains('not found')) {
-    statusColor = Colors.red.shade700;
-  } else if (lower.contains('scanning') ||
-      lower.contains('connecting') ||
-      lower.contains('reading') ||
-      lower.contains('requested') ||
-      lower.contains('discovering') ||
-      lower.contains('retrying')) {
-    statusColor = Colors.orange.shade700;
-  }
-
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 7),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 110,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: kLabelTextColor,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: statusColor,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _divider() => Divider(height: 1, color: Colors.grey.shade200);
+Widget _thinDivider() =>
+    Divider(height: 1, thickness: 0.8, color: Colors.grey.shade100);

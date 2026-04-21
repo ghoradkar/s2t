@@ -13,7 +13,7 @@ import 'package:s2toperational/Screens/health_screening_details/controllers/basi
 import 'package:s2toperational/Screens/health_screening_details/screens/basic_health_info_screen/basic_health_info_form_screen.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 
-class BasicHealthInfoPatientListScreen extends StatelessWidget {
+class BasicHealthInfoPatientListScreen extends StatefulWidget {
   final int campID;
   final int siteDetailId;
 
@@ -24,10 +24,23 @@ class BasicHealthInfoPatientListScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(BasicHealthInfoPatientListController());
-    controller.loadData(campId: campID, siteDetailId: siteDetailId);
+  State<BasicHealthInfoPatientListScreen> createState() =>
+      _BasicHealthInfoPatientListScreenState();
+}
 
+class _BasicHealthInfoPatientListScreenState
+    extends State<BasicHealthInfoPatientListScreen> {
+  late final BasicHealthInfoPatientListController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(BasicHealthInfoPatientListController());
+    controller.loadData(campId: widget.campID, siteDetailId: widget.siteDetailId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: mAppBar(
@@ -42,7 +55,7 @@ class BasicHealthInfoPatientListScreen extends StatelessWidget {
         if (controller.isLoading.value) {
           return Column(
             children: [
-              _searchBarDisabled(),
+              _searchBarDisabled().paddingSymmetric(horizontal: 12.w,vertical: 8.h),
               _tableHeader().paddingSymmetric(horizontal: 12.w),
               const Expanded(child: CommonSkeletonList()),
             ],
@@ -51,7 +64,7 @@ class BasicHealthInfoPatientListScreen extends StatelessWidget {
         if (controller.allList.isEmpty) {
           return Column(
             children: [
-              _searchBarDisabled(),
+              _searchBarDisabled().paddingSymmetric(horizontal: 10.w,vertical: 10.h),
 
               Expanded(child: NoDataFound().paddingSymmetric(horizontal: 12.w)),
             ],

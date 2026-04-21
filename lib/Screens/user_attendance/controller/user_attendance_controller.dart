@@ -179,7 +179,14 @@ class UserAttendanceController extends GetxController {
 
     if (flag == '02' || flag == '2') {
       // Already fully checked out
-      _showAlertDialog('You have already marked your availability.');
+      // _showAlertDialog('You have already marked your availability.');
+      ToastManager.showAlertDialog(
+        Get.context!,
+        "You have already marked your availability.",
+        () {
+          Get.back();
+        },
+      );
       return;
     }
 
@@ -239,8 +246,16 @@ class UserAttendanceController extends GetxController {
 
   void _onCheckoutTap(String date) {
     if (_testFlag == '1') {
-      _showAlertDialog(
-        'काही beneficiary च्या कॅम्प test अजूनही अपूर्ण आहेत. तुम्ही CheckOut करू शकत नाही.',
+      // _showAlertDialog(
+      //   'काही beneficiary च्या कॅम्प test अजूनही अपूर्ण आहेत. तुम्ही CheckOut करू शकत नाही.',
+      // );
+
+      ToastManager.showAlertDialog(
+        Get.context!,
+        "काही beneficiary च्या कॅम्प test अजूनही अपूर्ण आहेत. तुम्ही CheckOut करू शकत नाही.",
+            () {
+          Get.back();
+        },
       );
       return;
     }
@@ -321,7 +336,15 @@ class UserAttendanceController extends GetxController {
       // _showSuccessDialog(message.isNotEmpty ? message : 'Checkout successful');
       await fetchUserAttendance();
     } else {
-      _showAlertDialog(message.isNotEmpty ? message : 'Checkout failed');
+      // _showAlertDialog(message.isNotEmpty ? message : 'Checkout failed');
+
+      ToastManager.showAlertDialog(
+        Get.context!,
+        message.isNotEmpty ? message : 'Checkout failed',
+            () {
+          Get.back();
+        },
+      );
     }
   }
 
@@ -349,20 +372,29 @@ class UserAttendanceController extends GetxController {
   void _showSuccessDialog(String message) {
     final ctx = Get.context;
     if (ctx == null) return;
-    showDialog(
+
+    ToastManager().showSuccessOkayDialog(
       context: ctx,
-      barrierDismissible: false,
-      builder:
-          (ctx) => AlertDialog(
-            title: const Text('Success'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Ok'),
-              ),
-            ],
-          ),
+      title: "Success",
+      message: message,
+      onTap: () {
+       Get.back();
+      },
     );
+    // showDialog(
+    //   context: ctx,
+    //   barrierDismissible: false,
+    //   builder:
+    //       (ctx) => AlertDialog(
+    //         title: const Text('Success'),
+    //         content: Text(message),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () => Navigator.pop(ctx),
+    //             child: const Text('Ok'),
+    //           ),
+    //         ],
+    //       ),
+    // );
   }
 }
