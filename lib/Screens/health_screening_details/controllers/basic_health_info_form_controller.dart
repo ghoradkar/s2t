@@ -343,7 +343,7 @@ class BasicHealthInfoFormController extends GetxController {
   Future<void> connectWeightDevice(BluetoothDevice device) async {
     ToastManager.showLoader();
     try {
-      await device.connect(timeout: const Duration(seconds: 10));
+      await device.connect(license: License.free, timeout: const Duration(seconds: 10));
       _weightDevice = device;
       deviceError.value = '';
       _updateDeviceStatus();
@@ -359,7 +359,7 @@ class BasicHealthInfoFormController extends GetxController {
   Future<void> connectSugarDevice(BluetoothDevice device) async {
     ToastManager.showLoader();
     try {
-      await device.connect(timeout: const Duration(seconds: 10));
+      await device.connect(license: License.free, timeout: const Duration(seconds: 10));
       _sugarDevice = device;
       deviceError.value = '';
       _updateDeviceStatus();

@@ -135,6 +135,7 @@ class APIConstants {
   static String kGetVisionScreeningDetails = "GetVisionScreeningDetails";
 
   static String kGetAudioScreeningDetails = "GetAudioScreeningDetails";
+  static String kInsertMachineHearingTestNew = "InsertMachineHearingTest_New";
 
   static String kGetTestListForReject = "getTestListForReject";
 

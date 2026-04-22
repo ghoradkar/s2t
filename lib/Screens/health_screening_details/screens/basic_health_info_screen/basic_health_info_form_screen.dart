@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';

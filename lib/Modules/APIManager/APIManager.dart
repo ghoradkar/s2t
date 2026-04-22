@@ -2302,6 +2302,26 @@ class APIManager {
     }
   }
 
+  Future<bool> insertMachineHearingTestAPI({
+    required String regdId,
+    required String createdBy,
+    required String jsonString,
+  }) async {
+    final url = Uri.parse(
+      '${kConstructionWorkerBaseURL}${APIConstants.kInsertMachineHearingTestNew}',
+    ).replace(queryParameters: {'CreatedBy': createdBy, 'JsonString': jsonString});
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(url);
+      print('insertMachineHearingTestAPI response: ${response.body}');
+      final body = json.decode(response.body) as Map<String, dynamic>;
+      return (body['status'] ?? '').toString().toLowerCase() == 'success';
+    } catch (e) {
+      print('insertMachineHearingTestAPI error: $e');
+      return false;
+    }
+  }
+
   Future<void> getTestToRejectAPI(
     Map<String, dynamic> data,
     dynamic callback,

@@ -54,6 +54,7 @@ class ToastManager {
     String message,
     Function onTap, {
     String? title,
+    Function? onNoTap,
   }) {
     showDialog(
       context: context,
@@ -94,14 +95,31 @@ class ToastManager {
                 ),
               ),
 
-              SizedBox(
-                width: 80.w,
-                child: AppActiveButton(
-                  buttontitle: "OK",
-                  onTap: () {
-                    onTap();
-                  },
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Visibility(
+                    visible: onNoTap != null,
+                    child: SizedBox(
+                      width: 80.w,
+                      child: AppActiveButton(
+                        buttontitle: "NO",
+                        onTap: () {
+                          onTap();
+                        },
+                      ),
+                    ).paddingOnly(right: 12.w),
+                  ),
+                  SizedBox(
+                    width: 80.w,
+                    child: AppActiveButton(
+                      buttontitle: "OK",
+                      onTap: () {
+                        onTap();
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -60,7 +60,9 @@ class GlucoseDeviceController extends GetxController {
     _connecting = false;
 
     if (_connectedDevice != null) {
-      try { await _connectedDevice!.disconnect(); } catch (_) {}
+      try {
+        await _connectedDevice!.disconnect();
+      } catch (_) {}
       _connectedDevice = null;
     }
 
@@ -115,12 +117,15 @@ class GlucoseDeviceController extends GetxController {
   Future<void> _connectAndRead(BluetoothDevice device) async {
     try {
       // Clear any stale GATT cache
-      try { await device.disconnect(); } catch (_) {}
+      try {
+        await device.disconnect();
+      } catch (_) {}
       await Future.delayed(const Duration(milliseconds: 500));
 
       // ── Step 1: GATT connect ──────────────────────────────────────────────
       // flutter_blue_plus requires a GATT connection before createBond()
       await device.connect(
+        license: License.free,
         timeout: const Duration(seconds: 15),
         autoConnect: false,
       );
@@ -151,7 +156,8 @@ class GlucoseDeviceController extends GetxController {
       final services = await device.discoverServices();
 
       // Debug: log all service UUIDs
-      final svcUuids = services.map((s) => s.uuid.toString().toLowerCase()).toList();
+      final svcUuids =
+          services.map((s) => s.uuid.toString().toLowerCase()).toList();
       final hasGlucose = svcUuids.any((u) => u.contains(_glucoseSvcShort));
       if (!hasGlucose) {
         statusStr.value = 'Services found: ${svcUuids.join(', ')}';
@@ -175,7 +181,10 @@ class GlucoseDeviceController extends GetxController {
     }
   }
 
-  Future<void> _readDeviceName(BluetoothDevice device, List<BluetoothService> services) async {
+  Future<void> _readDeviceName(
+    BluetoothDevice device,
+    List<BluetoothService> services,
+  ) async {
     try {
       final svc = services.firstWhereOrNull(
         (s) => s.uuid.toString().toLowerCase().contains(_genericAccessShort),
@@ -191,7 +200,10 @@ class GlucoseDeviceController extends GetxController {
     } catch (_) {}
   }
 
-  Future<void> _enableGlucoseNotifications(BluetoothDevice device, List<BluetoothService> services) async {
+  Future<void> _enableGlucoseNotifications(
+    BluetoothDevice device,
+    List<BluetoothService> services,
+  ) async {
     try {
       final glucoseSvc = services.firstWhereOrNull(
         (s) => s.uuid.toString().toLowerCase().contains(_glucoseSvcShort),
@@ -202,18 +214,23 @@ class GlucoseDeviceController extends GetxController {
       }
 
       final glucoseChar = glucoseSvc.characteristics.firstWhereOrNull(
-        (c) => c.uuid.toString().toLowerCase().contains(_glucoseMeasurementShort),
+        (c) =>
+            c.uuid.toString().toLowerCase().contains(_glucoseMeasurementShort),
       );
-      if (glucoseChar != null && (glucoseChar.properties.notify || glucoseChar.properties.indicate)) {
+      if (glucoseChar != null &&
+          (glucoseChar.properties.notify || glucoseChar.properties.indicate)) {
         await glucoseChar.setNotifyValue(true);
-        _glucoseSub = glucoseChar.onValueReceived.listen(_onGlucoseNotification);
+        _glucoseSub = glucoseChar.onValueReceived.listen(
+          _onGlucoseNotification,
+        );
         statusStr.value = 'Enabled notifications for Glucose Measurement.';
       }
 
       final racpChar = glucoseSvc.characteristics.firstWhereOrNull(
         (c) => c.uuid.toString().toLowerCase().contains(_racpShort),
       );
-      if (racpChar != null && (racpChar.properties.notify || racpChar.properties.indicate)) {
+      if (racpChar != null &&
+          (racpChar.properties.notify || racpChar.properties.indicate)) {
         await racpChar.setNotifyValue(true);
       }
     } catch (e) {
@@ -221,7 +238,10 @@ class GlucoseDeviceController extends GetxController {
     }
   }
 
-  Future<void> _readBattery(BluetoothDevice device, List<BluetoothService> services) async {
+  Future<void> _readBattery(
+    BluetoothDevice device,
+    List<BluetoothService> services,
+  ) async {
     try {
       final svc = services.firstWhereOrNull(
         (s) => s.uuid.toString().toLowerCase().contains(_batteryServiceShort),
@@ -237,7 +257,10 @@ class GlucoseDeviceController extends GetxController {
     } catch (_) {}
   }
 
-  Future<void> _requestStoredRecords(BluetoothDevice device, List<BluetoothService> services) async {
+  Future<void> _requestStoredRecords(
+    BluetoothDevice device,
+    List<BluetoothService> services,
+  ) async {
     try {
       final glucoseSvc = services.firstWhereOrNull(
         (s) => s.uuid.toString().toLowerCase().contains(_glucoseSvcShort),
@@ -246,10 +269,7 @@ class GlucoseDeviceController extends GetxController {
         (c) => c.uuid.toString().toLowerCase().contains(_racpShort),
       );
       if (racpChar != null && racpChar.properties.write) {
-        await racpChar.write(
-          [0x01, 0x01],
-          withoutResponse: false,
-        );
+        await racpChar.write([0x01, 0x01], withoutResponse: false);
         statusStr.value = 'Requested glucose records';
       }
     } catch (e) {

@@ -512,4 +512,17 @@ class HealthScreeningRepository {
       return null;
     }
   }
+
+  // ─── Audio Screening ───────────────────────────────────────────────────────
+
+  Future<bool> saveAudioScreeningData({
+    required String createdBy,
+    required String jsonString,
+  }) async {
+    return _apiManager.insertMachineHearingTestAPI(
+      regdId: '',
+      createdBy: createdBy,
+      jsonString: jsonString,
+    );
+  }
 }
