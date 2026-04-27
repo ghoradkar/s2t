@@ -10,7 +10,9 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 
 class BleDeviceListScreen extends StatefulWidget {
   final String title;
-  const BleDeviceListScreen({super.key, required this.title});
+  /// If set, only devices whose name starts with this prefix are shown.
+  final String? namePrefix;
+  const BleDeviceListScreen({super.key, required this.title, this.namePrefix});
 
   @override
   State<BleDeviceListScreen> createState() => _BleDeviceListScreenState();
@@ -48,9 +50,15 @@ class _BleDeviceListScreenState extends State<BleDeviceListScreen> {
       _scanSub = FlutterBluePlus.scanResults.listen((results) {
         if (mounted) {
           setState(() {
-            _results = results
-                .where((r) => r.device.platformName.isNotEmpty)
-                .toList();
+            _results = results.where((r) {
+              final name = r.device.platformName;
+              if (name.isEmpty) return false;
+              final prefix = widget.namePrefix;
+              if (prefix != null && prefix.isNotEmpty) {
+                return name.startsWith(prefix);
+              }
+              return true;
+            }).toList();
           });
         }
       });

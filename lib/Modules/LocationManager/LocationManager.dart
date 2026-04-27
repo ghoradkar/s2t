@@ -1,61 +1,64 @@
+// ignore_for_file: avoid_print
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
+
+enum LocationPermissionResult {
+  granted,
+  denied,
+  permanentlyDenied,
+  serviceDisabled,
+}
 
 class LocationManager {
-  static Future<bool> checkAndRequestLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Request to enable location
-      await Geolocator.openLocationSettings();
-      return false; // wait for user to come back and recheck
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return false;
+  static Future<LocationPermissionResult> checkAndRequestLocation() async {
+    try {
+      final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
+        return LocationPermissionResult.serviceDisabled;
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      return false; // You can guide the user to settings
-    }
+      final status = await ph.Permission.location.status;
 
-    return true;
+      if (status.isGranted) {
+        return LocationPermissionResult.granted;
+      }
+
+      if (status.isPermanentlyDenied) {
+        return LocationPermissionResult.permanentlyDenied;
+      }
+
+      final result = await ph.Permission.location.request();
+
+      if (result.isGranted) {
+        return LocationPermissionResult.granted;
+      } else if (result.isPermanentlyDenied) {
+        return LocationPermissionResult.permanentlyDenied;
+      } else {
+        return LocationPermissionResult.denied;
+      }
+    } catch (e) {
+      print('[LocationManager] error: $e');
+      return LocationPermissionResult.denied;
+    }
   }
 
   static Future<Position?> getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
+    try {
+      final Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+      print(
+        '[LocationManager] lat=${position.latitude} lng=${position.longitude}',
+      );
+      return position;
+    } catch (e) {
+      print('[LocationManager] getCurrentLocation error: $e');
       return null;
     }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print('Location permission denied');
-        return null;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      print('Location permission permanently denied');
-      return null;
-    }
-
-    // ✅ Use platform-aware settings
-    LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 10,
-    );
-
-    Position position = await Geolocator.getCurrentPosition(
-      locationSettings: locationSettings,
-    );
-
-    print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
-    return position;
   }
+
+  static Future<void> openAppSettings() => ph.openAppSettings();
 }

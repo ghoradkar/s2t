@@ -73,21 +73,60 @@ class UserAttendanceController extends GetxController {
   }
 
   Future<void> _fetchMapData() async {
-    // Get current location
-    final bool allowed = await LocationManager.checkAndRequestLocation();
-    if (!allowed) return;
-    final Position? pos = await LocationManager.getCurrentLocation();
-    if (pos == null) return;
-    currentLat = pos.latitude;
-    currentLng = pos.longitude;
+    try {
+      final result = await LocationManager.checkAndRequestLocation();
 
-    // Get camp location from API
-    final camp = await repository.getCampLocation(userId: empCode);
-    campLat = camp?.latitude ?? 0.0;
-    campLng = camp?.longitude ?? 0.0;
+      if (result == LocationPermissionResult.granted) {
+        final Position? pos = await LocationManager.getCurrentLocation();
+        if (pos != null) {
+          currentLat = pos.latitude;
+          currentLng = pos.longitude;
+        }
 
-    isMapReady = true;
-    update();
+        final camp = await repository.getCampLocation(userId: empCode);
+        campLat = camp?.latitude ?? 0.0;
+        campLng = camp?.longitude ?? 0.0;
+      } else if (result == LocationPermissionResult.permanentlyDenied) {
+        _showLocationSettingsDialog();
+      }
+    } catch (_) {
+      // Location unavailable — map will show with zeroed coordinates
+    } finally {
+      isMapReady = true;
+      update();
+    }
+  }
+
+  void _showLocationSettingsDialog() {
+    final ctx = Get.context;
+    if (ctx == null) return;
+    showDialog(
+      context: ctx,
+      builder:
+          (dialogCtx) => AlertDialog(
+            title: const Text('Location Permission Required'),
+            content: const Text(
+              'Location permission has been permanently denied.\n\nTo enable it: Settings → Apps → S2T Operational → Permissions → Location → Allow.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogCtx),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(dialogCtx);
+                  await LocationManager.openAppSettings();
+                  // Re-check after user returns from Settings
+                  isMapReady = false;
+                  update();
+                  await _fetchMapData();
+                },
+                child: const Text('Open Settings'),
+              ),
+            ],
+          ),
+    );
   }
 
   double get distanceKm {
@@ -204,11 +243,14 @@ class UserAttendanceController extends GetxController {
 
   Future<void> _onFetchData(String date, {required bool isCheckout}) async {
     EasyLoading.show(status: 'Fetching location...');
-    final bool locationAllowed =
-        await LocationManager.checkAndRequestLocation();
-    if (!locationAllowed) {
+    final result = await LocationManager.checkAndRequestLocation();
+    if (result != LocationPermissionResult.granted) {
       EasyLoading.dismiss();
-      ToastManager.toast('Location permission is required.');
+      if (result == LocationPermissionResult.permanentlyDenied) {
+        _showLocationSettingsDialog();
+      } else {
+        ToastManager.toast('Location permission is required.');
+      }
       return;
     }
     if (isCheckout) {
@@ -253,7 +295,7 @@ class UserAttendanceController extends GetxController {
       ToastManager.showAlertDialog(
         Get.context!,
         "काही beneficiary च्या कॅम्प test अजूनही अपूर्ण आहेत. तुम्ही CheckOut करू शकत नाही.",
-            () {
+        () {
           Get.back();
         },
       );
@@ -341,7 +383,7 @@ class UserAttendanceController extends GetxController {
       ToastManager.showAlertDialog(
         Get.context!,
         message.isNotEmpty ? message : 'Checkout failed',
-            () {
+        () {
           Get.back();
         },
       );
@@ -378,7 +420,7 @@ class UserAttendanceController extends GetxController {
       title: "Success",
       message: message,
       onTap: () {
-       Get.back();
+        Get.back();
       },
     );
     // showDialog(

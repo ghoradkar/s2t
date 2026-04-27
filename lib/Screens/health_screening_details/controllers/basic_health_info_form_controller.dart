@@ -7,6 +7,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/basic_health_info_patient_list_controller.dart';
+import 'package:s2toperational/Screens/health_screening_details/controllers/bp_device_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 
 class BasicHealthInfoFormController extends GetxController {
@@ -82,13 +83,14 @@ class BasicHealthInfoFormController extends GetxController {
   final RxBool isTransferring = false.obs;
   final RxBool isWeightDataReceived = false.obs;
   final RxBool isSugarDataReceived = false.obs;
-
   BluetoothDevice? _weightDevice;
   BluetoothDevice? _sugarDevice;
+  final BpDeviceController bpController = BpDeviceController();
 
   bool get isWeightConnected => _weightDevice != null || isWeightDataReceived.value;
 
   bool get isSugarConnected => _sugarDevice != null || isSugarDataReceived.value;
+
 
   int _empCode = 0;
 
@@ -117,6 +119,7 @@ class BasicHealthInfoFormController extends GetxController {
 
   @override
   void onClose() {
+    bpController.onClose();
     FlutterBluePlus.stopScan();
     for (final c in [
       beneficiaryNameCtrl,
@@ -380,24 +383,54 @@ class BasicHealthInfoFormController extends GetxController {
     }
   }
 
+  Future<void> connectBpDevice(BluetoothDevice device) async {
+    // SCAN only saves the device — no BLE connection here.
+    // Bonding + data fetch happens when user taps TRANSFER.
+    await bpController.saveDevice(device);
+  }
+
+  Future<void> transferBpData() async {
+    final bp = bpController;
+    if (bp.savedDeviceMac.value.isEmpty && !bp.isConnected.value) {
+      ToastManager.toast('Please SCAN and pair the BP device first.');
+      return;
+    }
+    // Always try to fetch fresh data from the device; cached reading is fallback
+    ToastManager.showLoader();
+    await bp.requestData();
+    ToastManager.hideLoader();
+    final reading = bp.getLastReading();
+    if (reading == null) {
+      ToastManager.toast(
+        'No reading stored on device yet.\nPress START on the device to take a measurement, then tap TRANSFER.',
+      );
+      return;
+    }
+    _applyBpReading(reading);
+  }
+
+  void _applyBpReading(Map<String, int> reading) {
+    systolicCtrl.text  = reading['systolic'].toString();
+    diastolicCtrl.text = reading['diastolic'].toString();
+    ToastManager.toast('Blood pressure reading applied.');
+    update();
+  }
+
   void _updateDeviceStatus() {
     final wName = _weightDevice?.platformName ?? '';
     final sName = _sugarDevice?.platformName ?? '';
-    if (wName.isNotEmpty && sName.isNotEmpty) {
-      deviceStatus.value = 'Weight: $wName | Sugar: $sName';
-    } else if (wName.isNotEmpty) {
-      deviceStatus.value = 'Weight Machine: $wName';
-    } else if (sName.isNotEmpty) {
-      deviceStatus.value = 'Sugar Device: $sName';
-    } else {
-      deviceStatus.value = 'No devices connected';
-    }
+    final parts = [
+      if (wName.isNotEmpty) 'Weight: $wName',
+      if (sName.isNotEmpty) 'Sugar: $sName',
+    ];
+    deviceStatus.value = parts.isEmpty ? 'No devices connected' : parts.join(' | ');
   }
 
   // ── Transfer data from connected devices ────────────────────────────────
 
   Future<void> transferData() async {
-    if (_weightDevice == null && _sugarDevice == null) {
+    final bpReading = bpController.getLastReading();
+    if (_weightDevice == null && _sugarDevice == null && bpReading == null) {
       ToastManager.toast(
         isLive
             ? 'Please connect devices before transferring'
@@ -410,6 +443,10 @@ class BasicHealthInfoFormController extends GetxController {
     try {
       if (_weightDevice != null) await _readWeightData(_weightDevice!);
       if (_sugarDevice != null) await _readSugarData(_sugarDevice!);
+      if (bpReading != null) {
+        systolicCtrl.text = bpReading['systolic'].toString();
+        diastolicCtrl.text = bpReading['diastolic'].toString();
+      }
       recalculateBMI();
       ToastManager.toast('Data transferred successfully');
     } catch (e) {

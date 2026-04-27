@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
@@ -11,6 +12,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/user_attendance/controller/user_attendance_controller.dart';
@@ -29,147 +31,150 @@ class UserAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return KeyboardDismissOnTap(
-      child: Scaffold(
-        appBar: mAppBar(
-          scTitle: 'User Attendance',
-          leadingIcon: iconBackArrow,
-          onLeadingIconClick: () {
-            Navigator.pop(context);
-          },
-          showActions: true,
-          actions: [
-            InkWell(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
+    return NetworkWrapper(
+      child: KeyboardDismissOnTap(
+        child: Scaffold(
+          appBar: mAppBar(
+            scTitle: 'User Attendance',
+            leadingIcon: iconBackArrow,
+            onLeadingIconClick: () {
+              Navigator.pop(context);
+            },
+            showActions: true,
+            actions: [
+              InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
 
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              _legendDot(
-                                const Color.fromRGBO(100, 167, 90, 1.0),
-                              ),
-                              const SizedBox(width: 4),
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                _legendDot(
+                                  const Color.fromRGBO(100, 167, 90, 1.0),
+                                ),
+                                const SizedBox(width: 4),
 
-                              CommonText(
-                                text: "Checked In",
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                textColor: kBlackColor,
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
+                                CommonText(
+                                  text: "Checked In",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                  textColor: kBlackColor,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
 
-                          Row(
-                            children: [
-                              _legendDot(
-                                const Color.fromRGBO(33, 150, 243, 1.0),
-                              ),
-                              const SizedBox(width: 4),
+                            Row(
+                              children: [
+                                _legendDot(
+                                  const Color.fromRGBO(33, 150, 243, 1.0),
+                                ),
+                                const SizedBox(width: 4),
 
-                              CommonText(
-                                text: "Checked Out",
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                textColor: kBlackColor,
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              _legendDot(Colors.orange),
-                              const SizedBox(width: 4),
+                                CommonText(
+                                  text: "Checked Out",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                  textColor: kBlackColor,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                _legendDot(Colors.orange),
+                                const SizedBox(width: 4),
 
-                              CommonText(
-                                text: "Current Location",
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                textColor: kBlackColor,
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              _legendDot(Colors.blue),
-                              const SizedBox(width: 4),
+                                CommonText(
+                                  text: "Current Location",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                  textColor: kBlackColor,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                _legendDot(Colors.blue),
+                                const SizedBox(width: 4),
 
-                              CommonText(
-                                text: "Camp Location",
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                textColor: kBlackColor,
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
+                                CommonText(
+                                  text: "Camp Location",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                  textColor: kBlackColor,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text("Okay"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
                         ],
-                      ),
-                      actions: [
-                        TextButton(
-                          child: Text("Okay"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Icon(Icons.info_outline, color: kWhiteColor),
-            ).paddingOnly(right: 12),
-          ],
-        ),
-        body: AnnotatedRegion(
-          value: const SystemUiOverlayStyle(
-            statusBarColor: kPrimaryColor,
-            statusBarBrightness: Brightness.light,
-            statusBarIconBrightness: Brightness.light,
+                      );
+                    },
+                  );
+                },
+                child: Icon(Icons.info_outline, color: kWhiteColor),
+              ).paddingOnly(right: 12),
+            ],
           ),
-          child: GetBuilder<UserAttendanceController>(
-            init: UserAttendanceController(
-              repository: UserAttendanceRepository(),
+          body: AnnotatedRegion(
+            value: const SystemUiOverlayStyle(
+              statusBarColor: kPrimaryColor,
+              statusBarBrightness: Brightness.light,
+              statusBarIconBrightness: Brightness.light,
             ),
-            builder:
-                (c) => LayoutBuilder(
-                  builder: (ctx, constraints) {
-                    final calH = constraints.maxHeight * 0.48;
-                    final mapH = constraints.maxHeight - calH;
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: calH - 38,
-                          child:
-                              c.isLoading
-                                  ? CommonSkeletonCalender()
-                                  : MonthlyScreen(
-                                    initialMonth: c.visibleMonth,
-                                    attendanceMap: c.attendanceMap,
-                                    didChangeDate: (p0) => c.onMonthChanged(p0),
-                                    onDateSelectedTap:
-                                        (date) => c.onDateSelected(date),
-                                  ),
-                        ),
-                        SizedBox(
-                          height: mapH,
-                          child:
-                              c.isMapReady
-                                  ? _MapSection(c: c)
-                                  : const _MapShimmer(),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+            child: GetBuilder<UserAttendanceController>(
+              init: UserAttendanceController(
+                repository: UserAttendanceRepository(),
+              ),
+              builder:
+                  (c) => LayoutBuilder(
+                    builder: (ctx, constraints) {
+                      final calH = constraints.maxHeight * 0.48;
+                      final mapH = constraints.maxHeight - calH;
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: calH - 4.h,
+                            child:
+                                c.isLoading
+                                    ? CommonSkeletonCalender()
+                                    : MonthlyScreen(
+                                      initialMonth: c.visibleMonth,
+                                      attendanceMap: c.attendanceMap,
+                                      didChangeDate:
+                                          (p0) => c.onMonthChanged(p0),
+                                      onDateSelectedTap:
+                                          (date) => c.onDateSelected(date),
+                                    ),
+                          ),
+                          SizedBox(
+                            height: mapH,
+                            child:
+                                c.isMapReady
+                                    ? _MapSection(c: c)
+                                    : const _MapShimmer(),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+            ),
           ),
         ),
       ),

@@ -11,7 +11,6 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
@@ -69,8 +68,8 @@ class BasicHealthInfoFormScreen extends StatelessWidget {
                       _BasicHealthInfoSection(ctrl: ctrl),
                       _BloodSugarSection(ctrl: ctrl),
                       _BloodPressureSection(ctrl: ctrl),
-                      _DeviceInfoSection(ctrl: ctrl),
-                      SizedBox(height: 24.h),
+                      // _DeviceInfoSection(ctrl: ctrl),
+                      // SizedBox(height: 24.h),
                       SizedBox(
                         width: double.infinity,
                         child: AppActiveButton(
@@ -1118,41 +1117,209 @@ class _BloodPressureSection extends StatelessWidget {
     return _ExpandableCard(
       title: 'Blood Pressure',
       icon: Icons.favorite_outline,
-      content: Row(
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: AppTextField(
-              controller: ctrl.systolicCtrl,
-              readOnly: !editable,
-              onTap: () {},
-              textInputType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              label: _label('Systolic (mmHg)'),
-              prefixIcon: Image.asset(
-                icBloodGroup,
-                color: kPrimaryColor,
-                width: 20.w,
-                height: 20.h,
-              ).paddingOnly(left: 6.w),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: ctrl.systolicCtrl,
+                  readOnly: !editable,
+                  onTap: () {},
+                  textInputType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  label: _label('Systolic (mmHg)'),
+                  prefixIcon: Image.asset(
+                    icBloodGroup,
+                    color: kPrimaryColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ).paddingOnly(left: 6.w),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: AppTextField(
+                  controller: ctrl.diastolicCtrl,
+                  readOnly: !editable,
+                  onTap: () {},
+                  textInputType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  label: _label('Diastolic (mmHg)'),
+                  prefixIcon: Image.asset(
+                    icBloodGroup,
+                    color: kPrimaryColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ).paddingOnly(left: 6.w),
+                ),
+              ),
+            ],
           ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: AppTextField(
-              controller: ctrl.diastolicCtrl,
-              readOnly: !editable,
-              onTap: () {},
-              textInputType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              label: _label('Diastolic (mmHg)'),
-              prefixIcon: Image.asset(
-                icBloodGroup,
-                color: kPrimaryColor,
-                width: 20.w,
-                height: 20.h,
-              ).paddingOnly(left: 6.w),
-            ),
-          ),
+          // ── BP Device: SCAN + TRANSFER ─────────────────────────────────
+          Obx(() {
+            final bp = ctrl.bpController;
+            // Show paired view if device was ever paired (persisted) OR currently connected
+            final hasPairedDevice = bp.savedDeviceMac.value.isNotEmpty || bp.isConnected.value;
+            final displayName = bp.connectedDeviceName.value.isNotEmpty
+                ? bp.connectedDeviceName.value
+                : bp.savedDeviceName.value;
+            final displayMac = bp.connectedDeviceMac.value.isNotEmpty
+                ? bp.connectedDeviceMac.value
+                : bp.savedDeviceMac.value;
+            final busy = bp.isConnecting.value || bp.isWaitingForReading.value;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10.h),
+                if (hasPairedDevice) ...[
+                  // Native-style paired device notice
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.info_outline, size: 14.r, color: Colors.blue.shade700),
+                        SizedBox(width: 6.w),
+                        Expanded(
+                          child: Text(
+                            'Note:- You have already paired $displayName'
+                            ' Mac:$displayMac device.'
+                            ' If you want to change the device click setting Icon',
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
+                              fontSize: 11.sp,
+                              color: Colors.blue.shade800,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        GestureDetector(
+                          onTap: () => bp.forgetDevice(),
+                          child: Icon(Icons.settings_outlined, size: 18.r, color: Colors.blue.shade700),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Connection status line
+                  SizedBox(height: 6.h),
+                  Row(
+                    children: [
+                      Icon(
+                        bp.isConnected.value ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                        size: 13.r,
+                        color: bp.isConnected.value ? Colors.green : kLabelTextColor,
+                      ),
+                      SizedBox(width: 5.w),
+                      Expanded(
+                        child: Text(
+                          bp.statusStr.value,
+                          style: TextStyle(
+                            fontFamily: FontConstants.interFonts,
+                            fontSize: 11.sp,
+                            color: bp.isConnected.value ? Colors.green.shade700 : kLabelTextColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (bp.lastReadingStr.value.isNotEmpty) ...[
+                    SizedBox(height: 4.h),
+                    Text(
+                      bp.lastReadingStr.value,
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 12.sp,
+                        color: kPrimaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 10.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: busy ? null : ctrl.transferBpData,
+                      icon: busy
+                          ? SizedBox(
+                              width: 17.r, height: 17.r,
+                              child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : Icon(Icons.sync, size: 17.r),
+                      label: Text(
+                        busy ? 'Please wait...' : 'TRANSFER',
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPrimaryColor,
+                        foregroundColor: kWhiteColor,
+                        padding: EdgeInsets.symmetric(vertical: 11.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  // No saved device — show SCAN button
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        if (!await ctrl.isBluetoothOn()) {
+                          ToastManager.toast('Please enable Bluetooth first');
+                          return;
+                        }
+                        if (!context.mounted) return;
+                        final device = await Navigator.push<BluetoothDevice?>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const BleDeviceListScreen(
+                              title: 'BP Device Pairing',
+                              namePrefix: 'BLESmart_',
+                            ),
+                          ),
+                        );
+                        if (device != null && context.mounted) {
+                          await ctrl.connectBpDevice(device);
+                        }
+                      },
+                      icon: Icon(Icons.bluetooth_searching, size: 17.r, color: kPrimaryColor),
+                      label: Text(
+                        'SCAN',
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: kPrimaryColor, width: 1.5),
+                        padding: EdgeInsets.symmetric(vertical: 11.h),
+                        backgroundColor: kPrimaryColor.withValues(alpha: 0.04),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          }),
         ],
       ).paddingOnly(top: 4.h),
     );
@@ -1205,96 +1372,6 @@ class _DeviceInfoSection extends StatelessWidget {
               ],
             );
           }),
-          _gap(14),
-
-          // SCAN + TRANSFER buttons
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    if (!await ctrl.isBluetoothOn()) {
-                      ToastManager.toast('Please enable Bluetooth first');
-                      return;
-                    }
-                    if (!context.mounted) return;
-                    final device = await Navigator.push<BluetoothDevice?>(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (_) => const BleDeviceListScreen(
-                              title: 'Device Pairing',
-                            ),
-                      ),
-                    );
-                    if (device != null && context.mounted) {
-                      await ctrl.connectGeneralDevice(device);
-                    }
-                  },
-                  icon: Icon(
-                    Icons.bluetooth_searching,
-                    size: 17.r,
-                    color: kPrimaryColor,
-                  ),
-                  label: Text(
-                    'SCAN',
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                      color: kPrimaryColor,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: kPrimaryColor, width: 1.5),
-                    padding: EdgeInsets.symmetric(vertical: 11.h),
-                    backgroundColor: kPrimaryColor.withValues(alpha: 0.04),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: Obx(
-                  () => ElevatedButton.icon(
-                    onPressed:
-                        ctrl.isTransferring.value ? null : ctrl.transferData,
-                    icon:
-                        ctrl.isTransferring.value
-                            ? SizedBox(
-                              width: 15.r,
-                              height: 15.r,
-                              child: const CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                            : Icon(Icons.sync, size: 17.r),
-                    label: Text(
-                      ctrl.isTransferring.value
-                          ? 'Transferring...'
-                          : 'TRANSFER',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryColor,
-                      foregroundColor: kWhiteColor,
-                      padding: EdgeInsets.symmetric(vertical: 11.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
 
           // if (!ctrl.isLive) ...[
           //   _gap(10),

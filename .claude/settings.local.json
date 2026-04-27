@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter clean *)",
+      "Bash(flutter pub *)",
+      "Bash(./gradlew clean *)",
+      "Bash(flutter build *)",
+      "Bash(adb devices *)",
+      "PowerShell(adb devices *)",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices)",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" install -r \"D:\\\\s2toperational\\\\s2toperational\\\\build\\\\app\\\\outputs\\\\flutter-apk\\\\app-debug.apk\" 2>&1)",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" install -r \"D:\\\\s2toperational\\\\s2toperational\\\\build\\\\app\\\\outputs\\\\flutter-apk\\\\app-debug.apk\")",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" shell dumpsys package com.s2t.operational | Select-String -Pattern \"permission|LOCATION\" | Select-Object -First 30)",
+      "Bash(xargs grep *)",
+      "Bash(./gradlew assembleDebug)"
+    ]
+  }
+}
