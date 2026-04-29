@@ -55,7 +55,10 @@ class _LungFunctionTestPatientListScreenState
         if (controller.isLoading.value) {
           return Column(
             children: [
-              _searchBarDisabled().paddingSymmetric(horizontal: 12.w, vertical: 8.h),
+              _searchBarDisabled().paddingSymmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
               _tableHeader().paddingSymmetric(horizontal: 12.w),
               const Expanded(child: CommonSkeletonList()),
             ],
@@ -64,7 +67,10 @@ class _LungFunctionTestPatientListScreenState
         if (controller.allList.isEmpty) {
           return Column(
             children: [
-              _searchBarDisabled().paddingSymmetric(horizontal: 12.w, vertical: 8.h),
+              _searchBarDisabled().paddingSymmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
               Expanded(child: NoDataFound().paddingSymmetric(horizontal: 12.w)),
             ],
           );
@@ -76,7 +82,10 @@ class _LungFunctionTestPatientListScreenState
             Expanded(
               child: Obx(() {
                 if (controller.filteredList.isEmpty) {
-                  return NoDataFound().paddingSymmetric(vertical: 6.h, horizontal: 12.w);
+                  return NoDataFound().paddingSymmetric(
+                    vertical: 6.h,
+                    horizontal: 12.w,
+                  );
                 }
                 return ListView.builder(
                   padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -100,40 +109,63 @@ class _LungFunctionTestPatientListScreenState
 
   void _onRowTapped(UserAttendancesUsingSitedetailsIDOutput patient) {
     showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Which Spirometer do you have?'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryColor,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _checkBtAndNavigate(patient);
-            },
-            child: Text(
-              'SAFEY',
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ),
-      ),
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return ToastManager.commonAlert(
+          Get.context!,
+          "assets/icons/spirometer.png",
+          "",
+          "Which Spirometer do you have?",
+          () async {
+            Get.back();
+
+            await _checkBtAndNavigate(patient);
+          },
+          () {
+            Get.back();
+          },
+          "SAFEY",
+          "Cancel",
+        );
+      },
     );
+    // showDialog(
+    //   context: context,
+    //   builder:
+    //       (_) => AlertDialog(
+    //         title: const Text('Which Spirometer do you have?'),
+    //         content: SizedBox(
+    //           width: double.maxFinite,
+    //           child: ElevatedButton(
+    //             style: ElevatedButton.styleFrom(
+    //               backgroundColor: kPrimaryColor,
+    //               foregroundColor: Colors.white,
+    //               padding: EdgeInsets.symmetric(vertical: 14.h),
+    //               shape: RoundedRectangleBorder(
+    //                 borderRadius: BorderRadius.circular(8.r),
+    //               ),
+    //             ),
+    //             onPressed: () async {
+    //               Navigator.of(context).pop();
+    //               await _checkBtAndNavigate(patient);
+    //             },
+    //             child: Text(
+    //               'SAFEY',
+    //               style: TextStyle(
+    //                 fontFamily: FontConstants.interFonts,
+    //                 fontSize: 15.sp,
+    //                 fontWeight: FontWeight.w700,
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    // );
   }
 
   Future<void> _checkBtAndNavigate(
-      UserAttendancesUsingSitedetailsIDOutput patient) async {
+    UserAttendancesUsingSitedetailsIDOutput patient,
+  ) async {
     final adapterState = await FlutterBluePlus.adapterState.first;
     if (adapterState != BluetoothAdapterState.on) {
       ToastManager.toast('Please enable bluetooth');
@@ -143,10 +175,9 @@ class _LungFunctionTestPatientListScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => LungFunctionTestScreen(
-          campId: widget.campID,
-          patient: patient,
-        ),
+        builder:
+            (_) =>
+                LungFunctionTestScreen(campId: widget.campID, patient: patient),
       ),
     ).then((_) => controller.fetchPatients());
   }
@@ -183,44 +214,57 @@ class _LungFunctionTestPatientListScreenState
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
       child: ValueListenableBuilder<TextEditingValue>(
         valueListenable: controller.searchController,
-        builder: (context, value, _) => TextField(
-          controller: controller.searchController,
-          style: TextStyle(
-            fontFamily: FontConstants.interFonts,
-            fontSize: 14.sp,
-            color: kTextColor,
-          ),
-          decoration: InputDecoration(
-            hintText: 'Search by Name / Reg. No.',
-            hintStyle: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 14.sp,
-              color: kLabelTextColor,
+        builder:
+            (context, value, _) => TextField(
+              controller: controller.searchController,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 14.sp,
+                color: kTextColor,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Search by Name / Reg. No.',
+                hintStyle: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 14.sp,
+                  color: kLabelTextColor,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: kLabelTextColor,
+                  size: 20.r,
+                ),
+                suffixIcon:
+                    value.text.isNotEmpty
+                        ? GestureDetector(
+                          onTap: controller.searchController.clear,
+                          child: Icon(
+                            Icons.close,
+                            color: kLabelTextColor,
+                            size: 18.r,
+                          ),
+                        )
+                        : null,
+                filled: true,
+                fillColor: kBackground,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 10.h,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  borderSide: BorderSide(color: kTextFieldBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  borderSide: BorderSide(color: kTextFieldBorder),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  borderSide: BorderSide(color: kPrimaryColor, width: 1.5),
+                ),
+              ),
             ),
-            prefixIcon: Icon(Icons.search, color: kLabelTextColor, size: 20.r),
-            suffixIcon: value.text.isNotEmpty
-                ? GestureDetector(
-                    onTap: controller.searchController.clear,
-                    child: Icon(Icons.close, color: kLabelTextColor, size: 18.r),
-                  )
-                : null,
-            filled: true,
-            fillColor: kBackground,
-            contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: kTextFieldBorder),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: kTextFieldBorder),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: kPrimaryColor, width: 1.5),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -275,7 +319,7 @@ class _LftPatientRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isEven    = index % 2 == 0;
+    final isEven = index % 2 == 0;
     final typeLabel = (item.isDependent == 1) ? 'D' : 'W';
 
     return GestureDetector(
@@ -316,7 +360,8 @@ class _LftPatientRow extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: Align(
-        alignment: align == TextAlign.left ? Alignment.centerLeft : Alignment.center,
+        alignment:
+            align == TextAlign.left ? Alignment.centerLeft : Alignment.center,
         child: Text(
           text,
           style: TextStyle(

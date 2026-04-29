@@ -15,35 +15,6 @@ import 'package:s2toperational/Screens/health_screening_details/models/lung_func
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'liquid_fill_widget.dart';
 
-// ── Shared label builder ───────────────────────────────────────────────────────
-
-Widget _lbl(String text) => RichText(
-  text: TextSpan(
-    text: text,
-    style: TextStyle(
-      color: kBlackColor,
-      fontSize: 14 * 1.2,
-      fontFamily: FontConstants.interFonts,
-      fontWeight: FontWeight.w600,
-    ),
-  ),
-);
-
-Widget _ct(
-  String text, {
-  double? size,
-  FontWeight weight = FontWeight.w400,
-  Color? color,
-  TextAlign align = TextAlign.left,
-}) =>
-    CommonText(
-      text: text,
-      fontSize: size ?? 13.sp,
-      fontWeight: weight,
-      textColor: color ?? kTextColor,
-      textAlign: align,
-    );
-
 // ── Screen ─────────────────────────────────────────────────────────────────────
 
 class LungFunctionTestScreen extends StatelessWidget {
@@ -61,149 +32,183 @@ class LungFunctionTestScreen extends StatelessWidget {
     return GetBuilder<LungFunctionTestController>(
       init: LungFunctionTestController(patient: patient, campId: campId),
       dispose: (_) => Get.delete<LungFunctionTestController>(),
-      builder: (ctrl) => Scaffold(
-        backgroundColor: kBackground,
-        appBar: mAppBar(
-          scTitle: 'Lung Function Test',
-          leadingIcon: iconBackArrow,
-          onLeadingIconClick: () => Navigator.pop(context),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(
-              left: 14.w,
-              right: 14.w,
-              bottom: MediaQuery.of(context).viewPadding.bottom + 24.h,
+      builder:
+          (ctrl) => Scaffold(
+            backgroundColor: kBackground,
+            appBar: mAppBar(
+              scTitle: 'Lung Function Test',
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
             ),
-            child: Column(
-              children: [
-                SizedBox(height: 12.h),
-                _PatientInfoCard(patient: patient),
-                SizedBox(height: 12.h),
-                _DeviceCard(ctrl: ctrl),
-                SizedBox(height: 12.h),
-                Obx(() {
-                  if (ctrl.deviceStatus.value == LftDeviceStatus.testing) {
-                    return Column(
-                      children: [
-                        _TestProgressCard(ctrl: ctrl),
-                        SizedBox(height: 12.h),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
-                Obx(() {
-                  if (ctrl.hasResult.value && ctrl.result.value != null) {
-                    return Column(
-                      children: [
-                        _ResultsCard(result: ctrl.result.value!),
-                        SizedBox(height: 12.h),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
-                Obx(() {
-                  final enabled =
-                      ctrl.hasResult.value && !ctrl.isSubmitting.value;
-                  return Opacity(
-                    opacity: enabled ? 1.0 : 0.5,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: AppActiveButton(
-                        buttontitle: 'SUBMIT',
-                        onTap: enabled ? () => ctrl.submit(context) : () {},
-                      ),
-                    ),
-                  );
-                }),
-                SizedBox(height: 20.h),
-              ],
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(
+                  top: 16.h,
+                  bottom: MediaQuery.of(context).viewPadding.bottom + 28.h,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _PatientInfoCard(patient: patient),
+                    SizedBox(height: 14.h),
+                    _DeviceCard(ctrl: ctrl),
+                    SizedBox(height: 14.h),
+
+                    // Test progress (visible only while testing)
+                    Obx(() {
+                      if (ctrl.deviceStatus.value == LftDeviceStatus.testing) {
+                        return Column(
+                          children: [
+                            _TestProgressCard(ctrl: ctrl),
+                            SizedBox(height: 14.h),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
+
+                    // Results + graph (visible after test done)
+                    Obx(() {
+                      if (ctrl.hasResult.value && ctrl.result.value != null) {
+                        return Column(
+                          children: [
+                            _ResultsCard(result: ctrl.result.value!),
+                            SizedBox(height: 14.h),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
+
+                    // Submit button (visible only when result is ready)
+                    Obx(() {
+                      if (!ctrl.hasResult.value) return const SizedBox.shrink();
+                      return AppActiveButton(
+                        buttontitle:
+                            ctrl.isSubmitting.value ? 'Submitting…' : 'SUBMIT',
+                        onTap:
+                            ctrl.isSubmitting.value
+                                ? () {}
+                                : () => ctrl.submit(context),
+                      );
+                    }),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
     );
   }
 }
 
 // ── Patient Info Card ──────────────────────────────────────────────────────────
 
-class _PatientInfoCard extends StatelessWidget {
+class _PatientInfoCard extends StatefulWidget {
   final UserAttendancesUsingSitedetailsIDOutput patient;
 
   const _PatientInfoCard({required this.patient});
 
   @override
-  Widget build(BuildContext context) {
-    final gender = patient.gender ?? '';
-    final genderLabel = gender.toUpperCase().startsWith('M')
-        ? 'Male'
-        : gender.toUpperCase().startsWith('F')
+  State<_PatientInfoCard> createState() => _PatientInfoCardState();
+}
+
+class _PatientInfoCardState extends State<_PatientInfoCard> {
+  late final TextEditingController _nameCtrl;
+  late final TextEditingController _regNoCtrl;
+  late final TextEditingController _ageCtrl;
+  late final TextEditingController _genderCtrl;
+  late final TextEditingController _heightCtrl;
+  late final TextEditingController _weightCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = widget.patient;
+    final gender = p.gender ?? '';
+    final genderLabel =
+        gender.toUpperCase().startsWith('M')
+            ? 'Male'
+            : gender.toUpperCase().startsWith('F')
             ? 'Female'
             : gender;
 
+    _nameCtrl = TextEditingController(text: p.englishName ?? '');
+    _regNoCtrl = TextEditingController(text: p.regdNo?.toString() ?? '');
+    _ageCtrl = TextEditingController(text: p.age?.toString() ?? '');
+    _genderCtrl = TextEditingController(text: genderLabel);
+    _heightCtrl = TextEditingController(
+      text: p.heightCMs?.toStringAsFixed(1) ?? '',
+    );
+    _weightCtrl = TextEditingController(
+      text: p.weightKGs?.toStringAsFixed(1) ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _regNoCtrl.dispose();
+    _ageCtrl.dispose();
+    _genderCtrl.dispose();
+    _heightCtrl.dispose();
+    _weightCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return _SectionCard(
       title: 'Patient Information',
-      icon: Icons.person_outline,
+      icon: Icons.person_outline_rounded,
       child: Column(
         children: [
           AppTextField(
-            label: _lbl('Patient Name'),
-            controller: TextEditingController(text: patient.englishName ?? ''),
+            controller: _nameCtrl,
             readOnly: true,
+            onTap: () {},
+            label: const Text('Patient Name'),
           ),
-          SizedBox(height: 10.h),
-          AppTextField(
-            label: _lbl('Reg. No.'),
-            controller: TextEditingController(
-              text: patient.regdNo?.toString() ?? '',
-            ),
-            readOnly: true,
-          ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 12.h),
           Row(
             children: [
               Expanded(
                 child: AppTextField(
-                  label: _lbl('Age'),
-                  controller: TextEditingController(
-                    text: patient.age?.toString() ?? '',
-                  ),
+                  controller: _genderCtrl,
                   readOnly: true,
+                  onTap: () {},
+                  label: const Text('Gender'),
                 ),
               ),
               SizedBox(width: 10.w),
               Expanded(
                 child: AppTextField(
-                  label: _lbl('Gender'),
-                  controller: TextEditingController(text: genderLabel),
+                  controller: _ageCtrl,
                   readOnly: true,
+                  onTap: () {},
+                  label: const Text('Age'),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 12.h),
+
           Row(
             children: [
               Expanded(
                 child: AppTextField(
-                  label: _lbl('Height (cm)'),
-                  controller: TextEditingController(
-                    text: patient.heightCMs?.toStringAsFixed(1) ?? '--',
-                  ),
+                  controller: _heightCtrl,
                   readOnly: true,
+                  onTap: () {},
+                  label: const Text('Height (cm)'),
                 ),
               ),
               SizedBox(width: 10.w),
               Expanded(
                 child: AppTextField(
-                  label: _lbl('Weight (kg)'),
-                  controller: TextEditingController(
-                    text: patient.weightKGs?.toStringAsFixed(1) ?? '--',
-                  ),
+                  controller: _weightCtrl,
                   readOnly: true,
+                  onTap: () {},
+                  label: const Text('Weight (kg)'),
                 ),
               ),
             ],
@@ -225,100 +230,54 @@ class _DeviceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SectionCard(
       title: 'Spirometer Device',
-      icon: Icons.bluetooth,
+      icon: Icons.bluetooth_rounded,
       child: Obx(() {
-        final status      = ctrl.deviceStatus.value;
-        final foundDev    = ctrl.foundDevice.value;
+        final status = ctrl.deviceStatus.value;
+        final foundDev = ctrl.foundDevice.value;
         final isConnected = status == LftDeviceStatus.connected;
-        final isTesting   = status == LftDeviceStatus.testing;
-        final isDone      = status == LftDeviceStatus.done;
+        final isTesting = status == LftDeviceStatus.testing;
+        final isDone = status == LftDeviceStatus.done;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Status message box
+            // Status message banner
             if (ctrl.infoMessage.value.isNotEmpty) ...[
-              _statusBox(ctrl.infoMessage.value, status),
+              _StatusBanner(message: ctrl.infoMessage.value, status: status),
               SizedBox(height: 12.h),
             ],
 
-            // SCAN FOR SPIROMETER DEVICES — always visible unless testing/done
+            // Scan button
             if (!isTesting && !isDone)
-              _OutlinedActionButton(
+              _ActionButton(
                 label: 'SCAN FOR SPIROMETER DEVICES',
-                icon: Icons.bluetooth_searching,
+                icon: Icons.bluetooth_searching_rounded,
                 onTap: ctrl.scan,
+                outlined: true,
               ),
 
-            // Device found info + CONNECT button
+            // Connect button (device found but not yet connected)
             if (foundDev != null && !isConnected && !isTesting && !isDone) ...[
-              // SizedBox(height: 10.h),
-              // Container(
-              //   padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-              //   decoration: BoxDecoration(
-              //     color: kBackground,
-              //     borderRadius: BorderRadius.circular(8.r),
-              //     border: Border.all(color: kTextFieldBorder),
-              //   ),
-              //   child: Row(
-              //     children: [
-              //       Icon(Icons.bluetooth, color: kPrimaryColor, size: 20.r),
-              //       SizedBox(width: 10.w),
-              //       Expanded(
-              //         child: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             _ct('Device Found', size: 11.sp, color: kLabelTextColor),
-              //             SizedBox(height: 2.h),
-              //             // _ct(
-              //             //   '${foundDev['name'] ?? ''} ${foundDev['address'] ?? ''}',
-              //             //   size: 13.sp,
-              //             //   weight: FontWeight.w600,
-              //             // ),
-              //           ],
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               SizedBox(height: 10.h),
-              AppActiveButton(
-                buttontitle: 'CONNECT TO SAFEY SPIROMETER',
-                onTap: () => ctrl.connect(
-                  foundDev['address'] ?? '',
-                  foundDev['name'] ?? 'Safey Device',
-                ),
+              _ActionButton(
+                label: 'CONNECT TO SAFEY SPIROMETER',
+                icon: Icons.bluetooth_connected_rounded,
+                onTap:
+                    () => ctrl.connect(
+                      foundDev['address'] ?? '',
+                      foundDev['name'] ?? 'Safey Device',
+                    ),
               ),
             ],
 
-            // Connected badge (hide when testing/done to keep UI clean)
+            // Connected state
             if (isConnected) ...[
               SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(color: Colors.green.shade200),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 18.r),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: _ct(
-                        'Connected: ${ctrl.connectedDeviceName.value}',
-                        size: 13.sp,
-                        weight: FontWeight.w600,
-                        color: Colors.green.shade800,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _ConnectedBadge(name: ctrl.connectedDeviceName.value),
               SizedBox(height: 12.h),
-              AppActiveButton(
-                buttontitle: 'START TEST',
+              _ActionButton(
+                label: 'START TEST',
+                icon: Icons.play_arrow_rounded,
                 onTap: ctrl.startTest,
               ),
             ],
@@ -327,35 +286,16 @@ class _DeviceCard extends StatelessWidget {
       }),
     );
   }
+}
 
-  Widget _statusBox(String message, LftDeviceStatus status) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: _statusColor(status).withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: _statusColor(status).withValues(alpha: 0.35)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(_statusIcon(status), color: _statusColor(status), size: 16.r),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: _ct(
-              message,
-              size: 12.sp,
-              color: _statusColor(status),
-              weight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+class _StatusBanner extends StatelessWidget {
+  final String message;
+  final LftDeviceStatus status;
 
-  Color _statusColor(LftDeviceStatus s) {
-    switch (s) {
+  const _StatusBanner({required this.message, required this.status});
+
+  Color get _color {
+    switch (status) {
       case LftDeviceStatus.scanning:
         return Colors.orange;
       case LftDeviceStatus.connected:
@@ -369,19 +309,145 @@ class _DeviceCard extends StatelessWidget {
     }
   }
 
-  IconData _statusIcon(LftDeviceStatus s) {
-    switch (s) {
+  IconData get _icon {
+    switch (status) {
       case LftDeviceStatus.scanning:
-        return Icons.bluetooth_searching;
+        return Icons.bluetooth_searching_rounded;
       case LftDeviceStatus.connected:
-        return Icons.bluetooth_connected;
+        return Icons.bluetooth_connected_rounded;
       case LftDeviceStatus.testing:
-        return Icons.air;
+        return Icons.air_rounded;
       case LftDeviceStatus.done:
-        return Icons.check_circle_outline;
+        return Icons.check_circle_outline_rounded;
       default:
-        return Icons.info_outline;
+        return Icons.info_outline_rounded;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: _color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: _color.withValues(alpha: 0.30)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(_icon, color: _color, size: 15.r),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: CommonText(
+              text: message,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              textColor: _color,
+              textAlign: TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConnectedBadge extends StatelessWidget {
+  final String name;
+
+  const _ConnectedBadge({required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.green.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.check_circle_rounded,
+            color: Colors.green.shade600,
+            size: 18.r,
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonText(
+                  text: 'Device Connected',
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w500,
+                  textColor: Colors.green.shade700,
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: 2.h),
+                CommonText(
+                  text: name,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  textColor: Colors.green.shade800,
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback? onTap;
+  final bool outlined;
+
+  const _ActionButton({
+    required this.label,
+    required this.icon,
+    this.onTap,
+    this.outlined = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w),
+        decoration: BoxDecoration(
+          color: outlined ? kWhiteColor : kPrimaryColor,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: kPrimaryColor, width: outlined ? 1.5 : 0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 18.r,
+              color: outlined ? kPrimaryColor : kWhiteColor,
+            ),
+            SizedBox(width: 8.w),
+            CommonText(
+              text: label,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
+              textColor: outlined ? kPrimaryColor : kWhiteColor,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -395,14 +461,14 @@ class _TestProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _SectionCard(
-      title: 'Test Progress',
-      icon: Icons.air,
+      title: 'Test in Progress',
+      icon: Icons.air_rounded,
       child: Obx(() {
         final progress = ctrl.testProgress.value;
         final instruction = _instructionFor(ctrl.infoMessage.value);
         return Column(
           children: [
-            SizedBox(height: 12.h),
+            SizedBox(height: 8.h),
             Center(
               child: SizedBox(
                 width: 180.r,
@@ -415,15 +481,24 @@ class _TestProgressCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 14.h),
             if (ctrl.infoMessage.value.isNotEmpty)
-              _ct(
-                ctrl.infoMessage.value,
-                size: 13.sp,
-                weight: FontWeight.w500,
-                align: TextAlign.center,
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  color: kPrimaryColor.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: CommonText(
+                  text: ctrl.infoMessage.value,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
+                  textColor: kPrimaryColor,
+                  textAlign: TextAlign.center,
+                ),
               ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 4.h),
           ],
         );
       }),
@@ -432,15 +507,12 @@ class _TestProgressCard extends StatelessWidget {
 
   String _instructionFor(String msg) {
     final lower = msg.toLowerCase();
-    if (lower.contains('blow hard') || lower.contains('start blowing')) {
+    if (lower.contains('blow hard') || lower.contains('start blowing'))
       return 'Blow hard & fast!';
-    }
-    if (lower.contains('keep blowing') || lower.contains('insufficient')) {
+    if (lower.contains('keep blowing') || lower.contains('insufficient'))
       return 'Keep blowing!';
-    }
-    if (lower.contains('complete') || lower.contains('checking')) {
+    if (lower.contains('complete') || lower.contains('checking'))
       return 'Done!';
-    }
     return 'Blow!';
   }
 }
@@ -456,19 +528,18 @@ class _ResultsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Trials flow/volume graph
         if (result.trialGraphPoints.isNotEmpty &&
             result.trialGraphPoints.any((t) => t.length > 1)) ...[
           _TrialsGraphCard(result: result),
-          SizedBox(height: 12.h),
+          SizedBox(height: 14.h),
         ],
         _SectionCard(
           title: 'Spirometry Results',
-          icon: Icons.bar_chart,
+          icon: Icons.bar_chart_rounded,
           child: Column(
             children: [
-              _diagnosisBanner(),
-              SizedBox(height: 12.h),
+              _DiagnosisBanner(result: result),
+              SizedBox(height: 14.h),
               _MeasurementsTable(measurements: result.measurements),
             ],
           ),
@@ -476,84 +547,137 @@ class _ResultsCard extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _diagnosisBanner() {
+class _DiagnosisBanner extends StatelessWidget {
+  final LungFunctionTestResult result;
+
+  const _DiagnosisBanner({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
     final text = result.diagnosis.isEmpty ? 'N/A' : result.diagnosis;
     final isNormal = text.toLowerCase().contains('normal');
-    final color = isNormal ? Colors.green : Colors.orange;
+    final color = isNormal ? Colors.green : Colors.deepOrange;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: color.shade50,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: color.shade200),
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          _ct('Diagnosis', size: 11.sp, color: kLabelTextColor, weight: FontWeight.w500),
-          SizedBox(height: 4.h),
-          _ct(text, size: 14.sp, weight: FontWeight.w700, color: color.shade800),
-          if (result.sessionScore.isNotEmpty) ...[
-            SizedBox(height: 4.h),
-            _ct('Session Score: ${result.sessionScore}', size: 12.sp, color: kLabelTextColor),
-          ],
+          Container(
+            padding: EdgeInsets.all(8.r),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isNormal
+                  ? Icons.check_circle_outline_rounded
+                  : Icons.info_outline_rounded,
+              color: color,
+              size: 20.r,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonText(
+                  text: 'Diagnosis',
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w500,
+                  textColor: color.withValues(alpha: 0.75),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: 3.h),
+                CommonText(
+                  text: text,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  textColor: color,
+                  textAlign: TextAlign.left,
+                ),
+                if (result.sessionScore.isNotEmpty &&
+                    result.sessionScore != 'N/A') ...[
+                  SizedBox(height: 4.h),
+                  CommonText(
+                    text: 'Session Score: ${result.sessionScore}',
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: kLabelTextColor,
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-// ── Measurements table (matches native RecyclerView with TestResultAdapter) ────
+// ── Measurements Table ────────────────────────────────────────────────────────
 
 class _MeasurementsTable extends StatelessWidget {
   final List<TestMeasurement> measurements;
 
   const _MeasurementsTable({required this.measurements});
 
-  // Column flex weights matching native layout
   static const _flex = [3, 2, 2, 2, 2];
   static const _headers = ['Measurement', 'Value', '%Pred', 'LLN', 'Z-score'];
 
   @override
   Widget build(BuildContext context) {
     if (measurements.isEmpty) {
-      return _ct('No measurement data available.',
-          size: 13.sp, color: kLabelTextColor, align: TextAlign.center);
-    }
-    return Column(
-      children: [
-        _headerRow(),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: measurements.length,
-          itemBuilder: (_, i) => _dataRow(measurements[i], i),
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        child: CommonText(
+          text: 'No measurement data available.',
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w400,
+          textColor: kLabelTextColor,
+          textAlign: TextAlign.center,
         ),
-      ],
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.r),
+      child: Column(
+        children: [
+          _headerRow(),
+          ...List.generate(
+            measurements.length,
+            (i) => _dataRow(measurements[i], i),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _headerRow() {
     return Container(
       color: kPrimaryColor,
-      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 6.w),
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
       child: Row(
         children: List.generate(
           _headers.length,
           (i) => Expanded(
             flex: _flex[i],
-            child: Text(
-              _headers[i],
+            child: CommonText(
+              text: _headers[i],
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
+              textColor: kWhiteColor,
               textAlign: i == 0 ? TextAlign.left : TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: kWhiteColor,
-              ),
             ),
           ),
         ),
@@ -564,77 +688,59 @@ class _MeasurementsTable extends StatelessWidget {
   Widget _dataRow(TestMeasurement m, int index) {
     final isEven = index % 2 == 0;
     return Container(
-      color: isEven ? kWhiteColor : kBackground,
-      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
+      color: isEven ? kWhiteColor : const Color(0xFFF5F7FA),
+      padding: EdgeInsets.symmetric(vertical: 9.h, horizontal: 8.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Measurement name
           Expanded(
             flex: _flex[0],
-            child: Text(
-              m.name,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                color: kTextColor,
-                fontWeight: FontWeight.w500,
-              ),
+            child: CommonText(
+              text: m.name,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              textColor: kTextColor,
+              textAlign: TextAlign.left,
             ),
           ),
-          // Value
           Expanded(
             flex: _flex[1],
-            child: Text(
-              m.formattedValue,
+            child: CommonText(
+              text: m.formattedValue,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              textColor: kTextColor,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                color: kTextColor,
-              ),
             ),
           ),
-          // %Pred — green if >= 100, black otherwise (matches native)
           Expanded(
             flex: _flex[2],
-            child: Text(
-              m.formattedPredPer,
+            child: CommonText(
+              text: m.formattedPredPer,
+              fontSize: 12.sp,
+              fontWeight: m.predPerGreen ? FontWeight.w600 : FontWeight.w400,
+              textColor: m.predPerGreen ? const Color(0xFF00B865) : kTextColor,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                color: m.predPerGreen
-                    ? const Color(0xFF00D16C)
-                    : kTextColor,
-                fontWeight: m.predPerGreen ? FontWeight.w600 : FontWeight.w400,
-              ),
             ),
           ),
-          // LLN
           Expanded(
             flex: _flex[3],
-            child: Text(
-              m.formattedLln,
+            child: CommonText(
+              text: m.formattedLln,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              textColor: kTextColor,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                color: kTextColor,
-              ),
             ),
           ),
-          // Z-score
           Expanded(
             flex: _flex[4],
-            child: Text(
-              m.formattedZScore,
+            child: CommonText(
+              text: m.formattedZScore,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              textColor: kTextColor,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 12.sp,
-                color: kTextColor,
-              ),
             ),
           ),
         ],
@@ -651,11 +757,11 @@ class _TrialsGraphCard extends StatelessWidget {
   const _TrialsGraphCard({required this.result});
 
   static const _trialColors = [
-    Color(0xFF1565C0), // blue  – trial 1
-    Color(0xFF2E7D32), // green – trial 2
-    Color(0xFFC62828), // red   – trial 3
-    Color(0xFF6A1B9A), // purple– trial 4
-    Color(0xFFE65100), // orange– trial 5
+    Color(0xFF1565C0),
+    Color(0xFF2E7D32),
+    Color(0xFFC62828),
+    Color(0xFF6A1B9A),
+    Color(0xFFE65100),
   ];
 
   @override
@@ -663,26 +769,26 @@ class _TrialsGraphCard extends StatelessWidget {
     final allTrials = result.trialGraphPoints;
     final bestIdx = result.bestTrialIndex;
 
-    // Build one LineChartBarData per trial (skip empty / single-point)
     final bars = <LineChartBarData>[];
     for (int i = 0; i < allTrials.length; i++) {
       final pts = allTrials[i];
       if (pts.length < 2) continue;
       final isBest = i == bestIdx;
       final color = _trialColors[i % _trialColors.length];
-      bars.add(LineChartBarData(
-        spots: pts.map((p) => FlSpot(p.volume, p.flow)).toList(),
-        isCurved: false,
-        color: isBest ? color : color.withValues(alpha: 0.45),
-        barWidth: isBest ? 2.5 : 1.5,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-      ));
+      bars.add(
+        LineChartBarData(
+          spots: pts.map((p) => FlSpot(p.volume, p.flow)).toList(),
+          isCurved: false,
+          color: isBest ? color : color.withValues(alpha: 0.40),
+          barWidth: isBest ? 2.5 : 1.5,
+          dotData: const FlDotData(show: false),
+          belowBarData: BarAreaData(show: false),
+        ),
+      );
     }
 
     if (bars.isEmpty) return const SizedBox.shrink();
 
-    // Axis bounds
     double minX = double.infinity, maxX = double.negativeInfinity;
     double minY = double.infinity, maxY = double.negativeInfinity;
     for (final trial in allTrials) {
@@ -700,11 +806,11 @@ class _TrialsGraphCard extends StatelessWidget {
 
     return _SectionCard(
       title: 'Trials',
-      icon: Icons.show_chart,
+      icon: Icons.show_chart_rounded,
       child: SizedBox(
         height: 220.h,
         child: Padding(
-          padding: EdgeInsets.only(right: 8.w, top: 8.h),
+          padding: EdgeInsets.only(right: 8.w, top: 8.h, bottom: 4.h),
           child: LineChart(
             LineChartData(
               minX: minX,
@@ -715,23 +821,19 @@ class _TrialsGraphCard extends StatelessWidget {
               gridData: FlGridData(
                 show: true,
                 drawVerticalLine: true,
-                getDrawingHorizontalLine: (_) => FlLine(
-                  color: Colors.grey.shade200,
-                  strokeWidth: 1,
-                ),
-                getDrawingVerticalLine: (_) => FlLine(
-                  color: Colors.grey.shade200,
-                  strokeWidth: 1,
-                ),
+                getDrawingHorizontalLine:
+                    (_) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
+                getDrawingVerticalLine:
+                    (_) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
               ),
               borderData: FlBorderData(
                 show: true,
-                border: Border.all(color: Colors.grey.shade400, width: 1),
+                border: Border.all(color: Colors.grey.shade300, width: 1),
               ),
               titlesData: FlTitlesData(
                 leftTitles: AxisTitles(
                   axisNameWidget: Text(
-                    'Flow(L/s)',
+                    'Flow (L/s)',
                     style: TextStyle(
                       fontSize: 10.sp,
                       color: kLabelTextColor,
@@ -741,15 +843,16 @@ class _TrialsGraphCard extends StatelessWidget {
                   axisNameSize: 18,
                   sideTitles: SideTitles(
                     showTitles: true,
-                    reservedSize: 36.w,
-                    getTitlesWidget: (value, meta) => Text(
-                      value.toStringAsFixed(1),
-                      style: TextStyle(
-                        fontSize: 9.sp,
-                        color: kLabelTextColor,
-                        fontFamily: FontConstants.interFonts,
-                      ),
-                    ),
+                    reservedSize: 38.w,
+                    getTitlesWidget:
+                        (v, _) => Text(
+                          v.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize: 9.sp,
+                            color: kLabelTextColor,
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
                   ),
                 ),
                 bottomTitles: AxisTitles(
@@ -765,20 +868,23 @@ class _TrialsGraphCard extends StatelessWidget {
                   sideTitles: SideTitles(
                     showTitles: true,
                     reservedSize: 24.h,
-                    getTitlesWidget: (value, meta) => Text(
-                      value.toStringAsFixed(1),
-                      style: TextStyle(
-                        fontSize: 9.sp,
-                        color: kLabelTextColor,
-                        fontFamily: FontConstants.interFonts,
-                      ),
-                    ),
+                    getTitlesWidget:
+                        (v, _) => Text(
+                          v.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize: 9.sp,
+                            color: kLabelTextColor,
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
                   ),
                 ),
                 topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                  sideTitles: SideTitles(showTitles: false),
+                ),
                 rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                  sideTitles: SideTitles(showTitles: false),
+                ),
               ),
               lineBarsData: bars,
             ),
@@ -789,7 +895,7 @@ class _TrialsGraphCard extends StatelessWidget {
   }
 }
 
-// ── Shared card wrapper ────────────────────────────────────────────────────────
+// ── Shared section card ────────────────────────────────────────────────────────
 
 class _SectionCard extends StatelessWidget {
   final String title;
@@ -807,11 +913,11 @@ class _SectionCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: kWhiteColor,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 6,
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -819,61 +925,36 @@ class _SectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-            decoration: BoxDecoration(
-              color: kPrimaryColor.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(10.r)),
-            ),
+          // Card header — left accent bar style
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             child: Row(
               children: [
-                Icon(icon, size: 18.r, color: kPrimaryColor),
+                Container(
+                  width: 3.5.w,
+                  height: 18.h,
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Icon(icon, size: 17.r, color: kPrimaryColor),
                 SizedBox(width: 8.w),
-                _ct(title, size: 14.sp, weight: FontWeight.w600, color: kPrimaryColor),
+                CommonText(
+                  text: title,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                  textColor: kTextColor,
+                  textAlign: TextAlign.left,
+                ),
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(14.w),
-            child: child,
-          ),
+          Divider(height: 1, thickness: 1, color: kBackground),
+          // Card body
+          Padding(padding: EdgeInsets.all(16.w), child: child),
         ],
-      ),
-    );
-  }
-}
-
-class _OutlinedActionButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  const _OutlinedActionButton({
-    required this.label,
-    required this.icon,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-        decoration: BoxDecoration(
-          color: kWhiteColor,
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: kPrimaryColor, width: 1.5),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 18.r, color: kPrimaryColor),
-            SizedBox(width: 8.w),
-            _ct(label, size: 13.sp, weight: FontWeight.w600, color: kPrimaryColor),
-          ],
-        ),
       ),
     );
   }

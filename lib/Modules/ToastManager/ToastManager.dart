@@ -735,8 +735,8 @@ class ToastManager {
   static AlertDialog commonAlert(
     BuildContext parentContext,
     String icon,
-    String title,
-    String content,
+    String? title,
+    String? content,
     Function yes,
     Function no,
     String yesButtonText,
@@ -746,25 +746,31 @@ class ToastManager {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CommonText(
-              text: title,
-              fontSize: 24.sp,
-              fontWeight: FontWeight.w500,
-              textColor: kBlackColor,
-              textAlign: TextAlign.center,
+          Visibility(
+            visible: title != null && title.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CommonText(
+                text: title ?? '',
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                textColor: kBlackColor,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           Image.asset(icon, width: 100.w),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CommonText(
-              text: content,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              textColor: kBlackColor,
-              textAlign: TextAlign.center,
+          Visibility(
+            visible: content != null && content!.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CommonText(
+                text: content ?? '',
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                textColor: kBlackColor,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           Row(

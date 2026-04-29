@@ -162,55 +162,24 @@ class _LiquidPainter extends CustomPainter {
 
     // ── Percentage text (centre) ──────────────────────────────────────────
     final pct = (clampedP * 150 / maxProgress).toStringAsFixed(1);
-    _drawText(
-      canvas,
-      '$pct%',
-      TextStyle(
-        color: clampedP >= targetProgress
-            ? _targetColor
-            : const Color(0xFF1A237E),
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-      ),
-      size,
-      Offset(0, -h * 0.07),
-    );
-
-    // ── Bottom instruction text ───────────────────────────────────────────
-    if (bottomText.isNotEmpty) {
-      _drawText(
-        canvas,
-        bottomText,
-        const TextStyle(
-          color: Color(0xFF1A237E),
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
-        size,
-        Offset(0, h * 0.10),
-      );
-    }
-  }
-
-  void _drawText(
-      Canvas canvas, String text, TextStyle style, Size size, Offset offset) {
     final tp = TextPainter(
-      text: TextSpan(text: text, style: style),
+      text: TextSpan(
+        text: '$pct%',
+        style: TextStyle(
+          color: clampedP >= targetProgress
+              ? _targetColor
+              : const Color(0xFF1A237E),
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
-    )..layout(maxWidth: size.width);
-    tp.paint(
-      canvas,
-      Offset(
-        (size.width - tp.width) / 2 + offset.dx,
-        (size.height - tp.height) / 2 + offset.dy,
-      ),
-    );
+    )..layout(maxWidth: w);
+    tp.paint(canvas, Offset((w - tp.width) / 2, (h - tp.height) / 2));
   }
 
   @override
   bool shouldRepaint(_LiquidPainter old) =>
-      old.shiftX != shiftX ||
-      old.progress != progress ||
-      old.bottomText != bottomText;
+      old.shiftX != shiftX || old.progress != progress;
 }

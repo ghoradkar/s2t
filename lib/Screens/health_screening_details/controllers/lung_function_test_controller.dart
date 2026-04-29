@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/lung_function_test_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
@@ -108,19 +110,24 @@ class LungFunctionTestController extends GetxController {
         // Don't overwrite infoMessage — batteryStatus event fires before this
         // and sets the "Device found: [name] [address] Battery: X%" message.
         ToastManager.hideLoader();
-        Get.dialog(
-          AlertDialog(
-            title: const Text('Connected'),
-            content: const Text('Connected to device now you can start Test'),
-            actions: [
-              TextButton(
-                onPressed: Get.back,
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-          barrierDismissible: false,
+
+        ToastManager().showSuccessOkayDialog(
+          context: Get.context!,
+          title: 'Connected',
+          message: 'Connected to device now you can start Test',
+          onTap: () {
+            Get.back();
+          },
         );
+
+        // Get.dialog(
+        //   AlertDialog(
+        //     title: const Text('Connected'),
+        //     content: const Text('Connected to device now you can start Test'),
+        //     actions: [TextButton(onPressed: Get.back, child: const Text('OK'))],
+        //   ),
+        //   barrierDismissible: false,
+        // );
         break;
 
       case 'disconnected':
@@ -144,19 +151,25 @@ class LungFunctionTestController extends GetxController {
           ToastManager.hideLoader();
           deviceStatus.value = LftDeviceStatus.idle;
           infoMessage.value = '';
-          Get.dialog(
-            AlertDialog(
-              title: const Text('Device Not Found'),
-              content: const Text('Safey device not found around you.'),
-              actions: [
-                TextButton(
-                  onPressed: Get.back,
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-            barrierDismissible: false,
+
+          ToastManager.showAlertDialog(
+            Get.context!,
+            "Safey device not found around you.",
+            () {
+              Get.back();
+            },
+            title: "Device Not Found",
           );
+          // Get.dialog(
+          //   AlertDialog(
+          //     title: const Text('Device Not Found'),
+          //     content: const Text('Safey device not found around you.'),
+          //     actions: [
+          //       TextButton(onPressed: Get.back, child: const Text('OK')),
+          //     ],
+          //   ),
+          //   barrierDismissible: false,
+          // );
         } else {
           final msg = _codeToMessage(code);
           if (msg.isNotEmpty) infoMessage.value = msg;
@@ -166,7 +179,8 @@ class LungFunctionTestController extends GetxController {
       case 'batteryStatus':
         final battery = event['battery'] as String? ?? '';
         final bName = event['name'] as String? ?? connectedDeviceName.value;
-        final bAddress = event['address'] as String? ?? connectedDeviceAddress.value;
+        final bAddress =
+            event['address'] as String? ?? connectedDeviceAddress.value;
         infoMessage.value =
             'Device found :\n$bName $bAddress\nBattery Percentage : $battery%';
         break;
@@ -243,14 +257,14 @@ class LungFunctionTestController extends GetxController {
 
   Future<void> scan() async {
     // Android 12+ requires BLUETOOTH_SCAN + BLUETOOTH_CONNECT at runtime
-    final statuses = await [
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-    ].request();
+    final statuses =
+        await [Permission.bluetoothScan, Permission.bluetoothConnect].request();
 
     final allGranted = statuses.values.every((s) => s.isGranted);
     if (!allGranted) {
-      ToastManager.toast('Bluetooth permissions are required to scan for devices.');
+      ToastManager.toast(
+        'Bluetooth permissions are required to scan for devices.',
+      );
       deviceStatus.value = LftDeviceStatus.idle;
       return;
     }
