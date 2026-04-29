@@ -12,7 +12,22 @@
       "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" install -r \"D:\\\\s2toperational\\\\s2toperational\\\\build\\\\app\\\\outputs\\\\flutter-apk\\\\app-debug.apk\")",
       "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" shell dumpsys package com.s2t.operational | Select-String -Pattern \"permission|LOCATION\" | Select-Object -First 30)",
       "Bash(xargs grep *)",
-      "Bash(./gradlew assembleDebug)"
+      "Bash(./gradlew assembleDebug)",
+      "Bash(grep -E \"\\\\.\\(java|kt\\)$\")",
+      "Bash(flutter analyze *)",
+      "Read(//tmp/safey_inspect/**)",
+      "Bash(jar xf *)",
+      "Bash(javap -p info/safey/safey_sdk/IErrorCallback.class info/safey/safey_sdk/IDeviceCallback.class info/safey/safey_sdk/ITestCallback.class info/safey/safey_sdk/ITrialCallback.class info/safey/safey_sdk/IConnectionCallback.class info/safey/safey_sdk/IScannerCallback.class)",
+      "Bash(javap -p info/safey/safey_sdk/SafeyDeviceKit.class)",
+      "Read(//tmp/safey_aar/**)",
+      "Bash(jar tf *)",
+      "Bash(javap -p -c classes.jar)",
+      "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.TestData)",
+      "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.TestResult)",
+      "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.TrialResult)",
+      "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.ResultData)",
+      "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.FlowVolumeData)",
+      "Bash(./gradlew --stop)"
     ]
   }
 }

@@ -1,0 +1,80 @@
+Launching lib\main.dart on EB2101 in debug mode...
+Running Gradle task 'assembleDebug'...
+Note: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\android_intent_plus-6.0.0\android\src\main\java\dev\fluttercommunity\plus\androidintent\MethodCallHandlerImpl.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+3 warnings
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+3 warnings
+Note: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\google_mlkit_commons-0.11.1\android\src\main\java\com\google_mlkit_commons\InputImageConverter.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\google_mlkit_face_detection-0.13.2\android\src\main\java\com\google_mlkit_face_detection\FaceDetector.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+3 warnings
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+3 warnings
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:255:60 Unresolved reference 'getTestResults'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:255:84 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:257:47 Unresolved reference 'getTrialNo'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:258:47 Unresolved reference 'isPost'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:259:47 Unresolved reference 'isBest'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:260:48 Unresolved reference 'getMessage'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:261:48 Unresolved reference 'getMeasuredValues'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:261:75 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:263:51 Unresolved reference 'getMeasurement'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:264:50 Unresolved reference 'getMeasuredValue'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:265:51 Unresolved reference 'getPredicted'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:266:51 Unresolved reference 'getUnit'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:267:50 Unresolved reference 'getPredictedPer'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:268:51 Unresolved reference 'getLLN'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:269:51 Unresolved reference 'getULN'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:270:51 Unresolved reference 'getZScore'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:273:48 Unresolved reference 'getGraphPoints'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:273:72 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:274:25 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:274:25 Not enough information to infer type argument for 'V'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:275:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:275:41 Not enough information to infer type argument for 'B'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:275:47 Unresolved reference 'getFlow'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:276:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:276:41 Not enough information to infer type argument for 'B'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:276:47 Unresolved reference 'getVolume'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:277:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:277:41 Not enough information to infer type argument for 'B'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:277:47 Unresolved reference 'getSecond'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:278:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:278:41 Not enough information to infer type argument for 'B'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:278:47 Unresolved reference 'getDirection'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:285:51 Unresolved reference 'getTestType'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:286:51 Unresolved reference 'getDeviceType'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:287:51 Unresolved reference 'getSessionScore'.
+e: file:///D:/s2toperational/s2toperational/android/app/src/main/kotlin/com/example/s2toperational/SafeySpirometryPlugin.kt:288:51 Unresolved reference 'getSuggestedDiagnosis'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 56s
+Error: Gradle task assembleDebug failed with exit code 1

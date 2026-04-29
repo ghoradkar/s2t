@@ -34,6 +34,7 @@
 
     <application
         android:name="${applicationName}"
+        tools:replace="android:name"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:label="S2T Executive"

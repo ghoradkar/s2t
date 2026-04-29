@@ -418,4 +418,7 @@ class APIConstants {
 
   // Urine Sample Collection
   static String kInsertUrineSampleReceived = "InsertCW_UrineSampleRecived";
+
+  // Lung Function Test
+  static String kInsertLFTDetails = "InsertLFTDetails_VersionNo";
 }

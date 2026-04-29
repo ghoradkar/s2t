@@ -10,6 +10,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
@@ -221,6 +222,7 @@ class _MapSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Row(
             children: [
+
               Expanded(
                 child: _locationCard(
                   iconColor: Colors.orange,

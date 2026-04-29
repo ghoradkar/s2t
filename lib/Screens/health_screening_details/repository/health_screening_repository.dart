@@ -13,6 +13,7 @@ import 'package:s2toperational/Screens/health_screening_details/models/patient_l
 import '../models/camp_closing_model.dart';
 import '../models/camp_d2d_model.dart';
 import '../models/camp_regular_model.dart';
+import '../models/lung_function_test_model.dart';
 
 class HealthScreeningRepository {
   final APIManager _apiManager = APIManager();
@@ -524,5 +525,47 @@ class HealthScreeningRepository {
       createdBy: createdBy,
       jsonString: jsonString,
     );
+  }
+
+  // ─── Lung Function Test ────────────────────────────────────────────────────
+
+  Future<Map<String, dynamic>?> submitLFTDetails({
+    required String regId,
+    required String campId,
+    required String createdBy,
+    required String versionNo,
+    required String deviceId,
+    required LungFunctionTestResult result,
+  }) async {
+    try {
+      final uri = '${APIManager.kD2DBaseURL}${APIConstants.kInsertLFTDetails}';
+      final body = {
+        'Regid':     regId,
+        'CampId':    campId,
+        'FCV':       result.fvc.toStringAsFixed(3),
+        'FEV1':      result.fev1.toStringAsFixed(3),
+        'FEVI_FVC':  result.feviFvc.toStringAsFixed(3),
+        'PEF':       result.pef.toStringAsFixed(3),
+        'FEF_25_75': result.fef2575.toStringAsFixed(3),
+        'FIVC':      result.fivc == 0 ? '' : result.fivc.toStringAsFixed(3),
+        'PIF':       result.pif == 0 ? '' : result.pif.toStringAsFixed(3),
+        'FET':       result.fet.toStringAsFixed(3),
+        'Result':    result.diagnosis,
+        'DeviceId':  deviceId,
+        'CreatedBy': createdBy,
+        'VersionNo': versionNo,
+      };
+      debugPrint('submitLFTDetails URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitLFTDetails raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitLFTDetails error: $e');
+      return null;
+    }
   }
 }
