@@ -568,4 +568,75 @@ class HealthScreeningRepository {
       return null;
     }
   }
+
+  // ─── Visual Screening Test ─────────────────────────────────────────────────
+
+  Future<Map<String, dynamic>?> submitVisualScreeningDetails({
+    required String userId,
+    required String regdId,
+    required String campId,
+    required String userName,
+    required String suggestion,
+    required String injuryRightName,
+    required String injuryRightId,
+    required String nearRemark,
+    required String injuryLeftName,
+    required String injuryLeftId,
+    required String leftRemark,
+    required String snellenRight,
+    required String snellenLeft,
+    required String jaegarRight,
+    required String jaegarLeft,
+    required String glassesId,
+    required String blindnessId,
+    required String snellenRightRemark,
+    required String snellenLeftRemark,
+  }) async {
+    try {
+      final uri = '${APIManager.kD2DBaseURL}${APIConstants.kInsertEyeScreeningDetails}';
+      final body = {
+        'DoctorID':                    userId,
+        'RegdID':                      regdId,
+        'CampID':                      campId,
+        'USERID':                      userId,
+        'CHECKEDBY':                   userId,
+        'CHECKEDBYNAME':               userName,
+        'Remarks':                     '1',
+        'Suggestion':                  suggestion,
+        'ForDistanceID_right':         '0',
+        'Diesease_Injury_Evidence_right':   injuryRightName,
+        'Diesease_Injury_EvidenceId_right': injuryRightId,
+        'ColorTest_right':             nearRemark,
+        'ColorTestId_right':           '0',
+        'ForDistanceID_left':          '0',
+        'ForDistanceID_both':          '0',
+        'Diesease_Injury_Evidence_left':    injuryLeftName,
+        'Diesease_Injury_EvidenceId_left':  injuryLeftId,
+        'ColorTest_left':              '',
+        'ColorTestId_left':            '0',
+        'other_remark':                leftRemark,
+        'Snellelchart_R':              snellenRight,
+        'Snellelchart_L':              snellenLeft,
+        'GagerChartReport':            jaegarRight,
+        'jsonstring':                  '[]',
+        'idGlasses':                   glassesId,
+        'blindnessId':                 blindnessId,
+        'snellenrightremark':          snellenRightRemark,
+        'snellenleftremark':           snellenLeftRemark,
+        'GagerChartReportleft':        jaegarLeft,
+        'VersionNo':                   '9.63',
+      };
+      debugPrint('submitVisualScreening URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitVisualScreening raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitVisualScreening error: $e');
+      return null;
+    }
+  }
 }

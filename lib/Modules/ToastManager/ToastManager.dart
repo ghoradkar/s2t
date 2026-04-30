@@ -105,7 +105,7 @@ class ToastManager {
                       child: AppActiveButton(
                         buttontitle: "NO",
                         onTap: () {
-                          onTap();
+                          onNoTap!();
                         },
                       ),
                     ).paddingOnly(right: 12.w),

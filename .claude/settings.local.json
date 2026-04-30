@@ -27,7 +27,8 @@
       "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.TrialResult)",
       "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.ResultData)",
       "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.FlowVolumeData)",
-      "Bash(./gradlew --stop)"
+      "Bash(./gradlew --stop)",
+      "Bash(awk -F/ '{ *)"
     ]
   }
 }

@@ -20,33 +20,68 @@ import 'package:s2toperational/Screens/health_screening_details/models/patient_l
 /// Red hollow ring — audiogram symbol for right ear.
 class _HollowRingPainter extends FlDotPainter {
   const _HollowRingPainter();
-  @override Color get mainColor => Colors.red;
-  @override List<Object?> get props => [mainColor];
-  @override Size getSize(FlSpot spot) => const Size(12, 12);
-  @override FlDotPainter lerp(FlDotPainter a, FlDotPainter b, double t) => b;
+
+  @override
+  Color get mainColor => Colors.red;
+
+  @override
+  List<Object?> get props => [mainColor];
+
+  @override
+  Size getSize(FlSpot spot) => const Size(12, 12);
+
+  @override
+  FlDotPainter lerp(FlDotPainter a, FlDotPainter b, double t) => b;
+
   @override
   void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
-    canvas.drawCircle(offsetInCanvas, 5,
-        Paint()..color = Colors.red..style = PaintingStyle.stroke..strokeWidth = 2);
+    canvas.drawCircle(
+      offsetInCanvas,
+      5,
+      Paint()
+        ..color = Colors.red
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
+    );
   }
 }
 
 /// Blue solid circle with white X — audiogram symbol for left ear.
 class _CrossCirclePainter extends FlDotPainter {
   const _CrossCirclePainter();
-  @override Color get mainColor => Colors.blue;
-  @override List<Object?> get props => [mainColor];
-  @override Size getSize(FlSpot spot) => const Size(12, 12);
-  @override FlDotPainter lerp(FlDotPainter a, FlDotPainter b, double t) => b;
+
+  @override
+  Color get mainColor => Colors.blue;
+
+  @override
+  List<Object?> get props => [mainColor];
+
+  @override
+  Size getSize(FlSpot spot) => const Size(12, 12);
+
+  @override
+  FlDotPainter lerp(FlDotPainter a, FlDotPainter b, double t) => b;
+
   @override
   void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
     canvas.drawCircle(offsetInCanvas, 5, Paint()..color = Colors.blue);
-    final p = Paint()
-      ..color = Colors.white..strokeWidth = 2
-      ..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
+    final p =
+        Paint()
+          ..color = Colors.white
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
     const r = 3.0;
-    canvas.drawLine(offsetInCanvas + const Offset(-r, -r), offsetInCanvas + const Offset(r, r), p);
-    canvas.drawLine(offsetInCanvas + const Offset(r, -r), offsetInCanvas + const Offset(-r, r), p);
+    canvas.drawLine(
+      offsetInCanvas + const Offset(-r, -r),
+      offsetInCanvas + const Offset(r, r),
+      p,
+    );
+    canvas.drawLine(
+      offsetInCanvas + const Offset(r, -r),
+      offsetInCanvas + const Offset(-r, r),
+      p,
+    );
   }
 }
 
@@ -63,16 +98,17 @@ class AudioScreeningFormScreen extends StatefulWidget {
   });
 
   @override
-  State<AudioScreeningFormScreen> createState() => _AudioScreeningFormScreenState();
+  State<AudioScreeningFormScreen> createState() =>
+      _AudioScreeningFormScreenState();
 }
 
 class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   late final AudioScreeningController controller;
 
-  final TextEditingController _deafnessCtrl  = TextEditingController();
+  final TextEditingController _deafnessCtrl = TextEditingController();
   final TextEditingController _frequencyCtrl = TextEditingController();
-  final TextEditingController _volumeCtrl    = TextEditingController();
-  final TextEditingController _leftRemarkCtrl  = TextEditingController();
+  final TextEditingController _volumeCtrl = TextEditingController();
+  final TextEditingController _leftRemarkCtrl = TextEditingController();
   final TextEditingController _rightRemarkCtrl = TextEditingController();
 
   final List<Worker> _workers = [];
@@ -95,14 +131,16 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
       ever(controller.currentDbIndex, (_) {
         _volumeCtrl.text = '${controller.currentDb} dB';
       }),
-      ever(controller.leftEarRemark,  (v) => _leftRemarkCtrl.text  = v),
+      ever(controller.leftEarRemark, (v) => _leftRemarkCtrl.text = v),
       ever(controller.rightEarRemark, (v) => _rightRemarkCtrl.text = v),
     ]);
   }
 
   @override
   void dispose() {
-    for (final w in _workers) { w.dispose(); }
+    for (final w in _workers) {
+      w.dispose();
+    }
     _deafnessCtrl.dispose();
     _frequencyCtrl.dispose();
     _volumeCtrl.dispose();
@@ -141,7 +179,9 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
               final saving = controller.isSaving.value;
               return AppActiveButton(
                 buttontitle: saving ? 'Saving…' : 'Save',
-                onTap: () { if (!saving) controller.save(context); },
+                onTap: () {
+                  if (!saving) controller.save(context);
+                },
               );
             }),
           ],
@@ -154,7 +194,7 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   Widget _patientCard() {
     final p = widget.patient;
     final gender = (p.gender ?? '').isNotEmpty ? p.gender! : '—';
-    final age    = p.age?.toString() ?? '—';
+    final age = p.age?.toString() ?? '—';
 
     return _card(
       child: Row(
@@ -238,34 +278,54 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => SelectionBottomSheet<String, String>(
-        title: 'Select Deafness Info',
-        items: AudioScreeningController.deafnessOptions,
-        valueFor: (item) => item,
-        labelFor: (item) => item,
-        selectedValue: current.isEmpty ? null : current,
-        height: 320.h,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        onItemTap: (item) {
-          Navigator.pop(context);
-          controller.onDeafnessChanged(item);
-          if (item == 'Right Ear' || item == 'Left Ear' || item == 'Both Ears') {
-            _showMarathiAlert(context);
-          }
-        },
-      ),
+      builder:
+          (_) => SelectionBottomSheet<String, String>(
+            title: 'Select Deafness Info',
+            items: AudioScreeningController.deafnessOptions,
+            valueFor: (item) => item,
+            labelFor: (item) => item,
+            selectedValue: current.isEmpty ? null : current,
+            height: 320.h,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            onItemTap: (item) {
+              Navigator.pop(context);
+              controller.onDeafnessChanged(item);
+              if (item == 'Right Ear' ||
+                  item == 'Left Ear' ||
+                  item == 'Both Ears') {
+                _showMarathiAlert(context);
+              }
+            },
+          ),
     );
   }
 
   void _showMarathiAlert(BuildContext context) {
-    ToastManager.showAlertDialog(
-      context,
+    // ToastManager.showAlertDialog(
+    //   context,
+    //   'तुम्ही मूकबधिर पर्याय निवडला आहे.\nपर्याय बरोबर असल्याची खात्री करा\nअन्यथा योग्य पर्याय निवडा',
+    //       () {
+    //     Get.back();
+    //   },
+    //   onNoTap: () {
+    //     Get.back();
+    //     controller.resetDeafnessSelection();
+    //   },
+    // );
+    ToastManager.commonAlert(
+      Get.context!,
+      "assets/icons/sign-language.png",
+      '',
       'तुम्ही मूकबधिर पर्याय निवडला आहे.\nपर्याय बरोबर असल्याची खात्री करा\nअन्यथा योग्य पर्याय निवडा',
-      () { Get.back(); },
-      onNoTap: () {
+      () {
+        Get.back();
+      },
+      () {
         Get.back();
         controller.resetDeafnessSelection();
       },
+      "Yes",
+      "No",
     );
   }
 
@@ -354,16 +414,18 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
         duration: kAnimationDuration,
         padding: EdgeInsets.symmetric(vertical: 11.h),
         decoration: BoxDecoration(
-          color: selected
-              ? activeColor
-              : (enabled ? kPurpleFaint : Colors.grey.shade100),
+          color:
+              selected
+                  ? activeColor
+                  : (enabled ? kPurpleFaint : Colors.grey.shade100),
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
-            color: selected
-                ? activeColor
-                : (enabled
-                    ? activeColor.withValues(alpha: 0.3)
-                    : Colors.grey.shade200),
+            color:
+                selected
+                    ? activeColor
+                    : (enabled
+                        ? activeColor.withValues(alpha: 0.3)
+                        : Colors.grey.shade200),
             width: 1.5,
           ),
         ),
@@ -373,18 +435,20 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
             Icon(
               Icons.hearing_rounded,
               size: 16.r,
-              color: selected
-                  ? Colors.white
-                  : (enabled ? activeColor : Colors.grey.shade400),
+              color:
+                  selected
+                      ? Colors.white
+                      : (enabled ? activeColor : Colors.grey.shade400),
             ),
             SizedBox(width: 6.w),
             CommonText(
               text: label,
               fontSize: 13.sp,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              textColor: selected
-                  ? Colors.white
-                  : (enabled ? activeColor : Colors.grey.shade400),
+              textColor:
+                  selected
+                      ? Colors.white
+                      : (enabled ? activeColor : Colors.grey.shade400),
               textAlign: TextAlign.center,
             ),
           ],
@@ -394,27 +458,28 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   }
 
   void _showFrequencyPicker(BuildContext context) {
-    final currentIdx  = controller.selectedFrequencyIndex.value;
+    final currentIdx = controller.selectedFrequencyIndex.value;
     final currentFreq = AudioScreeningController.frequencies[currentIdx];
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => SelectionBottomSheet<int, int>(
-        title: 'Select Frequency (Hz)',
-        items: AudioScreeningController.frequencies,
-        valueFor: (item) => item,
-        labelFor: (item) => '$item Hz',
-        selectedValue: currentFreq,
-        height: 380.h,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        onItemTap: (item) {
-          Navigator.pop(context);
-          final idx = AudioScreeningController.frequencies.indexOf(item);
-          if (idx >= 0) controller.onFrequencyChanged(idx);
-        },
-      ),
+      builder:
+          (_) => SelectionBottomSheet<int, int>(
+            title: 'Select Frequency (Hz)',
+            items: AudioScreeningController.frequencies,
+            valueFor: (item) => item,
+            labelFor: (item) => '$item Hz',
+            selectedValue: currentFreq,
+            height: 380.h,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            onItemTap: (item) {
+              Navigator.pop(context);
+              final idx = AudioScreeningController.frequencies.indexOf(item);
+              if (idx >= 0) controller.onFrequencyChanged(idx);
+            },
+          ),
     );
   }
 
@@ -463,15 +528,16 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
         decoration: BoxDecoration(
           color: enabled ? color : Colors.grey.shade300,
           borderRadius: BorderRadius.circular(8.r),
-          boxShadow: enabled
-              ? [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
+          boxShadow:
+              enabled
+                  ? [
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                  : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -518,12 +584,7 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
           border: Border.all(color: kTextFieldBorder),
           borderRadius: BorderRadius.circular(8.r),
         ),
-        child: Column(
-          children: [
-            _hearingTableHeader(),
-            _hearingTableRows(),
-          ],
-        ),
+        child: Column(children: [_hearingTableHeader(), _hearingTableRows()]),
       ),
     );
   }
@@ -536,7 +597,7 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
         children: [
           _headerCell('Freq (Hz)', flex: 2),
           _headerDivider(),
-          _headerCell('Left (dB)',  flex: 2),
+          _headerCell('Left (dB)', flex: 2),
           _headerDivider(),
           _headerCell('Right (dB)', flex: 2),
         ],
@@ -557,56 +618,60 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
     );
   }
 
-  Widget _headerDivider() => Container(width: 1, height: 20.h, color: Colors.white30);
+  Widget _headerDivider() =>
+      Container(width: 1, height: 20.h, color: Colors.white30);
 
   Widget _hearingTableRows() {
-    return Obx(() => Column(
-          children: controller.hearingRecords.asMap().entries.map((entry) {
-            final i = entry.key;
-            final r = entry.value;
-            final isEven = i % 2 == 0;
-            return Container(
-              color: isEven ? kWhiteColor : const Color(0xFFF7F6FF),
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: CommonText(
-                      text: '${r.frequency}',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      textColor: kTextColor,
-                      textAlign: TextAlign.center,
+    return Obx(
+      () => Column(
+        children:
+            controller.hearingRecords.asMap().entries.map((entry) {
+              final i = entry.key;
+              final r = entry.value;
+              final isEven = i % 2 == 0;
+              return Container(
+                color: isEven ? kWhiteColor : const Color(0xFFF7F6FF),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: CommonText(
+                        text: '${r.frequency}',
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        textColor: kTextColor,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  Container(width: 1, height: 18.h, color: kTextFieldBorder),
-                  Expanded(
-                    flex: 2,
-                    child: CommonText(
-                      text: '${r.leftDb}',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      textColor: Colors.blue.shade700,
-                      textAlign: TextAlign.center,
+                    Container(width: 1, height: 18.h, color: kTextFieldBorder),
+                    Expanded(
+                      flex: 2,
+                      child: CommonText(
+                        text: '${r.leftDb}',
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.blue.shade700,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  Container(width: 1, height: 18.h, color: kTextFieldBorder),
-                  Expanded(
-                    flex: 2,
-                    child: CommonText(
-                      text: '${r.rightDb}',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      textColor: Colors.red.shade700,
-                      textAlign: TextAlign.center,
+                    Container(width: 1, height: 18.h, color: kTextFieldBorder),
+                    Expanded(
+                      flex: 2,
+                      child: CommonText(
+                        text: '${r.rightDb}',
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.red.shade700,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ));
+                  ],
+                ),
+              );
+            }).toList(),
+      ),
+    );
   }
 
   // Audiogram chart
@@ -627,7 +692,11 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
     );
   }
 
-  Widget _legendItem({required Color color, required String symbol, required String label}) {
+  Widget _legendItem({
+    required Color color,
+    required String symbol,
+    required String label,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -653,10 +722,10 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   // Chart matches native app: Y=0 at bottom → 80 at top, X labels on top.
   LineChartData _buildChartData() {
     final records = controller.hearingRecords;
-    final leftSpots  = <FlSpot>[];
+    final leftSpots = <FlSpot>[];
     final rightSpots = <FlSpot>[];
     for (int i = 0; i < records.length; i++) {
-      leftSpots.add(FlSpot(i.toDouble(),  records[i].leftDb.toDouble()));
+      leftSpots.add(FlSpot(i.toDouble(), records[i].leftDb.toDouble()));
       rightSpots.add(FlSpot(i.toDouble(), records[i].rightDb.toDouble()));
     }
 
@@ -671,13 +740,20 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
         drawVerticalLine: true,
         horizontalInterval: 10,
         verticalInterval: 1,
-        getDrawingHorizontalLine: (_) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
-        getDrawingVerticalLine:   (_) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
+        getDrawingHorizontalLine:
+            (_) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
+        getDrawingVerticalLine:
+            (_) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
       ),
       titlesData: FlTitlesData(
         leftTitles: AxisTitles(
-          axisNameWidget: Text('dB HL',
-              style: TextStyle(fontFamily: FontConstants.interFonts, fontSize: 10.sp)),
+          axisNameWidget: Text(
+            'dB HL',
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 10.sp,
+            ),
+          ),
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 36.w,
@@ -687,43 +763,69 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
               if (db < 0 || db > 80 || db % 10 != 0) return const SizedBox();
               return Padding(
                 padding: EdgeInsets.only(right: 4.w),
-                child: Text('$db',
-                    style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 9.sp,
-                        color: kLabelTextColor),
-                    textAlign: TextAlign.right),
+                child: Text(
+                  '$db',
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 9.sp,
+                    color: kLabelTextColor,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
               );
             },
           ),
         ),
         topTitles: AxisTitles(
-          axisNameWidget: Text('Frequency (Hz)',
-              style: TextStyle(fontFamily: FontConstants.interFonts, fontSize: 10.sp)),
+          axisNameWidget: Text(
+            'Frequency (Hz)',
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 10.sp,
+            ),
+          ),
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 32.h,
             interval: 1,
             getTitlesWidget: (val, _) {
-              const labels = ['125', '250', '500', '1000', '2000', '4000', '8000'];
+              const labels = [
+                '125',
+                '250',
+                '500',
+                '1000',
+                '2000',
+                '4000',
+                '8000',
+              ];
               final idx = val.toInt();
               if (idx < 0 || idx >= labels.length) return const SizedBox();
               return Padding(
                 padding: EdgeInsets.only(bottom: 4.h),
-                child: Text(labels[idx],
-                    style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: 8.sp,
-                        color: kLabelTextColor),
-                    textAlign: TextAlign.center),
+                child: Text(
+                  labels[idx],
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 8.sp,
+                    color: kLabelTextColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               );
             },
           ),
         ),
-        bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles:  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
       ),
-      borderData: FlBorderData(show: true, border: Border.all(color: kTextFieldBorder)),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: kTextFieldBorder),
+      ),
       lineBarsData: [
         LineChartBarData(
           spots: leftSpots,
@@ -732,7 +834,8 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
           barWidth: 2,
           dotData: FlDotData(
             show: true,
-            getDotPainter: (spot, percent, bar, index) => const _CrossCirclePainter(),
+            getDotPainter:
+                (spot, percent, bar, index) => const _CrossCirclePainter(),
           ),
         ),
         LineChartBarData(
@@ -742,7 +845,8 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
           barWidth: 2,
           dotData: FlDotData(
             show: true,
-            getDotPainter: (spot, percent, bar, index) => const _HollowRingPainter(),
+            getDotPainter:
+                (spot, percent, bar, index) => const _HollowRingPainter(),
           ),
         ),
       ],
@@ -753,7 +857,7 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   Widget _remarksCard(BuildContext context) {
     return _card(
       child: Obx(() {
-        final leftEnabled  = controller.leftEarEnabled;
+        final leftEnabled = controller.leftEarEnabled;
         final rightEnabled = controller.rightEarEnabled;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -803,29 +907,32 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
 
   void _showRemarkPicker(BuildContext context, {required bool isLeft}) {
     final currentRemark =
-        isLeft ? controller.leftEarRemark.value : controller.rightEarRemark.value;
+        isLeft
+            ? controller.leftEarRemark.value
+            : controller.rightEarRemark.value;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => SelectionBottomSheet<String, String>(
-        title: isLeft ? 'Left Ear Remark' : 'Right Ear Remark',
-        items: AudioScreeningController.remarkOptions,
-        valueFor: (item) => item,
-        labelFor: (item) => item,
-        selectedValue: currentRemark.isEmpty ? null : currentRemark,
-        height: 360.h,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        onItemTap: (item) {
-          Navigator.pop(context);
-          if (isLeft) {
-            controller.onLeftRemarkChanged(item);
-          } else {
-            controller.onRightRemarkChanged(item);
-          }
-        },
-      ),
+      builder:
+          (_) => SelectionBottomSheet<String, String>(
+            title: isLeft ? 'Left Ear Remark' : 'Right Ear Remark',
+            items: AudioScreeningController.remarkOptions,
+            valueFor: (item) => item,
+            labelFor: (item) => item,
+            selectedValue: currentRemark.isEmpty ? null : currentRemark,
+            height: 360.h,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            onItemTap: (item) {
+              Navigator.pop(context);
+              if (isLeft) {
+                controller.onLeftRemarkChanged(item);
+              } else {
+                controller.onRightRemarkChanged(item);
+              }
+            },
+          ),
     );
   }
 

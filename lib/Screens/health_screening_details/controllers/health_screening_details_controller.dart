@@ -46,9 +46,9 @@ class HealthScreeningDetailsController extends GetxController {
         dESGID == 169 ||
         dESGID == 146 ||
         dESGID == 177) {
+      menuList.add(HealthScreeningDetailsMenu.BasicHealthInfo);
       menuList.add(HealthScreeningDetailsMenu.SampleCollection);
       menuList.add(HealthScreeningDetailsMenu.UrineSampleCollection);
-      menuList.add(HealthScreeningDetailsMenu.BasicHealthInfo);
 
       if (!DataProvider().getRegularCamp()) {
         menuList.add(HealthScreeningDetailsMenu.D2DPhysicalExamination);

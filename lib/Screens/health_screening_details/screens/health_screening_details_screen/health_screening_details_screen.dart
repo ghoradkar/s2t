@@ -11,6 +11,7 @@ import '../camp_closing_screen/camp_closing_screen.dart';
 import '../audio_screening_screen/audio_screening_patient_list_screen.dart';
 import '../basic_health_info_screen/basic_health_info_patient_list_screen.dart';
 import '../lung_function_test_screen/lung_function_test_patient_list_screen.dart';
+import '../visual_screening_test_screen/visual_screening_patient_list_screen.dart';
 import '../health_screening_patient_list_screen/health_screening_patient_list_screen.dart';
 import 'health_screening_menu_row/health_screening_menu_row.dart';
 
@@ -196,8 +197,16 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         );
         break;
 
-      case HealthScreeningDetailsMenu.D2DPhysicalExamination:
       case HealthScreeningDetailsMenu.VisualScreeningTest:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => VisualScreeningPatientListScreen(campID: campID),
+          ),
+        );
+        break;
+
+      case HealthScreeningDetailsMenu.D2DPhysicalExamination:
         break;
     }
   }

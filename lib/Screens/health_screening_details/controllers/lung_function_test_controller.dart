@@ -351,26 +351,35 @@ class LungFunctionTestController extends GetxController {
     if (response != null &&
         (response['status'] as String? ?? '').toLowerCase() == 'success') {
       if (context.mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder:
-              (_) => AlertDialog(
-                title: const Text('Success'),
-                content: const Text(
-                  'Lung Function Test submitted successfully.',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
+        ToastManager().showSuccessOkayDialog(
+          context: Get.context!,
+          title: 'Success',
+          message: 'LFT Details Submitted Successfully.',
+          onTap: (){
+            Get.back();
+            Get.back();
+          },
         );
+        // showDialog(
+        //   context: context,
+        //   barrierDismissible: false,
+        //   builder:
+        //       (_) => AlertDialog(
+        //         title: const Text('Success'),
+        //         content: const Text(
+        //           'Lung Function Test submitted successfully.',
+        //         ),
+        //         actions: [
+        //           TextButton(
+        //             onPressed: () {
+        //               Navigator.of(context).pop();
+        //               Navigator.of(context).pop();
+        //             },
+        //             child: const Text('OK'),
+        //           ),
+        //         ],
+        //       ),
+        // );
       }
     } else {
       final msg =

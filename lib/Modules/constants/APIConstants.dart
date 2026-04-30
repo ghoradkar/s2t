@@ -421,4 +421,7 @@ class APIConstants {
 
   // Lung Function Test
   static String kInsertLFTDetails = "InsertLFTDetails_VersionNo";
+
+  // Visual Screening Test
+  static String kInsertEyeScreeningDetails = "InsertEyeScreeningDetails_VersionNo";
 }
