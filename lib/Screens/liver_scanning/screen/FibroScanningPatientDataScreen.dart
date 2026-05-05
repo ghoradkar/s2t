@@ -15,6 +15,7 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableData.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 // import 'package:s2toperational/Screens/AdminDashboard/Model/LiverScanningTableData.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/liver_scanning/controller/liver_scanning_controller.dart';
@@ -46,210 +47,212 @@ class FibroScanningPatientDataScreen extends StatelessWidget {
           totalShots += item.totalShots;
         }
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: mAppBar(
-            scTitle: "FibroScanning Patient Data",
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-            showActions: true,
-            actions: [
-              InkWell(
-                onTap: () => ctrl.refreshTableData(),
-                child: Icon(Icons.refresh, color: kWhiteColor, size: 26),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 6, right: 10),
-                child: InkWell(
-                  onTap: () {
-                    _exportToExcel(context, ctrl);
-                  },
-                  child: Icon(
-                    Icons.save_alt_outlined,
-                    color: kWhiteColor,
-                    size: 26,
+        return NetworkWrapper(
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: mAppBar(
+              scTitle: "FibroScanning Patient Data",
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+              showActions: true,
+              actions: [
+                InkWell(
+                  onTap: () => ctrl.refreshTableData(),
+                  child: Icon(Icons.refresh, color: kWhiteColor, size: 26),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 6, right: 10),
+                  child: InkWell(
+                    onTap: () {
+                      _exportToExcel(context, ctrl);
+                    },
+                    child: Icon(
+                      Icons.save_alt_outlined,
+                      color: kWhiteColor,
+                      size: 26,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          body: ctrl.hasInternet
-              ? AnnotatedRegion(
-                  value: const SystemUiOverlayStyle(
-                    statusBarColor: kPrimaryColor,
-                    statusBarBrightness: Brightness.light,
-                    statusBarIconBrightness: Brightness.light,
-                  ),
-                  child: Container(
-                    color: Colors.white,
-                    height: SizeConfig.screenHeight,
-                    width: SizeConfig.screenWidth,
-                    child: Column(
-                      children: [
-                        // Date Filters
-                        Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: AppTextField(
-                                  onTap: () {
-                                    ctrl.selectFromDate(context);
-                                  },
-                                  controller: ctrl.fromDateController,
-                                  readOnly: true,
-                                  label: RichText(
-                                    text: TextSpan(
-                                      text: 'From Date *',
-                                      style: TextStyle(
-                                        color: kLabelTextColor,
-                                        fontSize: 14.sp,
-                                        fontFamily: FontConstants.interFonts,
+              ],
+            ),
+            body: ctrl.hasInternet
+                ? AnnotatedRegion(
+                    value: const SystemUiOverlayStyle(
+                      statusBarColor: kPrimaryColor,
+                      statusBarBrightness: Brightness.light,
+                      statusBarIconBrightness: Brightness.light,
+                    ),
+                    child: Container(
+                      color: Colors.white,
+                      height: SizeConfig.screenHeight,
+                      width: SizeConfig.screenWidth,
+                      child: Column(
+                        children: [
+                          // Date Filters
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(top: 0),
+                            padding: const EdgeInsets.symmetric(horizontal: 0),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextField(
+                                    onTap: () {
+                                      ctrl.selectFromDate(context);
+                                    },
+                                    controller: ctrl.fromDateController,
+                                    readOnly: true,
+                                    label: RichText(
+                                      text: TextSpan(
+                                        text: 'From Date *',
+                                        style: TextStyle(
+                                          color: kLabelTextColor,
+                                          fontSize: 14.sp,
+                                          fontFamily: FontConstants.interFonts,
+                                        ),
                                       ),
                                     ),
+                                    prefixIcon: Image.asset(
+                                      icCalendarMonth,
+                                      color: kPrimaryColor,
+                                    ).paddingOnly(left: 6.w),
                                   ),
-                                  prefixIcon: Image.asset(
-                                    icCalendarMonth,
-                                    color: kPrimaryColor,
-                                  ).paddingOnly(left: 6.w),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: AppTextField(
-                                  onTap: () {
-                                    ctrl.selectToDate(context);
-                                  },
-                                  controller: ctrl.toDateController,
-                                  readOnly: true,
-                                  label: RichText(
-                                    text: TextSpan(
-                                      text: 'To Date *',
-                                      style: TextStyle(
-                                        color: kLabelTextColor,
-                                        fontSize: 14.sp,
-                                        fontFamily: FontConstants.interFonts,
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: AppTextField(
+                                    onTap: () {
+                                      ctrl.selectToDate(context);
+                                    },
+                                    controller: ctrl.toDateController,
+                                    readOnly: true,
+                                    label: RichText(
+                                      text: TextSpan(
+                                        text: 'To Date *',
+                                        style: TextStyle(
+                                          color: kLabelTextColor,
+                                          fontSize: 14.sp,
+                                          fontFamily: FontConstants.interFonts,
+                                        ),
                                       ),
                                     ),
+                                    prefixIcon: Image.asset(
+                                      icCalendarMonth,
+                                      color: kPrimaryColor,
+                                    ).paddingOnly(left: 6.w),
                                   ),
-                                  prefixIcon: Image.asset(
-                                    icCalendarMonth,
-                                    color: kPrimaryColor,
-                                  ).paddingOnly(left: 6.w),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ).paddingSymmetric(horizontal: 12),
+                              ],
+                            ),
+                          ).paddingSymmetric(horizontal: 12),
 
-                        const SizedBox(height: 4),
+                          const SizedBox(height: 4),
 
-                        // Table with Total Row
-                        Expanded(
-                          child: ctrl.isTableLoading
-                              ? const CommonSkeletonScreeningDetailsTable(
-                                  rowCount: 14,
-                                )
-                              : Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: const Offset(0, 2),
-                                        color: Colors.black.withOpacity(0.08),
-                                        blurRadius: 8,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Scrollbar(
-                                    controller:
-                                        ctrl.districtTableScrollController,
-                                    thumbVisibility: true,
-                                    child: SingleChildScrollView(
+                          // Table with Total Row
+                          Expanded(
+                            child: ctrl.isTableLoading
+                                ? const CommonSkeletonScreeningDetailsTable(
+                                    rowCount: 14,
+                                  )
+                                : Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          offset: const Offset(0, 2),
+                                          color: Colors.black.withOpacity(0.08),
+                                          blurRadius: 8,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Scrollbar(
                                       controller:
                                           ctrl.districtTableScrollController,
-                                      scrollDirection: Axis.horizontal,
-                                      child: SizedBox(
-                                        width: 600.w,
-                                        child: Column(
-                                          children: [
-                                            // Header
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: kPrimaryColor,
-                                                borderRadius:
-                                                    const BorderRadius.only(
-                                                  topLeft:
-                                                      Radius.circular(12),
-                                                  topRight:
-                                                      Radius.circular(12),
-                                                ),
-                                              ),
-                                              child: const ModernHeaderRow(),
-                                            ),
-
-                                            // Total Row
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.2),
-                                                    width: 1,
+                                      thumbVisibility: true,
+                                      child: SingleChildScrollView(
+                                        controller:
+                                            ctrl.districtTableScrollController,
+                                        scrollDirection: Axis.horizontal,
+                                        child: SizedBox(
+                                          width: 600.w,
+                                          child: Column(
+                                            children: [
+                                              // Header
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(12),
+                                                    topRight:
+                                                        Radius.circular(12),
                                                   ),
                                                 ),
+                                                child: const ModernHeaderRow(),
                                               ),
-                                              child: ModernTotalRow(
-                                                totalPatientCount:
-                                                    totalPatientCount,
-                                                totalAbnormalPatients:
-                                                    totalAbnormalPatients,
-                                                totalModerateSevere:
-                                                    totalModerateSevere,
-                                                totalSuccessfulShots:
-                                                    totalSuccessfulShots,
-                                                totalShots: totalShots,
-                                              ),
-                                            ),
 
-                                            // Data Rows
-                                            Expanded(
-                                              child: ListView.builder(
-                                                padding: EdgeInsets.zero,
-                                                itemCount: items.length,
-                                                itemBuilder: (context, index) {
-                                                  return ModernDataRow(
-                                                    item: items[index],
-                                                    index: index,
-                                                  );
-                                                },
+                                              // Total Row
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: ModernTotalRow(
+                                                  totalPatientCount:
+                                                      totalPatientCount,
+                                                  totalAbnormalPatients:
+                                                      totalAbnormalPatients,
+                                                  totalModerateSevere:
+                                                      totalModerateSevere,
+                                                  totalSuccessfulShots:
+                                                      totalSuccessfulShots,
+                                                  totalShots: totalShots,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+
+                                              // Data Rows
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  padding: EdgeInsets.zero,
+                                                  itemCount: items.length,
+                                                  itemBuilder: (context, index) {
+                                                    return ModernDataRow(
+                                                      item: items[index],
+                                                      index: index,
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                        ),
-                      ],
-                    ).paddingSymmetric(vertical: 14),
+                          ),
+                        ],
+                      ).paddingSymmetric(vertical: 14),
+                    ),
+                  )
+                : NoInternetWidget(
+                    onRetryPressed: () => ctrl.checkInternetAndLoad(),
                   ),
-                )
-              : NoInternetWidget(
-                  onRetryPressed: () => ctrl.checkInternetAndLoad(),
-                ),
+          ),
         );
       },
     );

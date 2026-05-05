@@ -10,6 +10,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDistrictWiseModel.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 // import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDistrictWiseModel.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/liver_scanning/screen/FibroScanningPatientDataDetails.dart';
@@ -50,96 +51,98 @@ class AndroidAndIosPatientCountScreen extends StatelessWidget {
         list.removeWhere((e) => e.district.trim().toUpperCase() == 'TOTAL');
         list.sort((a, b) => a.district.compareTo(b.district));
 
-        return Scaffold(
-          appBar: mAppBar(
-            scTitle: title,
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-            showActions: true,
-            actions: [
-              InkWell(
-                onTap: () => ctrl.refreshDistrictWise(),
-                child:
-                    const Icon(Icons.refresh, color: kWhiteColor, size: 26),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 6, right: 10),
-                child: InkWell(
-                  onTap: () => _exportToExcel(context, ctrl),
-                  child: const Icon(
-                    Icons.save_alt_outlined,
-                    color: kWhiteColor,
-                    size: 26,
+        return NetworkWrapper(
+          child: Scaffold(
+            appBar: mAppBar(
+              scTitle: title,
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+              showActions: true,
+              actions: [
+                InkWell(
+                  onTap: () => ctrl.refreshDistrictWise(),
+                  child:
+                      const Icon(Icons.refresh, color: kWhiteColor, size: 26),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 6, right: 10),
+                  child: InkWell(
+                    onTap: () => _exportToExcel(context, ctrl),
+                    child: const Icon(
+                      Icons.save_alt_outlined,
+                      color: kWhiteColor,
+                      size: 26,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          body: ctrl.hasInternet
-              ? AnnotatedRegion(
-                  value: const SystemUiOverlayStyle(
-                    statusBarColor: kPrimaryColor,
-                    statusBarBrightness: Brightness.light,
-                    statusBarIconBrightness: Brightness.light,
-                  ),
-                  child: Column(
-                    children: [
-                      const ModernHeaderRow(),
-                      ModernTotalRow(total: total ?? ''),
-                      Divider(
-                        height: 0,
-                        thickness: 1,
-                        color: Colors.grey.withOpacity(0.2),
-                      ),
-                      Expanded(
-                        child: ctrl.isS2tAppDistrictLoading
-                            ? const CommonSkeletonInvoiceTable(itemCount: 20)
-                            : list.isEmpty
-                                ? const Center(
-                                    child: Text('No data available'))
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    padding: EdgeInsets.zero,
-                                    physics:
-                                        const AlwaysScrollableScrollPhysics(),
-                                    itemCount: list.length,
-                                    itemBuilder: (context, i) {
-                                      final r = list[i];
-                                      final districtDisplay =
-                                          r.district.isEmpty
-                                              ? '-'
-                                              : r.district;
-                                      return ModernDataRow(
-                                        srNo: i + 1,
-                                        district: districtDisplay,
-                                        count: _pickCount(r),
-                                        onTap: () {
-                                          if (r.district.trim().isNotEmpty &&
-                                              r.district != '-' &&
-                                              r.district.toUpperCase() !=
-                                                  'UNKNOWN') {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    FibroScanningPatientDataDetails(
-                                                  distlgdcode: r.district,
+              ],
+            ),
+            body: ctrl.hasInternet
+                ? AnnotatedRegion(
+                    value: const SystemUiOverlayStyle(
+                      statusBarColor: kPrimaryColor,
+                      statusBarBrightness: Brightness.light,
+                      statusBarIconBrightness: Brightness.light,
+                    ),
+                    child: Column(
+                      children: [
+                        const ModernHeaderRow(),
+                        ModernTotalRow(total: total ?? ''),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                        Expanded(
+                          child: ctrl.isS2tAppDistrictLoading
+                              ? const CommonSkeletonInvoiceTable(itemCount: 20)
+                              : list.isEmpty
+                                  ? const Center(
+                                      child: Text('No data available'))
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.zero,
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      itemCount: list.length,
+                                      itemBuilder: (context, i) {
+                                        final r = list[i];
+                                        final districtDisplay =
+                                            r.district.isEmpty
+                                                ? '-'
+                                                : r.district;
+                                        return ModernDataRow(
+                                          srNo: i + 1,
+                                          district: districtDisplay,
+                                          count: _pickCount(r),
+                                          onTap: () {
+                                            if (r.district.trim().isNotEmpty &&
+                                                r.district != '-' &&
+                                                r.district.toUpperCase() !=
+                                                    'UNKNOWN') {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      FibroScanningPatientDataDetails(
+                                                    distlgdcode: r.district,
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      );
-                                    },
-                                  ),
-                      ),
-                    ],
-                  ).paddingSymmetric(vertical: 10, horizontal: 12),
-                )
-              : NoInternetWidget(
-                  onRetryPressed: () =>
-                      ctrl.checkInternetAndLoadDistrictWise(),
-                ),
+                                              );
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
+                        ),
+                      ],
+                    ).paddingSymmetric(vertical: 10, horizontal: 12),
+                  )
+                : NoInternetWidget(
+                    onRetryPressed: () =>
+                        ctrl.checkInternetAndLoadDistrictWise(),
+                  ),
+          ),
         );
       },
     );

@@ -7,6 +7,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/glucose_device_controller.dart';
 
@@ -21,52 +22,54 @@ class GlucoseDeviceScreen extends StatelessWidget {
       init: GlucoseDeviceController(patientItem: patientItem),
       dispose: (_) => Get.delete<GlucoseDeviceController>(),
       builder:
-          (ctrl) => Scaffold(
-            backgroundColor: kBackground,
-            appBar: mAppBar(
-              scTitle: 'Glucose Device',
-              leadingIcon: iconBackArrow,
-              onLeadingIconClick: () => Navigator.pop(context),
-            ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _PatientCard(patientItem: patientItem),
-                    SizedBox(height: 14.h),
-                    _GlucoseReadingCard(ctrl: ctrl),
-                    SizedBox(height: 14.h),
-                    _DeviceInfoCard(ctrl: ctrl),
-                    SizedBox(height: 24.h),
-                    _ScanButton(ctrl: ctrl),
-                    SizedBox(height: 12.h),
-                    Obx(() {
-                      if (!ctrl.dataReceived.value)
-                        return const SizedBox.shrink();
-                      return SizedBox(
-                        width: double.infinity,
-                        child: AppActiveButton(
-                          buttontitle: 'Confirm Data',
-                          onTap: () {
-                            final g = ctrl.dataStr.value;
-                            if (g == '—' || g.isEmpty) {
-                              ToastManager.toast('No glucose data to confirm');
-                              return;
-                            }
-                            Navigator.pop(
-                              context,
-                              GlucoseResult(
-                                glucose: g,
-                                deviceNameStr: ctrl.deviceName.value,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    }),
-                  ],
+          (ctrl) => NetworkWrapper(
+            child: Scaffold(
+              backgroundColor: kBackground,
+              appBar: mAppBar(
+                scTitle: 'Glucose Device',
+                leadingIcon: iconBackArrow,
+                onLeadingIconClick: () => Navigator.pop(context),
+              ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _PatientCard(patientItem: patientItem),
+                      SizedBox(height: 14.h),
+                      _GlucoseReadingCard(ctrl: ctrl),
+                      SizedBox(height: 14.h),
+                      _DeviceInfoCard(ctrl: ctrl),
+                      SizedBox(height: 24.h),
+                      _ScanButton(ctrl: ctrl),
+                      SizedBox(height: 12.h),
+                      Obx(() {
+                        if (!ctrl.dataReceived.value)
+                          return const SizedBox.shrink();
+                        return SizedBox(
+                          width: double.infinity,
+                          child: AppActiveButton(
+                            buttontitle: 'Confirm Data',
+                            onTap: () {
+                              final g = ctrl.dataStr.value;
+                              if (g == '—' || g.isEmpty) {
+                                ToastManager.toast('No glucose data to confirm');
+                                return;
+                              }
+                              Navigator.pop(
+                                context,
+                                GlucoseResult(
+                                  glucose: g,
+                                  deviceNameStr: ctrl.deviceName.value,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               ),
             ),

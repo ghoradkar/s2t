@@ -28,7 +28,12 @@
       "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.ResultData)",
       "Bash(javap -p -classpath classes.jar info.safey.safey_sdk.FlowVolumeData)",
       "Bash(./gradlew --stop)",
-      "Bash(awk -F/ '{ *)"
+      "Bash(awk -F/ '{ *)",
+      "Bash(git -C \"D:\\\\marketingapp\\\\marketingapp\" log --oneline --format=\"%ad %s\" --date=short)",
+      "Bash(git -C \"D:\\\\dishabtob\" log --oneline --format=\"%ad %s\" --date=short)",
+      "Bash(git -C \"D:\\\\heamodialysis\\\\heamodialysis\" log --oneline --format=\"%ad %s\" --date=short)",
+      "Read(//d/heamodialysis/heamodialysis/**)",
+      "Read(//d/heamodialysis/**)"
     ]
   }
 }

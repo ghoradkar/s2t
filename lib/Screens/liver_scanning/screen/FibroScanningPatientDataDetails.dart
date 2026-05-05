@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Model/FibroScanningDistrictWiseModel.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 // import 'package:s2toperational/Screens/AdminDashboard/Model/FibroScanningDistrictWiseModel.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/liver_scanning/controller/liver_scanning_controller.dart';
@@ -43,76 +44,78 @@ class FibroScanningPatientDataDetails extends StatelessWidget {
           totalShots += int.tryParse(item.totalShots ?? '0') ?? 0;
         }
 
-        return Scaffold(
-          appBar: mAppBar(
-            scTitle: "FibroScanning Patient Data",
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-            showActions: true,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(left: 6, right: 10),
-                child: InkWell(
-                  onTap: () {
-                    _exportToExcel(context, ctrl);
-                  },
-                  child: Icon(
-                    Icons.save_alt_outlined,
-                    color: kWhiteColor,
-                    size: 26,
+        return NetworkWrapper(
+          child: Scaffold(
+            appBar: mAppBar(
+              scTitle: "FibroScanning Patient Data",
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+              showActions: true,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 6, right: 10),
+                  child: InkWell(
+                    onTap: () {
+                      _exportToExcel(context, ctrl);
+                    },
+                    child: Icon(
+                      Icons.save_alt_outlined,
+                      color: kWhiteColor,
+                      size: 26,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          body: ctrl.hasInternet
-              ? AnnotatedRegion(
-                  value: const SystemUiOverlayStyle(
-                    statusBarColor: kPrimaryColor,
-                    statusBarBrightness: Brightness.light,
-                    statusBarIconBrightness: Brightness.light,
-                  ),
-                  child: Scrollbar(
-                    controller: ctrl.patientTableScrollController,
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
+              ],
+            ),
+            body: ctrl.hasInternet
+                ? AnnotatedRegion(
+                    value: const SystemUiOverlayStyle(
+                      statusBarColor: kPrimaryColor,
+                      statusBarBrightness: Brightness.light,
+                      statusBarIconBrightness: Brightness.light,
+                    ),
+                    child: Scrollbar(
                       controller: ctrl.patientTableScrollController,
-                      scrollDirection: Axis.horizontal,
-                      child: SizedBox(
-                        width: 600.w,
-                        child: Column(
-                          children: [
-                            // Header Row
-                            const CompactHeaderRow(),
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        controller: ctrl.patientTableScrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: 600.w,
+                          child: Column(
+                            children: [
+                              // Header Row
+                              const CompactHeaderRow(),
 
-                            // Total Row
-                            CompactTotalRow(
-                              totalSuccessfulShots: totalSuccessfulShots,
-                              totalShots: totalShots,
-                            ),
-
-                            // Data Rows
-                            Expanded(
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                itemCount: data.length,
-                                itemBuilder: (context, index) {
-                                  return CompactDataRow(
-                                    item: data[index],
-                                    index: index,
-                                  );
-                                },
+                              // Total Row
+                              CompactTotalRow(
+                                totalSuccessfulShots: totalSuccessfulShots,
+                                totalShots: totalShots,
                               ),
-                            ),
-                          ],
+
+                              // Data Rows
+                              Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: data.length,
+                                  itemBuilder: (context, index) {
+                                    return CompactDataRow(
+                                      item: data[index],
+                                      index: index,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ).paddingOnly(top: 10, left: 12, right: 12),
-                )
-              : NoInternetWidget(
-                  onRetryPressed: () => ctrl.checkInternetAndLoad(),
-                ),
+                    ).paddingOnly(top: 10, left: 12, right: 12),
+                  )
+                : NoInternetWidget(
+                    onRetryPressed: () => ctrl.checkInternetAndLoad(),
+                  ),
+          ),
         );
       },
     );

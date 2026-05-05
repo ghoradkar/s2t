@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
@@ -44,66 +45,68 @@ class _LungFunctionTestPatientListScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Patient List',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Patient List',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return Column(
+              children: [
+                _searchBarDisabled().paddingSymmetric(
+                  horizontal: 12.w,
+                  vertical: 8.h,
+                ),
+                _tableHeader().paddingSymmetric(horizontal: 12.w),
+                const Expanded(child: CommonSkeletonList()),
+              ],
+            );
+          }
+          if (controller.allList.isEmpty) {
+            return Column(
+              children: [
+                _searchBarDisabled().paddingSymmetric(
+                  horizontal: 12.w,
+                  vertical: 8.h,
+                ),
+                Expanded(child: NoDataFound().paddingSymmetric(horizontal: 12.w)),
+              ],
+            );
+          }
           return Column(
             children: [
-              _searchBarDisabled().paddingSymmetric(
-                horizontal: 12.w,
-                vertical: 8.h,
-              ),
-              _tableHeader().paddingSymmetric(horizontal: 12.w),
-              const Expanded(child: CommonSkeletonList()),
-            ],
-          );
-        }
-        if (controller.allList.isEmpty) {
-          return Column(
-            children: [
-              _searchBarDisabled().paddingSymmetric(
-                horizontal: 12.w,
-                vertical: 8.h,
-              ),
-              Expanded(child: NoDataFound().paddingSymmetric(horizontal: 12.w)),
-            ],
-          );
-        }
-        return Column(
-          children: [
-            _searchBar(),
-            _tableHeader().paddingOnly(left: 12.w, right: 12.w),
-            Expanded(
-              child: Obx(() {
-                if (controller.filteredList.isEmpty) {
-                  return NoDataFound().paddingSymmetric(
-                    vertical: 6.h,
-                    horizontal: 12.w,
-                  );
-                }
-                return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  itemCount: controller.filteredList.length,
-                  itemBuilder: (context, index) {
-                    final patient = controller.filteredList[index];
-                    return _LftPatientRow(
-                      index: index,
-                      item: patient,
-                      onTap: () => _onRowTapped(patient),
+              _searchBar(),
+              _tableHeader().paddingOnly(left: 12.w, right: 12.w),
+              Expanded(
+                child: Obx(() {
+                  if (controller.filteredList.isEmpty) {
+                    return NoDataFound().paddingSymmetric(
+                      vertical: 6.h,
+                      horizontal: 12.w,
                     );
-                  },
-                );
-              }),
-            ),
-          ],
-        );
-      }),
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    itemCount: controller.filteredList.length,
+                    itemBuilder: (context, index) {
+                      final patient = controller.filteredList[index];
+                      return _LftPatientRow(
+                        index: index,
+                        item: patient,
+                        onTap: () => _onRowTapped(patient),
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          );
+        }),
+      ),
     );
   }
 

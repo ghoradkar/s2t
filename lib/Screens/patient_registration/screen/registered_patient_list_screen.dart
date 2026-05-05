@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/view_queue_patient_screen.dart';
@@ -54,53 +55,55 @@ class _RegisteredPatientListScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Patient List',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Patient List',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body:
+            _isLoading
+                ? Column(
+                  children: [
+                    _searchBarDisabled(),
+                    _tableHeader(),
+                    const Expanded(
+                      child: CommonSkeletonD2DPhysicalExamTable(rowCount: 10),
+                    ),
+                  ],
+                )
+                : _allItems.isEmpty
+                ? const SizedBox.shrink()
+                : Column(
+                  children: [
+                    _searchBar(),
+                    _tableHeader().paddingOnly(left: 10, right: 10),
+                    Expanded(
+                      child:
+                          _filteredItems.isEmpty
+                              ? NoDataFound().paddingSymmetric(
+                                vertical: 6.h,
+                                horizontal: 10.w,
+                              )
+                              : ListView.builder(
+                                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                itemCount: _filteredItems.length,
+                                itemBuilder: (context, index) {
+                                  return _PatientListRow(
+                                    index: index,
+                                    item: _filteredItems[index],
+                                    onTap:
+                                        () =>
+                                            _onItemTapped(_filteredItems[index]),
+                                  );
+                                },
+                              ),
+                    ),
+                  ],
+                ),
       ),
-      body:
-          _isLoading
-              ? Column(
-                children: [
-                  _searchBarDisabled(),
-                  _tableHeader(),
-                  const Expanded(
-                    child: CommonSkeletonD2DPhysicalExamTable(rowCount: 10),
-                  ),
-                ],
-              )
-              : _allItems.isEmpty
-              ? const SizedBox.shrink()
-              : Column(
-                children: [
-                  _searchBar(),
-                  _tableHeader().paddingOnly(left: 10, right: 10),
-                  Expanded(
-                    child:
-                        _filteredItems.isEmpty
-                            ? NoDataFound().paddingSymmetric(
-                              vertical: 6.h,
-                              horizontal: 10.w,
-                            )
-                            : ListView.builder(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w),
-                              itemCount: _filteredItems.length,
-                              itemBuilder: (context, index) {
-                                return _PatientListRow(
-                                  index: index,
-                                  item: _filteredItems[index],
-                                  onTap:
-                                      () =>
-                                          _onItemTapped(_filteredItems[index]),
-                                );
-                              },
-                            ),
-                  ),
-                ],
-              ),
     );
   }
 

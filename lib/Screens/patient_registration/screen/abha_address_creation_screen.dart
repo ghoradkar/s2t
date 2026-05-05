@@ -10,6 +10,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/abha_address_creation_controller.dart';
 
 class AbhaAddressCreationScreen extends StatefulWidget {
@@ -78,27 +79,29 @@ class _AbhaAddressCreationScreenState extends State<AbhaAddressCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: mAppBar(
-        scTitle: 'ABHA Address Creation',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
+        appBar: mAppBar(
+          scTitle: 'ABHA Address Creation',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: Obx(() {
+          if (ctrl.loading.value) return const SizedBox.shrink();
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(14.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProfileCard(),
+                SizedBox(height: 14.h),
+                _buildCreateCard(),
+              ],
+            ),
+          );
+        }),
       ),
-      body: Obx(() {
-        if (ctrl.loading.value) return const SizedBox.shrink();
-        return SingleChildScrollView(
-          padding: EdgeInsets.all(14.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildProfileCard(),
-              SizedBox(height: 14.h),
-              _buildCreateCard(),
-            ],
-          ),
-        );
-      }),
     );
   }
 

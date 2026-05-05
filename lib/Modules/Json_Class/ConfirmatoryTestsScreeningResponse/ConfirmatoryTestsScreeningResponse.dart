@@ -48,6 +48,10 @@ class ConfirmatoryTestsScreeningOutput {
   String? sampleQuantityMl;
   String? workersMob;
   String? alternateMobNo;
+  int? dISTLGDCODE;
+  int? t2tOrderId;
+  int? treatmentID;
+  int? teamid;
 
   ConfirmatoryTestsScreeningOutput({
     this.regdid,
@@ -68,6 +72,10 @@ class ConfirmatoryTestsScreeningOutput {
     this.sampleQuantityMl,
     this.workersMob,
     this.alternateMobNo,
+    this.dISTLGDCODE,
+    this.t2tOrderId,
+    this.treatmentID,
+    this.teamid,
   });
 
   ConfirmatoryTestsScreeningOutput.fromJson(Map<String, dynamic> json) {
@@ -89,6 +97,10 @@ class ConfirmatoryTestsScreeningOutput {
     sampleQuantityMl = json['SampleQuantity(ml)'];
     workersMob = json['WorkersMob'];
     alternateMobNo = json['AlternateMobNo'];
+    dISTLGDCODE = json['DISTLGDCODE'];
+    t2tOrderId = json['T2T_Order_Id'];
+    treatmentID = json['TreatmentID'];
+    teamid = json['Teamid'];
   }
 
   Map<String, dynamic> toJson() {
@@ -111,6 +123,10 @@ class ConfirmatoryTestsScreeningOutput {
     data['SampleQuantity(ml)'] = sampleQuantityMl;
     data['WorkersMob'] = workersMob;
     data['AlternateMobNo'] = alternateMobNo;
+    data['DISTLGDCODE'] = dISTLGDCODE;
+    data['T2T_Order_Id'] = t2tOrderId;
+    data['TreatmentID'] = treatmentID;
+    data['Teamid'] = teamid;
     return data;
   }
 }

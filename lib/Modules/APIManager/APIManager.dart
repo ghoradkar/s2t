@@ -60,6 +60,9 @@ import '../Json_Class/CampWiseInvoiceDetailsResponse/CampWiseInvoiceDetailsRespo
 import '../Json_Class/CompanyListResponse/CompanyListResponse.dart';
 import '../Json_Class/ConfirmatoryTestsScreeningResponse/ConfirmatoryTestsScreeningResponse.dart';
 import '../Json_Class/ConfirmatoryTestsScreeningTubeResponse/ConfirmatoryTestsScreeningTubeResponse.dart';
+import '../../Screens/AppointmentSampleCollectionCT/models/ct_appointment_beneficiary_model.dart';
+import '../../Screens/AppointmentSampleCollectionCT/models/ct_appointment_update_response.dart';
+import '../../Screens/AppointmentSampleCollectionCT/models/ct_confirmatory_list_model.dart';
 import '../Json_Class/ConsumableListDetailsResponse/ConsumableListDetailsResponse.dart';
 import '../Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
 import '../Json_Class/D2DNonWorkingTeamsResponse/D2DNonWorkingTeamsResponse.dart';
@@ -162,6 +165,7 @@ class APIManager {
   static String kChangeBeneficiaryAndCardImage = "";
   static String kMedicineDeliveryAckHandler = "";
   static String kCampAttendancePhotoHandler = "";
+  static String kCTSampleCollectionConsentHandler = "";
   static String kMediaBaseURL = "";
   static String kMahabocwBaseURL = "";
   static String kt24By7 = "";
@@ -194,6 +198,8 @@ class APIManager {
             "https://mcwwb.janarogyaseva.in/webservices/handler/CW_MedicineDelivery_V1_DC.ashx";
         kCampAttendancePhotoHandler =
             "https://mcwwb.janarogyaseva.in/webservices/handler/CampAttendanceCheckInOutImages.ashx";
+        kCTSampleCollectionConsentHandler =
+            "https://mcwwb.janarogyaseva.in/webservices/handler/CW_T2TBarcodeCollectionDetails_Consent_V1.ashx";
         kMediaBaseURL = "https://mcwwb.janarogyaseva.in/MCWWBDOCS_LIVE";
         kt24By7 = "https://app.office24by7.com/v1/common/API/";
         kLiverScann =
@@ -201,25 +207,31 @@ class APIManager {
         kTreatmentCount =
             "http://103.251.94.57:8080/disha-t2t-Apis/api/access/master/countdata/";
       case APIMode.Beta:
+        // String baseUrl = "https://testmcwwb.myhindlab.com/webservices/";
+        String baseUrl = "https://newtesting.myhindlab.com/webservices/";
+        // kMediaBaseURL = "https://testmcwwb.myhindlab.com/BETA_MYHINDLABDOCS";
+        kMediaBaseURL = "https://newtesting.myhindlab.com/BETA_MYHINDLABDOCS";
         kD2DBaseURL =
-            "https://testmcwwb.myhindlab.com/webservices/d2d_V2.asmx/";
+            "${baseUrl}d2d_V2.asmx/";
         kCallingBaseURL =
-            "https://testmcwwb.myhindlab.com/webservices/BeneficiaryCalling.asmx/";
+            "${baseUrl}BeneficiaryCalling.asmx/";
         kConstructionWorkerBaseURL =
-            "https://testmcwwb.myhindlab.com/webservices/ConstructionWorker_V2.asmx/";
-        kWebservicesBaseURL = "https://testmcwwb.myhindlab.com/webservices/";
+            "${baseUrl}ConstructionWorker_V2.asmx/";
+        kWebservicesBaseURL = baseUrl;
         kMahabocwBaseURL = "https://healthcamp.mahabocw.in/api/";
         kExpenseBillDetailsHandler =
-            "https://testmcwwb.myhindlab.com/webservices/handler/ExpenseBillDetailsHandler.ashx";
+            "${baseUrl}handler/ExpenseBillDetailsHandler.ashx";
         kUploadPostCampFileHandler =
-            "https://testmcwwb.myhindlab.com/webservices/handler/MultipleExpenseBillUploader.ashx";
+            "${baseUrl}handler/MultipleExpenseBillUploader.ashx";
         kChangeBeneficiaryAndCardImage =
-            "https://testmcwwb.myhindlab.com/webservices/handler/ChangeBeneficiaryAndCardImage_InCampTest.ashx";
+            "${baseUrl}handler/ChangeBeneficiaryAndCardImage_InCampTest.ashx";
         kMedicineDeliveryAckHandler =
-            "https://testmcwwb.myhindlab.com/webservices/handler/CW_MedicineDelivery_V1_DC.ashx";
+            "${baseUrl}handler/CW_MedicineDelivery_V1_DC.ashx";
         kCampAttendancePhotoHandler =
-            "https://testmcwwb.myhindlab.com/webservices/handler/CampAttendanceCheckInOutImages.ashx";
-        kMediaBaseURL = "https://testmcwwb.myhindlab.com/BETA_MYHINDLABDOCS";
+            "${baseUrl}handler/CampAttendanceCheckInOutImages.ashx";
+        kCTSampleCollectionConsentHandler =
+            "${baseUrl}handler/CW_T2TBarcodeCollectionDetails_Consent_V1.ashx";
+
         kt24By7 = "https://app.office24by7.com/v1/common/API/";
 
         kLiverScann =
@@ -261,14 +273,16 @@ class APIManager {
 
     final url = Uri.parse('$kConstructionWorkerBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
+    var body = {'aplicationId': applicationId, 'versionname': serverVersion};
     try {
       final response = await ioClient.post(
         url,
-        body: {'aplicationId': applicationId, 'versionname': serverVersion},
+        body: body,
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       );
+      print('APKDownloader req body: $body');
       print('APKDownloader url: $url');
       print('APKDownloader response: ${response.body}');
       final decoded = json.decode(response.body);
@@ -526,6 +540,94 @@ class APIManager {
     } catch (e) {
       // Handle error
       callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> getT2TLabDetailsAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kGetT2TLabDetails;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(data);
+      print(response.body);
+      LandingLabCampCreationResponse person =
+          LandingLabCampCreationResponse.fromJson(json.decode(response.body));
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message, false);
+      }
+    } catch (e) {
+      callback(null, "Exception: $e", false);
+    }
+  }
+
+  Future<void> sendOTPForCTSampleCollectionAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    final method = APIConstants.kInsertOTPForCTSampleCollection;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      print(url);
+      print(data);
+      print(response.body);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') {
+        callback(decoded, '', true);
+      } else {
+        callback(decoded, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
+    }
+  }
+
+  Future<void> verifyOTPForCTSampleCollectionAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    final method = APIConstants.kVerifyCTOTP;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      print(url);
+      print(data);
+      print(response.body);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') {
+        callback(decoded, '', true);
+      } else {
+        callback(decoded, message, false);
+      }
+    } catch (e) {
+      callback(null, 'Exception: $e', false);
     }
   }
 
@@ -5318,7 +5420,7 @@ class APIManager {
     dynamic callback,
   ) async {
     String method =
-        APIConstants.kGetConfirmatoryTestsScreeningAppointmentDetailsV1;
+        APIConstants.kGetConfirmatoryTestsScreeningAppointmentDetailsV2;
 
     final url = Uri.parse('$kD2DBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
@@ -5354,7 +5456,7 @@ class APIManager {
     dynamic callback,
   ) async {
     String method =
-        APIConstants.kGetConfirmatoryTestsScreeningAppointmentDetailsV1;
+        APIConstants.kGetConfirmatoryTestsScreeningAppointmentDetailsV2;
 
     final url = Uri.parse('$kD2DBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
@@ -5382,6 +5484,88 @@ class APIManager {
       }
     } catch (e) {
       callback(null, "Expections: $e", false);
+    }
+  }
+
+  // remark != 1: form-encoded submit (no photos)
+  Future<void> insertT2TBarcodeCollectionAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    const method = "InsertT2TBarcodeCollectionDetails_V2";
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(response.body);
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final status = decoded['status'] ?? '';
+      final message = decoded['message'] ?? '';
+      if (status.toString().toLowerCase() == 'success') {
+        callback(decoded, "", true);
+      } else {
+        callback(decoded, message.toString(), false);
+      }
+    } catch (e) {
+      callback(null, "Exception: $e", false);
+    }
+  }
+
+  // remark == 1: multipart submit (with patient photo + consent photo)
+  Future<void> insertT2TBarcodeCollectionWithConsentAPI(
+    Map<String, String> fields,
+    String? patientPhotoPath,
+    String? consentPhotoPath,
+    dynamic callback,
+  ) async {
+    final uri = Uri.parse(kCTSampleCollectionConsentHandler);
+    try {
+      final request = http.MultipartRequest('POST', uri);
+      request.fields.addAll(fields);
+      if (patientPhotoPath != null && patientPhotoPath.isNotEmpty) {
+        final ts = DateTime.now().millisecondsSinceEpoch;
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'BarcodeImagePath',
+            patientPhotoPath,
+            filename: '${ts}_PR.jpg',
+          ),
+        );
+      }
+      if (consentPhotoPath != null && consentPhotoPath.isNotEmpty) {
+        final ts = DateTime.now().millisecondsSinceEpoch;
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'ConsentPath',
+            consentPhotoPath,
+            filename: '${ts}_CF.jpg',
+          ),
+        );
+      }
+      print(uri);
+      print(fields);
+      print('BarcodeImagePath: $patientPhotoPath');
+      print('ConsentPath: $consentPhotoPath');
+      final streamed = await request.send();
+      final body = await streamed.stream.bytesToString();
+      print(body);
+      final decoded = json.decode(body) as Map<String, dynamic>;
+      final status = decoded['status'] ?? '';
+      final message = decoded['message'] ?? '';
+      if (status.toString().toLowerCase() == 'success') {
+        callback(decoded, "", true);
+      } else {
+        callback(decoded, message.toString(), false);
+      }
+    } catch (e) {
+      callback(null, "Exception: $e", false);
     }
   }
 
@@ -7119,6 +7303,98 @@ class APIManager {
       }
     } catch (e) {
       callback(null, 'Exception: $e', false);
+    }
+  }
+
+  Future<void> getCTConfirmatoryListAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method =
+        APIConstants.kGetConfirmatoryTestsScreeningAppointmentDetailsV2;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(data);
+      print(response.body);
+      CTConfirmatoryListModel person =
+          CTConfirmatoryListModel.fromJson(json.decode(response.body));
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message ?? "", false);
+      }
+    } catch (e) {
+      callback(null, "Exception: $e", false);
+    }
+  }
+
+  Future<void> getCTAppointmentListAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method =
+        APIConstants.kGetConfirmatoryTestsScreeningAppointmentDetailsV2;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(data);
+      print(response.body);
+      CTAppointmentBeneficiaryModel person =
+          CTAppointmentBeneficiaryModel.fromJson(json.decode(response.body));
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message ?? "", false);
+      }
+    } catch (e) {
+      callback(null, "Exception: $e", false);
+    }
+  }
+
+  Future<void> updateCTAppointmentDateAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kUpdateT2TCTAppointmentDate;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(data);
+      print(response.body);
+      CTAppointmentUpdateResponse person =
+          CTAppointmentUpdateResponse.fromJson(json.decode(response.body));
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message ?? "", false);
+      }
+    } catch (e) {
+      callback(null, "Exception: $e", false);
     }
   }
 }

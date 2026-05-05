@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/visual_screening_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
@@ -98,44 +99,46 @@ class _VisualScreeningTestScreenState extends State<VisualScreeningTestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Visual Screening Test',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 24.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _patientCard(),
-            SizedBox(height: 12.h),
-            _testTypeRow(),
-            SizedBox(height: 12.h),
-            _blindnessCard(context),
-            SizedBox(height: 12.h),
-            _injuryCard(context),
-            SizedBox(height: 12.h),
-            _snellenCard(context),
-            SizedBox(height: 12.h),
-            _nearVisionCard(context),
-            SizedBox(height: 12.h),
-            _remarksCard(),
-            SizedBox(height: 12.h),
-            _spectaclesCard(),
-            SizedBox(height: 16.h),
-            Obx(() {
-              final saving = controller.isSaving.value;
-              return AppActiveButton(
-                buttontitle: saving ? 'Saving…' : 'Save',
-                onTap: () {
-                  if (!saving) controller.save(context);
-                },
-              );
-            }),
-          ],
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Visual Screening Test',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 24.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _patientCard(),
+              SizedBox(height: 12.h),
+              _testTypeRow(),
+              SizedBox(height: 12.h),
+              _blindnessCard(context),
+              SizedBox(height: 12.h),
+              _injuryCard(context),
+              SizedBox(height: 12.h),
+              _snellenCard(context),
+              SizedBox(height: 12.h),
+              _nearVisionCard(context),
+              SizedBox(height: 12.h),
+              _remarksCard(),
+              SizedBox(height: 12.h),
+              _spectaclesCard(),
+              SizedBox(height: 16.h),
+              Obx(() {
+                final saving = controller.isSaving.value;
+                return AppActiveButton(
+                  buttontitle: saving ? 'Saving…' : 'Save',
+                  onTap: () {
+                    if (!saving) controller.save(context);
+                  },
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );

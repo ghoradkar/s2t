@@ -1,0 +1,257 @@
+I/Quality (20405): Skipped: false 1 cost 19.242756 refreshRate 16872914 bit true processName com.s2t.operational
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/Get_T2T_CT_AssignmentRemarks
+I/flutter (20405): {"status":"Success","message":"Assignment Remarks","output":[{"ArId":1,"AssignmentRemarks":"Interested In CT"},{"ArId":6,"AssignmentRemarks":"Not Interested In CT"},{"ArId":7,"AssignmentRemarks":"Wrong Number"},{"ArId":8,"AssignmentRemarks":"Not Available For CT"},{"ArId":2,"AssignmentRemarks":"Assigned"}]}
+I/flutter (20405): {status: Success, message: Assignment Remarks, output: [{ArId: 1, AssignmentRemarks: Interested In CT}, {ArId: 6, AssignmentRemarks: Not Interested In CT}, {ArId: 7, AssignmentRemarks: Wrong Number}, {ArId: 8, AssignmentRemarks: Not Available For CT}, {ArId: 2, AssignmentRemarks: Assigned}]}
+I/Quality (20405): Skipped: false 1 cost 31.031723 refreshRate 16873268 bit true processName com.s2t.operational
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/GetConfirmatoryTestsScreeningAppointmentDetails_V2
+I/flutter (20405): {USERID: 10169, DISTLGDCODE: 490, AREA: 0, Type: 1, REDNO: 0, FROMDATE: 2025/01/01, TODATE: 2026/05/06, T2T_Order_Id: 0}
+I/flutter (20405): {"status":"Success","message":"Beneficiary Data","output":[{"Regdno":"131160008659","BeneficiaryName":"Ashwini Daulat Wavhal","MemberCount":2,"MobileNo":"9767448023","AppointmentDate":"2026-05-05","IsAppointmentDone":"Y","ArId":3,"AssignmentRemarks":"Interested In CT","WorkersMob":"9767448023","AlternateMobNo":""}]}
+[GETX] Instance "CTAppointmentConfirmationController" already removed.
+[GETX] Instance "CTAppointmentConfirmationController" has been created
+[GETX] Instance "CTAppointmentConfirmationController" has been initialized
+I/flutter (20405): {"status":"Success","message":"Login Successfully","output":[{"ID":10169,"EmpCode":10169,"SUBORGWISEDESGID":211,"SubOrgId":3,"SubOrgName":"HSCC(INDIA)LIMITED","OrgId":1,"OrgName":"HSCC(INDIA)LIMITED","ProjectId":"0","ProjectName":"NA","USERNAME":"7028337362","name":"Aditya  Vilas Barbole","FirstName":"Aditya ","MiddleName":"Vilas","LastName":"Barbole","SpouseName":"NA","Children":0,"MotherName":"NA","FatherName":"NA","VoterId":"NA","per_email":"barboleaditya8@gmail.com","per_mobile":"7028337362","PAddress":"NA","CAddress":"HADPSAR","dob":"1999-12-23","AGE":26,"Aadhar":"NA","pancard":"NA","ImagePath":"https://newtesting.myhindlab.com/MCWWBDOCS_LIVE/ProfilePhoto/10169/http://beta.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/Default/Default.png","joiningdate":"2024-07-26","bloodgroup":null,"BLOODID":null,"EDUCDTLID":0,"edu":"NA","universityname":"NA","qualification":"NA","QUALID":null,"EDTYPEID":null,"UNIVID":null,"yearofpassing":0,"percentage":0,"cast":"NA","religion":"NA","ReligionId":null,"category":"NA","M
+I/flutter (20405): user Data Not null
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/GetConfirmatoryTestsScreeningAppointmentDetails_V2
+I/flutter (20405): {USERID: 10169, DISTLGDCODE: 0, AREA: 0, Type: 3, REDNO: 131160008659, FROMDATE: 2025/05/06, TODATE: 2026/05/06, T2T_Order_Id: 0}
+I/flutter (20405): {"status":"Success","message":"Beneficiary Data","output":[{"T2T_Order_Id":656776,"TreatmentID":3227353,"RegdNo":"131160008659","Teamid":0,"BeneficiaryName":"Vasant Shripati Wavhal","PatAge":78,"Gender":"Male","MobileNo":"9767448023","RelationWithWorker":"Father in law","Address":"House No.,85shivapur,Khed Shivapur B.O,Haveli,Pune,Maharashtra,412205","Area":"SHIVAPUR","DISTNAME":"PUNE","DISTLGDCODE":490,"SampleCollection":"N","AppointmentDate":"2026-05-05","IsAppointmentDone":"Y","ArId":3,"AssignmentRemarks":"Interested In CT","WorkersMob":"9767448023","AlternateMobNo":""},{"T2T_Order_Id":656773,"TreatmentID":3227350,"RegdNo":"131160008659","Teamid":0,"BeneficiaryName":"Sindhutai Vasant Wavhal","PatAge":76,"Gender":"Female","MobileNo":"9767448023","RelationWithWorker":"Mother in law","Address":"House No.,85shivapur,Khed Shivapur B.O,Haveli,Pune,Maharashtra,412205","Area":"SHIVAPUR","DISTNAME":"PUNE","DISTLGDCODE":490,"SampleCollection":"N","AppointmentDate":"2026-05-05","IsAppointmentDone":"Y","ArId":3,"Assi
+I/Quality (20405): Skipped: false 1 cost 19.627436 refreshRate 16666666 bit true processName com.s2t.operational
+I/flutter (20405): {"status":"Success","message":"Login Successfully","output":[{"ID":10169,"EmpCode":10169,"SUBORGWISEDESGID":211,"SubOrgId":3,"SubOrgName":"HSCC(INDIA)LIMITED","OrgId":1,"OrgName":"HSCC(INDIA)LIMITED","ProjectId":"0","ProjectName":"NA","USERNAME":"7028337362","name":"Aditya  Vilas Barbole","FirstName":"Aditya ","MiddleName":"Vilas","LastName":"Barbole","SpouseName":"NA","Children":0,"MotherName":"NA","FatherName":"NA","VoterId":"NA","per_email":"barboleaditya8@gmail.com","per_mobile":"7028337362","PAddress":"NA","CAddress":"HADPSAR","dob":"1999-12-23","AGE":26,"Aadhar":"NA","pancard":"NA","ImagePath":"https://newtesting.myhindlab.com/MCWWBDOCS_LIVE/ProfilePhoto/10169/http://beta.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/Default/Default.png","joiningdate":"2024-07-26","bloodgroup":null,"BLOODID":null,"EDUCDTLID":0,"edu":"NA","universityname":"NA","qualification":"NA","QUALID":null,"EDTYPEID":null,"UNIVID":null,"yearofpassing":0,"percentage":0,"cast":"NA","religion":"NA","ReligionId":null,"category":"NA","M
+I/flutter (20405): user Data Not null
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/GetConfirmatoryTestsScreeningAppointmentDetails_V2
+I/flutter (20405): {"status":"Success","message":"Beneficiary Data","output":[{"T2T_Order_Id":656776,"TreatmentID":3227353,"RegdNo":"131160008659","BeneficiaryName":"Vasant Shripati Wavhal","PatAge":78,"Gender":"Male","MobileNo":"9767448023","RelationWithWorker":"Father in law","TubeId":2,"TubName":"Plain/Gel Tube","TubCount":1,"TubColor":"Red Top/Yellow Top","WorkersMob":"9767448023","AlternateMobNo":""}]}
+I/flutter (20405): {status: Success, message: Beneficiary Data, output: [{T2T_Order_Id: 656776, TreatmentID: 3227353, RegdNo: 131160008659, BeneficiaryName: Vasant Shripati Wavhal, PatAge: 78, Gender: Male, MobileNo: 9767448023, RelationWithWorker: Father in law, TubeId: 2, TubName: Plain/Gel Tube, TubCount: 1, TubColor: Red Top/Yellow Top, WorkersMob: 9767448023, AlternateMobNo: }]}
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/Get_T2T_CT_AssignmentRemarks
+I/flutter (20405): {"status":"Success","message":"Assignment Remarks","output":[{"ArId":1,"AssignmentRemarks":"Sample Collected"},{"ArId":4,"AssignmentRemarks":"Not Interested In CT"},{"ArId":6,"AssignmentRemarks":"Not Available For CT"}]}
+I/flutter (20405): {status: Success, message: Assignment Remarks, output: [{ArId: 1, AssignmentRemarks: Sample Collected}, {ArId: 4, AssignmentRemarks: Not Interested In CT}, {ArId: 6, AssignmentRemarks: Not Available For CT}]}
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/GetConfirmatoryTestsScreeningAppointmentDetails_V2
+I/flutter (20405): {"status":"Success","message":"Beneficiary Data","output":[{"T2T_Order_Id":656776,"TreatmentID":3227353,"RegdNo":"131160008659","Teamid":0,"BeneficiaryName":"Vasant Shripati Wavhal","PatAge":78,"Gender":"Male","MobileNo":"9767448023","RelationWithWorker":"Father in law","ServiceCode":1209,"CatCode":1,"ServiceName":"Serum Iron","CatName":"Biochemistry ","AppointmentDate":"2026-05-05","IsAppointmentDone":"Y","LabName":null,"Labcode":0,"SampleQuantity(ml)":"2 mL Serum","WorkersMob":"9767448023","AlternateMobNo":""},{"T2T_Order_Id":656773,"TreatmentID":3227350,"RegdNo":"131160008659","Teamid":0,"BeneficiaryName":"Sindhutai Vasant Wavhal","PatAge":76,"Gender":"Female","MobileNo":"9767448023","RelationWithWorker":"Mother in law","ServiceCode":1779,"CatCode":1,"ServiceName":"Lipid Profile","CatName":"Biochemistry ","AppointmentDate":"2026-05-05","IsAppointmentDone":"Y","LabName":null,"Labcode":0,"SampleQuantity(ml)":"2 mL Serum","WorkersMob":"9767448023","AlternateMobNo":""},{"T2T_Order_Id":656773,"TreatmentID":322
+I/flutter (20405): {status: Success, message: Beneficiary Data, output: [{T2T_Order_Id: 656776, TreatmentID: 3227353, RegdNo: 131160008659, Teamid: 0, BeneficiaryName: Vasant Shripati Wavhal, PatAge: 78, Gender: Male, MobileNo: 9767448023, RelationWithWorker: Father in law, ServiceCode: 1209, CatCode: 1, ServiceName: Serum Iron, CatName: Biochemistry , AppointmentDate: 2026-05-05, IsAppointmentDone: Y, LabName: null, Labcode: 0, SampleQuantity(ml): 2 mL Serum, WorkersMob: 9767448023, AlternateMobNo: }, {T2T_Order_Id: 656773, TreatmentID: 3227350, RegdNo: 131160008659, Teamid: 0, BeneficiaryName: Sindhutai Vasant Wavhal, PatAge: 76, Gender: Female, MobileNo: 9767448023, RelationWithWorker: Mother in law, ServiceCode: 1779, CatCode: 1, ServiceName: Lipid Profile, CatName: Biochemistry , AppointmentDate: 2026-05-05, IsAppointmentDone: Y, LabName: null, Labcode: 0, SampleQuantity(ml): 2 mL Serum, WorkersMob: 9767448023, AlternateMobNo: }, {T2T_Order_Id: 656773, TreatmentID: 3227350, RegdNo: 131160008659, Teamid: 0, BeneficiaryName
+I/flutter (20405): All APIs Completed!
+I/flutter (20405): {"status":"Success","message":"Login Successfully","output":[{"ID":10169,"EmpCode":10169,"SUBORGWISEDESGID":211,"SubOrgId":3,"SubOrgName":"HSCC(INDIA)LIMITED","OrgId":1,"OrgName":"HSCC(INDIA)LIMITED","ProjectId":"0","ProjectName":"NA","USERNAME":"7028337362","name":"Aditya  Vilas Barbole","FirstName":"Aditya ","MiddleName":"Vilas","LastName":"Barbole","SpouseName":"NA","Children":0,"MotherName":"NA","FatherName":"NA","VoterId":"NA","per_email":"barboleaditya8@gmail.com","per_mobile":"7028337362","PAddress":"NA","CAddress":"HADPSAR","dob":"1999-12-23","AGE":26,"Aadhar":"NA","pancard":"NA","ImagePath":"https://newtesting.myhindlab.com/MCWWBDOCS_LIVE/ProfilePhoto/10169/http://beta.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/Default/Default.png","joiningdate":"2024-07-26","bloodgroup":null,"BLOODID":null,"EDUCDTLID":0,"edu":"NA","universityname":"NA","qualification":"NA","QUALID":null,"EDTYPEID":null,"UNIVID":null,"yearofpassing":0,"percentage":0,"cast":"NA","religion":"NA","ReligionId":null,"category":"NA","M
+I/flutter (20405): user Data Not null
+I/Quality (20405): Skipped: false 1 cost 23.04982 refreshRate 16865324 bit true processName com.s2t.operational
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/InsertOTPForCTSampleCollection_Option
+I/flutter (20405): {MOBNO: 9371023232, OTP: 56329, RegdId: 656776, CreatedBy: 10169, MsgID: 1, SubOrgID: 3, Option: 1}
+I/flutter (20405): {"status":"Success","message":"OTP Generated Successfully."}
+D/WindowManager(20405): Add to mViews: android.widget.FrameLayout{d1f3998 V.E...... ......I. 0,0-0,0},pkg= com.s2t.operational
+D/ViewRootImplExtImpl(20405): onDisplayChanged -1 for VRI android.view.ViewRootImpl@b9b8057
+D/InputEventReceiver(20405): Input log is disabled
+I/Quality (20405): Skipped: false 5 cost 89.79211 refreshRate 16892243 bit true processName com.s2t.operational
+D/BufferQueueConsumer(20405): [](id:4fb50000000c,api:0,p:-1,c:20405) connect: controlledByApp=false
+E/IPCThreadState(20405): attemptIncStrongHandle(90): Not supported
+D/BufferQueueProducer(20405): [VRI[Toast]#12(BLAST Consumer)12](id:4fb50000000c,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+D/VRI[Toast](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+W/Parcel  (20405): Expecting binder but got null!
+D/VRI[Toast](20405): draw finished.
+I/Quality (20405): Skipped: false 1 cost 23.997343 refreshRate 16879124 bit true processName com.s2t.operational
+D/VRI[Toast](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=false syncBuffer=false
+D/VRI[Toast](20405): draw finished.
+I/Quality (20405): Skipped: false 2 cost 47.458076 refreshRate 16666666 bit true processName com.s2t.operational
+D/InputMethodManager(20405): showSoftInput() view=io.flutter.embedding.android.FlutterView{4014710 VFE...... .F....ID 0,0-1080,2352 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/Quality (20405): Skipped: false 1 cost 25.615353 refreshRate 16865228 bit true processName com.s2t.operational
+I/AssistStructure(20405): Flattened final assist data: 452 bytes, containing 1 windows, 3 views
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring on
+D/InsetsController(20405): show(ime(), fromIme=true)
+I/Quality (20405): Skipped: true 10 cost 175.46693 refreshRate 16881097 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 10 cost 185.22746 refreshRate 16865918 bit true processName com.s2t.operational
+D/OplusScrollToTopManager(20405): unregisterGuidePopupDismissReceiverInSystemUI
+D/OplusScrollToTopManager(20405): Receiver not registered: android.view.OplusScrollToTopManager$1@510234f
+D/OplusScrollToTopManager(20405): unregisterSystemUIBroadcastReceiver
+D/OplusScrollToTopManager(20405): java.lang.IllegalArgumentException: Receiver not registered: android.view.OplusScrollToTopManager$2@bb4adc
+V/ZoomWindowDecorView(20405): removeZoomView
+D/BufferQueueProducer(20405): [VRI[Toast]#12(BLAST Consumer)12](id:4fb50000000c,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueConsumer(20405): [VRI[Toast]#12(BLAST Consumer)12](id:4fb50000000c,api:0,p:-1,c:20405) disconnect
+I/Quality (20405): Skipped: false 13 cost 234.35332 refreshRate 16868608 bit true processName com.s2t.operational
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/VerifyCTOTP
+I/flutter (20405): {MobNo: 9371023232, Otp: 56329}
+I/flutter (20405): {"status":"Success","message":"OTP Verified"}
+D/WindowManager(20405): Add to mViews: android.widget.FrameLayout{2ee22ba V.E...... ......I. 0,0-0,0},pkg= com.s2t.operational
+D/ViewRootImplExtImpl(20405): onDisplayChanged -1 for VRI android.view.ViewRootImpl@fb54d61
+D/InputEventReceiver(20405): Input log is disabled
+I/Quality (20405): Skipped: false 8 cost 138.51099 refreshRate 16666666 bit true processName com.s2t.operational
+D/BufferQueueConsumer(20405): [](id:4fb50000000d,api:0,p:-1,c:20405) connect: controlledByApp=false
+E/IPCThreadState(20405): attemptIncStrongHandle(92): Not supported
+D/BufferQueueProducer(20405): [VRI[Toast]#13(BLAST Consumer)13](id:4fb50000000d,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+D/VRI[Toast](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+W/Parcel  (20405): Expecting binder but got null!
+D/VRI[Toast](20405): draw finished.
+I/Quality (20405): Skipped: false 1 cost 33.047615 refreshRate 16865114 bit true processName com.s2t.operational
+D/VRI[Toast](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=false syncBuffer=false
+D/VRI[Toast](20405): draw finished.
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring off
+I/Quality (20405): Skipped: true 8 cost 144.79434 refreshRate 16867350 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 12 cost 207.3587 refreshRate 16874251 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: false 10 cost 170.54337 refreshRate 16866239 bit true processName com.s2t.operational
+D/OplusScrollToTopManager(20405): unregisterGuidePopupDismissReceiverInSystemUI
+D/OplusScrollToTopManager(20405): Receiver not registered: android.view.OplusScrollToTopManager$1@91f56e3
+D/OplusScrollToTopManager(20405): unregisterSystemUIBroadcastReceiver
+D/OplusScrollToTopManager(20405): java.lang.IllegalArgumentException: Receiver not registered: android.view.OplusScrollToTopManager$2@56358e0
+V/ZoomWindowDecorView(20405): removeZoomView
+D/BufferQueueProducer(20405): [VRI[Toast]#13(BLAST Consumer)13](id:4fb50000000d,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueConsumer(20405): [VRI[Toast]#13(BLAST Consumer)13](id:4fb50000000d,api:0,p:-1,c:20405) disconnect
+D/InputMethodManager(20405): showSoftInput() view=io.flutter.embedding.android.FlutterView{4014710 VFE...... .F...... 0,0-1080,2352 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/AssistStructure(20405): Flattened final assist data: 476 bytes, containing 1 windows, 3 views
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring on
+D/InsetsController(20405): show(ime(), fromIme=true)
+I/Quality (20405): Skipped: true 6 cost 115.28457 refreshRate 16868119 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 8 cost 140.99767 refreshRate 16869060 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: false 10 cost 169.22006 refreshRate 16869134 bit true processName com.s2t.operational
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring off
+I/Quality (20405): Skipped: true 7 cost 119.73387 refreshRate 16876084 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 5 cost 97.31023 refreshRate 16875358 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 7 cost 122.6046 refreshRate 16874099 bit true processName com.s2t.operational
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/d2d_V2.asmx/GetT2TLabDetails
+I/flutter (20405): {DISTLGDCODE: 490}
+I/flutter (20405): {"status":"Success","message":"T2T Lab Data","output":[{"LabCode":10,"DISTLGDCODE":490,"LabName":"Manchar"},{"LabCode":29,"DISTLGDCODE":490,"LabName":"Pune"},{"LabCode":39,"DISTLGDCODE":490,"LabName":"Indapur"},{"LabCode":72,"DISTLGDCODE":490,"LabName":"Baramati"},{"LabCode":110,"DISTLGDCODE":490,"LabName":"Shirur"},{"LabCode":119,"DISTLGDCODE":490,"LabName":"Wadgaon/Kamshet"},{"LabCode":144,"DISTLGDCODE":490,"LabName":"PAUD"},{"LabCode":145,"DISTLGDCODE":490,"LabName":"JUNNAR"},{"LabCode":146,"DISTLGDCODE":490,"LabName":"RAJGURNAGAR"},{"LabCode":161,"DISTLGDCODE":490,"LabName":"SWARGATE"},{"LabCode":173,"DISTLGDCODE":490,"LabName":"Bavdhan"}]}
+I/Quality (20405): Skipped: false 1 cost 23.267591 refreshRate 16666666 bit true processName com.s2t.operational
+D/InputMethodManager(20405): showSoftInput() view=io.flutter.embedding.android.FlutterView{4014710 VFE...... .F...... 0,0-1080,2352 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring on
+D/InsetsController(20405): show(ime(), fromIme=true)
+I/Quality (20405): Skipped: true 6 cost 113.4153 refreshRate 16876223 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 7 cost 127.29234 refreshRate 16876715 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: false 8 cost 140.04546 refreshRate 16875166 bit true processName com.s2t.operational
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring off
+I/Quality (20405): Skipped: true 7 cost 121.62798 refreshRate 16871085 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 7 cost 122.737854 refreshRate 16879002 bit true processName com.s2t.operational
+D/InputMethodManager(20405): showSoftInput() view=io.flutter.embedding.android.FlutterView{4014710 VFE...... .F...... 0,0-1080,2352 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/AssistStructure(20405): Flattened final assist data: 472 bytes, containing 1 windows, 3 views
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring on
+D/InsetsController(20405): show(ime(), fromIme=true)
+I/Quality (20405): Skipped: true 6 cost 110.7477 refreshRate 16876002 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 5 cost 97.31968 refreshRate 16876184 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 6 cost 112.28849 refreshRate 16876773 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: false 6 cost 108.44853 refreshRate 16879827 bit true processName com.s2t.operational
+D/VRI[MainActivity](20405): onFocusEvent false
+D/InputConnectionAdaptor(20405): The input method toggled cursor monitoring off
+D/VRI[MainActivity](20405): dispatchAppVisibility visible:false
+I/SurfaceView(20405): 37639519 surfaceDestroyed
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#10(BLAST Consumer)10](id:4fb50000000a,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#10(BLAST Consumer)10](id:4fb50000000a,api:0,p:-1,c:20405) disconnect: api -1
+D/BufferQueueConsumer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#10(BLAST Consumer)10](id:4fb50000000a,api:0,p:-1,c:20405) disconnect
+D/SurfaceView(20405): 264294376positionLost mSurfaceControl is null return;
+D/BufferQueueProducer(20405): [VRI[MainActivity]#9(BLAST Consumer)9](id:4fb500000009,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueConsumer(20405): [VRI[MainActivity]#9(BLAST Consumer)9](id:4fb500000009,api:0,p:-1,c:20405) disconnect
+D/VRI[MainActivity](20405): setWindowStopped stopped:true
+D/ViewRootImplExtImpl(20405): onDisplayChanged 0 for VRI android.view.ViewRootImpl@4b862d9
+D/ViewRootImplExtImpl(20405): onDisplayChanged 0 for VRI android.view.ViewRootImpl@4b862d9
+D/ViewRootImplExtImpl(20405): onDisplayChanged 0 for VRI android.view.ViewRootImpl@4b862d9
+D/VRI[MainActivity](20405): dispatchAppVisibility visible:true
+D/VRI[MainActivity](20405): setWindowStopped stopped:false
+D/BufferQueueConsumer(20405): [](id:4fb50000000e,api:0,p:-1,c:20405) connect: controlledByApp=false
+E/IPCThreadState(20405): attemptIncStrongHandle(96): Not supported
+E/IPCThreadState(20405): attemptIncStrongHandle(66): Not supported
+D/BufferQueueProducer(20405): [VRI[MainActivity]#14(BLAST Consumer)14](id:4fb50000000e,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+D/BufferQueueConsumer(20405): [](id:4fb50000000f,api:0,p:-1,c:20405) connect: controlledByApp=false
+I/SurfaceView(20405): 37639519 visibleChanged -- surfaceCreated
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#15(BLAST Consumer)15](id:4fb50000000f,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+E/qdgralloc(20405): GetGpuPixelFormat: No map for format: 0x38
+E/AdrenoUtils(20405): <validate_memory_layout_input_parmas:1984>: Unknown Format 0
+E/AdrenoUtils(20405): <adreno_init_memory_layout:4723>: Memory Layout input parameter validation failed!
+E/qdgralloc(20405): GetGpuResourceSizeAndDimensions Graphics metadata init failed
+E/Gralloc4(20405): isSupported(1, 1, 56, 1, ...) failed with 1
+E/GraphicBufferAllocator(20405): Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 1
+E/AHardwareBuffer(20405): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+E/qdgralloc(20405): GetGpuPixelFormat: No map for format: 0x38
+E/AdrenoUtils(20405): <validate_memory_layout_input_parmas:1984>: Unknown Format 0
+E/AdrenoUtils(20405): <adreno_init_memory_layout:4723>: Memory Layout input parameter validation failed!
+E/qdgralloc(20405): GetGpuResourceSizeAndDimensions Graphics metadata init failed
+E/Gralloc4(20405): isSupported(1, 1, 56, 1, ...) failed with 1
+E/GraphicBufferAllocator(20405): Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 1
+E/AHardwareBuffer(20405): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#15(BLAST Consumer)15](id:4fb50000000f,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#15(BLAST Consumer)15](id:4fb50000000f,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+I/SurfaceView(20405): 37639519 surfaceChanged -- format=4 w=1080 h=2352
+D/VRI[MainActivity](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[MainActivity](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+I/Quality (20405): Skipped: false 4 cost 49.558174 refreshRate 11261353 bit true processName com.s2t.operational
+D/MediaScannerConnection(20405): Scanned /data/user/0/com.s2t.operational/cache/1e91a64d-8ebf-49d0-84c1-b6100f6538f8526944583718879563.jpg to null
+D/VRI[MainActivity](20405): draw finished.
+D/VRI[MainActivity](20405): onFocusEvent true
+I/Quality (20405): Skipped: false 14 cost 158.72058 refreshRate 11244855 bit true processName com.s2t.operational
+D/VRI[MainActivity](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[MainActivity](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=true syncBuffer=false
+D/VRI[MainActivity](20405): draw finished.
+I/Quality (20405): Skipped: false 3 cost 41.20036 refreshRate 11253006 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 3 cost 34.712303 refreshRate 11253115 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 5 cost 57.695324 refreshRate 11252880 bit true processName com.s2t.operational
+D/ViewRootImplExtImpl(20405): onDisplayChanged 0 for VRI android.view.ViewRootImpl@4b862d9
+D/VRI[MainActivity](20405): onFocusEvent false
+D/VRI[MainActivity](20405): dispatchAppVisibility visible:false
+I/SurfaceView(20405): 37639519 surfaceDestroyed
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#15(BLAST Consumer)15](id:4fb50000000f,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#15(BLAST Consumer)15](id:4fb50000000f,api:0,p:-1,c:20405) disconnect: api -1
+D/BufferQueueConsumer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#15(BLAST Consumer)15](id:4fb50000000f,api:0,p:-1,c:20405) disconnect
+D/SurfaceView(20405): 100284612positionLost mSurfaceControl is null return;
+D/BufferQueueProducer(20405): [VRI[MainActivity]#14(BLAST Consumer)14](id:4fb50000000e,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueConsumer(20405): [VRI[MainActivity]#14(BLAST Consumer)14](id:4fb50000000e,api:0,p:-1,c:20405) disconnect
+D/VRI[MainActivity](20405): setWindowStopped stopped:true
+D/ViewRootImplExtImpl(20405): onDisplayChanged 0 for VRI android.view.ViewRootImpl@4b862d9
+D/VRI[MainActivity](20405): dispatchAppVisibility visible:true
+D/VRI[MainActivity](20405): setWindowStopped stopped:false
+D/BufferQueueConsumer(20405): [](id:4fb500000010,api:0,p:-1,c:20405) connect: controlledByApp=false
+E/IPCThreadState(20405): attemptIncStrongHandle(60): Not supported
+E/IPCThreadState(20405): attemptIncStrongHandle(76): Not supported
+D/BufferQueueProducer(20405): [VRI[MainActivity]#16(BLAST Consumer)16](id:4fb500000010,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+D/BufferQueueConsumer(20405): [](id:4fb500000011,api:0,p:-1,c:20405) connect: controlledByApp=false
+I/SurfaceView(20405): 37639519 visibleChanged -- surfaceCreated
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#17(BLAST Consumer)17](id:4fb500000011,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+E/qdgralloc(20405): GetGpuPixelFormat: No map for format: 0x38
+E/AdrenoUtils(20405): <validate_memory_layout_input_parmas:1984>: Unknown Format 0
+E/AdrenoUtils(20405): <adreno_init_memory_layout:4723>: Memory Layout input parameter validation failed!
+E/qdgralloc(20405): GetGpuResourceSizeAndDimensions Graphics metadata init failed
+E/Gralloc4(20405): isSupported(1, 1, 56, 1, ...) failed with 1
+E/GraphicBufferAllocator(20405): Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 1
+E/AHardwareBuffer(20405): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+E/qdgralloc(20405): GetGpuPixelFormat: No map for format: 0x38
+E/AdrenoUtils(20405): <validate_memory_layout_input_parmas:1984>: Unknown Format 0
+E/AdrenoUtils(20405): <adreno_init_memory_layout:4723>: Memory Layout input parameter validation failed!
+E/qdgralloc(20405): GetGpuResourceSizeAndDimensions Graphics metadata init failed
+E/Gralloc4(20405): isSupported(1, 1, 56, 1, ...) failed with 1
+E/GraphicBufferAllocator(20405): Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 1
+E/AHardwareBuffer(20405): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#17(BLAST Consumer)17](id:4fb500000011,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueProducer(20405): [SurfaceView[com.s2t.operational/com.example.s2toperational.MainActivity]#17(BLAST Consumer)17](id:4fb500000011,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+D/MediaScannerConnection(20405): Scanned /data/user/0/com.s2t.operational/cache/1166a289-8b92-4dbc-b158-fa3787d110618273388910009609317.jpg to null
+I/SurfaceView(20405): 37639519 surfaceChanged -- format=4 w=1080 h=2352
+D/VRI[MainActivity](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[MainActivity](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+I/Quality (20405): Skipped: false 3 cost 43.835968 refreshRate 11256371 bit true processName com.s2t.operational
+D/VRI[MainActivity](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[MainActivity](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=true syncBuffer=false
+D/VRI[MainActivity](20405): draw finished.
+D/VRI[MainActivity](20405): draw finished.
+I/Quality (20405): Skipped: true 7 cost 82.554306 refreshRate 11257182 bit true processName com.s2t.operational
+D/VRI[MainActivity](20405): onFocusEvent true
+I/Quality (20405): Skipped: false 2 cost 24.418491 refreshRate 11247460 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 2 cost 32.363987 refreshRate 11245737 bit true processName com.s2t.operational
+I/Quality (20405): Skipped: true 3 cost 37.254597 refreshRate 11248020 bit true processName com.s2t.operational
+D/ViewRootImplExtImpl(20405): onDisplayChanged 0 for VRI android.view.ViewRootImpl@4b862d9
+I/Quality (20405): Skipped: true 1 cost 19.913397 refreshRate 16666666 bit true processName com.s2t.operational
+I/flutter (20405): https://newtesting.myhindlab.com/webservices/handler/CW_T2TBarcodeCollectionDetails_Consent_V1.ashx
+I/flutter (20405): {Regdno: 131160008659, Barcode: 28287158965858, Labcode: 29, Samplecount: 1, USERID: 10169, ArId: 1, T2T_Order_Id: 656776, TreatmentID: 3227353}
+I/flutter (20405): {"status":"fail","message":"Camp uploadation failed!"}
+D/WindowManager(20405): Add to mViews: android.widget.FrameLayout{7f72c92 V.E...... ......I. 0,0-0,0},pkg= com.s2t.operational
+D/ViewRootImplExtImpl(20405): onDisplayChanged -1 for VRI android.view.ViewRootImpl@cbe319
+D/InputEventReceiver(20405): Input log is disabled
+D/BufferQueueConsumer(20405): [](id:4fb500000012,api:0,p:-1,c:20405) connect: controlledByApp=false
+E/IPCThreadState(20405): attemptIncStrongHandle(73): Not supported
+D/BufferQueueProducer(20405): [VRI[Toast]#18(BLAST Consumer)18](id:4fb500000012,api:1,p:20405,c:20405) connect: api=1 producerControlledByApp=true
+D/VRI[Toast](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+W/Parcel  (20405): Expecting binder but got null!
+D/VRI[Toast](20405): draw finished.
+D/VRI[Toast](20405): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast](20405): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=false syncBuffer=false
+D/VRI[Toast](20405): draw finished.
+D/OplusScrollToTopManager(20405): unregisterGuidePopupDismissReceiverInSystemUI
+D/OplusScrollToTopManager(20405): Receiver not registered: android.view.OplusScrollToTopManager$1@a2e97d5
+D/OplusScrollToTopManager(20405): unregisterSystemUIBroadcastReceiver
+D/OplusScrollToTopManager(20405): java.lang.IllegalArgumentException: Receiver not registered: android.view.OplusScrollToTopManager$2@bd7bbea
+V/ZoomWindowDecorView(20405): removeZoomView
+D/BufferQueueProducer(20405): [VRI[Toast]#18(BLAST Consumer)18](id:4fb500000012,api:1,p:20405,c:20405) disconnect: api 1
+D/BufferQueueConsumer(20405): [VRI[Toast]#18(BLAST Consumer)18](id:4fb500000012,api:0,p:-1,c:20405) disconnect
+I/Quality (20405): Skipped: false 1 cost 30.339176 refreshRate 16889797 bit true processName com.s2t.operational

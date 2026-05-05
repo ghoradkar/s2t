@@ -34,6 +34,7 @@ class APIConstants {
   static String kGetInitiatedByListForCamp = "GetInitiatedByListForCamp";
   static String kGetAllTalukaList = "GetAllTalukaList";
   static String kGetLabDistrictWiseV1 = "GetLabDistrictWise_V1";
+  static String kGetT2TLabDetails = "GetT2TLabDetails";
   static String kGetHomeAndHubLabNamesOfLandingLab =
       "GetHomeAndHubLabNamesOfLandingLab";
   static String kTestList = "getTestList";
@@ -292,6 +293,8 @@ class APIConstants {
   static String kBindMedicineDeliveryStatus = "BindMedicineDeliveryStatus";
   static String kBindMedicineDeliveryRemark = "BindMedicineDeliveryRemark";
   static String kGetMobileNoCTandMDOTP = "GetMobileNoCTandMDOTP";
+  static String kInsertOTPForCTSampleCollection = "InsertOTPForCTSampleCollection_Option";
+  static String kVerifyCTOTP = "VerifyCTOTP";
   static String kGetFaceDetectionFlag = "GetFaceDetectionFlag";
 
   static String kGetDistrictByUserID = "GetDistrictByUserID";
@@ -314,6 +317,10 @@ class APIConstants {
   static String kGetT2TCTUserDetails = "GetT2T_CT_UserDetails";
   static String kGetConfirmatoryTestsScreeningAppointmentDetailsV1 =
       "GetConfirmatoryTestsScreeningAppointmentDetails_V1";
+  static String kGetConfirmatoryTestsScreeningAppointmentDetailsV2 =
+      "GetConfirmatoryTestsScreeningAppointmentDetails_V2";
+  static String kUpdateT2TCTAppointmentDate =
+      "UpdateT2T_CT_AppointmentDate_V2";
 
   static String kInsertT2TCTTeamandBeneficiaryMapping =
       "Insert_T2T_CT_TeamandBeneficiaryMapping";

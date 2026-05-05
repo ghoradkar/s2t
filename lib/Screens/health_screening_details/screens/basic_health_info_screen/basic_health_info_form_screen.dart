@@ -138,92 +138,94 @@ class _ExpandableCardState extends State<_ExpandableCard>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 12.h),
-      child: Container(
-        decoration: BoxDecoration(
-          color: kWhiteColor,
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            GestureDetector(
-              onTap: _toggle,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius:
-                      _expanded
-                          ? BorderRadius.only(
-                            topLeft: Radius.circular(12.r),
-                            topRight: Radius.circular(12.r),
-                          )
-                          : BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    if (widget.icon != null) ...[
-                      Icon(
-                        widget.icon,
-                        color: kWhiteColor.withValues(alpha: 0.85),
-                        size: 18.r,
-                      ),
-                      SizedBox(width: 8.w),
-                    ],
-                    Expanded(
-                      child: Text(
-                        widget.title,
-                        style: TextStyle(
-                          color: kWhiteColor,
-                          fontFamily: FontConstants.interFonts,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
-                          letterSpacing: 0.3,
+    return NetworkWrapper(
+      child: Padding(
+        padding: EdgeInsets.only(top: 12.h),
+        child: Container(
+          decoration: BoxDecoration(
+            color: kWhiteColor,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              GestureDetector(
+                onTap: _toggle,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius:
+                        _expanded
+                            ? BorderRadius.only(
+                              topLeft: Radius.circular(12.r),
+                              topRight: Radius.circular(12.r),
+                            )
+                            : BorderRadius.circular(12.r),
+                  ),
+                  child: Row(
+                    children: [
+                      if (widget.icon != null) ...[
+                        Icon(
+                          widget.icon,
+                          color: kWhiteColor.withValues(alpha: 0.85),
+                          size: 18.r,
+                        ),
+                        SizedBox(width: 8.w),
+                      ],
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          style: TextStyle(
+                            color: kWhiteColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
-                    ),
-                    AnimatedBuilder(
-                      animation: _rotateAnim,
-                      builder:
-                          (_, child) => Transform.rotate(
-                            angle: _rotateAnim.value * math.pi,
-                            child: child,
-                          ),
-                      child: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: kWhiteColor,
-                        size: 22.r,
+                      AnimatedBuilder(
+                        animation: _rotateAnim,
+                        builder:
+                            (_, child) => Transform.rotate(
+                              angle: _rotateAnim.value * math.pi,
+                              child: child,
+                            ),
+                        child: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: kWhiteColor,
+                          size: 22.r,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // Content
-            AnimatedCrossFade(
-              duration: const Duration(milliseconds: 200),
-              crossFadeState:
-                  _expanded
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-              firstChild: Padding(
-                padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 14.h),
-                child: widget.content,
+              // Content
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 200),
+                crossFadeState:
+                    _expanded
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                firstChild: Padding(
+                  padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 14.h),
+                  child: widget.content,
+                ),
+                secondChild: const SizedBox.shrink(),
               ),
-              secondChild: const SizedBox.shrink(),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

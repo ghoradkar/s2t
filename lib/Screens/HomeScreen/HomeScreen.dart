@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/Json_Class/AdminDashboard/ConductedCampsT
 import 'package:s2toperational/Modules/Json_Class/AdminDashboard/TodaysPatientsResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/AdminDashboardWidget.dart';
@@ -18,13 +19,13 @@ import 'package:s2toperational/Screens/calling_modules/controllers/expected_bene
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
 import 'package:s2toperational/Screens/D2DAvailability/D2DAvailabilityScreen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
-import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketAllocation/view/PacketAllocationScreen.dart';
-import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketCollection/view/PacketCollectionScreen.dart';
-import 'package:s2toperational/Screens/MedicineDeliveryMenu/PacketReceive/view/PacketReceiveScreen.dart';
-import 'package:s2toperational/Screens/MedicineDeliveryMenu/medicine_delivery_dash.dart';
 import 'package:s2toperational/Screens/camp_calendar/screen/CampCalendarScreen.dart';
 import 'package:s2toperational/Screens/d2d_teams/screen/D2DTeamsScreen.dart';
 import 'package:s2toperational/Screens/liver_scanning/screen/LiverScanningScreen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/PacketAllocation/view/PacketAllocationScreen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/PacketCollection/view/PacketCollectionScreen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/PacketReceive/view/PacketReceiveScreen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery_dash.dart';
 import 'package:s2toperational/Screens/s2t_patient_app/screen/S2TPatientAppScreen.dart';
 import 'package:s2toperational/Screens/super_admin/controller/super_admin_controller.dart';
 import 'package:s2toperational/Screens/super_admin/screens/super_admin_dashboard.dart';
@@ -49,6 +50,7 @@ import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
 import '../ExpenseClaimScreen/ExpenseClaimDashboardScreen.dart';
 import '../ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampListScreen.dart';
 import '../SideDrawerMenu/SideDrawerMenu.dart';
+import '../AppointmentSampleCollectionCT/screens/ct_appointment_list_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_d2d_screen/camp_for_health_screening_d2d_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_screen/camp_for_health_screening_screen.dart';
 import '../payment_and_invoice/screens/payment_invoice_segment_screen.dart';
@@ -457,6 +459,8 @@ class _HomeScreenState extends State<HomeScreen> {
       isShowRadioCamp = true;
       // topHeight = 200;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
+      menuList.add(DashboardMenu.AppointmentAndSampleCollectionOfCT);
+      menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 173 || dESGID == 172) {
       isShowRadioCamp = true;
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
@@ -542,6 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void pushToNextScreen(DashboardMenu dashboardMenu) {
     switch (dashboardMenu) {
+      
       case DashboardMenu.CampCalendar:
         Navigator.push(
           context,
@@ -770,6 +775,12 @@ class _HomeScreenState extends State<HomeScreen> {
       case DashboardMenu.MedicineReturn:
         break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CTAppointmentListScreen(),
+          ),
+        );
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         Navigator.push(

@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import '../../../../Modules/Enums/Enums.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
@@ -52,28 +53,30 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
     final controller = Get.put(HealthScreeningDetailsController());
     SizeConfig().init(context);
 
-    return Scaffold(
-      appBar: mAppBar(
-        scTitle: 'Health Screening',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: Obx(
-        () => GridView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 18,
-            mainAxisSpacing: 18,
+    return NetworkWrapper(
+      child: Scaffold(
+        appBar: mAppBar(
+          scTitle: 'Health Screening',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: Obx(
+          () => GridView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 18,
+              mainAxisSpacing: 18,
+            ),
+            itemCount: controller.menuList.length,
+            itemBuilder: (context, index) {
+              final menu = controller.menuList[index];
+              return GestureDetector(
+                onTap: () => _onMenuTap(context, menu),
+                child: HealthScreeningMenuRow(dashboardMenu: menu),
+              );
+            },
           ),
-          itemCount: controller.menuList.length,
-          itemBuilder: (context, index) {
-            final menu = controller.menuList[index];
-            return GestureDetector(
-              onTap: () => _onMenuTap(context, menu),
-              child: HealthScreeningMenuRow(dashboardMenu: menu),
-            );
-          },
         ),
       ),
     );
@@ -85,17 +88,18 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CampDetailsScreen(
-              campId: campID,
-              dISTLGDCODE: dISTLGDCODE,
-              campDate: campDate,
-              surveyCoordinatorName: surveyCoordinatorName,
-              dISTNAME: dISTNAME,
-              mOBNO: mOBNO,
-              cAMPTYPE: campType,
-              campTypeDescription: '',
-              isHealthScreeing: true,
-            ),
+            builder:
+                (_) => CampDetailsScreen(
+                  campId: campID,
+                  dISTLGDCODE: dISTLGDCODE,
+                  campDate: campDate,
+                  surveyCoordinatorName: surveyCoordinatorName,
+                  dISTNAME: dISTNAME,
+                  mOBNO: mOBNO,
+                  cAMPTYPE: campType,
+                  campTypeDescription: '',
+                  isHealthScreeing: true,
+                ),
           ),
         );
         break;
@@ -104,11 +108,12 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CampClosingScreen(
-              campID: campID,
-              campDate: campDate,
-              dISTLGDCODE: dISTLGDCODE,
-            ),
+            builder:
+                (_) => CampClosingScreen(
+                  campID: campID,
+                  campDate: campDate,
+                  dISTLGDCODE: dISTLGDCODE,
+                ),
           ),
         );
         break;
@@ -117,16 +122,17 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => HealthScreeningPatientListScreen(
-              screeningMenu: menu,
-              testId: 3,
-              teamid: 0,
-              districtID: dISTLGDCODE,
-              districtName: dISTNAME,
-              campID: campID,
-              dISTLGDCODE: dISTLGDCODE,
-              siteDetailId: siteDetailId,
-            ),
+            builder:
+                (_) => HealthScreeningPatientListScreen(
+                  screeningMenu: menu,
+                  testId: 3,
+                  teamid: 0,
+                  districtID: dISTLGDCODE,
+                  districtName: dISTNAME,
+                  campID: campID,
+                  dISTLGDCODE: dISTLGDCODE,
+                  siteDetailId: siteDetailId,
+                ),
           ),
         );
         break;
@@ -135,10 +141,11 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BasicHealthInfoPatientListScreen(
-              campID: campID,
-              siteDetailId: siteDetailId,
-            ),
+            builder:
+                (_) => BasicHealthInfoPatientListScreen(
+                  campID: campID,
+                  siteDetailId: siteDetailId,
+                ),
           ),
         );
         break;
@@ -147,16 +154,17 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => HealthScreeningPatientListScreen(
-              screeningMenu: menu,
-              testId: 7,
-              teamid: 0,
-              districtID: dISTLGDCODE,
-              districtName: dISTNAME,
-              campID: campID,
-              dISTLGDCODE: dISTLGDCODE,
-              siteDetailId: siteDetailId,
-            ),
+            builder:
+                (_) => HealthScreeningPatientListScreen(
+                  screeningMenu: menu,
+                  testId: 7,
+                  teamid: 0,
+                  districtID: dISTLGDCODE,
+                  districtName: dISTNAME,
+                  campID: campID,
+                  dISTLGDCODE: dISTLGDCODE,
+                  siteDetailId: siteDetailId,
+                ),
           ),
         );
         break;
@@ -165,16 +173,17 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => HealthScreeningPatientListScreen(
-              screeningMenu: menu,
-              testId: 11,
-              teamid: 0,
-              districtID: dISTLGDCODE,
-              districtName: dISTNAME,
-              campID: campID,
-              dISTLGDCODE: dISTLGDCODE,
-              siteDetailId: siteDetailId,
-            ),
+            builder:
+                (_) => HealthScreeningPatientListScreen(
+                  screeningMenu: menu,
+                  testId: 11,
+                  teamid: 0,
+                  districtID: dISTLGDCODE,
+                  districtName: dISTNAME,
+                  campID: campID,
+                  dISTLGDCODE: dISTLGDCODE,
+                  siteDetailId: siteDetailId,
+                ),
           ),
         );
         break;

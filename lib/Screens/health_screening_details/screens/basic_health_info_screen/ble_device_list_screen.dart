@@ -7,6 +7,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 
 class BleDeviceListScreen extends StatefulWidget {
   final String title;
@@ -71,14 +72,16 @@ class _BleDeviceListScreenState extends State<BleDeviceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: widget.title,
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: widget.title,
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 

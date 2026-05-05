@@ -14,6 +14,7 @@ import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/regular_patient_registration_controller.dart';
 
 class RegularPatientRegistrationScreen extends StatefulWidget {
@@ -36,326 +37,328 @@ class _RegularPatientRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Patient Registration',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _campBanner(),
-            SizedBox(height: 12.h),
-            _sectionTitle(Icons.badge_rounded, 'Worker Information'),
-            SizedBox(height: 8.h),
-            AppTextField(
-              controller: c.tecWorkerRegNo,
-              label: _label('Beneficiary Reg. No *'),
-              hint: '12-digit number',
-              textInputType: TextInputType.number,
-              maxLength: 12,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              onChange: c.onWorkerRegNoChanged,
-              suffixIcon: Obx(
-                () =>
-                    c.isLoadingBeneficiary.value
-                        ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                        : const Icon(Icons.search),
-              ).paddingOnly(right: 8.w),
-            ),
-            SizedBox(height: 12.h),
-            AppTextField(
-              controller: c.tecFullName,
-              label: _label('English Name *'),
-              textCapitalization: TextCapitalization.characters,
-              inputFormatters: [UpperCaseTextFormatter()],
-            ),
-            SizedBox(height: 16.h),
-            _sectionTitle(Icons.person_rounded, 'Personal Details'),
-            SizedBox(height: 8.h),
-            Obx(
-              () => Row(
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Patient Registration',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _campBanner(),
+              SizedBox(height: 12.h),
+              _sectionTitle(Icons.badge_rounded, 'Worker Information'),
+              SizedBox(height: 8.h),
+              AppTextField(
+                controller: c.tecWorkerRegNo,
+                label: _label('Beneficiary Reg. No *'),
+                hint: '12-digit number',
+                textInputType: TextInputType.number,
+                maxLength: 12,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChange: c.onWorkerRegNoChanged,
+                suffixIcon: Obx(
+                  () =>
+                      c.isLoadingBeneficiary.value
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.search),
+                ).paddingOnly(right: 8.w),
+              ),
+              SizedBox(height: 12.h),
+              AppTextField(
+                controller: c.tecFullName,
+                label: _label('English Name *'),
+                textCapitalization: TextCapitalization.characters,
+                inputFormatters: [UpperCaseTextFormatter()],
+              ),
+              SizedBox(height: 16.h),
+              _sectionTitle(Icons.person_rounded, 'Personal Details'),
+              SizedBox(height: 8.h),
+              Obx(
+                () => Row(
+                  children: [
+                    _selectionChip(
+                      label: 'Mr.',
+                      selected: c.selectedTitle.value == 'Mr.',
+                      onTap: () => c.selectedTitle.value = 'Mr.',
+                    ),
+                    SizedBox(width: 8.w),
+                    _selectionChip(
+                      label: 'Mrs.',
+                      selected: c.selectedTitle.value == 'Mrs.',
+                      onTap: () => c.selectedTitle.value = 'Mrs.',
+                    ),
+                    SizedBox(width: 8.w),
+                    _selectionChip(
+                      label: 'Ms.',
+                      selected: c.selectedTitle.value == 'Ms.',
+                      onTap: () => c.selectedTitle.value = 'Ms.',
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Obx(
+                () => Row(
+                  children: [
+                    _selectionChip(
+                      label: 'Male',
+                      icon: Icons.male,
+                      selected: c.selectedGender.value == 'M',
+                      onTap: () => c.selectedGender.value = 'M',
+                    ),
+                    SizedBox(width: 8.w),
+                    _selectionChip(
+                      label: 'Female',
+                      icon: Icons.female,
+                      selected: c.selectedGender.value == 'F',
+                      onTap: () => c.selectedGender.value = 'F',
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Row(
                 children: [
-                  _selectionChip(
-                    label: 'Mr.',
-                    selected: c.selectedTitle.value == 'Mr.',
-                    onTap: () => c.selectedTitle.value = 'Mr.',
+                  Expanded(
+                    child: AppTextField(
+                      controller: c.tecDob,
+                      label: _label('DOB (YYYY/MM/DD) *'),
+                      readOnly: true,
+                      hint: 'yyyy/mm/dd',
+                      prefixIcon: const Icon(
+                        Icons.cake_rounded,
+                        color: kPrimaryColor,
+                        size: 18,
+                      ).paddingOnly(left: 6.w),
+                      onTap: () => _pickDate(context, c.tecDob, c.onDobChanged),
+                    ),
                   ),
-                  SizedBox(width: 8.w),
-                  _selectionChip(
-                    label: 'Mrs.',
-                    selected: c.selectedTitle.value == 'Mrs.',
-                    onTap: () => c.selectedTitle.value = 'Mrs.',
-                  ),
-                  SizedBox(width: 8.w),
-                  _selectionChip(
-                    label: 'Ms.',
-                    selected: c.selectedTitle.value == 'Ms.',
-                    onTap: () => c.selectedTitle.value = 'Ms.',
+                  SizedBox(width: 10.w),
+                  SizedBox(
+                    width: 80.w,
+                    child: AppTextField(
+                      controller: c.tecAge,
+                      label: _label('Age'),
+                      readOnly: true,
+                    ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 12.h),
-            Obx(
-              () => Row(
-                children: [
-                  _selectionChip(
-                    label: 'Male',
-                    icon: Icons.male,
-                    selected: c.selectedGender.value == 'M',
-                    onTap: () => c.selectedGender.value = 'M',
-                  ),
-                  SizedBox(width: 8.w),
-                  _selectionChip(
-                    label: 'Female',
-                    icon: Icons.female,
-                    selected: c.selectedGender.value == 'F',
-                    onTap: () => c.selectedGender.value = 'F',
-                  ),
-                ],
+              SizedBox(height: 12.h),
+              AppTextField(
+                controller: c.tecMobileNo,
+                label: _label('Contact Number *'),
+                textInputType: TextInputType.phone,
+                maxLength: 10,
+                prefixIcon: const Icon(
+                  Icons.phone_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
-            ),
-            SizedBox(height: 12.h),
-            Row(
-              children: [
-                Expanded(
-                  child: AppTextField(
-                    controller: c.tecDob,
-                    label: _label('DOB (YYYY/MM/DD) *'),
-                    readOnly: true,
-                    hint: 'yyyy/mm/dd',
-                    prefixIcon: const Icon(
-                      Icons.cake_rounded,
-                      color: kPrimaryColor,
-                      size: 18,
-                    ).paddingOnly(left: 6.w),
-                    onTap: () => _pickDate(context, c.tecDob, c.onDobChanged),
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                SizedBox(
-                  width: 80.w,
-                  child: AppTextField(
-                    controller: c.tecAge,
-                    label: _label('Age'),
-                    readOnly: true,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12.h),
-            AppTextField(
-              controller: c.tecMobileNo,
-              label: _label('Contact Number *'),
-              textInputType: TextInputType.phone,
-              maxLength: 10,
-              prefixIcon: const Icon(
-                Icons.phone_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-            SizedBox(height: 12.h),
-            AppTextField(
-              controller: c.tecAadhaarNo,
-              label: _label('Aadhaar Number *'),
-              textInputType: TextInputType.number,
-              maxLength: 12,
-              prefixIcon: const Icon(
-                Icons.credit_card_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-            SizedBox(height: 16.h),
-            _sectionTitle(Icons.home_rounded, 'Address Details'),
-            SizedBox(height: 8.h),
-            AppTextField(
-              controller: c.tecPermAddr,
-              label: _label('Permanent Address'),
-              maxLines: 2,
-              minLines: 2,
-              prefixIcon: const Icon(
-                Icons.home_work_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-            ),
-            SizedBox(height: 12.h),
-            AppTextField(
-              controller: c.tecLocalAddr,
-              label: _label('Local Address *'),
-              maxLines: 2,
-              minLines: 2,
-              prefixIcon: const Icon(
-                Icons.location_city_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-            ),
-            SizedBox(height: 12.h),
-            AppTextField(
-              controller: c.tecPincode,
-              label: _label('Pin Code *'),
-              textInputType: TextInputType.number,
-              maxLength: 6,
-              prefixIcon: const Icon(
-                Icons.pin_drop_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-            SizedBox(height: 16.h),
-            _sectionTitle(Icons.credit_card_rounded, 'Health Card Details'),
-            SizedBox(height: 8.h),
-            AppTextField(
-              controller: c.tecCardRegDate,
-              label: _label('Card Registration Date'),
-              readOnly: true,
-              prefixIcon: const Icon(
-                Icons.event_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-              onTap:
-                  () => _pickDate(
-                    context,
-                    c.tecCardRegDate,
-                    c.onCardRegDateChanged,
-                  ),
-            ),
-            SizedBox(height: 12.h),
-            AppTextField(
-              controller: c.tecCardExpiry,
-              label: _label('Card Expiry Date'),
-              readOnly: true,
-              prefixIcon: const Icon(
-                Icons.event_busy_rounded,
-                color: kPrimaryColor,
-                size: 18,
-              ).paddingOnly(left: 6.w),
-              onTap:
-                  () => _pickDate(
-                    context,
-                    c.tecCardExpiry,
-                    c.onCardExpiryChanged,
-                  ),
-            ),
-            SizedBox(height: 12.h),
-            Obx(() {
-              if (!c.showRenewal.value) return const SizedBox.shrink();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange),
+              SizedBox(height: 12.h),
+              AppTextField(
+                controller: c.tecAadhaarNo,
+                label: _label('Aadhaar Number *'),
+                textInputType: TextInputType.number,
+                maxLength: 12,
+                prefixIcon: const Icon(
+                  Icons.credit_card_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              SizedBox(height: 16.h),
+              _sectionTitle(Icons.home_rounded, 'Address Details'),
+              SizedBox(height: 8.h),
+              AppTextField(
+                controller: c.tecPermAddr,
+                label: _label('Permanent Address'),
+                maxLines: 2,
+                minLines: 2,
+                prefixIcon: const Icon(
+                  Icons.home_work_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+              ),
+              SizedBox(height: 12.h),
+              AppTextField(
+                controller: c.tecLocalAddr,
+                label: _label('Local Address *'),
+                maxLines: 2,
+                minLines: 2,
+                prefixIcon: const Icon(
+                  Icons.location_city_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+              ),
+              SizedBox(height: 12.h),
+              AppTextField(
+                controller: c.tecPincode,
+                label: _label('Pin Code *'),
+                textInputType: TextInputType.number,
+                maxLength: 6,
+                prefixIcon: const Icon(
+                  Icons.pin_drop_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              SizedBox(height: 16.h),
+              _sectionTitle(Icons.credit_card_rounded, 'Health Card Details'),
+              SizedBox(height: 8.h),
+              AppTextField(
+                controller: c.tecCardRegDate,
+                label: _label('Card Registration Date'),
+                readOnly: true,
+                prefixIcon: const Icon(
+                  Icons.event_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+                onTap:
+                    () => _pickDate(
+                      context,
+                      c.tecCardRegDate,
+                      c.onCardRegDateChanged,
                     ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.info_outline, color: Colors.orange),
-                        SizedBox(width: 6.w),
-                        CommonText(
-                          text: 'Card expired. Renewal required.',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.orange,
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
+              ),
+              SizedBox(height: 12.h),
+              AppTextField(
+                controller: c.tecCardExpiry,
+                label: _label('Card Expiry Date'),
+                readOnly: true,
+                prefixIcon: const Icon(
+                  Icons.event_busy_rounded,
+                  color: kPrimaryColor,
+                  size: 18,
+                ).paddingOnly(left: 6.w),
+                onTap:
+                    () => _pickDate(
+                      context,
+                      c.tecCardExpiry,
+                      c.onCardExpiryChanged,
                     ),
-                  ),
-                  SizedBox(height: 8.h),
-                  AppTextField(
-                    controller: c.tecRenewalDate,
-                    label: _label('Card Renewal Date *'),
-                    readOnly: true,
-                    prefixIcon: const Icon(
-                      Icons.autorenew_rounded,
-                      color: kPrimaryColor,
-                      size: 18,
-                    ).paddingOnly(left: 6.w),
-                    onTap: () => _pickDate(context, c.tecRenewalDate, (_) {}),
-                  ),
-                ],
-              );
-            }),
-            SizedBox(height: 16.h),
-            _sectionTitle(Icons.photo_camera_rounded, 'Photo Upload'),
-            SizedBox(height: 6.h),
-            CommonText(
-              text: 'Upload clear photos of the following documents',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-              textColor: kLabelTextColor,
-              textAlign: TextAlign.left,
-            ),
-            SizedBox(height: 10.h),
-            Obx(
-              () => Row(
-                children: [
-                  Expanded(
-                    child: _PhotoTile(
-                      label: 'Patient Photo',
-                      icon: Icons.person_pin,
-                      localPath: c.patientPhotoPath.value,
-                      url: c.patientPhotoUrl.value,
-                      onTap: c.pickPatientPhoto,
+              ),
+              SizedBox(height: 12.h),
+              Obx(() {
+                if (!c.showRenewal.value) return const SizedBox.shrink();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8.w),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.info_outline, color: Colors.orange),
+                          SizedBox(width: 6.w),
+                          CommonText(
+                            text: 'Card expired. Renewal required.',
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.orange,
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: _PhotoTile(
-                      label: 'Health Card',
-                      icon: Icons.credit_card,
-                      localPath: c.healthCardPhotoPath.value,
-                      url: c.healthCardPhotoUrl.value,
-                      onTap: c.pickHealthCardPhoto,
+                    SizedBox(height: 8.h),
+                    AppTextField(
+                      controller: c.tecRenewalDate,
+                      label: _label('Card Renewal Date *'),
+                      readOnly: true,
+                      prefixIcon: const Icon(
+                        Icons.autorenew_rounded,
+                        color: kPrimaryColor,
+                        size: 18,
+                      ).paddingOnly(left: 6.w),
+                      onTap: () => _pickDate(context, c.tecRenewalDate, (_) {}),
                     ),
-                  ),
-                  SizedBox(width: 8.w),
-                  if (c.showRenewal.value)
+                  ],
+                );
+              }),
+              SizedBox(height: 16.h),
+              _sectionTitle(Icons.photo_camera_rounded, 'Photo Upload'),
+              SizedBox(height: 6.h),
+              CommonText(
+                text: 'Upload clear photos of the following documents',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                textColor: kLabelTextColor,
+                textAlign: TextAlign.left,
+              ),
+              SizedBox(height: 10.h),
+              Obx(
+                () => Row(
+                  children: [
                     Expanded(
                       child: _PhotoTile(
-                        label: 'Renewal Slip',
-                        icon: Icons.autorenew,
-                        localPath: c.renewalFormPath.value,
-                        url: c.renewalPhotoUrl.value,
-                        onTap: c.pickRenewalFormPhoto,
+                        label: 'Patient Photo',
+                        icon: Icons.person_pin,
+                        localPath: c.patientPhotoPath.value,
+                        url: c.patientPhotoUrl.value,
+                        onTap: c.pickPatientPhoto,
                       ),
-                    )
-                  else
-                    const Expanded(child: SizedBox.shrink()),
-                ],
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: _PhotoTile(
+                        label: 'Health Card',
+                        icon: Icons.credit_card,
+                        localPath: c.healthCardPhotoPath.value,
+                        url: c.healthCardPhotoUrl.value,
+                        onTap: c.pickHealthCardPhoto,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    if (c.showRenewal.value)
+                      Expanded(
+                        child: _PhotoTile(
+                          label: 'Renewal Slip',
+                          icon: Icons.autorenew,
+                          localPath: c.renewalFormPath.value,
+                          url: c.renewalPhotoUrl.value,
+                          onTap: c.pickRenewalFormPhoto,
+                        ),
+                      )
+                    else
+                      const Expanded(child: SizedBox.shrink()),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 18.h),
-            AppButtonWithIcon(
-              title: 'Register Patient',
-              mWidth: double.infinity,
-              mHeight: 52,
-              icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
-              onTap: () {
-                c.showConfirmationDialog(context);
-              },
-            ),
-            SizedBox(height: 20.h),
-          ],
+              SizedBox(height: 18.h),
+              AppButtonWithIcon(
+                title: 'Register Patient',
+                mWidth: double.infinity,
+                mHeight: 52,
+                icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
+                onTap: () {
+                  c.showConfirmationDialog(context);
+                },
+              ),
+              SizedBox(height: 20.h),
+            ],
+          ),
         ),
       ),
     );

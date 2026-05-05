@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/audio_screening_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
@@ -153,38 +154,40 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   // ── Build ─────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Audio Screening Test',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 24.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _patientCard(),
-            SizedBox(height: 12.h),
-            _deafnessCard(context),
-            SizedBox(height: 12.h),
-            _aftCard(context),
-            SizedBox(height: 12.h),
-            _resultsCard(),
-            SizedBox(height: 12.h),
-            _remarksCard(context),
-            SizedBox(height: 16.h),
-            Obx(() {
-              final saving = controller.isSaving.value;
-              return AppActiveButton(
-                buttontitle: saving ? 'Saving…' : 'Save',
-                onTap: () {
-                  if (!saving) controller.save(context);
-                },
-              );
-            }),
-          ],
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Audio Screening Test',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 24.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _patientCard(),
+              SizedBox(height: 12.h),
+              _deafnessCard(context),
+              SizedBox(height: 12.h),
+              _aftCard(context),
+              SizedBox(height: 12.h),
+              _resultsCard(),
+              SizedBox(height: 12.h),
+              _remarksCard(context),
+              SizedBox(height: 16.h),
+              Obx(() {
+                final saving = controller.isSaving.value;
+                return AppActiveButton(
+                  buttontitle: saving ? 'Saving…' : 'Save',
+                  onTap: () {
+                    if (!saving) controller.save(context);
+                  },
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );

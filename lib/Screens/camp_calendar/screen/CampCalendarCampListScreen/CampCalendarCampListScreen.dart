@@ -12,6 +12,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/camp_calendar/controller/camp_calendar_camp_list_controller.dart';
 import 'CampCalendarCampListRow/CampCalendarCampListRow.dart';
 
@@ -63,132 +64,134 @@ class CampCalendarCampListScreen extends StatelessWidget {
       dispose: (_) => Get.delete<CampCalendarCampListController>(),
       builder: (ctrl) {
         return KeyboardDismissOnTap(
-          child: Scaffold(
-            appBar: mAppBar(
-              scTitle: 'All Camp List',
-              leadingIcon: iconBackArrow,
-              onLeadingIconClick: () {
-                Navigator.pop(context);
-              },
-            ),
-            body: AnnotatedRegion(
-              value: const SystemUiOverlayStyle(
-                statusBarColor: kPrimaryColor,
-                statusBarBrightness: Brightness.light,
-                statusBarIconBrightness: Brightness.light,
+          child: NetworkWrapper(
+            child: Scaffold(
+              appBar: mAppBar(
+                scTitle: 'All Camp List',
+                leadingIcon: iconBackArrow,
+                onLeadingIconClick: () {
+                  Navigator.pop(context);
+                },
               ),
-              child: Column(
-                children: [
-                  Container(
-                    width: SizeConfig.screenWidth,
-                    height: 50.h,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.15),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 20.w,
-                                height: 20.h,
-                                decoration: BoxDecoration(
-                                  color: todayCampOpenColor,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                              SizedBox(width: 4.w),
-                              Text(
-                                "Today's Open Camps",
-                                style: TextStyle(
-                                  color: kBlackColor,
-                                  fontFamily: FontConstants.interFonts,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ],
+              body: AnnotatedRegion(
+                value: const SystemUiOverlayStyle(
+                  statusBarColor: kPrimaryColor,
+                  statusBarBrightness: Brightness.light,
+                  statusBarIconBrightness: Brightness.light,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: SizeConfig.screenWidth,
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.15),
+                            blurRadius: 10,
                           ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 20.w,
-                                height: 20.h,
-                                decoration: BoxDecoration(
-                                  color: campOpenColor,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                              SizedBox(width: 4.w),
-                              Text(
-                                "Open Camps",
-                                style: TextStyle(
-                                  color: kBlackColor,
-                                  fontFamily: FontConstants.interFonts,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Total : ",
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          color: kBlackColor,
-                          fontFamily: FontConstants.interFonts,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
-                        ),
+                        ],
                       ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        "${ctrl.totalRegistrationWorkers}",
-                        style: TextStyle(
-                          color: kListTitleTextColor,
-                          fontFamily: FontConstants.interFonts,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                    ],
-                  ).paddingOnly(top: 6.h, bottom: 0.h, right: 4.w),
-
-                  Expanded(
-                    child:
-                        ctrl.isLoading
-                            ? const CommonSkeletonPatientList()
-                            : ListView.builder(
-                              itemCount: ctrl.campList.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return CampCalendarCampListRow(
-                                  obj: ctrl.campList[index],
-                                  selectedCampType: ctrl.selectedCampType,
-                                  index: index,
-                                );
-                              },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 20.w,
+                                  height: 20.h,
+                                  decoration: BoxDecoration(
+                                    color: todayCampOpenColor,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  "Today's Open Camps",
+                                  style: TextStyle(
+                                    color: kBlackColor,
+                                    fontFamily: FontConstants.interFonts,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ],
                             ),
-                  ),
-                ],
-              ).paddingSymmetric(vertical: 10.h, horizontal: 10.w),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 20.w,
+                                  height: 20.h,
+                                  decoration: BoxDecoration(
+                                    color: campOpenColor,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  "Open Camps",
+                                  style: TextStyle(
+                                    color: kBlackColor,
+                                    fontFamily: FontConstants.interFonts,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "Total : ",
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: kBlackColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          "${ctrl.totalRegistrationWorkers}",
+                          style: TextStyle(
+                            color: kListTitleTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      ],
+                    ).paddingOnly(top: 6.h, bottom: 0.h, right: 4.w),
+
+                    Expanded(
+                      child:
+                          ctrl.isLoading
+                              ? const CommonSkeletonPatientList()
+                              : ListView.builder(
+                                itemCount: ctrl.campList.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return CampCalendarCampListRow(
+                                    obj: ctrl.campList[index],
+                                    selectedCampType: ctrl.selectedCampType,
+                                    index: index,
+                                  );
+                                },
+                              ),
+                    ),
+                  ],
+                ).paddingSymmetric(vertical: 10.h, horizontal: 10.w),
+              ),
             ),
           ),
         );

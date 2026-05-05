@@ -97,7 +97,7 @@ class DashboardMenuOptions extends StatelessWidget {
       //   icon = analyticalDash;
       //   break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
-        icon = iconAttendance;
+        icon = icCalendarMonth;
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         icon = icMedicineDeliveryMenu;
@@ -231,7 +231,7 @@ class DashboardMenuOptions extends StatelessWidget {
         title = "Payment & Invoice";
         break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
-        title = "Analytical Dashboard";
+        title = "Appointment & Sample Collection Of CT";
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         title = "Medicine Delivery Menu";
@@ -399,7 +399,7 @@ class AdminDashboardMenuOptions extends StatelessWidget {
       //   icon = analyticalDash;
       //   break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
-        icon = iconAttendance;
+        icon = icCalendarMonth;
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         icon = icMedicineDeliveryMenu;
@@ -523,7 +523,7 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         title = "D2D Physical Examination Details";
         break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
-        title = "Analytical Dashboard";
+        title = "Appointment And Sample Collection Of CT";
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         title = "Analytical Dashboard";

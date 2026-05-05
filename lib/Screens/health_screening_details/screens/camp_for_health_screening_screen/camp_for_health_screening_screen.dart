@@ -7,6 +7,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/CommonSkeletonList.dart';
@@ -26,121 +27,123 @@ class CampForHealthScreeningScreen extends StatelessWidget {
     SizeConfig().init(context);
 
     return KeyboardDismissOnTap(
-      child: Scaffold(
-        appBar: mAppBar(
-          scTitle: 'Select Camp',
-          leadingIcon: iconBackArrow,
-          onLeadingIconClick: () => Navigator.pop(context),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            AppTextField(
-              controller: controller.dateController,
-              readOnly: true,
-              onTap: () => _selectCampDate(context, controller),
-              hint: 'Camp Date*',
-              label: CommonText(
-                text: 'Camp Date*',
-                fontSize: 12.sp,
-                fontWeight: FontWeight.normal,
-                textColor: kBlackColor,
-                textAlign: TextAlign.start,
-              ),
-              hintStyle: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: FontConstants.interFonts,
-              ),
-              fieldRadius: 10,
-              prefixIcon: SizedBox(
-                height: 20.h,
-                width: 20.w,
-                child: Center(
-                  child: Image.asset(
-                    icInitiatedBy,
-                    height: 24.h,
-                    width: 24.w,
-                    fit: BoxFit.contain,
+      child: NetworkWrapper(
+        child: Scaffold(
+          appBar: mAppBar(
+            scTitle: 'Select Camp',
+            leadingIcon: iconBackArrow,
+            onLeadingIconClick: () => Navigator.pop(context),
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              AppTextField(
+                controller: controller.dateController,
+                readOnly: true,
+                onTap: () => _selectCampDate(context, controller),
+                hint: 'Camp Date*',
+                label: CommonText(
+                  text: 'Camp Date*',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.normal,
+                  textColor: kBlackColor,
+                  textAlign: TextAlign.start,
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: FontConstants.interFonts,
+                ),
+                fieldRadius: 10,
+                prefixIcon: SizedBox(
+                  height: 20.h,
+                  width: 20.w,
+                  child: Center(
+                    child: Image.asset(
+                      icInitiatedBy,
+                      height: 24.h,
+                      width: 24.w,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            AppTextField(
-              textInputType: TextInputType.number,
-              controller: controller.searchController,
-              readOnly: false,
-              onChange: (value) => controller.filterBySearch(value),
-              hint: 'Search Camp ID',
-              label: CommonText(
-                text: 'Search Camp ID',
-                fontSize: 12.sp,
-                fontWeight: FontWeight.normal,
-                textColor: kBlackColor,
-                textAlign: TextAlign.start,
-              ),
-              hintStyle: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: FontConstants.interFonts,
-              ),
-              fieldRadius: 10,
-              prefixIcon: SizedBox(
-                height: 20.h,
-                width: 20.w,
-                child: Center(
-                  child: Image.asset(
-                    icSearch,
-                    height: 24.h,
-                    width: 24.w,
-                    fit: BoxFit.contain,
+              const SizedBox(height: 8),
+              AppTextField(
+                textInputType: TextInputType.number,
+                controller: controller.searchController,
+                readOnly: false,
+                onChange: (value) => controller.filterBySearch(value),
+                hint: 'Search Camp ID',
+                label: CommonText(
+                  text: 'Search Camp ID',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.normal,
+                  textColor: kBlackColor,
+                  textAlign: TextAlign.start,
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: FontConstants.interFonts,
+                ),
+                fieldRadius: 10,
+                prefixIcon: SizedBox(
+                  height: 20.h,
+                  width: 20.w,
+                  child: Center(
+                    child: Image.asset(
+                      icSearch,
+                      height: 24.h,
+                      width: 24.w,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Obx(
-                () => controller.isLoading.value
-                    ? const CommonSkeletonList()
-                    : ListView.builder(
-                        itemCount: controller.searchList.length,
-                        itemBuilder: (context, index) {
-                          final camp = controller.searchList[index];
-                          return CampForHealthScreeningRow(
-                            reMappingCampOutput: camp,
-                            onSelectTap: () =>
-                                controller.onCampSelected(camp, () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => HealthScreeningDetailsScreen(
-                                    testID: testID,
-                                    teamid: 0,
-                                    districtID:
-                                        controller.selectedDistLgdCode,
-                                    districtName:
-                                        controller.selectedDistName,
-                                    campID: controller.selectedCampId,
-                                    dISTLGDCODE:
-                                        controller.selectedDistLgdCode,
-                                    campType: controller.selectedCampType,
-                                    campDate:
-                                        controller.selectedCampDate.value,
-                                    surveyCoordinatorName: '',
-                                    campTypeDescription: '',
+              const SizedBox(height: 8),
+              Expanded(
+                child: Obx(
+                  () => controller.isLoading.value
+                      ? const CommonSkeletonList()
+                      : ListView.builder(
+                          itemCount: controller.searchList.length,
+                          itemBuilder: (context, index) {
+                            final camp = controller.searchList[index];
+                            return CampForHealthScreeningRow(
+                              reMappingCampOutput: camp,
+                              onSelectTap: () =>
+                                  controller.onCampSelected(camp, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => HealthScreeningDetailsScreen(
+                                      testID: testID,
+                                      teamid: 0,
+                                      districtID:
+                                          controller.selectedDistLgdCode,
+                                      districtName:
+                                          controller.selectedDistName,
+                                      campID: controller.selectedCampId,
+                                      dISTLGDCODE:
+                                          controller.selectedDistLgdCode,
+                                      campType: controller.selectedCampType,
+                                      campDate:
+                                          controller.selectedCampDate.value,
+                                      surveyCoordinatorName: '',
+                                      campTypeDescription: '',
+                                    ),
                                   ),
-                                ),
-                              ).then((_) => controller.fetchCamps());
-                            }),
-                          );
-                        },
-                      ),
+                                ).then((_) => controller.fetchCamps());
+                              }),
+                            );
+                          },
+                        ),
+                ),
               ),
-            ),
-          ],
-        ).paddingSymmetric(vertical: 10, horizontal: 10),
+            ],
+          ).paddingSymmetric(vertical: 10, horizontal: 10),
+        ),
       ),
     );
   }

@@ -42,6 +42,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
   int? regdid;
   String? regdno;
   String? beneficiaryName;
+  int? t2tOrderId;
   int? landingLab;
   String? landingLabName;
   String? pinCode;
@@ -74,6 +75,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
     this.regdid,
     this.regdno,
     this.beneficiaryName,
+    this.t2tOrderId,
     this.landingLab,
     this.landingLabName,
     this.pinCode,
@@ -107,6 +109,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
     regdid = json['Regdid'];
     regdno = json['Regdno'];
     beneficiaryName = json['BeneficiaryName'];
+    t2tOrderId = json['T2T_Order_Id'];
     landingLab = json['LandingLab'];
     landingLabName = json['LandingLabName'];
     pinCode = json['PinCode'];
@@ -141,6 +144,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
     data['Regdid'] = regdid;
     data['Regdno'] = regdno;
     data['BeneficiaryName'] = beneficiaryName;
+    data['T2T_Order_Id'] = t2tOrderId;
     data['LandingLab'] = landingLab;
     data['LandingLabName'] = landingLabName;
     data['PinCode'] = pinCode;

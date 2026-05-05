@@ -8,6 +8,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/sample_collection_controller.dart';
 
 class SampleCollectionScreen extends StatelessWidget {
@@ -28,37 +29,39 @@ class SampleCollectionScreen extends StatelessWidget {
         campId: campId,
       ),
       dispose: (_) => Get.delete<SampleCollectionController>(),
-      builder: (ctrl) => Scaffold(
-        backgroundColor: kBackground,
-        appBar: mAppBar(
-          scTitle: 'Sample Collection',
-          leadingIcon: iconBackArrow,
-          onLeadingIconClick: () => Navigator.pop(context),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _PatientDetailsCard(patientItem: patientItem),
-                SizedBox(height: 14.h),
-                _TestCard(ctrl: ctrl, context: context),
-                SizedBox(height: 24.h),
-                Obx(
-                  () => SizedBox(
-                    width: double.infinity,
-                    child: AppActiveButton(
-                      buttontitle: ctrl.isSubmitting.value
-                          ? 'Submitting...'
-                          : 'Submit',
-                      onTap: ctrl.isSubmitting.value
-                          ? () {}
-                          : () => ctrl.validateAndSubmit(context),
+      builder: (ctrl) => NetworkWrapper(
+        child: Scaffold(
+          backgroundColor: kBackground,
+          appBar: mAppBar(
+            scTitle: 'Sample Collection',
+            leadingIcon: iconBackArrow,
+            onLeadingIconClick: () => Navigator.pop(context),
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _PatientDetailsCard(patientItem: patientItem),
+                  SizedBox(height: 14.h),
+                  _TestCard(ctrl: ctrl, context: context),
+                  SizedBox(height: 24.h),
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      child: AppActiveButton(
+                        buttontitle: ctrl.isSubmitting.value
+                            ? 'Submitting...'
+                            : 'Submit',
+                        onTap: ctrl.isSubmitting.value
+                            ? () {}
+                            : () => ctrl.validateAndSubmit(context),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

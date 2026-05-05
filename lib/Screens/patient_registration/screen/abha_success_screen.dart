@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/abha_success_controller.dart';
 
 class AbhaSuccessScreen extends StatefulWidget {
@@ -49,27 +50,29 @@ class _AbhaSuccessScreenState extends State<AbhaSuccessScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: mAppBar(
-        scTitle: 'ABHA Registration',
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          children: [
-            SizedBox(height: 16.h),
-            _buildSuccessBanner(),
-            SizedBox(height: 16.h),
-            _buildCardPreview(),
-            SizedBox(height: 16.h),
-            _buildDetailsCard(),
-            SizedBox(height: 24.h),
-            _buildButtons(),
-            SizedBox(height: 24.h),
-          ],
+      child: NetworkWrapper(
+        child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
+        appBar: mAppBar(
+          scTitle: 'ABHA Registration',
         ),
-      ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            children: [
+              SizedBox(height: 16.h),
+              _buildSuccessBanner(),
+              SizedBox(height: 16.h),
+              _buildCardPreview(),
+              SizedBox(height: 16.h),
+              _buildDetailsCard(),
+              SizedBox(height: 24.h),
+              _buildButtons(),
+              SizedBox(height: 24.h),
+            ],
+          ),
+        ),
+        ),
       ),
     );
   }

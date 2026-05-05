@@ -7,6 +7,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 
 class ViewQueuePatientScreen extends StatelessWidget {
   final String name;
@@ -50,57 +51,59 @@ class ViewQueuePatientScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Patient Details',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _card([
-              _field('Full Name', name),
-              _field('ABHA Number', abhaNumber),
-              _field('ABHA Address', abhaAddress),
-              _field('Gender', gender),
-              _field('Date of Birth', dob),
-              _field('Age', ageInYears),
-              _field('Mobile', mobileNum),
-              _field('Address', addressLine),
-              if (isReadOnly) _field('Permanent Address', permAddress),
-              if (!isReadOnly) _field('Token No.', identityID.toString()),
-            ]),
-            if (!isReadOnly) ...[
-              SizedBox(height: 24.h),
-              SizedBox(
-                width: double.infinity,
-                height: 48.h,
-                child: ElevatedButton(
-                  onPressed: () => _onGoToRegistration(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Patient Details',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _card([
+                _field('Full Name', name),
+                _field('ABHA Number', abhaNumber),
+                _field('ABHA Address', abhaAddress),
+                _field('Gender', gender),
+                _field('Date of Birth', dob),
+                _field('Age', ageInYears),
+                _field('Mobile', mobileNum),
+                _field('Address', addressLine),
+                if (isReadOnly) _field('Permanent Address', permAddress),
+                if (!isReadOnly) _field('Token No.', identityID.toString()),
+              ]),
+              if (!isReadOnly) ...[
+                SizedBox(height: 24.h),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.h,
+                  child: ElevatedButton(
+                    onPressed: () => _onGoToRegistration(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      elevation: 0,
                     ),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    'Go To Registration',
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      color: kWhiteColor,
+                    child: Text(
+                      'Go To Registration',
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: kWhiteColor,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

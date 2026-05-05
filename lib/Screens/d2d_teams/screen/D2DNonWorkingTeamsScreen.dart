@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/d2d_teams/controller/d2d_teams_controller.dart';
@@ -57,135 +58,137 @@ class D2dNonWorkingTeamScreen extends StatelessWidget {
       builder: (ctrl) {
         final items = ctrl.d2dWorkingOrNonWorkingTeams?.output ?? const [];
 
-        return Scaffold(
-          appBar: mAppBar(
-            scTitle: title,
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-          ),
-          body: ctrl.hasInternet
-              ? AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: const SystemUiOverlayStyle(
-                    statusBarColor: kPrimaryColor,
-                    statusBarBrightness: Brightness.light,
-                    statusBarIconBrightness: Brightness.light,
-                  ),
-                  child: ctrl.isD2dNonWorkingTeamsLoading
-                      ? const CommonSkeletonPatientList().paddingSymmetric(
-                          vertical: 10, horizontal: 10)
-                      : items.isNotEmpty
-                          ? ListView.builder(
-                              itemCount: items.length,
-                              padding: EdgeInsets.only(top: 6.h),
-                              itemBuilder: (context, index) {
-                                final team = items[index];
-                                return Stack(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 10.h,
-                                        horizontal: 12.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(12),
-                                        color: kWhiteColor,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey
-                                                .withOpacity(0.6),
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                _memberRow(
-                                                  label: "Member 1 :",
-                                                  name:
-                                                      team.member1 ?? '-',
-                                                ),
-                                                SizedBox(height: 6.h),
-                                                _memberRow(
-                                                  label: "Member 2 :",
-                                                  name:
-                                                      team.member2 ?? '-',
-                                                ),
-                                                SizedBox(height: 6.h),
-                                                _memberRow(
-                                                  label:
-                                                      "Reg. Beneficiary :",
-                                                  name: team.regBeneficiaries
-                                                      .toString(),
-                                                ),
-                                              ],
+        return NetworkWrapper(
+          child: Scaffold(
+            appBar: mAppBar(
+              scTitle: title,
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+            ),
+            body: ctrl.hasInternet
+                ? AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: const SystemUiOverlayStyle(
+                      statusBarColor: kPrimaryColor,
+                      statusBarBrightness: Brightness.light,
+                      statusBarIconBrightness: Brightness.light,
+                    ),
+                    child: ctrl.isD2dNonWorkingTeamsLoading
+                        ? const CommonSkeletonPatientList().paddingSymmetric(
+                            vertical: 10, horizontal: 10)
+                        : items.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: items.length,
+                                padding: EdgeInsets.only(top: 6.h),
+                                itemBuilder: (context, index) {
+                                  final team = items[index];
+                                  return Stack(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 10.h,
+                                          horizontal: 12.w,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          color: kWhiteColor,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey
+                                                  .withOpacity(0.6),
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 2),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              await ctrl.getCallingDetails(
-                                                  team.teamId.toString());
-                                              if (ctrl.d2dTeamsCallingDetails
-                                                          ?.output !=
-                                                      null &&
-                                                  ctrl.d2dTeamsCallingDetails!
-                                                      .output.isNotEmpty) {
-                                                if (context.mounted) {
-                                                  _showListDialog(
-                                                    context,
+                                          ],
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  _memberRow(
+                                                    label: "Member 1 :",
+                                                    name:
+                                                        team.member1 ?? '-',
+                                                  ),
+                                                  SizedBox(height: 6.h),
+                                                  _memberRow(
+                                                    label: "Member 2 :",
+                                                    name:
+                                                        team.member2 ?? '-',
+                                                  ),
+                                                  SizedBox(height: 6.h),
+                                                  _memberRow(
+                                                    label:
+                                                        "Reg. Beneficiary :",
+                                                    name: team.regBeneficiaries
+                                                        .toString(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () async {
+                                                await ctrl.getCallingDetails(
+                                                    team.teamId.toString());
+                                                if (ctrl.d2dTeamsCallingDetails
+                                                            ?.output !=
+                                                        null &&
                                                     ctrl.d2dTeamsCallingDetails!
-                                                        .output,
-                                                  );
+                                                        .output.isNotEmpty) {
+                                                  if (context.mounted) {
+                                                    _showListDialog(
+                                                      context,
+                                                      ctrl.d2dTeamsCallingDetails!
+                                                          .output,
+                                                    );
+                                                  }
                                                 }
-                                              }
-                                            },
-                                            child: Icon(
-                                              Icons.call,
-                                              size: 22.sp,
-                                              color: kPrimaryColor
-                                                  .withOpacity(0.8),
+                                              },
+                                              child: Icon(
+                                                Icons.call,
+                                                size: 22.sp,
+                                                color: kPrimaryColor
+                                                    .withOpacity(0.8),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
+                                      ).paddingSymmetric(
+                                        horizontal: 14.w,
+                                        vertical: 12.h,
                                       ),
-                                    ).paddingSymmetric(
-                                      horizontal: 14.w,
-                                      vertical: 12.h,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      width: 18,
-                                      height: 18,
-                                      decoration: BoxDecoration(
-                                        color: kPrimaryColor,
-                                        borderRadius:
-                                            BorderRadius.circular(50),
-                                      ),
-                                      child: CommonText(
-                                        text: (index + 1).toString(),
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.normal,
-                                        textColor: kWhiteColor,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ).paddingOnly(left: 20),
-                                  ],
-                                );
-                              },
-                            )
-                          : NoDataFound(),
-                )
-              : NoInternetWidget(
-                  onRetryPressed: () => ctrl.checkInternetAndLoad(),
-                ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: 18,
+                                        height: 18,
+                                        decoration: BoxDecoration(
+                                          color: kPrimaryColor,
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                        child: CommonText(
+                                          text: (index + 1).toString(),
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.normal,
+                                          textColor: kWhiteColor,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ).paddingOnly(left: 20),
+                                    ],
+                                  );
+                                },
+                              )
+                            : NoDataFound(),
+                  )
+                : NoInternetWidget(
+                    onRetryPressed: () => ctrl.checkInternetAndLoad(),
+                  ),
+          ),
         );
       },
     );

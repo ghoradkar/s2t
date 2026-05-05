@@ -10,6 +10,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/select_camp_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/model/select_camp_response.dart';
@@ -110,95 +111,97 @@ class _SelectCampScreenState extends State<SelectCampScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Select Camp',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-        actions: [
-          IconButton(
-            onPressed: _openFilterSheet,
-            icon: const Icon(Icons.filter_alt_outlined, color: kWhiteColor),
-            tooltip: 'Filter',
-          ),
-        ],
-        showActions: true,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 0),
-            child: _SectionCard(
-              child: AppTextField(
-                controller: _searchCtrl,
-                label: _label('Search'),
-                hint: 'Search by Camp ID',
-                prefixIcon: const Icon(
-                  Icons.search_rounded,
-                  color: kPrimaryColor,
-                  size: 18,
-                ).paddingOnly(left: 6.w),
-                onChange: (v) => c.onSearchChanged(v),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Select Camp',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+          actions: [
+            IconButton(
+              onPressed: _openFilterSheet,
+              icon: const Icon(Icons.filter_alt_outlined, color: kWhiteColor),
+              tooltip: 'Filter',
+            ),
+          ],
+          showActions: true,
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 0),
+              child: _SectionCard(
+                child: AppTextField(
+                  controller: _searchCtrl,
+                  label: _label('Search'),
+                  hint: 'Search by Camp ID',
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    color: kPrimaryColor,
+                    size: 18,
+                  ).paddingOnly(left: 6.w),
+                  onChange: (v) => c.onSearchChanged(v),
+                ),
               ),
             ),
-          ),
-          // SizedBox(height: 12.h),
-          // Obx(() => Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 12.w),
-          //   child: Row(
-          //     children: [
-          //       CommonText(
-          //         text: 'Available Camps',
-          //         fontSize: 13.sp,
-          //         fontWeight: FontWeight.w600,
-          //         textColor: kTextColor,
-          //         textAlign: TextAlign.left,
-          //       ),
-          //       SizedBox(width: 8.w),
-          //       Container(
-          //         padding: EdgeInsets.symmetric(
-          //           horizontal: 10.w,
-          //           vertical: 2.h,
-          //         ),
-          //         decoration: BoxDecoration(
-          //           color: kPrimaryColor.withValues(alpha: 0.1),
-          //           borderRadius: BorderRadius.circular(20),
-          //         ),
-          //         child: CommonText(
-          //           text: c.filteredCampList.length.toString(),
-          //           fontSize: 11.sp,
-          //           fontWeight: FontWeight.w600,
-          //           textColor: kPrimaryColor,
-          //           textAlign: TextAlign.center,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // )),
-          SizedBox(height: 10.h),
-          Expanded(
-            child: Obx(() {
-              if (c.isLoading.value) {
-                return const CommonSkeletonPatientList(
-                  itemCount: 4,
-                ).paddingOnly(left: 12.w, right: 12.w);
-              }
-              if (c.filteredCampList.isEmpty) {
-                return NoDataFound();
-              }
-              return ListView.separated(
-                padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
-                itemCount: c.filteredCampList.length,
-                separatorBuilder: (_, _i) => SizedBox(height: 10.h),
-                itemBuilder: (context, index) {
-                  final camp = c.filteredCampList[index];
-                  return _CampCard(camp: camp, controller: c);
-                },
-              );
-            }),
-          ),
-        ],
+            // SizedBox(height: 12.h),
+            // Obx(() => Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 12.w),
+            //   child: Row(
+            //     children: [
+            //       CommonText(
+            //         text: 'Available Camps',
+            //         fontSize: 13.sp,
+            //         fontWeight: FontWeight.w600,
+            //         textColor: kTextColor,
+            //         textAlign: TextAlign.left,
+            //       ),
+            //       SizedBox(width: 8.w),
+            //       Container(
+            //         padding: EdgeInsets.symmetric(
+            //           horizontal: 10.w,
+            //           vertical: 2.h,
+            //         ),
+            //         decoration: BoxDecoration(
+            //           color: kPrimaryColor.withValues(alpha: 0.1),
+            //           borderRadius: BorderRadius.circular(20),
+            //         ),
+            //         child: CommonText(
+            //           text: c.filteredCampList.length.toString(),
+            //           fontSize: 11.sp,
+            //           fontWeight: FontWeight.w600,
+            //           textColor: kPrimaryColor,
+            //           textAlign: TextAlign.center,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // )),
+            SizedBox(height: 10.h),
+            Expanded(
+              child: Obx(() {
+                if (c.isLoading.value) {
+                  return const CommonSkeletonPatientList(
+                    itemCount: 4,
+                  ).paddingOnly(left: 12.w, right: 12.w);
+                }
+                if (c.filteredCampList.isEmpty) {
+                  return NoDataFound();
+                }
+                return ListView.separated(
+                  padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
+                  itemCount: c.filteredCampList.length,
+                  separatorBuilder: (_, _i) => SizedBox(height: 10.h),
+                  itemBuilder: (context, index) {
+                    final camp = c.filteredCampList[index];
+                    return _CampCard(camp: camp, controller: c);
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

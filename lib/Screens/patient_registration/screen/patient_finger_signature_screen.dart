@@ -8,6 +8,7 @@ import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/patient_finger_signature_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/patient_signature_screen.dart';
 
@@ -67,15 +68,17 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
 
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        backgroundColor: kBackground,
-        appBar: mAppBar(scTitle: 'Fingerprint & Signature'),
-        body: Obx(() {
-          if (c.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return _Body(c: c);
-        }),
+      child: NetworkWrapper(
+        child: Scaffold(
+          backgroundColor: kBackground,
+          appBar: mAppBar(scTitle: 'Fingerprint & Signature'),
+          body: Obx(() {
+            if (c.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return _Body(c: c);
+          }),
+        ),
       ),
     );
   }

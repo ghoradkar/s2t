@@ -7,6 +7,7 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/smart_scale_device_controller.dart';
 
@@ -29,61 +30,63 @@ class SmartScaleDeviceScreen extends StatelessWidget {
       ),
       dispose: (_) => Get.delete<SmartScaleDeviceController>(),
       builder:
-          (ctrl) => Scaffold(
-            backgroundColor: kBackground,
-            appBar: mAppBar(
-              scTitle: 'SmartScale Device',
-              leadingIcon: iconBackArrow,
-              onLeadingIconClick: () => Navigator.pop(context),
-            ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _PatientCard(patientItem: patientItem),
-                    SizedBox(height: 14.h),
-                    _MetricsCard(ctrl: ctrl),
-                    SizedBox(height: 14.h),
-                    _DeviceInfoCard(ctrl: ctrl),
-                    SizedBox(height: 24.h),
-                    _ScanButton(ctrl: ctrl),
-                    SizedBox(height: 12.h),
-                    Obx(() {
-                      if (!ctrl.deviceFound.value) {
-                        return const SizedBox.shrink();
-                      }
-                      return Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: AppActiveButton(
-                              buttontitle: 'Confirm Data',
-                              onTap: () {
-                                final w = ctrl.weightStr.value;
-                                final b = ctrl.bmiStr.value;
-                                if (w == '—' || w.isEmpty) {
-                                  ToastManager.toast(
-                                    'No weight data to confirm',
+          (ctrl) => NetworkWrapper(
+            child: Scaffold(
+              backgroundColor: kBackground,
+              appBar: mAppBar(
+                scTitle: 'SmartScale Device',
+                leadingIcon: iconBackArrow,
+                onLeadingIconClick: () => Navigator.pop(context),
+              ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _PatientCard(patientItem: patientItem),
+                      SizedBox(height: 14.h),
+                      _MetricsCard(ctrl: ctrl),
+                      SizedBox(height: 14.h),
+                      _DeviceInfoCard(ctrl: ctrl),
+                      SizedBox(height: 24.h),
+                      _ScanButton(ctrl: ctrl),
+                      SizedBox(height: 12.h),
+                      Obx(() {
+                        if (!ctrl.deviceFound.value) {
+                          return const SizedBox.shrink();
+                        }
+                        return Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: AppActiveButton(
+                                buttontitle: 'Confirm Data',
+                                onTap: () {
+                                  final w = ctrl.weightStr.value;
+                                  final b = ctrl.bmiStr.value;
+                                  if (w == '—' || w.isEmpty) {
+                                    ToastManager.toast(
+                                      'No weight data to confirm',
+                                    );
+                                    return;
+                                  }
+                                  Navigator.pop(
+                                    context,
+                                    SmartScaleResult(
+                                      weight: w,
+                                      bmi: b == '—' ? '' : b,
+                                      deviceNameStr: ctrl.deviceName.value,
+                                    ),
                                   );
-                                  return;
-                                }
-                                Navigator.pop(
-                                  context,
-                                  SmartScaleResult(
-                                    weight: w,
-                                    bmi: b == '—' ? '' : b,
-                                    deviceNameStr: ctrl.deviceName.value,
-                                  ),
-                                );
-                              },
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ],
+                          ],
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               ),
             ),

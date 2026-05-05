@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/abha_demographic_creation_controller.dart';
 
@@ -62,31 +63,33 @@ class _AbhaDemographicCreationScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: mAppBar(
-        scTitle: 'ABHA Creation',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
+        appBar: mAppBar(
+          scTitle: 'ABHA Creation',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: Obx(() {
+          if (!ctrl.sessionReady.value && ctrl.sessionError.value.isNotEmpty) {
+            return _buildSessionError();
+          }
+          if (ctrl.sessionLoading.value) return const SizedBox.shrink();
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLogosCard(),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 20.h),
+                  child: _buildFormPhase(context),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
-      body: Obx(() {
-        if (!ctrl.sessionReady.value && ctrl.sessionError.value.isNotEmpty) {
-          return _buildSessionError();
-        }
-        if (ctrl.sessionLoading.value) return const SizedBox.shrink();
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildLogosCard(),
-              Padding(
-                padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 20.h),
-                child: _buildFormPhase(context),
-              ),
-            ],
-          ),
-        );
-      }),
     );
   }
 

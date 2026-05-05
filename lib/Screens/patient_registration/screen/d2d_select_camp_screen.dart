@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_camp_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
@@ -40,163 +41,165 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Select D2D Camp',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-      ),
-      body: Obx(() {
-        _dateCtrl.text = c.selectedDate.value;
-        return Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-              child: _SectionCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.tune_rounded,
-                          color: kPrimaryColor,
-                          size: 18,
-                        ),
-                        SizedBox(width: 8.w),
-                        CommonText(
-                          text: 'Filter Camps',
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          textColor: kPrimaryColor,
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8.h),
-                    Divider(height: 1, color: kTextFieldBorder),
-                    SizedBox(height: 8.h),
-                    AppTextField(
-                      controller: _dateCtrl,
-                      readOnly: true,
-                      label: _label('Camp Date'),
-                      hint: 'Select Date',
-                      prefixIcon: const Icon(
-                        Icons.calendar_today_rounded,
-                        color: kPrimaryColor,
-                        size: 18,
-                      ).paddingOnly(left: 6.w),
-                      onTap: () => c.onDateTapped(context),
-                    ),
-                    SizedBox(height: 10.h),
-                    Obx(
-                      () => AppTextField(
-                        controller: TextEditingController(
-                          text: c.selectedDistrict.value?.distName ?? '',
-                        ),
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Select D2D Camp',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+        ),
+        body: Obx(() {
+          _dateCtrl.text = c.selectedDate.value;
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                child: _SectionCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.tune_rounded,
+                            color: kPrimaryColor,
+                            size: 18,
+                          ),
+                          SizedBox(width: 8.w),
+                          CommonText(
+                            text: 'Filter Camps',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            textColor: kPrimaryColor,
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Divider(height: 1, color: kTextFieldBorder),
+                      SizedBox(height: 8.h),
+                      AppTextField(
+                        controller: _dateCtrl,
                         readOnly: true,
-                        label: _label('District'),
-                        hint: 'Select District',
+                        label: _label('Camp Date'),
+                        hint: 'Select Date',
                         prefixIcon: const Icon(
-                          Icons.map_rounded,
+                          Icons.calendar_today_rounded,
                           color: kPrimaryColor,
                           size: 18,
                         ).paddingOnly(left: 6.w),
-                        suffixIcon:
-                            c.isLoadingDist.value
-                                ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                        onTap: () => c.onDateTapped(context),
+                      ),
+                      SizedBox(height: 10.h),
+                      Obx(
+                        () => AppTextField(
+                          controller: TextEditingController(
+                            text: c.selectedDistrict.value?.distName ?? '',
+                          ),
+                          readOnly: true,
+                          label: _label('District'),
+                          hint: 'Select District',
+                          prefixIcon: const Icon(
+                            Icons.map_rounded,
+                            color: kPrimaryColor,
+                            size: 18,
+                          ).paddingOnly(left: 6.w),
+                          suffixIcon:
+                              c.isLoadingDist.value
+                                  ? const SizedBox(
+                                    width: 14,
+                                    height: 14,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                  : const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: kPrimaryColor,
                                   ),
-                                )
-                                : const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: kPrimaryColor,
-                                ),
-                        onTap: () => _showDistrictPicker(context),
+                          onTap: () => _showDistrictPicker(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: Row(
+                  children: [
+                    CommonText(
+                      text: 'Available Camps',
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                      textColor: kTextColor,
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(width: 8.w),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: kPrimaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: CommonText(
+                        text: c.campList.length.toString(),
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w600,
+                        textColor: kPrimaryColor,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: Row(
-                children: [
-                  CommonText(
-                    text: 'Available Camps',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                    textColor: kTextColor,
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(width: 8.w),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 2.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: kPrimaryColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: CommonText(
-                      text: c.campList.length.toString(),
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600,
-                      textColor: kPrimaryColor,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Expanded(
-              child: Obx(() {
-                if (c.isLoadingCamps.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (c.campList.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 40,
-                          color: kLabelTextColor,
-                        ),
-                        SizedBox(height: 6.h),
-                        CommonText(
-                          text: 'No camps found',
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                          textColor: kLabelTextColor,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+              SizedBox(height: 8.h),
+              Expanded(
+                child: Obx(() {
+                  if (c.isLoadingCamps.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (c.campList.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 40,
+                            color: kLabelTextColor,
+                          ),
+                          SizedBox(height: 6.h),
+                          CommonText(
+                            text: 'No camps found',
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: kLabelTextColor,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return ListView.separated(
+                    padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
+                    itemCount: c.campList.length,
+                    separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                    itemBuilder: (context, index) {
+                      final camp = c.campList[index];
+                      return _D2DCampCard(camp: camp, controller: c);
+                    },
                   );
-                }
-                return ListView.separated(
-                  padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
-                  itemCount: c.campList.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 10.h),
-                  itemBuilder: (context, index) {
-                    final camp = c.campList[index];
-                    return _D2DCampCard(camp: camp, controller: c);
-                  },
-                );
-              }),
-            ),
-          ],
-        );
-      }),
+                }),
+              ),
+            ],
+          );
+        }),
+      ),
     );
   }
 

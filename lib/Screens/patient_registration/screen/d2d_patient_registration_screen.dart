@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
@@ -119,97 +120,99 @@ class _D2DPatientRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      appBar: mAppBar(
-        scTitle: 'Patient Registration',
-        leadingIcon: iconBackArrow,
-        onLeadingIconClick: () => Navigator.pop(context),
-        showActions: true,
-        actions: [
-          Container(
-            padding: EdgeInsets.only(
-              left: 6.w,
-              right: 6.w,
-              top: 4.h,
-              bottom: 4.h,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(color: kWhiteColor),
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: InkWell(
-              onTap: () {
-                _onViewQueueTapped();
-              },
-              child: Text(
-                'View',
-                style: TextStyle(
-                  color: kWhiteColor,
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
+    return NetworkWrapper(
+      child: Scaffold(
+        backgroundColor: kBackground,
+        appBar: mAppBar(
+          scTitle: 'Patient Registration',
+          leadingIcon: iconBackArrow,
+          onLeadingIconClick: () => Navigator.pop(context),
+          showActions: true,
+          actions: [
+            Container(
+              padding: EdgeInsets.only(
+                left: 6.w,
+                right: 6.w,
+                top: 4.h,
+                bottom: 4.h,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(color: kWhiteColor),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: InkWell(
+                onTap: () {
+                  _onViewQueueTapped();
+                },
+                child: Text(
+                  'View',
+                  style: TextStyle(
+                    color: kWhiteColor,
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ).paddingOnly(right: 6.w),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // _campBanner(),
-            // SizedBox(height: 14.h),
-
-            // ── Registration Type ─────────────────────────────────────────
-            _sectionLabel('Registration Type'),
-            SizedBox(height: 8.h),
-            Obx(
-              () => Row(
-                children: [
-                  _radioChip(
-                    label: 'Without ABHA',
-                    selected: c.registrationType.value == 'without_abha',
-                    onTap: () => c.onRegistrationTypeChanged('without_abha'),
-                  ),
-                  SizedBox(width: 10.w),
-                  _radioChip(
-                    label: 'With ABHA',
-                    selected: c.registrationType.value == 'with_abha',
-                    onTap: () => c.onRegistrationTypeChanged('with_abha'),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 14.h),
-
-            // ── Is Dependent ──────────────────────────────────────────────
-            _sectionLabel('Is Dependent'),
-            SizedBox(height: 8.h),
-            Obx(
-              () => Row(
-                children: [
-                  _radioChip(
-                    label: 'Yes',
-                    selected: c.isDependent.value,
-                    onTap: () => c.onDependentToggled(true),
-                  ),
-                  SizedBox(width: 10.w),
-                  _radioChip(
-                    label: 'No',
-                    selected: !c.isDependent.value,
-                    onTap: () => c.onDependentToggled(false),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 14.h),
-
-            // ── The entire form reacts to isDependent × hasApiData ─────────
-            Obx(() => _buildForm(context)),
+            ).paddingOnly(right: 6.w),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // _campBanner(),
+              // SizedBox(height: 14.h),
+
+              // ── Registration Type ─────────────────────────────────────────
+              _sectionLabel('Registration Type'),
+              SizedBox(height: 8.h),
+              Obx(
+                () => Row(
+                  children: [
+                    _radioChip(
+                      label: 'Without ABHA',
+                      selected: c.registrationType.value == 'without_abha',
+                      onTap: () => c.onRegistrationTypeChanged('without_abha'),
+                    ),
+                    SizedBox(width: 10.w),
+                    _radioChip(
+                      label: 'With ABHA',
+                      selected: c.registrationType.value == 'with_abha',
+                      onTap: () => c.onRegistrationTypeChanged('with_abha'),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 14.h),
+
+              // ── Is Dependent ──────────────────────────────────────────────
+              _sectionLabel('Is Dependent'),
+              SizedBox(height: 8.h),
+              Obx(
+                () => Row(
+                  children: [
+                    _radioChip(
+                      label: 'Yes',
+                      selected: c.isDependent.value,
+                      onTap: () => c.onDependentToggled(true),
+                    ),
+                    SizedBox(width: 10.w),
+                    _radioChip(
+                      label: 'No',
+                      selected: !c.isDependent.value,
+                      onTap: () => c.onDependentToggled(false),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 14.h),
+
+              // ── The entire form reacts to isDependent × hasApiData ─────────
+              Obx(() => _buildForm(context)),
+            ],
+          ),
         ),
       ),
     );

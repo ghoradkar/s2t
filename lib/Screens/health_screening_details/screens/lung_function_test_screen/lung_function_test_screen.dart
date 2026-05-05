@@ -10,6 +10,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/lung_function_test_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/lung_function_test_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
@@ -33,66 +34,68 @@ class LungFunctionTestScreen extends StatelessWidget {
       init: LungFunctionTestController(patient: patient, campId: campId),
       dispose: (_) => Get.delete<LungFunctionTestController>(),
       builder:
-          (ctrl) => Scaffold(
-            backgroundColor: kBackground,
-            appBar: mAppBar(
-              scTitle: 'Lung Function Test',
-              leadingIcon: iconBackArrow,
-              onLeadingIconClick: () => Navigator.pop(context),
-            ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(
-                  top: 16.h,
-                  bottom: MediaQuery.of(context).viewPadding.bottom + 28.h,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _PatientInfoCard(patient: patient),
-                    SizedBox(height: 14.h),
-                    _DeviceCard(ctrl: ctrl),
-                    SizedBox(height: 14.h),
+          (ctrl) => NetworkWrapper(
+            child: Scaffold(
+              backgroundColor: kBackground,
+              appBar: mAppBar(
+                scTitle: 'Lung Function Test',
+                leadingIcon: iconBackArrow,
+                onLeadingIconClick: () => Navigator.pop(context),
+              ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(
+                    top: 16.h,
+                    bottom: MediaQuery.of(context).viewPadding.bottom + 28.h,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _PatientInfoCard(patient: patient),
+                      SizedBox(height: 14.h),
+                      _DeviceCard(ctrl: ctrl),
+                      SizedBox(height: 14.h),
 
-                    // Test progress (visible only while testing)
-                    Obx(() {
-                      if (ctrl.deviceStatus.value == LftDeviceStatus.testing) {
-                        return Column(
-                          children: [
-                            _TestProgressCard(ctrl: ctrl),
-                            SizedBox(height: 14.h),
-                          ],
+                      // Test progress (visible only while testing)
+                      Obx(() {
+                        if (ctrl.deviceStatus.value == LftDeviceStatus.testing) {
+                          return Column(
+                            children: [
+                              _TestProgressCard(ctrl: ctrl),
+                              SizedBox(height: 14.h),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      }),
+
+                      // Results + graph (visible after test done)
+                      Obx(() {
+                        if (ctrl.hasResult.value && ctrl.result.value != null) {
+                          return Column(
+                            children: [
+                              _ResultsCard(result: ctrl.result.value!),
+                              SizedBox(height: 14.h),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      }),
+
+                      // Submit button (visible only when result is ready)
+                      Obx(() {
+                        if (!ctrl.hasResult.value) return const SizedBox.shrink();
+                        return AppActiveButton(
+                          buttontitle:
+                              ctrl.isSubmitting.value ? 'Submitting…' : 'SUBMIT',
+                          onTap:
+                              ctrl.isSubmitting.value
+                                  ? () {}
+                                  : () => ctrl.submit(context),
                         );
-                      }
-                      return const SizedBox.shrink();
-                    }),
-
-                    // Results + graph (visible after test done)
-                    Obx(() {
-                      if (ctrl.hasResult.value && ctrl.result.value != null) {
-                        return Column(
-                          children: [
-                            _ResultsCard(result: ctrl.result.value!),
-                            SizedBox(height: 14.h),
-                          ],
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    }),
-
-                    // Submit button (visible only when result is ready)
-                    Obx(() {
-                      if (!ctrl.hasResult.value) return const SizedBox.shrink();
-                      return AppActiveButton(
-                        buttontitle:
-                            ctrl.isSubmitting.value ? 'Submitting…' : 'SUBMIT',
-                        onTap:
-                            ctrl.isSubmitting.value
-                                ? () {}
-                                : () => ctrl.submit(context),
-                      );
-                    }),
-                  ],
+                      }),
+                    ],
+                  ),
                 ),
               ),
             ),

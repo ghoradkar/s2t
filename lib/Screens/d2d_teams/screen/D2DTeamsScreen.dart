@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/AdminDashboard/Screens/WorkingTeamsCountView.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/d2d_teams/controller/d2d_teams_controller.dart';
 import 'package:s2toperational/Screens/d2d_teams/screen/D2DNonWorkingTeamsScreen.dart';
@@ -30,200 +31,202 @@ class D2DTeamsScreen extends StatelessWidget {
       builder: (ctrl) {
         final details = ctrl.d2dTeamsListModel?.output;
 
-        return Scaffold(
-          appBar: mAppBar(
-            scTitle: "D2D Teams",
-            leadingIcon: iconBackArrow,
-            onLeadingIconClick: () => Navigator.pop(context),
-            showActions: true,
-            actions: [
-              InkWell(
-                onTap: () {
-                  _filterBottomSheet(context, ctrl);
-                },
-                child: const Icon(
-                  Icons.filter_alt_outlined,
-                  color: kWhiteColor,
-                  size: 28,
-                ),
-              ).paddingOnly(right: 16),
-            ],
-          ),
-          body: ctrl.hasInternet
-              ? AnnotatedRegion(
-                  value: const SystemUiOverlayStyle(
-                    statusBarColor: kPrimaryColor,
-                    statusBarBrightness: Brightness.light,
-                    statusBarIconBrightness: Brightness.light,
+        return NetworkWrapper(
+          child: Scaffold(
+            appBar: mAppBar(
+              scTitle: "D2D Teams",
+              leadingIcon: iconBackArrow,
+              onLeadingIconClick: () => Navigator.pop(context),
+              showActions: true,
+              actions: [
+                InkWell(
+                  onTap: () {
+                    _filterBottomSheet(context, ctrl);
+                  },
+                  child: const Icon(
+                    Icons.filter_alt_outlined,
+                    color: kWhiteColor,
+                    size: 28,
                   ),
-                  child: Column(
-                    children: [
-                      WorkingTeamsCountView(
-                        workingTeamsCount: ctrl.d2dTeamsCountModel?.output
-                                .first.workingTeamCount ??
-                            0,
-                        notWorkingTeamsCount: ctrl.d2dTeamsCountModel?.output
-                                .first.nonWorkingTeamCount ??
-                            0,
-                        totalTeamsCount: ctrl.d2dTeamsCountModel?.output
-                                .first.totalTeamCount ??
-                            0,
-                        onNotWorkingTeamsTap: () {
-                          Get.to(D2dNonWorkingTeamScreen(
-                            campId: ctrl.resolvedCampId,
-                            divId: ctrl.resolvedDivId,
-                            distCode: ctrl.resolvedDistCode,
-                            labCode: ctrl.resolvedLabCode,
-                            orgId: ctrl.resolvedOrgId,
-                            title: 'D2D Not Working Team',
-                          ));
-                        },
-                        onWorkingTeamsTap: () {
-                          Get.to(D2dNonWorkingTeamScreen(
-                            campId: ctrl.resolvedCampId,
-                            divId: ctrl.resolvedDivId,
-                            distCode: ctrl.resolvedDistCode,
-                            labCode: ctrl.resolvedLabCode,
-                            orgId: ctrl.resolvedOrgId,
-                            title: 'D2D Working Teams',
-                          ));
-                        },
-                        onTotalTeamsTap: () {},
-                      ),
-                      SizedBox(height: 12.h),
+                ).paddingOnly(right: 16),
+              ],
+            ),
+            body: ctrl.hasInternet
+                ? AnnotatedRegion(
+                    value: const SystemUiOverlayStyle(
+                      statusBarColor: kPrimaryColor,
+                      statusBarBrightness: Brightness.light,
+                      statusBarIconBrightness: Brightness.light,
+                    ),
+                    child: Column(
+                      children: [
+                        WorkingTeamsCountView(
+                          workingTeamsCount: ctrl.d2dTeamsCountModel?.output
+                                  .first.workingTeamCount ??
+                              0,
+                          notWorkingTeamsCount: ctrl.d2dTeamsCountModel?.output
+                                  .first.nonWorkingTeamCount ??
+                              0,
+                          totalTeamsCount: ctrl.d2dTeamsCountModel?.output
+                                  .first.totalTeamCount ??
+                              0,
+                          onNotWorkingTeamsTap: () {
+                            Get.to(D2dNonWorkingTeamScreen(
+                              campId: ctrl.resolvedCampId,
+                              divId: ctrl.resolvedDivId,
+                              distCode: ctrl.resolvedDistCode,
+                              labCode: ctrl.resolvedLabCode,
+                              orgId: ctrl.resolvedOrgId,
+                              title: 'D2D Not Working Team',
+                            ));
+                          },
+                          onWorkingTeamsTap: () {
+                            Get.to(D2dNonWorkingTeamScreen(
+                              campId: ctrl.resolvedCampId,
+                              divId: ctrl.resolvedDivId,
+                              distCode: ctrl.resolvedDistCode,
+                              labCode: ctrl.resolvedLabCode,
+                              orgId: ctrl.resolvedOrgId,
+                              title: 'D2D Working Teams',
+                            ));
+                          },
+                          onTotalTeamsTap: () {},
+                        ),
+                        SizedBox(height: 12.h),
 
-                      // Table
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.grey.withOpacity(0.2),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.03),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
+                        // Table
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.2),
                               ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Column(
-                                  children: [
-                                    const HeaderRow(),
-                                    TotalRow(
-                                      totalNotWorking: ctrl.d2dTeamsCountModel
-                                              ?.output.first.nonWorkingTeamCount ??
-                                          0,
-                                      totalWorking: ctrl.d2dTeamsCountModel
-                                              ?.output.first.workingTeamCount ??
-                                          0,
-                                    ),
-                                    const Divider(height: 0, thickness: .6),
-                                    ctrl.isD2dTeamsLoading
-                                        ? Expanded(
-                                            child:
-                                                const CommonSkeletonInvoiceTable(
-                                              itemCount: 12,
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: ListView.separated(
-                                              padding: EdgeInsets.zero,
-                                              itemCount: details?.length ?? 0,
-                                              separatorBuilder: (_, __) =>
-                                                  Divider(
-                                                height: 0,
-                                                thickness: .5,
-                                                color: Colors.grey.withValues(
-                                                    alpha: 0.15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.03),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return Column(
+                                    children: [
+                                      const HeaderRow(),
+                                      TotalRow(
+                                        totalNotWorking: ctrl.d2dTeamsCountModel
+                                                ?.output.first.nonWorkingTeamCount ??
+                                            0,
+                                        totalWorking: ctrl.d2dTeamsCountModel
+                                                ?.output.first.workingTeamCount ??
+                                            0,
+                                      ),
+                                      const Divider(height: 0, thickness: .6),
+                                      ctrl.isD2dTeamsLoading
+                                          ? Expanded(
+                                              child:
+                                                  const CommonSkeletonInvoiceTable(
+                                                itemCount: 12,
                                               ),
-                                              itemBuilder: (context, i) {
-                                                return DataRow(
-                                                  district:
-                                                      details![i].distname,
-                                                  coordinator: details[i]
-                                                      .campCoordinatorName,
-                                                  notWorking: details[i]
-                                                      .nonWorkingTeamCount,
-                                                  working: details[i]
-                                                      .workingTeamCount,
-                                                  onTapCall: () {
-                                                    _openDialer(
-                                                      context,
-                                                      details[i]
-                                                          .campCoordinatorMobNo,
-                                                    );
-                                                  },
-                                                  onTapNonWorking: () {
-                                                    Get.to(
-                                                        D2dNonWorkingTeamScreen(
-                                                      campId: details[i]
-                                                          .campType
-                                                          .toString(),
-                                                      divId: details[i]
-                                                          .divId
-                                                          .toString(),
-                                                      distCode: details[i]
-                                                          .distlgdcode
-                                                          .toString(),
-                                                      labCode: '0',
-                                                      orgId: '0',
-                                                      title:
-                                                          'D2D Non Working Teams',
-                                                      desigId: details[i]
-                                                          .desgId
-                                                          .toString(),
-                                                      empId: details[i]
-                                                          .campCoId
-                                                          .toString(),
-                                                    ));
-                                                  },
-                                                  onTapWorking: () {
-                                                    Get.to(
-                                                        D2dNonWorkingTeamScreen(
-                                                      campId: details[i]
-                                                          .campType
-                                                          .toString(),
-                                                      divId: details[i]
-                                                          .divId
-                                                          .toString(),
-                                                      distCode: details[i]
-                                                          .distlgdcode
-                                                          .toString(),
-                                                      labCode: '0',
-                                                      orgId: '0',
-                                                      title: 'D2D Working Teams',
-                                                      desigId: details[i]
-                                                          .desgId
-                                                          .toString(),
-                                                      empId: details[i]
-                                                          .campCoId
-                                                          .toString(),
-                                                    ));
-                                                  },
-                                                );
-                                              },
+                                            )
+                                          : Expanded(
+                                              child: ListView.separated(
+                                                padding: EdgeInsets.zero,
+                                                itemCount: details?.length ?? 0,
+                                                separatorBuilder: (_, __) =>
+                                                    Divider(
+                                                  height: 0,
+                                                  thickness: .5,
+                                                  color: Colors.grey.withValues(
+                                                      alpha: 0.15),
+                                                ),
+                                                itemBuilder: (context, i) {
+                                                  return DataRow(
+                                                    district:
+                                                        details![i].distname,
+                                                    coordinator: details[i]
+                                                        .campCoordinatorName,
+                                                    notWorking: details[i]
+                                                        .nonWorkingTeamCount,
+                                                    working: details[i]
+                                                        .workingTeamCount,
+                                                    onTapCall: () {
+                                                      _openDialer(
+                                                        context,
+                                                        details[i]
+                                                            .campCoordinatorMobNo,
+                                                      );
+                                                    },
+                                                    onTapNonWorking: () {
+                                                      Get.to(
+                                                          D2dNonWorkingTeamScreen(
+                                                        campId: details[i]
+                                                            .campType
+                                                            .toString(),
+                                                        divId: details[i]
+                                                            .divId
+                                                            .toString(),
+                                                        distCode: details[i]
+                                                            .distlgdcode
+                                                            .toString(),
+                                                        labCode: '0',
+                                                        orgId: '0',
+                                                        title:
+                                                            'D2D Non Working Teams',
+                                                        desigId: details[i]
+                                                            .desgId
+                                                            .toString(),
+                                                        empId: details[i]
+                                                            .campCoId
+                                                            .toString(),
+                                                      ));
+                                                    },
+                                                    onTapWorking: () {
+                                                      Get.to(
+                                                          D2dNonWorkingTeamScreen(
+                                                        campId: details[i]
+                                                            .campType
+                                                            .toString(),
+                                                        divId: details[i]
+                                                            .divId
+                                                            .toString(),
+                                                        distCode: details[i]
+                                                            .distlgdcode
+                                                            .toString(),
+                                                        labCode: '0',
+                                                        orgId: '0',
+                                                        title: 'D2D Working Teams',
+                                                        desigId: details[i]
+                                                            .desgId
+                                                            .toString(),
+                                                        empId: details[i]
+                                                            .campCoId
+                                                            .toString(),
+                                                      ));
+                                                    },
+                                                  );
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                  ],
-                                );
-                              },
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ).paddingSymmetric(vertical: 10.h, horizontal: 12.w),
-                )
-              : NoInternetWidget(
-                  onRetryPressed: () => ctrl.checkInternetAndLoad(),
-                ),
+                      ],
+                    ).paddingSymmetric(vertical: 10.h, horizontal: 12.w),
+                  )
+                : NoInternetWidget(
+                    onRetryPressed: () => ctrl.checkInternetAndLoad(),
+                  ),
+          ),
         );
       },
     );

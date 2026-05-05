@@ -100,7 +100,7 @@ class DashboardMenuRow extends StatelessWidget {
       //   icon = analyticalDash;
       //   break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
-        icon = iconAttendance;
+        icon = icCalendarMonth;
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         icon = icMedicineDeliveryMenu;
@@ -233,7 +233,7 @@ class DashboardMenuRow extends StatelessWidget {
         title = "Medicine Return";
         break;
       case DashboardMenu.AppointmentAndSampleCollectionOfCT:
-        title = "Analytical Dashboard";
+        title = "Appointment And Sample Collection Of CT";
         break;
       case DashboardMenu.MedicineDeliveryMenu:
         title = "Analytical Dashboard";
