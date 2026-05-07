@@ -45,6 +45,8 @@ class CTAppointmentConfirmationController extends GetxController {
   bool showAppointmentDate = true;
   bool isControlsDisabled = false;
   bool isLoading = true;
+  bool _isFetching = false;
+  bool _hasLoaded = false;
 
   final DateFormat _displayFormat = DateFormat('dd-MM-yyyy');
   final DateFormat _apiFormat = DateFormat('yyyy/MM/dd');
@@ -56,7 +58,6 @@ class CTAppointmentConfirmationController extends GetxController {
       isControlsDisabled = true;
       update();
     }
-    _loadBeneficiaryDetails();
   }
 
   @override
@@ -69,7 +70,14 @@ class CTAppointmentConfirmationController extends GetxController {
     super.onClose();
   }
 
-  Future<void> _loadBeneficiaryDetails() async {
+  Future<void> reloadData() {
+    _hasLoaded = false;
+    return loadBeneficiaryDetails();
+  }
+
+  Future<void> loadBeneficiaryDetails() async {
+    if (_isFetching || _hasLoaded) return;
+    _isFetching = true;
     ToastManager.showLoader();
     final empCode =
         DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
@@ -88,6 +96,8 @@ class CTAppointmentConfirmationController extends GetxController {
 
     ToastManager.hideLoader();
     isLoading = false;
+    _isFetching = false;
+    _hasLoaded = true;
 
     if (response?.output != null && response!.output!.isNotEmpty) {
       dependentList = response.output!;
@@ -167,7 +177,7 @@ class CTAppointmentConfirmationController extends GetxController {
 
   void _handleRemarkSelection(int arId) {
     if (arId == 4) {
-      isControlsDisabled = true;
+      isControlsDisabled = false;
       showAppointmentDate = false;
       update();
       Future.delayed(const Duration(milliseconds: 200), () {

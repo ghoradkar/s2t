@@ -33,7 +33,9 @@
       "Bash(git -C \"D:\\\\dishabtob\" log --oneline --format=\"%ad %s\" --date=short)",
       "Bash(git -C \"D:\\\\heamodialysis\\\\heamodialysis\" log --oneline --format=\"%ad %s\" --date=short)",
       "Read(//d/heamodialysis/heamodialysis/**)",
-      "Read(//d/heamodialysis/**)"
+      "Read(//d/heamodialysis/**)",
+      "mcp__ide__getDiagnostics",
+      "Bash(dart analyze *)"
     ]
   }
 }

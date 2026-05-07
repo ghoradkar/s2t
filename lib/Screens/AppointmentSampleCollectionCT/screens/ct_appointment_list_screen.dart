@@ -267,7 +267,7 @@ class _CTAppointmentListScreenState extends State<CTAppointmentListScreen> {
 
   Widget _buildBody(CTAppointmentListController c) {
     if (c.isLoading) {
-      return const CommonSkeletonPatientList();
+      return const CommonSkeletonPatientList().paddingSymmetric(horizontal: 10.w);
     }
     if (c.filteredList.isEmpty) {
       return NoDataFound().paddingOnly(left: 14.w, right: 12.w, top: 8.h);
@@ -279,6 +279,7 @@ class _CTAppointmentListScreenState extends State<CTAppointmentListScreen> {
         final item = c.filteredList[index];
         return CTConfirmatoryRow(
           item: item,
+          index: index,
           onTap: () {
             Navigator.push(
               context,

@@ -52,6 +52,9 @@ class ConfirmatoryTestsScreeningOutput {
   int? t2tOrderId;
   int? treatmentID;
   int? teamid;
+  String? sampleCollection;
+  int? arId;
+  String? assignmentRemarks;
 
   ConfirmatoryTestsScreeningOutput({
     this.regdid,
@@ -76,6 +79,9 @@ class ConfirmatoryTestsScreeningOutput {
     this.t2tOrderId,
     this.treatmentID,
     this.teamid,
+    this.sampleCollection,
+    this.arId,
+    this.assignmentRemarks,
   });
 
   ConfirmatoryTestsScreeningOutput.fromJson(Map<String, dynamic> json) {
@@ -101,6 +107,9 @@ class ConfirmatoryTestsScreeningOutput {
     t2tOrderId = json['T2T_Order_Id'];
     treatmentID = json['TreatmentID'];
     teamid = json['Teamid'];
+    sampleCollection = json['SampleCollection'];
+    arId = json['ArId'] as int?;
+    assignmentRemarks = json['AssignmentRemarks']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -127,6 +136,9 @@ class ConfirmatoryTestsScreeningOutput {
     data['T2T_Order_Id'] = t2tOrderId;
     data['TreatmentID'] = treatmentID;
     data['Teamid'] = teamid;
+    data['SampleCollection'] = sampleCollection;
+    data['ArId'] = arId;
+    data['AssignmentRemarks'] = assignmentRemarks;
     return data;
   }
 }

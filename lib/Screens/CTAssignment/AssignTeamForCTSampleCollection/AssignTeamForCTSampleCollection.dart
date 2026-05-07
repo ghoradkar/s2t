@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ChooseDocumentManager/ChooseDocumentManager.dart';
@@ -22,7 +23,12 @@ import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
+import '../../../Modules/widgets/AppActiveButton.dart';
+import '../../../Modules/widgets/AppTextField.dart';
+import '../../../Modules/widgets/CommonText.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery/view/FaceDetectionScreen.dart';
 import 'PatientSampleCollectionHeaderView/PatientSampleCollectionHeaderView.dart';
 import 'TestDetailsView/TestDetailsView.dart';
 import 'TubeDetailsView/TubeDetailsView.dart';
@@ -75,6 +81,11 @@ class _AssignTeamForCTSampleCollectionState
   // Tube count controllers (editable)
   List<TextEditingController> _tubeCountControllers = [];
 
+  // Display controllers for dropdown AppTextFields
+  final TextEditingController _remarkController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _labController = TextEditingController();
+
   // Photo capture
   bool _skipFaceDetection = false;
   File? _patientPhotoFile;
@@ -101,6 +112,28 @@ class _AssignTeamForCTSampleCollectionState
       dispatchGroup.reset();
       debugPrint("All APIs Completed!");
       ToastManager.hideLoader();
+
+      _mobileController.text = _activeMobile;
+
+      // Auto-select remark based on the ArId passed from appointment confirmation
+      final passedArId = widget.beneficiaryDetails?.arId;
+      if (selectedRemark == null &&
+          passedArId != null &&
+          remarksList.isNotEmpty) {
+        final matches = remarksList.where((r) => r.arId == passedArId);
+        if (matches.isNotEmpty && mounted) {
+          setState(() {
+            selectedRemark = matches.first;
+            _remarkController.text = selectedRemark?.assignmentRemarks ?? '';
+          });
+        }
+      }
+
+      if (mounted && !_isAppointmentConfirmed && !_isSampleCollected) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _showAppointmentPendingAlert();
+        });
+      }
     });
   }
 
@@ -109,6 +142,9 @@ class _AssignTeamForCTSampleCollectionState
     _otpController.dispose();
     _barcodeController.dispose();
     _sampleCountController.dispose();
+    _remarkController.dispose();
+    _mobileController.dispose();
+    _labController.dispose();
     for (final c in _tubeCountControllers) {
       c.dispose();
     }
@@ -176,9 +212,10 @@ class _AssignTeamForCTSampleCollectionState
       for (final c in _tubeCountControllers) {
         c.dispose();
       }
-      _tubeCountControllers = tubesDetailslist
-          .map((t) => TextEditingController(text: '${t.tubCount ?? 0}'))
-          .toList();
+      _tubeCountControllers =
+          tubesDetailslist
+              .map((t) => TextEditingController(text: '${t.tubCount ?? 0}'))
+              .toList();
     } else {
       ToastManager.toast(errorMessage);
     }
@@ -202,6 +239,14 @@ class _AssignTeamForCTSampleCollectionState
   bool get _isAppointmentConfirmed =>
       (testDetailslist?.isAppointmentDone ?? 'N').toUpperCase() == 'Y';
 
+  bool get _isSampleCollected {
+    final val =
+        testDetailslist?.sampleCollection ??
+        widget.beneficiaryDetails?.sampleCollection ??
+        'N';
+    return val.toUpperCase() == 'Y';
+  }
+
   String get _activeMobile =>
       _selectedMobileNumber ??
       testDetailslist?.workersMob ??
@@ -219,43 +264,44 @@ class _AssignTeamForCTSampleCollectionState
     ];
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder:
-          (_) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  'Select Number To Send OTP',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    fontWeight: FontWeight.w700,
-                    fontSize: responsiveFont(14),
-                    color: kBlackColor,
-                  ),
-                ),
-              ),
-              const Divider(height: 1),
-              ...options.map(
-                (mob) => ListTile(
-                  title: Text(
-                    mob,
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: responsiveFont(13),
-                      color: kBlackColor,
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() => _selectedMobileNumber = mob);
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
+          (_) => SelectionBottomSheet<String, String>(
+            title: 'Select Number To Send OTP',
+            items: options,
+            selectedValue: _selectedMobileNumber ?? _activeMobile,
+            valueFor: (item) => item,
+            labelFor: (item) => item,
+            height: 300,
+            padding: EdgeInsets.only(
+              top: responsiveHeight(28),
+              left: responsiveHeight(35),
+              right: responsiveHeight(35),
+              bottom: responsiveHeight(60),
+            ),
+            titleTextStyle: TextStyle(
+              fontSize: responsiveFont(16),
+              fontFamily: FontConstants.interFonts,
+              fontWeight: FontWeight.w600,
+            ),
+            titleBottomSpacing: responsiveHeight(20),
+            selectedBackgroundColor: kPrimaryColor.withValues(alpha: 0.1),
+            itemTextStyle: TextStyle(
+              fontSize: responsiveFont(13),
+              fontFamily: FontConstants.interFonts,
+              color: kBlackColor,
+            ),
+            onItemTap: (mob) {
+              setState(() {
+                _selectedMobileNumber = mob;
+                _mobileController.text = mob;
+              });
+              Navigator.pop(context);
+            },
           ),
     );
   }
@@ -263,51 +309,51 @@ class _AssignTeamForCTSampleCollectionState
   void _showRemarkPicker() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder:
-          (_) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  'Select CT Assignment Remark',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    fontWeight: FontWeight.w700,
-                    fontSize: responsiveFont(14),
-                    color: kBlackColor,
-                  ),
-                ),
-              ),
-              const Divider(height: 1),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: remarksList.length,
-                  itemBuilder: (_, i) {
-                    final r = remarksList[i];
-                    return ListTile(
-                      title: Text(
-                        r.assignmentRemarks ?? '',
-                        style: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          fontSize: responsiveFont(13),
-                          color: kBlackColor,
-                        ),
+          (_) => StatefulBuilder(
+            builder:
+                (ctx, sheetState) =>
+                    SelectionBottomSheet<AssignmentRemarksOutput, int>(
+                      title: 'CT Assignment Remark',
+                      items: remarksList,
+                      selectedValue: selectedRemark?.arId,
+                      valueFor: (item) => item.arId ?? 0,
+                      labelFor: (item) => item.assignmentRemarks ?? 'N/A',
+                      height: 380,
+                      padding: EdgeInsets.only(
+                        top: responsiveHeight(28),
+                        left: responsiveHeight(35),
+                        right: responsiveHeight(35),
+                        bottom: responsiveHeight(60),
                       ),
-                      onTap: () {
-                        setState(() => selectedRemark = r);
+                      titleTextStyle: TextStyle(
+                        fontSize: responsiveFont(16),
+                        fontFamily: FontConstants.interFonts,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      titleBottomSpacing: responsiveHeight(20),
+                      selectedBackgroundColor: kPrimaryColor.withValues(
+                        alpha: 0.1,
+                      ),
+                      itemTextStyle: TextStyle(
+                        fontSize: responsiveFont(13),
+                        fontFamily: FontConstants.interFonts,
+                        color: kBlackColor,
+                      ),
+                      onItemTap: (item) {
+                        setState(() {
+                          selectedRemark = item;
+                          _remarkController.text = item.assignmentRemarks ?? '';
+                        });
                         Navigator.pop(context);
-                        _onRemarkSelected(r);
+                        _onRemarkSelected(item);
                       },
-                    );
-                  },
-                ),
-              ),
-            ],
+                    ),
           ),
     );
   }
@@ -355,63 +401,90 @@ class _AssignTeamForCTSampleCollectionState
   bool get _isCollectionRemark =>
       selectedRemark == null || (selectedRemark?.arId ?? 1) == 1;
 
+  void _showAppointmentPendingAlert() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (_) => AlertDialog(
+            title: Text(
+              'Alert',
+              style: TextStyle(fontFamily: FontConstants.interFonts),
+            ),
+            content: Text(
+              'Please confirm appointment date',
+              style: TextStyle(fontFamily: FontConstants.interFonts),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+    );
+  }
+
   void _onRemarkSelected(AssignmentRemarksOutput remark) {
     final arId = remark.arId ?? 0;
     if (arId == 4) {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.red),
-              const SizedBox(width: 8),
-              const Text('Alert'),
-            ],
-          ),
-          content: const Text(
-            'This beneficiary will not be available for CT screening.\n'
-            'Please verify before proceeding with the submission.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+        builder:
+            (_) => AlertDialog(
+              title: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.red),
+                  const SizedBox(width: 8),
+                  const Text('Alert'),
+                ],
+              ),
+              content: const Text(
+                'This beneficiary will not be available for CT screening.\n'
+                'Please verify before proceeding with the submission.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     } else if (arId == 6) {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.red),
-              const SizedBox(width: 8),
-              const Text('Alert'),
-            ],
-          ),
-          content: const Text(
-            'This beneficiary can be re-attempted for CT screening.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+        builder:
+            (_) => AlertDialog(
+              title: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.red),
+                  const SizedBox(width: 8),
+                  const Text('Alert'),
+                ],
+              ),
+              content: const Text(
+                'This beneficiary can be re-attempted for CT screening.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     }
   }
 
   void getLabList() {
-    final distCode = (testDetailslist?.dISTLGDCODE ??
-            widget.beneficiaryDetails?.dISTLGDCODE ??
-            0)
-        .toString();
+    final distCode =
+        (testDetailslist?.dISTLGDCODE ??
+                widget.beneficiaryDetails?.dISTLGDCODE ??
+                0)
+            .toString();
     Map<String, String> params = {"DISTLGDCODE": distCode};
     ToastManager.showLoader();
     apiManager.getT2TLabDetailsAPI(params, _labListCallBack);
@@ -425,12 +498,18 @@ class _AssignTeamForCTSampleCollectionState
     }
     _generatedOtp = (10000 + Random().nextInt(90000)).toString();
     final subOrgId =
-        DataProvider().getParsedUserData()?.output?.first.subOrgId?.toString() ??
+        DataProvider()
+            .getParsedUserData()
+            ?.output
+            ?.first
+            .subOrgId
+            ?.toString() ??
         '0';
-    final t2tOrderId = (testDetailslist?.t2tOrderId ??
-            widget.beneficiaryDetails?.t2tOrderId ??
-            0)
-        .toString();
+    final t2tOrderId =
+        (testDetailslist?.t2tOrderId ??
+                widget.beneficiaryDetails?.t2tOrderId ??
+                0)
+            .toString();
     final params = {
       'MOBNO': mobile,
       'OTP': _generatedOtp,
@@ -441,7 +520,11 @@ class _AssignTeamForCTSampleCollectionState
       'Option': _selectedVendor.toString(),
     };
     ToastManager.showLoader();
-    apiManager.sendOTPForCTSampleCollectionAPI(params, (response, error, success) {
+    apiManager.sendOTPForCTSampleCollectionAPI(params, (
+      response,
+      error,
+      success,
+    ) {
       ToastManager.hideLoader();
       if (success) {
         setState(() => _isOtpSent = true);
@@ -468,7 +551,9 @@ class _AssignTeamForCTSampleCollectionState
           setState(() => _isOtpVerified = true);
           ToastManager.toast('OTP verified successfully');
         } else {
-          ToastManager.toast(error.isNotEmpty ? error : 'OTP verification failed');
+          ToastManager.toast(
+            error.isNotEmpty ? error : 'OTP verification failed',
+          );
         }
       },
     );
@@ -492,60 +577,45 @@ class _AssignTeamForCTSampleCollectionState
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) {
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.5,
-          maxChildSize: 0.85,
-          builder:
-              (_, scrollCtrl) => Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      'Select Lab',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w700,
-                        fontSize: responsiveFont(14),
-                        color: kBlackColor,
-                      ),
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: scrollCtrl,
-                      itemCount: _labList.length,
-                      itemBuilder: (_, i) {
-                        final lab = _labList[i];
-                        return ListTile(
-                          title: Text(
-                            lab.labName ?? '',
-                            style: TextStyle(
-                              fontFamily: FontConstants.interFonts,
-                              fontSize: responsiveFont(13),
-                              color: kBlackColor,
-                            ),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _selectedLabName = lab.labName;
-                              _selectedLabCode = lab.labCode;
-                            });
-                            Navigator.pop(context);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-        );
-      },
+      builder:
+          (_) => SelectionBottomSheet<LandingLabCampCreationOutput, int>(
+            title: 'Select Lab',
+            items: _labList,
+            selectedValue: _selectedLabCode,
+            valueFor: (lab) => lab.labCode ?? 0,
+            labelFor: (lab) => lab.labName ?? '',
+            height: 420,
+            padding: EdgeInsets.only(
+              top: responsiveHeight(28),
+              left: responsiveHeight(35),
+              right: responsiveHeight(35),
+              bottom: responsiveHeight(60),
+            ),
+            titleTextStyle: TextStyle(
+              fontSize: responsiveFont(16),
+              fontFamily: FontConstants.interFonts,
+              fontWeight: FontWeight.w600,
+            ),
+            titleBottomSpacing: responsiveHeight(20),
+            selectedBackgroundColor: kPrimaryColor.withValues(alpha: 0.1),
+            itemTextStyle: TextStyle(
+              fontSize: responsiveFont(13),
+              fontFamily: FontConstants.interFonts,
+              color: kBlackColor,
+            ),
+            onItemTap: (lab) {
+              setState(() {
+                _selectedLabName = lab.labName;
+                _selectedLabCode = lab.labCode;
+                _labController.text = lab.labName ?? '';
+              });
+              Navigator.pop(context);
+            },
+          ),
     );
   }
 
@@ -568,9 +638,21 @@ class _AssignTeamForCTSampleCollectionState
   }
 
   Future<void> _capturePatientPhoto() async {
-    final result = await ChooseDocumentManager.pickFile(FileSourceType.camera);
-    if (result != null) {
-      setState(() => _patientPhotoFile = result.file);
+    if (_skipFaceDetection) {
+      final result = await ChooseDocumentManager.pickFile(
+        FileSourceType.camera,
+      );
+      if (result != null) {
+        setState(() => _patientPhotoFile = result.file);
+      }
+    } else {
+      final File? photo = await Navigator.push<File?>(
+        context,
+        MaterialPageRoute(builder: (_) => const FaceDetectionScreen()),
+      );
+      if (photo != null) {
+        setState(() => _patientPhotoFile = photo);
+      }
     }
   }
 
@@ -582,17 +664,18 @@ class _AssignTeamForCTSampleCollectionState
   }
 
   Future<void> _submitSampleCollection() async {
-    if (_isAppointmentConfirmed && !_isOtpVerified) {
+    if (_isAppointmentConfirmed && !_isOtpVerified && _isCollectionRemark) {
       ToastManager.toast('Please verify OTP first');
       return;
     }
 
     final regNo =
         testDetailslist?.regdNo ?? widget.beneficiaryDetails?.regdno ?? '';
-    final t2tOrderId = (testDetailslist?.t2tOrderId ??
-            widget.beneficiaryDetails?.t2tOrderId ??
-            0)
-        .toString();
+    final t2tOrderId =
+        (testDetailslist?.t2tOrderId ??
+                widget.beneficiaryDetails?.t2tOrderId ??
+                0)
+            .toString();
     final treatmentId = (testDetailslist?.treatmentID ?? 0).toString();
 
     if (_isCollectionRemark) {
@@ -668,19 +751,20 @@ class _AssignTeamForCTSampleCollectionState
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          title: const Text('Success'),
-          content: const Text('Details Submitted Successfully'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
+        builder:
+            (_) => AlertDialog(
+              title: const Text('Success'),
+              content: const Text('Details Submitted Successfully'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // close dialog
+                    Navigator.pop(context, true); // pop screen, signal success
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     } else {
       ToastManager.toast(
@@ -692,7 +776,7 @@ class _AssignTeamForCTSampleCollectionState
   Widget _buildSampleCollectionSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -707,658 +791,666 @@ class _AssignTeamForCTSampleCollectionState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // CT Assignment Remark dropdown
-          Text(
-            'CT Assignment Remark*',
-            style: TextStyle(
+          // CT Assignment Remark
+          AppTextField(
+            controller: _remarkController,
+            readOnly: true,
+            onTap: remarksList.isEmpty ? null : _showRemarkPicker,
+            label: CommonText(
+              text: 'CT Assignment Remark *',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              textColor: kTextColor,
+              textAlign: TextAlign.start,
+            ),
+            hint: 'Select Remark',
+            hintStyle: TextStyle(
+              fontSize: 12.sp,
               fontFamily: FontConstants.interFonts,
-              fontWeight: FontWeight.w600,
-              fontSize: responsiveFont(13),
-              color: kBlackColor,
             ),
+            suffixIcon: Icon(Icons.arrow_drop_down, color: kPrimaryColor),
+            fieldRadius: 8,
           ),
-          const SizedBox(height: 6),
-          GestureDetector(
-            onTap: (remarksList.isEmpty || _isOtpVerified) ? null : _showRemarkPicker,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: _isOtpVerified ? Colors.grey.shade100 : Colors.white,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      selectedRemark?.assignmentRemarks ?? 'Select Remark',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: responsiveFont(13),
-                        color:
-                            selectedRemark == null ? Colors.grey : kBlackColor,
-                      ),
-                    ),
-                  ),
-                  Icon(Icons.arrow_drop_down, color: Colors.grey.shade600),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
-          // SMS Vendor collapsible header (always visible, matching native tv_vendor)
-          GestureDetector(
-            onTap:
-                () => setState(
-                  () => _isSmsVendorExpanded = !_isSmsVendorExpanded,
-                ),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'SMS Vendor',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w600,
-                        fontSize: responsiveFont(13),
-                        color: kBlackColor,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    _isSmsVendorExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: Colors.grey.shade600,
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // SMS Vendor content (collapsed/expanded)
-          if (_isSmsVendorExpanded) ...[
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.blue.shade200),
-              ),
-              child: Text(
-                'जर लाभार्थ्याच्या मोबाईलवर OTP प्राप्त झाला नसेल तर option 2 वापरून OTP पाठवा',
-                style: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: responsiveFont(12),
-                  color: Colors.blue[900],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                _radioOption(
-                  label: 'Option 1',
-                  value: 1,
-                  groupValue: _selectedVendor,
-                  onChanged: (v) => setState(() => _selectedVendor = v!),
-                ),
-                const SizedBox(width: 20),
-                _radioOption(
-                  label: 'Option 2',
-                  value: 2,
-                  groupValue: _selectedVendor,
-                  onChanged: (v) => setState(() => _selectedVendor = v!),
+          // ── OTP & SMS Vendor combined card ─────────────────────────
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.grey.shade200),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(0, 1),
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 6,
                 ),
               ],
             ),
-          ],
-          const SizedBox(height: 12),
-
-          // OTP Verification header — only when appointment is confirmed
-          if (_isAppointmentConfirmed) ...[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-              decoration: BoxDecoration(
-                color: kPrimaryColor,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                'OTP Verification',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: FontConstants.interFonts,
-                  fontWeight: FontWeight.w700,
-                  fontSize: responsiveFont(13),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
-
-          // Select Number To Send OTP dropdown — always visible (matches native ll_main_mobile)
-          Text(
-            'Select Number To Send OTP',
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: responsiveFont(12),
-              color: kBlackColor,
-            ),
-          ),
-          const SizedBox(height: 4),
-          GestureDetector(
-            onTap: _showMobileNumberPicker,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _activeMobile.isNotEmpty
-                          ? _activeMobile
-                          : 'Select Number',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: responsiveFont(13),
-                        color:
-                            _selectedMobileNumber == null
-                                ? Colors.grey
-                                : kBlackColor,
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Card header
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 10.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(10),
                     ),
                   ),
-                  Icon(Icons.arrow_drop_down, color: Colors.grey.shade600),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Send OTP button — hidden after OTP is verified
-          if (_isAppointmentConfirmed && !_isOtpVerified) ...[
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _activeMobile.isEmpty ? null : _sendCTOTP,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kPrimaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(
-                  'Send OTP',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    fontWeight: FontWeight.w600,
-                    fontSize: responsiveFont(14),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-
-            // Enter OTP section — shown after OTP is sent
-            if (_isOtpSent) ...[
-              const SizedBox(height: 12),
-              Text(
-                'Enter OTP',
-                style: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: responsiveFont(12),
-                  color: kBlackColor,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _otpController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
-                      decoration: InputDecoration(
-                        counterText: '',
-                        hintText: 'Enter OTP',
-                        hintStyle: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          fontSize: responsiveFont(13),
-                          color: Colors.grey,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontSize: responsiveFont(13),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: _verifyCTOTP,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      'Verify OTP',
-                      style: TextStyle(
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w600,
-                        fontSize: responsiveFont(13),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.phone_android_rounded,
                         color: Colors.white,
+                        size: 16.sp,
                       ),
-                    ),
+                      SizedBox(width: 8.w),
+                      CommonText(
+                        text: 'OTP Verification',
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        textColor: Colors.white,
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 12),
-          ],
+                ),
 
-          // Barcode, lab, sample count, photos — visible after OTP verification for remark 1
-          if (_isAppointmentConfirmed && _isOtpVerified && _isCollectionRemark) ...[
+                Padding(
+                  padding: EdgeInsets.all(14.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Select Number
+                      AppTextField(
+                        controller: _mobileController,
+                        readOnly: true,
+                        onTap: _showMobileNumberPicker,
+                        label: CommonText(
+                          text: 'Select Number To Send OTP',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          textColor: kTextColor,
+                          textAlign: TextAlign.start,
+                        ),
+                        hint: 'Select Number',
+                        hintStyle: TextStyle(
+                          fontSize: 12.sp,
+                          fontFamily: FontConstants.interFonts,
+                        ),
+                        suffixIcon: Icon(
+                          Icons.arrow_drop_down,
+                          color: kPrimaryColor,
+                        ),
+                        fieldRadius: 8,
+                      ),
+                      SizedBox(height: 12.h),
 
-            // Barcode field
-            Text(
-              'Barcode',
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: responsiveFont(12),
-                color: kBlackColor,
-              ),
+                      // SMS Vendor collapsible
+                      GestureDetector(
+                        onTap:
+                            () => setState(
+                              () =>
+                                  _isSmsVendorExpanded = !_isSmsVendorExpanded,
+                            ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 10.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: kPurpleFaint,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.settings_outlined,
+                                size: 14.sp,
+                                color: kPrimaryColor,
+                              ),
+                              SizedBox(width: 6.w),
+                              Expanded(
+                                child: CommonText(
+                                  text: 'SMS Vendor Settings',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  textColor: kPrimaryColor,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              Icon(
+                                _isSmsVendorExpanded
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                color: kPrimaryColor,
+                                size: 18.sp,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (_isSmsVendorExpanded) ...[
+                        SizedBox(height: 10.h),
+                        Container(
+                          padding: EdgeInsets.all(10.w),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue.shade100),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 14.sp,
+                                color: Colors.blue.shade700,
+                              ),
+                              SizedBox(width: 6.w),
+                              Expanded(
+                                child: CommonText(
+                                  text:
+                                      'जर लाभार्थ्याच्या मोबाईलवर OTP प्राप्त झाला नसेल तर option 2 वापरून OTP पाठवा',
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.blue.shade800,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          children: [
+                            _radioOption(
+                              label: 'Option 1',
+                              value: 1,
+                              groupValue: _selectedVendor,
+                              onChanged:
+                                  (v) => setState(() => _selectedVendor = v!),
+                            ),
+                            SizedBox(width: 24.w),
+                            _radioOption(
+                              label: 'Option 2',
+                              value: 2,
+                              groupValue: _selectedVendor,
+                              onChanged:
+                                  (v) => setState(() => _selectedVendor = v!),
+                            ),
+                          ],
+                        ),
+                      ],
+
+                      // Send OTP + Enter OTP
+                      if (_isAppointmentConfirmed &&
+                          !_isOtpVerified &&
+                          !_isSampleCollected &&
+                          _isCollectionRemark) ...[
+                        SizedBox(height: 14.h),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 46.h,
+                          child: AppActiveButton(
+                            buttontitle: 'Send OTP',
+                            onTap: _activeMobile.isEmpty ? () {} : _sendCTOTP,
+                          ),
+                        ),
+                        if (_isOtpSent) ...[
+                          SizedBox(height: 12.h),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: AppTextField(
+                                  controller: _otpController,
+                                  textInputType: TextInputType.number,
+                                  maxLength: 6,
+                                  label: CommonText(
+                                    text: 'Enter OTP',
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    textColor: kTextColor,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  hint: 'Enter OTP',
+                                  hintStyle: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: FontConstants.interFonts,
+                                  ),
+                                  fieldRadius: 8,
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              SizedBox(
+                                width: 110.w,
+                                height: 56.h,
+                                child: AppActiveButton(
+                                  buttontitle: 'Verify',
+                                  onTap: _verifyCTOTP,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+
+                      // OTP Verified badge
+                      if (_isOtpVerified) ...[
+                        SizedBox(height: 12.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.green.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.green.shade600,
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 8.w),
+                              CommonText(
+                                text: 'OTP Verified Successfully',
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.green.shade700,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
-            TextField(
+          ),
+          SizedBox(height: 14.h),
+
+          // Barcode, Lab, Sample Count, Photos
+          if (_isAppointmentConfirmed &&
+              _isCollectionRemark &&
+              !_isSampleCollected) ...[
+            AppTextField(
               controller: _barcodeController,
               maxLength: 14,
-              keyboardType: TextInputType.number,
+              textInputType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: 'Enter or scan barcode',
-                hintStyle: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: responsiveFont(13),
-                  color: Colors.grey,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                suffixIcon: GestureDetector(
-                  onTap: _scanBarcode,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Image.asset(
-                      icBarcodeIcon,
-                      width: 24,
-                      height: 24,
-                      errorBuilder: (ctx, e, st) =>
-                          Icon(Icons.qr_code_scanner, color: kPrimaryColor),
-                    ),
+              label: CommonText(
+                text: 'Barcode',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                textColor: kTextColor,
+                textAlign: TextAlign.start,
+              ),
+              hint: 'Enter or scan barcode',
+              hintStyle: TextStyle(
+                fontSize: 12.sp,
+                fontFamily: FontConstants.interFonts,
+              ),
+              suffixIcon: GestureDetector(
+                onTap: _scanBarcode,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Image.asset(
+                    icBarcodeIcon,
+                    width: 24,
+                    height: 24,
+                    errorBuilder:
+                        (ctx, e, st) =>
+                            Icon(Icons.qr_code_scanner, color: kPrimaryColor),
                   ),
                 ),
               ),
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: responsiveFont(13),
-              ),
+              fieldRadius: 8,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
 
-            // Select Lab field
-            Text(
-              'Select Lab',
-              style: TextStyle(
+            AppTextField(
+              controller: _labController,
+              readOnly: true,
+              onTap:
+                  () => _labList.isNotEmpty ? _showLabPicker() : getLabList(),
+              label: CommonText(
+                text: 'Select Lab',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                textColor: kTextColor,
+                textAlign: TextAlign.start,
+              ),
+              hint: 'Select Lab',
+              hintStyle: TextStyle(
+                fontSize: 12.sp,
                 fontFamily: FontConstants.interFonts,
-                fontSize: responsiveFont(12),
-                color: kBlackColor,
               ),
+              suffixIcon: Icon(Icons.arrow_drop_down, color: kPrimaryColor),
+              fieldRadius: 8,
             ),
-            const SizedBox(height: 4),
-            GestureDetector(
-              onTap: () {
-                if (_labList.isNotEmpty) {
-                  _showLabPicker();
-                } else {
-                  getLabList();
-                }
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _selectedLabName ?? 'Select Lab',
-                        style: TextStyle(
-                          fontFamily: FontConstants.interFonts,
-                          fontSize: responsiveFont(13),
-                          color:
-                              _selectedLabName == null
-                                  ? Colors.grey
-                                  : kBlackColor,
-                        ),
-                      ),
-                    ),
-                    Icon(Icons.arrow_drop_down, color: Colors.grey.shade600),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
 
-            // Sample Count field
-            Text(
-              'Sample Count',
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: responsiveFont(12),
-                color: kBlackColor,
-              ),
-            ),
-            const SizedBox(height: 4),
-            TextField(
+            AppTextField(
               controller: _sampleCountController,
-              keyboardType: TextInputType.number,
+              textInputType: TextInputType.number,
               maxLength: 3,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: 'Enter sample count',
-                hintStyle: TextStyle(
-                  fontFamily: FontConstants.interFonts,
-                  fontSize: responsiveFont(13),
-                  color: Colors.grey,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
+              label: CommonText(
+                text: 'Sample Count',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                textColor: kTextColor,
+                textAlign: TextAlign.start,
               ),
-              style: TextStyle(
+              hint: 'Enter sample count',
+              hintStyle: TextStyle(
+                fontSize: 12.sp,
                 fontFamily: FontConstants.interFonts,
-                fontSize: responsiveFont(13),
               ),
+              fieldRadius: 8,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
-            // Beneficiary Photo section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF424242),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(6),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Beneficiary Photo',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w600,
-                        fontSize: responsiveFont(13),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'Skip Face Detection',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: responsiveFont(11),
-                    ),
-                  ),
-                  Transform.scale(
-                    scale: 0.8,
-                    child: Switch(
-                      value: _skipFaceDetection,
-                      onChanged: (v) => setState(() => _skipFaceDetection = v),
-                      activeThumbColor: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(6),
-                ),
-              ),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: _capturePatientPhoto,
-                    child:
-                        _patientPhotoFile != null
-                            ? ClipOval(
-                              child: Image.file(
-                                _patientPhotoFile!,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                            : Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade200,
-                                border: Border.all(color: Colors.grey.shade400),
-                              ),
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 36,
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Capture Beneficiary Photo*',
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: responsiveFont(12),
-                      color: kBlackColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+            // Beneficiary Photo + Consent Form side by side
+            _buildPhotosRow(),
+            SizedBox(height: 20.h),
+          ],
 
-            // Consent Form & Photo ID section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF424242),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(6),
-                ),
-              ),
-              child: Text(
-                'Consent Form & Photo ID',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: FontConstants.interFonts,
-                  fontWeight: FontWeight.w600,
-                  fontSize: responsiveFont(13),
-                ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(6),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'संमतीपत्र आणि लाभार्थ्याच्या ओळखपत्राचा एकत्र फोटो घेणे आवश्यक आहे.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: responsiveFont(12),
-                      color: Colors.blue.shade800,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  GestureDetector(
-                    onTap: _captureConsentPhoto,
-                    child:
-                        _consentPhotoFile != null
-                            ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.file(
-                                _consentPhotoFile!,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                            : Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.grey.shade200,
-                                border: Border.all(color: Colors.grey.shade400),
-                              ),
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 36,
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Capture Consent Form & Photo ID*',
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: responsiveFont(12),
-                      color: kBlackColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-          ], // end _isCollectionRemark
-
-          // Submit button — shown after OTP verified
-          if (_isAppointmentConfirmed && _isOtpVerified) ...[
+          // Submit button
+          if (_isAppointmentConfirmed && !_isSampleCollected) ...[
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => _submitSampleCollection(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kPrimaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(
-                  'Submit',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    fontWeight: FontWeight.w700,
-                    fontSize: responsiveFont(15),
-                    color: Colors.white,
-                  ),
-                ),
+              height: 46.h,
+              child: AppActiveButton(
+                buttontitle: 'Submit',
+                onTap: _submitSampleCollection,
               ),
             ),
+          ],
+
+          // Sample already collected
+          if (_isSampleCollected) ...[
+            _buildSampleAlreadyCollectedCard(),
+            SizedBox(height: 12.h),
           ],
 
           // Appointment pending warning
           if (!_isAppointmentConfirmed) ...[
             _buildAppointmentPendingCard(),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
           ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhotosRow() {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _buildSinglePhotoCard(
+              title: 'Beneficiary Photo',
+              icon: Icons.person_outline,
+              photoFile: _patientPhotoFile,
+              onCapture: _capturePatientPhoto,
+              captureLabel: 'Tap to capture *',
+              showSkipToggle: true,
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: _buildSinglePhotoCard(
+              title: 'Consent & Photo ID',
+              icon: Icons.description_outlined,
+              photoFile: _consentPhotoFile,
+              onCapture: _captureConsentPhoto,
+              captureLabel: 'Tap to capture *',
+              hintText: 'संमतीपत्र आणि ओळखपत्र एकत्र फोटो',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSinglePhotoCard({
+    required String title,
+    required IconData icon,
+    required File? photoFile,
+    required VoidCallback onCapture,
+    required String captureLabel,
+    bool showSkipToggle = false,
+    String? hintText,
+  }) {
+    final bool captured = photoFile != null;
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: captured ? Colors.green.shade200 : Colors.grey.shade200,
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, 1),
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 6,
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
+            decoration: BoxDecoration(
+              color: captured ? Colors.green.shade600 : kPrimaryColor,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(10),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  captured ? Icons.check_circle_outline : icon,
+                  color: Colors.white,
+                  size: 14.sp,
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: CommonText(
+                    text: title,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    textColor: Colors.white,
+                    textAlign: TextAlign.start,
+                    maxLine: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Body
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 10.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Photo thumbnail / placeholder — always square rounded
+                  GestureDetector(
+                    onTap: onCapture,
+                    child:
+                        captured
+                            ? Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    photoFile,
+                                    width: 80.w,
+                                    height: 80.w,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Container(
+                                  width: 22.w,
+                                  height: 22.w,
+                                  decoration: BoxDecoration(
+                                    color: kPrimaryColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                    size: 11.sp,
+                                  ),
+                                ),
+                              ],
+                            )
+                            : Container(
+                              width: 80.w,
+                              height: 80.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: kPurpleFaint,
+                                border: Border.all(
+                                  color: kPrimaryColor.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 24.sp,
+                                    color: kPrimaryColor,
+                                  ),
+                                  SizedBox(height: 3.h),
+                                  CommonText(
+                                    text: 'Tap to add',
+                                    fontSize: 8.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: kPrimaryColor,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                  ),
+
+                  SizedBox(height: 8.h),
+                  CommonText(
+                    text: captureLabel,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: captured ? Colors.green.shade600 : kTextColor,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  // Hint text below capture label (consent card only)
+                  if (hintText != null) ...[
+                    SizedBox(height: 5.h),
+                    CommonText(
+                      text: hintText,
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w400,
+                      textColor: Colors.blue.shade700,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+
+                  // Skip Face Detection toggle (beneficiary card only)
+                  if (showSkipToggle) ...[
+                    SizedBox(height: 6.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CommonText(
+                          text: 'Skip Face\nDetection',
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w400,
+                          textColor: kTextColor,
+                          textAlign: TextAlign.center,
+                        ),
+                        Transform.scale(
+                          scale: 0.7,
+                          child: Switch(
+                            value: _skipFaceDetection,
+                            onChanged:
+                                (v) => setState(() => _skipFaceDetection = v),
+                            activeThumbColor: Colors.green,
+                            inactiveThumbColor: kBlackColor.withValues(
+                              alpha: 0.4,
+                            ),
+                            inactiveTrackColor: kBlackColor.withValues(
+                              alpha: 0.2,
+                            ),
+                            activeTrackColor: Colors.green.withValues(
+                              alpha: 0.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSampleAlreadyCollectedCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.green[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green.shade300),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.check_circle_outline, color: Colors.green[700], size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Sample Already Collected',
+              style: TextStyle(
+                fontSize: responsiveFont(12),
+                fontFamily: FontConstants.interFonts,
+                fontWeight: FontWeight.w600,
+                color: Colors.green[800],
+              ),
+            ),
+          ),
         ],
       ),
     );

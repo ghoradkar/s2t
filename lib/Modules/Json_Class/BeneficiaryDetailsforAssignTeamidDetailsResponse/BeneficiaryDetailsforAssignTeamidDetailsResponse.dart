@@ -51,6 +51,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
   int? dISTLGDCODE;
   String? dISTNAME;
   String? sampleCollection;
+  int? arId;
   String? assignTeamid;
   String? assignTeamName;
   String? isTeamAssign;
@@ -84,6 +85,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
     this.dISTLGDCODE,
     this.dISTNAME,
     this.sampleCollection,
+    this.arId,
     this.assignTeamid,
     this.assignTeamName,
     this.isTeamAssign,

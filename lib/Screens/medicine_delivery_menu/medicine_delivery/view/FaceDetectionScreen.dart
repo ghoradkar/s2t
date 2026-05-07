@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 
@@ -118,40 +119,32 @@ class _FaceDetectionScreenState extends State<FaceDetectionScreen> {
         Navigator.pop(context);
       },
     );
-
-    // showDialog(
-    //   context: context,
-    //   builder: (_) => AlertDialog(
-    //     content: const Text(
-    //       'Click on Start Analysis to start\n\nYou need to blink both eye to enable capture',
-    //     ),
-    //     actions: [
-    //       TextButton(
-    //         onPressed: () => Navigator.pop(context),
-    //         child: const Text('OK'),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   void _showMultiFaceDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder:
-          (_) => AlertDialog(
-            content: const Text(
-              'Detecting more than 1 face,\nneed only one face of particular worker in frame which you want to capture image',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
+    ToastManager.showAlertDialog(
+      context,
+      "Detecting more than 1 face,\nneed only one face of particular worker in frame which you want to capture image",
+      () {
+        Get.back();
+      },
     );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder:
+    //       (_) => AlertDialog(
+    //         content: const Text(
+    //           'Detecting more than 1 face,\nneed only one face of particular worker in frame which you want to capture image',
+    //         ),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () => Navigator.pop(context),
+    //             child: const Text('OK'),
+    //           ),
+    //         ],
+    //       ),
+    // );
   }
 
   // ── Analysis control ─────────────────────────────────────────────────────────

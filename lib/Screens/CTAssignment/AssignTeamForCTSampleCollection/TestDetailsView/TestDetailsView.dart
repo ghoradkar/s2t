@@ -1,484 +1,163 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/Json_Class/ConfirmatoryTestsScreeningResponse/ConfirmatoryTestsScreeningResponse.dart';
 import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
 
 class TestDetailsView extends StatelessWidget {
   TestDetailsView({super.key, required this.list});
 
   List<ConfirmatoryTestsScreeningOutput> list = [];
+
+  static const _col1Flex = 3;
+  static const _col2Flex = 2;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        // borderRadius: BorderRadius.circular(10),
-        // boxShadow: [
-        //   BoxShadow(
-        //     offset: Offset(0, 1),
-        //     color: Colors.black.withValues(alpha: 0.15),
-        //     spreadRadius: 0,
-        //     blurRadius: 10,
-        //   ),
-        // ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2DFFB), width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.07),
+            blurRadius: 10,
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: SizeConfig.screenWidth,
-              height: 26,
-              decoration: BoxDecoration(
-                color: kPrimaryColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  "Test Details",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: FontConstants.interFonts,
-                    fontWeight: FontWeight.w700,
-                    fontSize: responsiveFont(15),
-                  ),
-                ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          // ── Title bar ──────────────────────────────────────────
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            color: kPrimaryColor,
+            child: Text(
+              'Test Details',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: FontConstants.interFonts,
+                fontWeight: FontWeight.w700,
+                fontSize: 13.sp,
+                letterSpacing: 0.3,
               ),
             ),
-            // const SizedBox(height: 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+          ),
+
+          // ── Column headers ────────────────────────────────────
+          Container(
+            color: const Color(0xFFEDEBFD),
+            child: Row(
               children: [
-                Expanded(
-                  child: Container(
-                    width: SizeConfig.screenWidth,
-                    height: 30,
-                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    decoration: BoxDecoration(
-                      color: Color(0xffE2DFFB),
-                      border: Border(
-                        left: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                        top: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                        right: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Test Name",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: FontConstants.interFonts,
-                          fontWeight: FontWeight.w700,
-                          fontSize: responsiveFont(14),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    width: SizeConfig.screenWidth,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Color(0xffE2DFFB),
-                      border: Border(
-                        top: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                        right: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: kBlackColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Sample Quantity (ml)",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: FontConstants.interFonts,
-                          fontWeight: FontWeight.w700,
-                          fontSize: responsiveFont(14),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
+                _headerCell('Test Name', flex: _col1Flex, align: TextAlign.start),
+                _vDivider(height: 36.h, color: const Color(0xFFB8B2F0)),
+                _headerCell('Sample Qty (ml)', flex: _col2Flex, align: TextAlign.center),
               ],
             ),
-            ListView.builder(
+          ),
+
+          // ── Data rows ─────────────────────────────────────────
+          if (list.isEmpty)
+            _emptyState('No test details available')
+          else
+            ListView.separated(
               itemCount: list.length,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                ConfirmatoryTestsScreeningOutput obj = list[index];
-                return IntrinsicHeight(
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (_, __) =>
+                  Divider(height: 1, color: const Color(0xFFEEEEEE)),
+              itemBuilder: (_, i) {
+                final obj = list[i];
+                final isEven = i % 2 == 0;
+                return Container(
+                  color: isEven ? Colors.white : const Color(0xFFFAF9FF),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
-                          decoration: BoxDecoration(
-                            color: kWhiteColor,
-                            border: Border(
-                              left: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              top: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              right: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                            child: Text(
-                              obj.serviceName ?? "",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: FontConstants.interFonts,
-                                fontWeight: FontWeight.w700,
-                                fontSize: responsiveFont(14),
-                              ),
-                            ),
-                          ),
-                        ),
+                      _dataCell(
+                        obj.serviceName ?? '—',
+                        flex: _col1Flex,
+                        align: TextAlign.start,
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-                          decoration: BoxDecoration(
-                            color: kWhiteColor,
-                            border: Border(
-                              left: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              top: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              right: BorderSide(
-                                color: kBlackColor.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                              child: Text(
-                                obj.sampleQuantityMl ?? "",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: FontConstants.interFonts,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: responsiveFont(14),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                      _vDivider(color: const Color(0xFFEEEEEE)),
+                      _dataCell(
+                        obj.sampleQuantityMl ?? '—',
+                        flex: _col2Flex,
+                        align: TextAlign.center,
                       ),
                     ],
                   ),
                 );
               },
             ),
-          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _headerCell(String text, {required int flex, TextAlign align = TextAlign.start}) {
+    return Expanded(
+      flex: flex,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+        child: Text(
+          text,
+          textAlign: align,
+          style: TextStyle(
+            fontFamily: FontConstants.interFonts,
+            fontWeight: FontWeight.w600,
+            fontSize: 11.sp,
+            color: kPrimaryColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dataCell(String text, {required int flex, TextAlign align = TextAlign.start}) {
+    return Expanded(
+      flex: flex,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        child: Text(
+          text,
+          textAlign: align,
+          style: TextStyle(
+            fontFamily: FontConstants.interFonts,
+            fontWeight: FontWeight.w400,
+            fontSize: 12.sp,
+            color: kBlackColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _vDivider({double? height, Color color = const Color(0xFFEEEEEE)}) {
+    return Container(
+      width: 1,
+      height: height,
+      color: color,
+    );
+  }
+
+  Widget _emptyState(String message) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 18.h),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: FontConstants.interFonts,
+          fontSize: 12.sp,
+          color: Colors.grey.shade400,
         ),
       ),
     );
   }
 }
-
-// class TestDetailsView extends StatelessWidget {
-//   TestDetailsView({super.key, required this.list});
-
-//   List<ConfirmatoryTestsScreeningOutput> list = [];
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(10),
-//         boxShadow: [
-//           BoxShadow(
-//             offset: Offset(0, 1),
-//             color: Colors.black.withValues(alpha: 0.15),
-//             spreadRadius: 0,
-//             blurRadius: 10,
-//           ),
-//         ],
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(10.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             Container(
-//               width: SizeConfig.screenWidth,
-//               height: 30,
-//               decoration: BoxDecoration(
-//                 color: kPrimaryColor,
-//                 borderRadius: BorderRadius.only(
-//                   topLeft: Radius.circular(10),
-//                   topRight: Radius.circular(10),
-//                 ),
-//               ),
-//               child: Center(
-//                 child: Text(
-//                   "Test Details",
-//                   style: TextStyle(
-//                     color: Colors.white,
-//                     fontFamily: FontConstants.interFonts,
-//                     fontWeight: FontWeight.w700,
-//                     fontSize: responsiveFont(16),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 4),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 Expanded(
-//                   child: Container(
-//                     width: SizeConfig.screenWidth,
-//                     height: 30,
-//                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-//                     decoration: BoxDecoration(
-//                       color: Color(0xffE2DFFB),
-//                       border: Border(
-//                         left: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                         top: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                         bottom: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                         right: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                       ),
-//                     ),
-//                     child: Center(
-//                       child: Text(
-//                         "Test Name",
-//                         textAlign: TextAlign.center,
-//                         style: TextStyle(
-//                           color: Colors.black,
-//                           fontFamily: FontConstants.interFonts,
-//                           fontWeight: FontWeight.w700,
-//                           fontSize: responsiveFont(14),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Container(
-//                     width: SizeConfig.screenWidth,
-//                     height: 30,
-//                     decoration: BoxDecoration(
-//                       color: Color(0xffE2DFFB),
-//                       border: Border(
-//                         top: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                         right: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                         bottom: BorderSide(
-//                           color: kBlackColor.withValues(alpha: 0.2),
-//                           width: 1,
-//                         ),
-//                       ),
-//                     ),
-//                     child: Center(
-//                       child: Text(
-//                         "Sample Quantity (ml)",
-//                         style: TextStyle(
-//                           color: Colors.black,
-//                           fontFamily: FontConstants.interFonts,
-//                           fontWeight: FontWeight.w700,
-//                           fontSize: responsiveFont(14),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 4),
-//               ],
-//             ),
-//             ListView.builder(
-//               itemCount: list.length,
-//               shrinkWrap: true,
-//               physics: NeverScrollableScrollPhysics(),
-//               itemBuilder: (context, index) {
-//                 ConfirmatoryTestsScreeningOutput obj = list[index];
-//                 return IntrinsicHeight(
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     crossAxisAlignment: CrossAxisAlignment.stretch,
-//                     children: [
-//                       Expanded(
-//                         child: Container(
-//                           padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
-//                           decoration: BoxDecoration(
-//                             color: kWhiteColor,
-//                             border: Border(
-//                               left: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                               top: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                               bottom: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                               right: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                             ),
-//                           ),
-//                           child: Padding(
-//                             padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-//                             child: Text(
-//                               obj.serviceName ?? "",
-//                               textAlign: TextAlign.center,
-//                               style: TextStyle(
-//                                 color: Colors.black,
-//                                 fontFamily: FontConstants.interFonts,
-//                                 fontWeight: FontWeight.w700,
-//                                 fontSize: responsiveFont(14),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                       Expanded(
-//                         child: Container(
-//                           padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-//                           decoration: BoxDecoration(
-//                             color: kWhiteColor,
-//                             border: Border(
-//                               left: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                               top: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                               bottom: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                               right: BorderSide(
-//                                 color: kBlackColor.withValues(alpha: 0.2),
-//                                 width: 1,
-//                               ),
-//                             ),
-//                           ),
-//                           child: Center(
-//                             child: Padding(
-//                               padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-//                               child: Text(
-//                                 obj.sampleQuantityMl ?? "",
-//                                 textAlign: TextAlign.center,
-//                                 style: TextStyle(
-//                                   color: Colors.black,
-//                                   fontFamily: FontConstants.interFonts,
-//                                   fontWeight: FontWeight.w700,
-//                                   fontSize: responsiveFont(14),
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-
-//       /*
-//         child: Padding(
-//           padding: const EdgeInsets.all(10.0),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-
-//             ],
-//           ),
-//         ),
-//         */
-//     );
-//   }
-// }

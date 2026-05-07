@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
@@ -53,6 +54,10 @@ class _CTAppointmentConfirmationScreenState
         status: widget.status,
       ),
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _c.loadBeneficiaryDetails();
+      if (mounted && widget.status == '4') _showNotInterestedAlert();
+    });
   }
 
   @override
@@ -231,6 +236,7 @@ class _CTAppointmentConfirmationScreenState
       ),
       child: Row(
         children: [
+
           Expanded(
             flex: 3,
             child: Padding(
@@ -267,20 +273,40 @@ class _CTAppointmentConfirmationScreenState
     );
   }
 
+  void _showNotInterestedAlert() {
+    ToastManager.showAlertDialog(
+      context,
+      'You are not allowed to change the status as the beneficiary is not interested in CT',
+      () => Get.back(),
+    );
+  }
+
   void _openSampleCollection(CTAppointmentBeneficiaryOutput dep) {
+    if (widget.status == '4') {
+      _showNotInterestedAlert();
+      return;
+    }
     final details = BeneficiaryDetailsforAssignTeamidOutput(
       regdno: dep.regdNo,
       regdid: int.tryParse(dep.regdId ?? '') ?? 0,
       beneficiaryName: dep.beneficiaryName,
       t2tOrderId: int.tryParse(dep.t2tOrderId ?? '') ?? 0,
       dISTLGDCODE: dep.distLgdCode ?? 0,
+      sampleCollection: dep.sampleCollection,
+      arId: int.tryParse(dep.arId ?? ''),
     );
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AssignTeamForCTSampleCollection(beneficiaryDetails: details, isAppointmentFlow: true),
+        builder:
+            (_) => AssignTeamForCTSampleCollection(
+              beneficiaryDetails: details,
+              isAppointmentFlow: true,
+            ),
       ),
-    );
+    ).then((submitted) {
+      if (submitted == true) _c.reloadData();
+    });
   }
 
   Widget _buildTableRow(CTAppointmentBeneficiaryOutput dep) {
@@ -303,7 +329,10 @@ class _CTAppointmentConfirmationScreenState
               Expanded(
                 flex: 3,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 8.h,
+                  ),
                   child: Text(
                     dep.beneficiaryName ?? 'N/A',
                     style: TextStyle(
@@ -319,7 +348,10 @@ class _CTAppointmentConfirmationScreenState
               Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 8.h,
+                  ),
                   child: Text(
                     dep.relationWithWorker ?? 'N/A',
                     style: TextStyle(
