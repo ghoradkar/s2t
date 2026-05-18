@@ -32,6 +32,7 @@ class T2TCTBeneficiaryDetailsResponse {
 
 class T2TCTBeneficiaryDetailsOutput {
   int? campId;
+  int? t2tOrderId;
   int? regdid;
   String? regdno;
   String? beneficiaryName;
@@ -53,6 +54,7 @@ class T2TCTBeneficiaryDetailsOutput {
 
   T2TCTBeneficiaryDetailsOutput({
     this.campId,
+    this.t2tOrderId,
     this.regdid,
     this.regdno,
     this.beneficiaryName,
@@ -75,7 +77,8 @@ class T2TCTBeneficiaryDetailsOutput {
 
   T2TCTBeneficiaryDetailsOutput.fromJson(Map<String, dynamic> json) {
     campId = json['CampId'];
-    regdid = json['Regdid'];
+    t2tOrderId = json['T2T_Order_Id'];
+    regdid = json['TreatmentID'] ?? json['Regdid'];
     regdno = json['Regdno'];
     beneficiaryName = json['BeneficiaryName'];
     landingLab = json['LandingLab'];

@@ -41,6 +41,7 @@ enum DashboardMenu {
   PickupMedicinePacket,
   TeamPhotos,
   // AnalyticalDashboard,
+  CallingDashboard,
 }
 
 enum DropDownTypeMenu {
@@ -80,6 +81,7 @@ enum DropDownTypeMenu {
   SelectTeam,
   AssignResources,
   TeamCampID,
+  DeptType,
 }
 
 enum DropDownMultipleTypeMenu {

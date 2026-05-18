@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Screens/AdminDashboard/Model/D2DTeamsListModel.dart';
+// export 'package:s2toperational/screen/admin_dashboard/model/d2d_teams_list_model.dart';
 
 import 'package:equatable/equatable.dart';
 

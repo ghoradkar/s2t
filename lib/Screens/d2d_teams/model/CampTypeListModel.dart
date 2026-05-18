@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Screens/AdminDashboard/Model/CampTypeListModel.dart';
+// export 'package:s2toperational/screen/admin_dashboard/model/camp_type_list_model.dart';
 class CampTypeListModel {
   final String status;
   final String message;

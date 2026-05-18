@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Screens/AdminDashboard/Model/OrganizationListModel.dart';
+// export 'package:s2toperational/screen/admin_dashboard/model/organization_list_model.dart';
 
 class OrganizationListModel {
   final String status;

@@ -438,7 +438,7 @@ class ToastManager {
                 ),
               ),
               SizedBox(
-                height: 30,
+                height: 40,
                 child: Row(
                   children: [
                     Container(
@@ -464,6 +464,7 @@ class ToastManager {
                   ],
                 ),
               ),
+
               SizedBox(
                 height: 30,
                 child: Row(

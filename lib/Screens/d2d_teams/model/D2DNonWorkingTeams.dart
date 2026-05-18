@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Screens/AdminDashboard/Model/D2DNonWorkingTeams.dart';
+// export 'package:s2toperational/screen/admin_dashboard/model/d2d_non_working_teams.dart';
 class D2dNonWorkingTeams {
   final String status;
   final String message;

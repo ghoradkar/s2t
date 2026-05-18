@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
 
@@ -86,6 +87,7 @@ class ExpectedBeneficiaryList
               : Column(
                 children: [
                   SizedBox(height: 10.h),
+
                   AppTextField(
                     controller: controller.searchTextController,
                     onChange: controller.onSearchChanged,

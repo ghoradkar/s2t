@@ -112,7 +112,7 @@ class ScreeningDetailsView extends StatelessWidget {
             ),
              SizedBox(height: 4.h),
             _buildRow(
-              "Acknowledgement",
+              "acknowledgement",
               campDetailOutput?.ackowledgement.toString() ?? "0",
               uploadBillTitleColor,
               isLast: true,
@@ -689,7 +689,7 @@ class ScreeningDetailsView extends StatelessWidget {
 //                       padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
 //                       color: Colors.transparent,
 //                       child: Text(
-//                         "Acknowledgement huigggvcgytttt tf6y5dtrdrgsrefssbn ",
+//                         "acknowledgement huigggvcgytttt tf6y5dtrdrgsrefssbn ",
 //                         style: TextStyle(
 //                           color: uploadBillTitleColor,
 //                           fontFamily: FontConstants.interFonts,

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/add_dependent_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/appointment_confirmation_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/controllers/calling_dashboard_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/models/BeneficiaryResponseModel.dart';
+import 'package:s2toperational/Screens/calling_modules/repository/calling_dashboard_repository.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/add_dependent.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/appointment_confirmation.dart';
+import 'package:s2toperational/Screens/calling_modules/screens/calling_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/forgot_password_otp.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/reset_password.dart';
@@ -45,6 +48,7 @@ class AppRoutes {
   static const String logoutScreen = "/logoutScreen";
   static const String appointmentConfirmation = "/appointmentConfirmation";
   static const String addDependent = "/addDependent";
+  static const String callingDashboard = "/callingDashboard";
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -108,6 +112,18 @@ class AppRoutes {
             settings: settings,
           );
         }
+
+      case callingDashboard:
+        Get.delete<CallingDashboardController>(force: true);
+        Get.put(
+          CallingDashboardController(
+            repository: CallingDashboardRepository(),
+          ),
+        );
+        return MaterialPageRoute(
+          builder: (_) => const CallingDashboardScreen(),
+          settings: settings,
+        );
 
       default:
         throw const RouteException('Route not found!');

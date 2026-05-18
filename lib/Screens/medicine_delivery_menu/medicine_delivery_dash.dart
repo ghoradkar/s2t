@@ -135,6 +135,8 @@ class _MedicineDeliveryDashState extends State<MedicineDeliveryDash> {
           MaterialPageRoute(builder: (context) => MedicineDeliveryScreen()),
         );
         break;
+      case DashboardMenu.CallingDashboard:
+        break;
     }
   }
 }

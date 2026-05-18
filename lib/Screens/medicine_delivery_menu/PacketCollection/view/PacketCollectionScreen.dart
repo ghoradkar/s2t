@@ -8,8 +8,10 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppBarCodeTextfield.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/PacketCollection/controller/packet_collection_controller.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
@@ -224,6 +226,288 @@ class _PacketCollectionScreenState extends State<PacketCollectionScreen> {
                 ),
               ),
               const SizedBox(height: 4),
+
+              Expanded(
+                child: Obx(
+                  () =>
+                      controller.packetList.isNotEmpty
+                          ? ListView.builder(
+                            itemCount: controller.packetList.length,
+                            itemBuilder: (context, index) {
+                              final data = controller.packetList[index];
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(2, 2, 2, 16),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: Offset(0, 0.5),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                        spreadRadius: 0,
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Checkbox(
+                                        value: data.isSelected,
+                                        onChanged: (_) {
+                                          controller.togglePacketSelection(
+                                            index,
+                                          );
+                                        },
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                            8,
+                                            2,
+                                            4,
+                                            8,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                      0,
+                                                      6,
+                                                      0,
+                                                      0,
+                                                    ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    // color: kPrimaryColor,
+                                                    gradient: LinearGradient(
+                                                      begin:
+                                                          Alignment.bottomRight,
+                                                      end: Alignment.topLeft,
+                                                      colors: [
+                                                        kFirstAppBarcolor
+                                                            .withValues(
+                                                              alpha: 0.4,
+                                                            ),
+                                                        kFirstAppBarcolor,
+                                                      ],
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                5,
+                                                              ),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                5,
+                                                              ),
+                                                        ),
+                                                  ),
+                                                  height: 36.h,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          "Lab Name",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: kWhiteColor,
+                                                            fontFamily:
+                                                                FontConstants
+                                                                    .interFonts,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                responsiveFont(
+                                                                  16.sp,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          data.labName ?? "",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: kWhiteColor,
+                                                            fontFamily:
+                                                                FontConstants
+                                                                    .interFonts,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                responsiveFont(
+                                                                  16.sp,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                      0,
+                                                      6,
+                                                      0,
+                                                      0,
+                                                    ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.transparent,
+                                                    border: Border.all(
+                                                      color: kTextFieldBorder,
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                  height: 36.h,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          "District",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: kBlackColor,
+                                                            fontFamily:
+                                                                FontConstants
+                                                                    .interFonts,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize:
+                                                                responsiveFont(
+                                                                  14.sp,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          data.dISTNAME ?? "",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: kBlackColor,
+                                                            fontFamily:
+                                                                FontConstants
+                                                                    .interFonts,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize:
+                                                                responsiveFont(
+                                                                  14.sp,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                      0,
+                                                      6,
+                                                      0,
+                                                      0,
+                                                    ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.transparent,
+                                                    border: Border.all(
+                                                      color: kTextFieldBorder,
+                                                      width: 1,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                5,
+                                                              ),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                5,
+                                                              ),
+                                                        ),
+                                                  ),
+                                                  height: 36.h,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          "Packet Number",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: kBlackColor,
+                                                            fontFamily:
+                                                                FontConstants
+                                                                    .interFonts,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize:
+                                                                responsiveFont(
+                                                                  14.sp,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          data.packetNumber ??
+                                                              "",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: kBlackColor,
+                                                            fontFamily:
+                                                                FontConstants
+                                                                    .interFonts,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize:
+                                                                responsiveFont(
+                                                                  14.sp,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                          : Center(
+                            child: CommonText(
+                              text: "No Data Found",
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              textColor: kBlackColor,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                ),
+              ),
+              const SizedBox(height: 4),
               Obx(
                 () => Container(
                   padding: EdgeInsets.all(8),
@@ -236,7 +520,7 @@ class _PacketCollectionScreenState extends State<PacketCollectionScreen> {
                             fontFamily: FontConstants.interFonts,
                             color: kBlackColor,
                             fontSize: responsiveFont(16),
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -254,226 +538,8 @@ class _PacketCollectionScreenState extends State<PacketCollectionScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Expanded(
-                child: Obx(
-                  () => ListView.builder(
-                    itemCount: controller.packetList.length,
-                    itemBuilder: (context, index) {
-                      final data = controller.packetList[index];
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 2, 2, 16),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 0.5),
-                                color: Colors.black.withValues(alpha: 0.6),
-                                spreadRadius: 0,
-                                blurRadius: 2,
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                value: data.isSelected,
-                                onChanged: (_) {
-                                  controller.togglePacketSelection(index);
-                                },
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    8,
-                                    2,
-                                    4,
-                                    8,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          0,
-                                          6,
-                                          0,
-                                          0,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(5),
-                                              topRight: Radius.circular(5),
-                                            ),
-                                          ),
-                                          height: 36.h,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  "Lab Name",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: kWhiteColor,
-                                                    fontFamily:
-                                                        FontConstants
-                                                            .interFonts,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: responsiveFont(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  data.labName ?? "",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: kWhiteColor,
-                                                    fontFamily:
-                                                        FontConstants
-                                                            .interFonts,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: responsiveFont(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          0,
-                                          6,
-                                          0,
-                                          0,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            border: Border.all(
-                                              color: kTextFieldBorder,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          height: 36.h,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  "District",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: kBlackColor,
-                                                    fontFamily:
-                                                        FontConstants
-                                                            .interFonts,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: responsiveFont(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  data.dISTNAME ?? "",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: kBlackColor,
-                                                    fontFamily:
-                                                        FontConstants
-                                                            .interFonts,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: responsiveFont(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          0,
-                                          6,
-                                          0,
-                                          0,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            border: Border.all(
-                                              color: kTextFieldBorder,
-                                              width: 1,
-                                            ),
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(5),
-                                              bottomRight: Radius.circular(5),
-                                            ),
-                                          ),
-                                          height: 36.h,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  "Packet Number",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: kBlackColor,
-                                                    fontFamily:
-                                                        FontConstants
-                                                            .interFonts,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: responsiveFont(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  data.packetNumber ?? "",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: kBlackColor,
-                                                    fontFamily:
-                                                        FontConstants
-                                                            .interFonts,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: responsiveFont(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
             ],
-          ).paddingSymmetric(vertical: 12, horizontal: 12),
+          ).paddingSymmetric(vertical: 12.h, horizontal: 12.w),
         ),
       ),
     );

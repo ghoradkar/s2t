@@ -5,11 +5,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountDistrictWiseModel.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Model/S2TAndroidIosCountModel.dart';
+import 'package:s2toperational/Screens/admin_dashboard/Model/s2t_android_Ios_count_district_wise_model.dart';
+import 'package:s2toperational/Screens/admin_dashboard/Model/s2t_android_Ios_count_model.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';
-// import 'package:s2toperational/Screens/s2t_patient_app/model/S2TAndroidIosCountModel.dart';
-// import 'package:s2toperational/Screens/s2t_patient_app/model/S2TAndroidIosCountDistrictWiseModel.dart';
+// import 'package:s2toperational/screen/s2t_patient_app/model/s2t_android_Ios_count_model.dart';
+// import 'package:s2toperational/screen/s2t_patient_app/model/s2t_android_Ios_count_district_wise_model.dart';
 import '../repository/s2t_patient_app_repository.dart';
 
 class S2TPatientAppController extends GetxController {

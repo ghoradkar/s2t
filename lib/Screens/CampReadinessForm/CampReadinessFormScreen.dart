@@ -529,7 +529,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                       ),
                       label: RichText(
                         text: TextSpan(
-                          text: 'Camp Type*',
+                          text: 'Camp ID*',
                           style: TextStyle(
                             fontFamily: FontConstants.interFonts,
                             color: kLabelTextColor,
@@ -576,7 +576,12 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 color: Colors.white,
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                  top: 8,
+                  bottom: 8 + MediaQuery.viewPaddingOf(context).bottom,
+                ),
                 child:
                     showSubmitButton == true
                         ? Column(

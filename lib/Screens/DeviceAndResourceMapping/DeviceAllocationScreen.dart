@@ -488,7 +488,12 @@ class _DeviceAllocationScreenState extends State<DeviceAllocationScreen> {
             Container(
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.only(
+                left: 8,
+                right: 8,
+                top: 8,
+                bottom: 8 + MediaQuery.viewPaddingOf(context).bottom,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -690,6 +695,9 @@ class _DeviceAllocationScreenState extends State<DeviceAllocationScreen> {
             titleString: title,
             dropDownList: list,
             dropDownMenu: dropDownType,
+            preSelectedList: dropDownType == DropDownMultipleTypeMenu.SubResource
+                ? (selectedResource?.subResourceList ?? [])
+                : null,
             onApplyTap: (p0) {
               if (dropDownType == DropDownMultipleTypeMenu.SubResource) {
                 selectedResource?.subResourceList = p0;
@@ -782,7 +790,7 @@ class _DeviceAllocationScreenState extends State<DeviceAllocationScreen> {
     ToastManager.hideLoader();
 
     if (success) {
-      _showSubDeviceDropDownBottomSheet("Sub Device", response?.output ?? []);
+      _showSubDeviceDropDownBottomSheet("Select Devices", response?.output ?? []);
     } else {
       ToastManager.toast(errorMessage);
     }
@@ -1570,9 +1578,9 @@ class _DeviceAllocationScreenState extends State<DeviceAllocationScreen> {
                       onTap: () {
                         subResources(devicesOutputObj);
                       },
-                      hint: 'Select Devices',
+                      hint: 'Select Resources',
                       label: CommonText(
-                        text: 'Select Devices',
+                        text: 'Select Resources',
                         fontSize: 12.sp,
                         fontWeight: FontWeight.normal,
                         textColor: kBlackColor,

@@ -10,7 +10,7 @@ class AcknowledgementPatientListResponse {
   AcknowledgementPatientListResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    if (json['output'] != dynamic) {
+    if (json['output'] != null) {
       output = <AcknowledgementPatientOutput>[];
       json['output'].forEach((v) {
         output!.add(AcknowledgementPatientOutput.fromJson(v));
@@ -22,7 +22,7 @@ class AcknowledgementPatientListResponse {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;
     data['message'] = message;
-    if (output != dynamic) {
+    if (output != null) {
       data['output'] = output!.map((v) => v.toJson()).toList();
     }
     return data;

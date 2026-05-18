@@ -3,15 +3,20 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+
 // import 'package:s2toperational/Modules/Json_Class/D2DPhysicalExamDetailsResponse/InsertDetailsResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+
 // import 'package:s2toperational/Modules/Json_Class/Is24By7IsAccountCreatedResponse/GetMyOpratorResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
+import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_beneficiary_model.dart';
+import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_update_response.dart';
+import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_confirmatory_list_model.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/MonthsResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/PostCampBeneficiaryListResponse/PostCampBeneficiaryListResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/YearsResponse.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import '../../Screens/AdminDashboard/Model/HomeAndHubProcessingModel.dart';
+import '../../Screens/admin_dashboard/model/home_and_hub_processing_model.dart';
 import '../../Screens/d2d_physical_examination/model/AttendancesListUsingSiteDetailsIDResponse.dart';
 import '../../Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsResponse.dart';
 import '../../Screens/d2d_physical_examination/model/GetMyOpratorResponse.dart';
@@ -20,7 +25,7 @@ import '../../Screens/d2d_physical_examination/model/Is24By7IsAccountCreatedResp
 import '../../Screens/d2d_physical_examination/model/T2TCallingAPIDetailsResponse.dart';
 import '../../Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../Json_Class/HubHomelabDashboardResponse/HubHomelabDashboardResponse.dart';
-import '../../Screens/AdminDashboard/Model/HomeLabPendingCountTableModel.dart';
+import '../../Screens/admin_dashboard/Model/home_lab_pending_count_table_model.dart';
 import '../Enums/Enums.dart';
 import '../Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
 import '../Json_Class/AdminDashboard/ConductedCampsTotals.dart';
@@ -33,6 +38,8 @@ import '../Json_Class/AppointmentStatusResponse/AppointmentStatusResponse.dart';
 import '../Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
 import '../Json_Class/AssignedExternalResourceDetailsResponse/AssignedExternalResourceDetailsResponse.dart';
 import '../Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
+import '../Json_Class/DepartmentTypeResponse/DepartmentTypeResponse.dart';
+
 // import '../Json_Class/AttendancesListUsingSiteDetailsIDResponse/AttendancesListUsingSiteDetailsIDResponse.dart';
 import '../Json_Class/AudioScreeningDetailsResponse/AudioScreeningDetailsResponse.dart';
 import '../Json_Class/BeneficiariesDetailsResponse/BeneficiariesDetailsResponse.dart';
@@ -60,12 +67,10 @@ import '../Json_Class/CampWiseInvoiceDetailsResponse/CampWiseInvoiceDetailsRespo
 import '../Json_Class/CompanyListResponse/CompanyListResponse.dart';
 import '../Json_Class/ConfirmatoryTestsScreeningResponse/ConfirmatoryTestsScreeningResponse.dart';
 import '../Json_Class/ConfirmatoryTestsScreeningTubeResponse/ConfirmatoryTestsScreeningTubeResponse.dart';
-import '../../Screens/AppointmentSampleCollectionCT/models/ct_appointment_beneficiary_model.dart';
-import '../../Screens/AppointmentSampleCollectionCT/models/ct_appointment_update_response.dart';
-import '../../Screens/AppointmentSampleCollectionCT/models/ct_confirmatory_list_model.dart';
 import '../Json_Class/ConsumableListDetailsResponse/ConsumableListDetailsResponse.dart';
 import '../Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
 import '../Json_Class/D2DNonWorkingTeamsResponse/D2DNonWorkingTeamsResponse.dart';
+
 // import '../Json_Class/D2DPhysicalExamDetailsResponse/D2DPhysicalExamDetailsResponse.dart';
 import '../../Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
 import '../Json_Class/D2DTeamMemberDetailsResponse/D2DTeamMemberDetailsResponse.dart';
@@ -81,6 +86,7 @@ import '../Json_Class/GetDocListD2DResponse/GetDocListD2DResponse.dart';
 import '../Json_Class/HomeAndHubLabCampCreationResponse/HomeAndHubLabCampCreationResponse.dart';
 import '../Json_Class/InitiatedByResponse/InitiatedByResponse.dart';
 import '../../Screens/d2d_physical_examination/model/InsertBeneficiaryCallingLogResponse.dart';
+
 // import '../Json_Class/Is24By7IsAccountCreatedResponse/Is24By7IsAccountCreatedResponse.dart';
 import '../Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
 import '../Json_Class/LabDataResponse/LabDataResponse.dart';
@@ -115,6 +121,7 @@ import '../Json_Class/SubmitDeviceMappingResponse/SubmitDeviceMappingResponse.da
 import '../Json_Class/T2TCTBeneficiaryDetailsResponse/T2TCTBeneficiaryDetailsResponse.dart';
 import '../Json_Class/T2TCTTeamandBeneficiaryResponse/T2TCTTeamandBeneficiaryResponse.dart';
 import '../Json_Class/T2TCTUserDetailsResponse/T2TCTUserDetailsResponse.dart';
+
 // import '../Json_Class/T2TCallingAPIDetailsResponse/T2TCallingAPIDetailsResponse.dart';
 import '../Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
 import '../Json_Class/TeamCCResponse/TeamCCResponse.dart';
@@ -122,6 +129,7 @@ import '../Json_Class/TeamCampDetailsListResponse/TeamCampDetailsListResponse.da
 import '../Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
 import '../Json_Class/TeamDetailsListForAssignResponse/TeamDetailsListForAssignResponse.dart';
 import '../Json_Class/TeamDetailsListResponse/TeamDetailsListResponse.dart';
+
 // import '../Json_Class/TeamNumberByCampIdAndUserIdListResponse/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../../Screens/d2d_physical_examination/model/TeamWisePhysicalExamDetailsResponse.dart';
 import '../Json_Class/TeamsCampTypeWiseResponse/TeamsCampTypeWiseResponse.dart';
@@ -207,16 +215,15 @@ class APIManager {
         kTreatmentCount =
             "http://103.251.94.57:8080/disha-t2t-Apis/api/access/master/countdata/";
       case APIMode.Beta:
-        // String baseUrl = "https://testmcwwb.myhindlab.com/webservices/";
-        String baseUrl = "https://newtesting.myhindlab.com/webservices/";
-        // kMediaBaseURL = "https://testmcwwb.myhindlab.com/BETA_MYHINDLABDOCS";
-        kMediaBaseURL = "https://newtesting.myhindlab.com/BETA_MYHINDLABDOCS";
-        kD2DBaseURL =
-            "${baseUrl}d2d_V2.asmx/";
-        kCallingBaseURL =
-            "${baseUrl}BeneficiaryCalling.asmx/";
-        kConstructionWorkerBaseURL =
-            "${baseUrl}ConstructionWorker_V2.asmx/";
+        String baseUrl = "https://testmcwwb.myhindlab.com/webservices/";
+        // String baseUrl = "https://newtesting.myhindlab.com/webservices/";
+
+        kMediaBaseURL = "https://testmcwwb.myhindlab.com/BETA_MYHINDLABDOCS";
+        // kMediaBaseURL = "https://newtesting.myhindlab.com/BETA_MYHINDLABDOCS";
+
+        kD2DBaseURL = "${baseUrl}D2D_V2.asmx/";
+        kCallingBaseURL = "${baseUrl}BeneficiaryCalling.asmx/";
+        kConstructionWorkerBaseURL = "${baseUrl}ConstructionWorker_V2.asmx/";
         kWebservicesBaseURL = baseUrl;
         kMahabocwBaseURL = "https://healthcamp.mahabocw.in/api/";
         kExpenseBillDetailsHandler =
@@ -1840,8 +1847,12 @@ class APIManager {
       print('Response: ${response.body}');
       final decoded = json.decode(response.body);
       ResourceReMappingCampResponse person =
-          ResourceReMappingCampResponse.fromJson(decoded as Map<String, dynamic>);
-      print('Status: ${person.status} | Message: ${person.message} | OutputCount: ${person.output?.length}');
+          ResourceReMappingCampResponse.fromJson(
+            decoded as Map<String, dynamic>,
+          );
+      print(
+        'Status: ${person.status} | Message: ${person.message} | OutputCount: ${person.output?.length}',
+      );
 
       if (person.status?.toLowerCase() == 'success') {
         callback(person, "", true);
@@ -2411,7 +2422,9 @@ class APIManager {
   }) async {
     final url = Uri.parse(
       '${kConstructionWorkerBaseURL}${APIConstants.kInsertMachineHearingTestNew}',
-    ).replace(queryParameters: {'CreatedBy': createdBy, 'JsonString': jsonString});
+    ).replace(
+      queryParameters: {'CreatedBy': createdBy, 'JsonString': jsonString},
+    );
     final IOClient ioClient = getInstanceOfIoClient();
     try {
       final response = await ioClient.get(url);
@@ -4092,8 +4105,7 @@ class APIManager {
       print(body);
       print(json.decode(response.body));
       UserInvoicePaymentDetailsResponse person =
-          UserInvoicePaymentDetailsResponse.
-          fromJson(
+          UserInvoicePaymentDetailsResponse.fromJson(
             json.decode(response.body),
           );
 
@@ -4279,9 +4291,7 @@ class APIManager {
     }
   }
 
-  Future<void> getPaymentVerificationRemarkAPI(
-    dynamic callback,
-  ) async {
+  Future<void> getPaymentVerificationRemarkAPI(dynamic callback) async {
     String method = APIConstants.kGetPaymentVerificationRemark;
 
     final url = Uri.parse('$kD2DBaseURL$method');
@@ -4487,7 +4497,8 @@ class APIManager {
     dynamic callback,
   ) async {
     final url = Uri.parse(
-        '$kD2DBaseURL${APIConstants.kInsertBasicHealthInfoNewWithVersionFastingHrs}');
+      '$kD2DBaseURL${APIConstants.kInsertBasicHealthInfoNewWithVersionFastingHrs}',
+    );
     final IOClient ioClient = getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -4684,11 +4695,10 @@ class APIManager {
     }
   }
 
-
   Future<void> insertCallDetailsAPI(
-      Map<String, dynamic> data,
-      dynamic callback,
-      ) async {
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
     String method = APIConstants.kInsertCallDetails;
 
     final url = Uri.parse('$kD2DBaseURL$method');
@@ -4705,8 +4715,7 @@ class APIManager {
       String body = response.body;
       print(body);
       print(json.decode(response.body));
-      InsertDetailsResponse person =
-      InsertDetailsResponse.fromJson(
+      InsertDetailsResponse person = InsertDetailsResponse.fromJson(
         json.decode(response.body),
       );
 
@@ -4892,11 +4901,10 @@ class APIManager {
     }
   }
 
-
   Future<void> apiKeyForMyoperator(
-      Map<String, dynamic> data,
-      dynamic callback,
-      ) async {
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
     String method = APIConstants.kGetOrganisationWiseAPIKeyV1;
 
     final url = Uri.parse('$kD2DBaseURL$method');
@@ -4913,8 +4921,9 @@ class APIManager {
       String body = response.body;
       print(body);
       print(json.decode(response.body));
-      GetMyOperatorResponse person =
-      GetMyOperatorResponse.fromJson(json.decode(response.body));
+      GetMyOperatorResponse person = GetMyOperatorResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if (person.status == 'Success') {
         callback(person, "", true);
@@ -5033,10 +5042,9 @@ class APIManager {
       // if (person.status == 'Success') {
       //   callback(person, "", true);
       // } else {
-        callback(person, person.message ?? "", true);
+      callback(person, person.message ?? "", true);
       // }
     } catch (e) {
-
       callback(null, "Expections: $e", false);
     }
   }
@@ -5284,7 +5292,7 @@ class APIManager {
     dynamic callback,
   ) async {
     String method =
-        APIConstants.kGetT2TCTBeneficiaryDetailsforDistCoordinatorV3;
+        APIConstants.kGetT2TCTBeneficiaryDetailsforDistCoordinatorV4;
 
     final url = Uri.parse('$kD2DBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
@@ -5302,6 +5310,35 @@ class APIManager {
       print(json.decode(response.body));
       T2TCTBeneficiaryDetailsResponse person =
           T2TCTBeneficiaryDetailsResponse.fromJson(json.decode(response.body));
+
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message ?? "", false);
+      }
+    } catch (e) {
+      callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> getDepartmentTypeAPI(dynamic callback) async {
+    String method = APIConstants.kGetDepartmentType;
+
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      String body = response.body;
+      print(body);
+      DepartmentTypeResponse person = DepartmentTypeResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if (person.status == 'Success') {
         callback(person, "", true);
@@ -5786,8 +5823,9 @@ class APIManager {
       print(url);
       print(data);
       print(json.decode(response.body));
-      PacketReturnResponse person =
-          PacketReturnResponse.fromJson(json.decode(response.body));
+      PacketReturnResponse person = PacketReturnResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if ((person.status ?? "").toLowerCase() == 'success') {
         callback(person, "", true);
@@ -5818,8 +5856,9 @@ class APIManager {
       print(url);
       print(data);
       print(json.decode(response.body));
-      PacketReturnResponse person =
-          PacketReturnResponse.fromJson(json.decode(response.body));
+      PacketReturnResponse person = PacketReturnResponse.fromJson(
+        json.decode(response.body),
+      );
 
       if ((person.status ?? "").toLowerCase() == 'success') {
         callback(person, "", true);
@@ -6947,7 +6986,7 @@ class APIManager {
     }
   }
 
-  // ── Medicine Delivery Acknowledgement APIs ─────────────────────────────────
+  // ── Medicine Delivery acknowledgement APIs ─────────────────────────────────
 
   Future<void> sendOTPForMedicineDeliveryAPI(
     Map<String, dynamic> data,
@@ -7089,10 +7128,7 @@ class APIManager {
     }
   }
 
-  Future<void> getFaceDetectionFlagAPI(
-    String userId,
-    dynamic callback,
-  ) async {
+  Future<void> getFaceDetectionFlagAPI(String userId, dynamic callback) async {
     final method = APIConstants.kGetFaceDetectionFlag;
     final url = Uri.parse('$kD2DBaseURL$method');
     final IOClient ioClient = getInstanceOfIoClient();
@@ -7186,9 +7222,7 @@ class APIManager {
     Map<String, dynamic> data,
     dynamic callback,
   ) async {
-    final url = Uri.parse(
-      '$kD2DBaseURL${APIConstants.kGetUserWiseCampList}',
-    );
+    final url = Uri.parse('$kD2DBaseURL${APIConstants.kGetUserWiseCampList}');
     final IOClient ioClient = getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -7325,8 +7359,9 @@ class APIManager {
       print(url);
       print(data);
       print(response.body);
-      CTConfirmatoryListModel person =
-          CTConfirmatoryListModel.fromJson(json.decode(response.body));
+      CTConfirmatoryListModel person = CTConfirmatoryListModel.fromJson(
+        json.decode(response.body),
+      );
       if (person.status == 'Success') {
         callback(person, "", true);
       } else {
@@ -7386,8 +7421,9 @@ class APIManager {
       print(url);
       print(data);
       print(response.body);
-      CTAppointmentUpdateResponse person =
-          CTAppointmentUpdateResponse.fromJson(json.decode(response.body));
+      CTAppointmentUpdateResponse person = CTAppointmentUpdateResponse.fromJson(
+        json.decode(response.body),
+      );
       if (person.status == 'Success') {
         callback(person, "", true);
       } else {

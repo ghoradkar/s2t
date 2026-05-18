@@ -13,7 +13,7 @@ import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wr
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/d2d_teams/controller/d2d_teams_controller.dart';
-// import 'package:s2toperational/Screens/d2d_teams/model/D2DTeamsCallingDetails.dart';
+// import 'package:s2toperational/screen/d2d_teams/model/d2d_teams_calling_details.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/D2DTeamsCallingDetails.dart';

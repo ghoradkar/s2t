@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-// import 'package:s2toperational/Screens/health_screening_details/models/camp_regular_model.dart';
+// import 'package:s2toperational/screen/health_screening_details/models/camp_regular_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 
 import '../models/camp_regular_model.dart';

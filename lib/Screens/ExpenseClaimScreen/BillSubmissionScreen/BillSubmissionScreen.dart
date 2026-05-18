@@ -42,142 +42,6 @@ class _BillSubmissionScreenState extends State<BillSubmissionScreen> {
 
   List<AdvadetailsNewOutput> campExprenessList = [];
 
-  Widget bottomDataLayout() {
-    if (lsit.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(width: 120, height: 120, child: Image.asset(icMoneyIcon)),
-            SizedBox(height: 23),
-            Text(
-              "No Advance Requested.",
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: FontConstants.interFonts,
-                fontWeight: FontWeight.w600,
-                fontSize: responsiveFont(16),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-      child: ListView.builder(
-        itemCount: campExprenessList.length,
-        itemBuilder: (context, index) {
-          AdvadetailsNewOutput obj = campExprenessList[index];
-          return BillSubmissionRow(
-            object: obj,
-            onEyesIconTap: (object) {
-              int dESGID = userLoginDetails?.dESGID ?? 0;
-
-              int empCode = userLoginDetails?.empCode ?? 0;
-
-              if (dESGID != 102) {
-                if (obj.advRaisedbyUserid != null &&
-                    obj.advRaisedbyUserid != empCode) {
-                  ToastManager.showAlertDialog(
-                    context,
-                    "This advance not requested by you.",(){
-                    Navigator.pop(context);
-
-                  }
-                  );
-                  return;
-                }
-              }
-              if (obj.actualExpenseStatus != null &&
-                  obj.actualExpenseStatus?.toLowerCase() ==
-                      "Approved".toLowerCase()) {
-                ToastManager.showAlertDialog(
-                  context,
-                  "This bill already approved",(){
-                  Navigator.pop(context);
-
-                }
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            AddBillSubmissionScreen(advanceDetails: obj),
-                  ),
-                );
-              }
-            },
-            onViewDetailsTap: (object) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) =>
-                          RequestBillDetailsScreen(campid: obj.campid ?? 0),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Future<void> _selectFromDate(BuildContext context) async {
-    DateTime now = DateTime.now();
-    DateTime hundredYearsAgo = DateTime(now.year - 100, now.month, 1);
-    DateTime lastDate = DateTime(now.year, now.month, now.day);
-
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: hundredYearsAgo,
-      lastDate: lastDate,
-    );
-
-    if (picked != null) {
-      setState(() {
-        toDate = "";
-        selectedFromDate = picked;
-        fromDate = FormatterManager.formatDateToString(picked);
-      });
-    }
-  }
-
-  Future<void> _selectToDate(BuildContext context) async {
-    if (selectedFromDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please select From Date first')));
-      return;
-    }
-
-    DateTime maxAllowed = DateTime(
-      selectedFromDate!.year + 100,
-      selectedFromDate!.month,
-      selectedFromDate!.day,
-    );
-    DateTime lastDate = maxAllowed;
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedFromDate!,
-      firstDate: selectedFromDate!,
-      lastDate: lastDate,
-    );
-
-    if (picked != null) {
-      setState(() {
-        toDate = FormatterManager.formatDateToString(picked);
-        getAdvanceDetails();
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -187,37 +51,6 @@ class _BillSubmissionScreenState extends State<BillSubmissionScreen> {
     toDate = FormatterManager.formatDateToString(DateTime.now());
     setState(() {});
     getAdvanceDetails();
-  }
-
-  void getAdvanceDetails() {
-    ToastManager.showLoader();
-    Map<String, String> dict = {
-      "FromReqDate": fromDate,
-      "ToReqDate": toDate,
-      "distlgdcode": userLoginDetails?.dISTLGDCODE?.toString() ?? "0",
-      "USERID": userLoginDetails?.empCode?.toString() ?? "0",
-    };
-    print(dict);
-    apiManager.getAdvadetailsNewVersionV2API(
-      dict,
-      apiAdvadetailsNewVersionV2Back,
-    );
-  }
-
-  void apiAdvadetailsNewVersionV2Back(
-    AdvadetailsNewVersionV2Response? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-
-    if (success) {
-      campExprenessList = response?.output ?? [];
-    } else {
-      campExprenessList = [];
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
   }
 
   @override
@@ -408,6 +241,173 @@ class _BillSubmissionScreenState extends State<BillSubmissionScreen> {
         ),
       ),
     );
+  }
+
+  Widget bottomDataLayout() {
+    if (lsit.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 120, height: 120, child: Image.asset(icMoneyIcon)),
+            SizedBox(height: 23),
+            Text(
+              "No Advance Requested.",
+              style: TextStyle(
+                color: Colors.black,
+                fontFamily: FontConstants.interFonts,
+                fontWeight: FontWeight.w600,
+                fontSize: responsiveFont(16),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      child: ListView.builder(
+        itemCount: campExprenessList.length,
+        itemBuilder: (context, index) {
+          AdvadetailsNewOutput obj = campExprenessList[index];
+          return BillSubmissionRow(
+            object: obj,
+            onEyesIconTap: (object) {
+              int dESGID = userLoginDetails?.dESGID ?? 0;
+
+              int empCode = userLoginDetails?.empCode ?? 0;
+
+              if (dESGID != 102) {
+                if (obj.advRaisedbyUserid != null &&
+                    obj.advRaisedbyUserid != empCode) {
+                  ToastManager.showAlertDialog(
+                    context,
+                    "This advance not requested by you.",
+                    () {
+                      Navigator.pop(context);
+                    },
+                  );
+                  return;
+                }
+              }
+              if (obj.actualExpenseStatus != null &&
+                  obj.actualExpenseStatus?.toLowerCase() ==
+                      "Approved".toLowerCase()) {
+                ToastManager.showAlertDialog(
+                  context,
+                  "This bill already approved",
+                  () {
+                    Navigator.pop(context);
+                  },
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            AddBillSubmissionScreen(advanceDetails: obj),
+                  ),
+                );
+              }
+            },
+            onViewDetailsTap: (object) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) =>
+                          RequestBillDetailsScreen(campid: obj.campid ?? 0),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _selectFromDate(BuildContext context) async {
+    DateTime now = DateTime.now();
+    DateTime hundredYearsAgo = DateTime(now.year - 100, now.month, 1);
+    DateTime lastDate = DateTime(now.year, now.month, now.day);
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: hundredYearsAgo,
+      lastDate: lastDate,
+    );
+
+    if (picked != null) {
+      setState(() {
+        toDate = "";
+        selectedFromDate = picked;
+        fromDate = FormatterManager.formatDateToString(picked);
+      });
+    }
+  }
+
+  Future<void> _selectToDate(BuildContext context) async {
+    if (selectedFromDate == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please select From Date first')));
+      return;
+    }
+
+    DateTime maxAllowed = DateTime(
+      selectedFromDate!.year + 100,
+      selectedFromDate!.month,
+      selectedFromDate!.day,
+    );
+    DateTime lastDate = maxAllowed;
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedFromDate!,
+      firstDate: selectedFromDate!,
+      lastDate: lastDate,
+    );
+
+    if (picked != null) {
+      setState(() {
+        toDate = FormatterManager.formatDateToString(picked);
+        getAdvanceDetails();
+      });
+    }
+  }
+
+  void getAdvanceDetails() {
+    ToastManager.showLoader();
+    Map<String, String> dict = {
+      "FromReqDate": fromDate,
+      "ToReqDate": toDate,
+      "distlgdcode": userLoginDetails?.dISTLGDCODE?.toString() ?? "0",
+      "USERID": userLoginDetails?.empCode?.toString() ?? "0",
+    };
+    print(dict);
+    apiManager.getAdvadetailsNewVersionV2API(
+      dict,
+      apiAdvadetailsNewVersionV2Back,
+    );
+  }
+
+  void apiAdvadetailsNewVersionV2Back(
+    AdvadetailsNewVersionV2Response? response,
+    String errorMessage,
+    bool success,
+  ) async {
+    ToastManager.hideLoader();
+
+    if (success) {
+      campExprenessList = response?.output ?? [];
+    } else {
+      campExprenessList = [];
+      ToastManager.toast(errorMessage);
+    }
+    setState(() {});
   }
 }
 

@@ -72,6 +72,7 @@ class _UploadBillScreenState extends State<UploadBillScreen> {
   }
 
   void resetFromAndToDate() {
+    selectedFromDate = DateTime.now();
     fromDate = FormatterManager.formatDateToString(DateTime.now());
     toDate = FormatterManager.formatDateToString(DateTime.now());
     setState(() {});
@@ -666,8 +667,7 @@ class _UploadBillScreenState extends State<UploadBillScreen> {
                         Expanded(
                           child: AppTextField(
                             controller: TextEditingController(
-                              text:
-                                  selectedSubExpenseHead?.subexpenseName ?? "",
+                              text: fromDate,
                             ),
                             readOnly: true,
                             onTap: () {

@@ -120,6 +120,7 @@ class BeneficiaryDetailsforAssignTeamidOutput {
     dISTLGDCODE = json['DISTLGDCODE'];
     dISTNAME = json['DISTNAME'];
     sampleCollection = json['SampleCollection'];
+    arId = json['ArId'];
     assignTeamid = json['AssignTeamid'];
     assignTeamName = json['AssignTeamName'];
     isTeamAssign = json['IsTeamAssign'];

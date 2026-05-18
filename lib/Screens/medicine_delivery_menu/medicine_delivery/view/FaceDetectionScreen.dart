@@ -129,22 +129,6 @@ class _FaceDetectionScreenState extends State<FaceDetectionScreen> {
         Get.back();
       },
     );
-    // showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder:
-    //       (_) => AlertDialog(
-    //         content: const Text(
-    //           'Detecting more than 1 face,\nneed only one face of particular worker in frame which you want to capture image',
-    //         ),
-    //         actions: [
-    //           TextButton(
-    //             onPressed: () => Navigator.pop(context),
-    //             child: const Text('OK'),
-    //           ),
-    //         ],
-    //       ),
-    // );
   }
 
   // ── Analysis control ─────────────────────────────────────────────────────────

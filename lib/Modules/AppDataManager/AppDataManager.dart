@@ -8,14 +8,5 @@ class AppDataManager {
   static String toDate = "";
   static UserMappedTalukaOutput? selectedTaluka;
   static ReportDeliveryExecutiveOutput? selectedResource;
-  // static AppDataManager? instance;
 
-  // AppDataManager._internal();
-
-  // factory AppDataManager() {
-  //   if (instance == null) {
-  //     instance = AppDataManager._internal();
-  //   }
-  //   return instance!;
-  // }
 }

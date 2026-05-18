@@ -29,30 +29,6 @@ class _SubDeviceDropDownScreenState extends State<SubDeviceDropDownScreen> {
   List<dynamic> searchList = [];
 
   TextEditingController searchController = TextEditingController();
-  String titleDropDown(int index) {
-    SubDevicesOutput type = searchList[index];
-    return type.deviceCompName ?? "";
-  }
-
-  String titleSubDropDown(int index) {
-    SubDevicesOutput type = searchList[index];
-    return "Serial Number: ${type.deviceSerial ?? ""}";
-  }
-
-  void radioButtonDidSelected(int index) {
-    SubDevicesOutput initiatedBy = searchList[index];
-
-    initiatedBy.isSelected = !initiatedBy.isSelected;
-
-    setState(() {});
-  }
-
-  Widget selectedRadioButton(int index) {
-    SubDevicesOutput type = searchList[index];
-    return Image.asset(
-      type.isSelected == true ? icCheckBoxSelected : icUnCheckBoxSelected,
-    );
-  }
 
   @override
   void initState() {
@@ -95,27 +71,26 @@ class _SubDeviceDropDownScreenState extends State<SubDeviceDropDownScreen> {
               SubDevicesOutput typeObj = searchList[index];
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.transparent,
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          radioButtonDidSelected(index);
-                        },
-                        child: Container(
+                child: GestureDetector(
+                  onTap: () {
+                    radioButtonDidSelected(index);
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.transparent,
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
                           padding: const EdgeInsets.all(2),
                           width: 30,
                           height: 30,
                           child: selectedRadioButton(index),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
+                        const SizedBox(width: 10),
+                        Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -147,8 +122,9 @@ class _SubDeviceDropDownScreenState extends State<SubDeviceDropDownScreen> {
                     ],
                   ),
                 ),
-              );
-            },
+              ),
+            );
+          },
           ),
         ),
         Padding(
@@ -188,6 +164,31 @@ class _SubDeviceDropDownScreenState extends State<SubDeviceDropDownScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  String titleDropDown(int index) {
+    SubDevicesOutput type = searchList[index];
+    return type.deviceCompName ?? "";
+  }
+
+  String titleSubDropDown(int index) {
+    SubDevicesOutput type = searchList[index];
+    return "Serial Number: ${type.deviceSerial ?? ""}";
+  }
+
+  void radioButtonDidSelected(int index) {
+    SubDevicesOutput initiatedBy = searchList[index];
+
+    initiatedBy.isSelected = !initiatedBy.isSelected;
+
+    setState(() {});
+  }
+
+  Widget selectedRadioButton(int index) {
+    SubDevicesOutput type = searchList[index];
+    return Image.asset(
+      type.isSelected == true ? icCheckBoxSelected : icUnCheckBoxSelected,
     );
   }
 }

@@ -118,6 +118,9 @@ class DashboardMenuRow extends StatelessWidget {
       case DashboardMenu.PaymentAndInvoice:
         icon = iconAttendance;
         break;
+      case DashboardMenu.CallingDashboard:
+        icon = iconCalling;
+        break;
     }
     return icon;
   }
@@ -161,7 +164,7 @@ class DashboardMenuRow extends StatelessWidget {
       //   title = "Camp Awareness Activity";
       //   break;
       case DashboardMenu.Acknowledgement:
-        title = "Acknowledgement";
+        title = "acknowledgement";
         break;
       case DashboardMenu.ELearning:
         title = "ELearning";
@@ -253,6 +256,9 @@ class DashboardMenuRow extends StatelessWidget {
       // case DashboardMenu.AnalyticalDashboard:
       //   title = "Analytical Dashboard";
       //   break;
+      case DashboardMenu.CallingDashboard:
+        title = "Calling Dashboard";
+        break;
     }
     return title;
   }

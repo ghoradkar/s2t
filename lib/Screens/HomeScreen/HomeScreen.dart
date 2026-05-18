@@ -9,17 +9,19 @@ import 'package:s2toperational/Modules/Json_Class/AdminDashboard/ConductedCampsT
 import 'package:s2toperational/Modules/Json_Class/AdminDashboard/TodaysPatientsResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/AdminDashboard/Screens/AdminDashboardWidget.dart';
+import 'package:s2toperational/Screens/admin_dashboard/screen/admin_dashboard_widget.dart';
 import 'package:s2toperational/Screens/DailyWorkDashboard/screen/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/controllers/calling_dashboard_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/repository/calling_dashboard_repository.dart';
+import 'package:s2toperational/Screens/calling_modules/screens/calling_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
 import 'package:s2toperational/Screens/D2DAvailability/D2DAvailabilityScreen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
-import 'package:s2toperational/Screens/camp_calendar/screen/CampCalendarScreen.dart';
+import 'package:s2toperational/Screens/camp_calendar/screen/camp_calendar_screen.dart';
 import 'package:s2toperational/Screens/d2d_teams/screen/D2DTeamsScreen.dart';
 import 'package:s2toperational/Screens/liver_scanning/screen/LiverScanningScreen.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/PacketAllocation/view/PacketAllocationScreen.dart';
@@ -42,7 +44,7 @@ import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/utilities/DeviceInfoUtil.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
 import '../AppointmentsConfirmedList/AppointmentsConfirmedListScreen/AppointmentsConfirmedListScreen.dart';
-import '../CTAssignment/CTAssignmentScreen/CTAssignmentScreen.dart';
+import '../ct_assignment/ct_assignment_screen/ct_assignment_screen.dart';
 import '../CampCreationScreen/CampCreationScreen.dart';
 import '../CampReadinessForm/CampReadinessFormScreen.dart';
 import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
@@ -50,11 +52,12 @@ import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
 import '../ExpenseClaimScreen/ExpenseClaimDashboardScreen.dart';
 import '../ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampListScreen.dart';
 import '../SideDrawerMenu/SideDrawerMenu.dart';
-import '../AppointmentSampleCollectionCT/screens/ct_appointment_list_screen.dart';
+import '../appointment_sample_collection_ct/screens/ct_appointment_list_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_d2d_screen/camp_for_health_screening_d2d_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_screen/camp_for_health_screening_screen.dart';
 import '../payment_and_invoice/screens/payment_invoice_segment_screen.dart';
 import '../user_attendance/screens/user_attendance_screen.dart';
+import '../acknowledgement/screens/select _camp_acknowledgement_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -160,6 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       child: Stack(
         children: [
+
           Column(
             children: [
               showRadioCampButton(),
@@ -341,6 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (dESGID == 30) {
       isShowRadioCamp = false;
       menuList.add(DashboardMenu.CallingList);
+      menuList.add(DashboardMenu.CallingDashboard);
       menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 51) {
       isShowRadioCamp = false;
@@ -395,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (dESGID == 34) {
       menuList.add(DashboardMenu.UserAttendance);
       menuList.add(DashboardMenu.HealthScreeningDetails);
-      // menuList.add(DashboardMenu.Acknowledgement);
+      // menuList.add(DashboardMenu.acknowledgement);
       menuList.add(DashboardMenu.ELearning);
     } else if (dESGID == 173 || dESGID == 172) {
       menuList.add(DashboardMenu.UserAttendance);
@@ -426,6 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.ELearning);
       menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 92) {
+      menuList.add(DashboardMenu.TeamPhotos);
       menuList.add(DashboardMenu.CampCreation);
       menuList.add(DashboardMenu.DeviceAndResourceMapping);
       menuList.add(DashboardMenu.ResourceReMapping);
@@ -433,7 +439,6 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.ExpenseClaim);
       menuList.add(DashboardMenu.CampCalendar);
       menuList.add(DashboardMenu.HealthScreeningDetails);
-      menuList.add(DashboardMenu.UserAttendance);
     }
     // else if (dESGID == 141) {
     //   menuList.add(DashboardMenu.UserAttendance);
@@ -492,20 +497,21 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.D2DCampActivity);
       menuList.add(DashboardMenu.TeamPhotos);
     } else if (dESGID == 92) {
+      menuList.add(DashboardMenu.MedicineDeliveryMenu);
+      menuList.add(DashboardMenu.TeamPhotos);
       menuList.add(DashboardMenu.DailyWorkDashboard);
       menuList.add(DashboardMenu.AppointmentConfirmedList);
-      menuList.add(DashboardMenu.MedicineDeliveryMenu);
+      menuList.add(DashboardMenu.CampCreation);
       menuList.add(DashboardMenu.CTAssignment);
       menuList.add(DashboardMenu.D2DTeam);
       menuList.add(DashboardMenu.CampCalendar);
-      menuList.add(DashboardMenu.CampCreation);
       menuList.add(DashboardMenu.TeamCampMapping);
       // menuList.add(DashboardMenu.CommonBeneficiaryList);
       menuList.add(DashboardMenu.HealthScreeningDetails);
-      menuList.add(DashboardMenu.FingerPrintUpload);
+      menuList.add(DashboardMenu.UserAttendance);
+      // menuList.add(DashboardMenu.FingerPrintUpload);
       menuList.add(DashboardMenu.Acknowledgement);
       menuList.add(DashboardMenu.ELearning);
-      menuList.add(DashboardMenu.UserAttendance);
     } else if (dESGID == 139) {
       menuList.add(DashboardMenu.DailyWorkDashboard);
       menuList.add(DashboardMenu.AppointmentConfirmedList);
@@ -563,6 +569,18 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return const ExpectedBeneficiaryList();
             },
+          ),
+        );
+        break;
+      case DashboardMenu.CallingDashboard:
+        Get.delete<CallingDashboardController>(force: true);
+        Get.put(
+          CallingDashboardController(repository: CallingDashboardRepository()),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CallingDashboardScreen(),
           ),
         );
         break;
@@ -642,12 +660,12 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         break;
       case DashboardMenu.Acknowledgement:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => AcknowledgementCampListScreen(),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const AcknowledgementCampListScreenNew(),
+          ),
+        );
         break;
       case DashboardMenu.ELearning:
         openYouTubeChannel();

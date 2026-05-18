@@ -176,6 +176,17 @@ class BeneficiaryCardRepository {
     );
   }
 
+  Future<http.Response> getRegdWiseListOfMobileNos(String regdNo) async {
+    var header = {'Content-Type': 'application/x-www-form-urlencoded'};
+    return await http.post(
+      Uri.parse(
+        '${APIManager.kD2DBaseURL}${APIConstants.kGetRegdWiseListOfMobileNosForAppointments}',
+      ),
+      body: {'RegdNo': regdNo},
+      headers: header,
+    );
+  }
+
   Future<http.Response> insertAuthToken(Map<String, dynamic> payload) async {
     var header = {'Content-Type': 'application/x-www-form-urlencoded'};
     return await http.post(

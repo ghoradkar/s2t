@@ -78,7 +78,6 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
     return NetworkWrapper(
       child: Column(
         children: [
-
           AppTextField(
             controller: searchController,
             readOnly: false,
@@ -156,7 +155,10 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border(
-                                right: BorderSide(color: Colors.grey, width: 0.5),
+                                right: BorderSide(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
                               ),
                             ),
                             child: Center(
@@ -247,29 +249,35 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
                             : Center(child: Text("No Data Available")),
                   ),
                   if (listOfPacketsSearch.isNotEmpty)
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(80, 5, 80, 5),
-                        child: AppButtonWithIcon(
-                          buttonColor: kPrimaryColor,
-                          title: "Packet Assign",
-                          icon: Image.asset(
-                            iconArrow,
-                            height: responsiveHeight(24),
-                            width: responsiveHeight(24),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.viewPaddingOf(context).bottom,
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(80, 8, 80, 8),
+                          child: AppButtonWithIcon(
+                            buttonColor: kPrimaryColor,
+                              title: "Accept in Lab",
+                            icon: Image.asset(
+                              iconArrow,
+                              height: responsiveHeight(24),
+                              width: responsiveHeight(24),
+                            ),
+                            mWidth: SizeConfig.screenWidth,
+                            textStyle: TextStyle(
+                              fontFamily: FontConstants.interFonts,
+                              color: Colors.white,
+                              fontSize: responsiveFont(16),
+                            ),
+                            onTap: () {
+                              submitData();
+                            },
                           ),
-                          mWidth: SizeConfig.screenWidth,
-                          textStyle: TextStyle(
-                            fontFamily: FontConstants.interFonts,
-                            color: Colors.white,
-                            fontSize: responsiveFont(16),
-                          ),
-                          onTap: () {
-                            submitData();
-                          },
                         ),
                       ),
                     ),
+
                 ],
               ),
             ),
@@ -368,43 +376,17 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
       ToastManager.toast("Please select at least one patient");
       return;
     }
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text("Alert"),
-    //       content: Text("Are you sure you want to Continue?"),
-    //       actions: [
-    //         TextButton(
-    //           child: const Text("Yes"),
-    //           onPressed: () {
-    //             Navigator.pop(context);
-    //             ToastManager.showLoader();
-    //             insertPacketAssignDetailsManually();
-    //           },
-    //         ),
-    //         TextButton(
-    //           child: const Text("No"),
-    //           onPressed: () {
-    //             Navigator.pop(context);
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
 
     ToastManager().showConfirmationDialog(
       context: context,
       message: 'Are you sure you want to Continue?',
       didSelectYes: (bool p1) {
-        if(p1 == true){
+        if (p1 == true) {
           Navigator.pop(context);
           ToastManager.showLoader();
           insertPacketAssignDetailsManually();
-        }else  if(p1 == false){
+        } else if (p1 == false) {
           Navigator.pop(context);
-
         }
       },
     );

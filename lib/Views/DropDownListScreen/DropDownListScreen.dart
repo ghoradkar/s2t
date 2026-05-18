@@ -12,6 +12,7 @@ import '../../Modules/Json_Class/AppointmentStatusResponse/AppointmentStatusResp
 import '../../Modules/Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
 import '../../Modules/Json_Class/AssignTypeModel/AssignTypeModel.dart';
 import '../../Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
+import '../../Modules/Json_Class/DepartmentTypeResponse/DepartmentTypeResponse.dart';
 import '../../Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
 import '../../Modules/Json_Class/CallStatusListResponse/CallStatusListResponse.dart';
 import '../../Modules/Json_Class/CampIdListResponse/CampIdListResponse.dart';
@@ -177,6 +178,9 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
       case DropDownTypeMenu.TeamCampID:
         CampListOutput type = searchList[index];
         return type.campId ?? "";
+      case DropDownTypeMenu.DeptType:
+        DepartmentTypeOutput type = searchList[index];
+        return type.departmentType ?? "";
     }
   }
 
@@ -400,10 +404,26 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
         }
         CampListOutput item = searchList[index];
         item.isSelected = true;
+      case DropDownTypeMenu.DeptType:
+        for (DepartmentTypeOutput dept in searchList) {
+          dept.isSelected = false;
+        }
+        DepartmentTypeOutput dept = searchList[index];
+        dept.isSelected = true;
     }
 
     selectedIndex = index;
     setState(() {});
+  }
+
+  Color _rowTextColor(int index) {
+    if (widget.dropDownMenu == DropDownTypeMenu.CampReadinessCampID) {
+      CampIdOutput type = searchList[index];
+      if (type.campType == 1 && type.campReadinessFlag == "1") {
+        return Colors.green;
+      }
+    }
+    return kBlackColor;
   }
 
   Widget selectedRadioButton(int index) {
@@ -590,6 +610,11 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
         return Image.asset(
           type.isSelected == true ? icRadioSelected : icUnRadioSelected,
         );
+      case DropDownTypeMenu.DeptType:
+        DepartmentTypeOutput type = searchList[index];
+        return Image.asset(
+          type.isSelected == true ? icRadioSelected : icUnRadioSelected,
+        );
     }
   }
 
@@ -686,7 +711,7 @@ class _DropDownListScreenState extends State<DropDownListScreen> {
                             titleDropDown(index),
                             style: TextStyle(
                               fontWeight: FontWeight.normal,
-                              color: kBlackColor,
+                              color: _rowTextColor(index),
                               fontFamily: FontConstants.interFonts,
                               fontSize: 16.sp,
                             ),

@@ -35,7 +35,9 @@
       "Read(//d/heamodialysis/heamodialysis/**)",
       "Read(//d/heamodialysis/**)",
       "mcp__ide__getDiagnostics",
-      "Bash(dart analyze *)"
+      "Bash(dart analyze *)",
+      "Bash(Get-Content \"D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\calling_modules\\\\native\" -Raw)",
+      "Bash(Select-Object -First 200)"
     ]
   }
 }

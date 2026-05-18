@@ -119,6 +119,9 @@ class DashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.TeamPhotos:
         icon = iconAttendance;
         break;
+      case DashboardMenu.CallingDashboard:
+        icon = iconCalling;
+        break;
     }
     return icon;
   }
@@ -159,7 +162,7 @@ class DashboardMenuOptions extends StatelessWidget {
       //   title = "Camp Awareness Activity";
       //   break;
       case DashboardMenu.Acknowledgement:
-        title = "Acknowledgement";
+        title = "acknowledgement";
         break;
       case DashboardMenu.ELearning:
         title = "ELearning";
@@ -249,6 +252,9 @@ class DashboardMenuOptions extends StatelessWidget {
         break;
       case DashboardMenu.TeamPhotos:
         title = "Team Photos";
+        break;
+      case DashboardMenu.CallingDashboard:
+        title = "Calling Dashboard";
         break;
     }
     return title;
@@ -417,6 +423,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.PaymentAndInvoice:
         icon = iconAttendance;
         break;
+      case DashboardMenu.CallingDashboard:
+        icon = iconCalling;
+        break;
     }
     return icon;
   }
@@ -462,7 +471,7 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         title = "S2T Patient App";
         break;
       case DashboardMenu.Acknowledgement:
-        title = "Acknowledgement";
+        title = "acknowledgement";
         break;
       case DashboardMenu.ELearning:
         title = "ELearning";
@@ -543,6 +552,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         break;
       case DashboardMenu.TeamPhotos:
         title = "Teams Photos";
+        break;
+      case DashboardMenu.CallingDashboard:
+        title = "Calling Dashboard";
         break;
     }
     return title;
@@ -663,6 +675,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         color = kCallingBackGroundColor;
         break;
       case DashboardMenu.MedicineReturn:
+        color = kCallingBackGroundColor;
+        break;
+      case DashboardMenu.CallingDashboard:
         color = kCallingBackGroundColor;
         break;
     }

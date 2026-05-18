@@ -303,37 +303,41 @@ class _AddBillSubmissionScreenState extends State<AddBillSubmissionScreen> {
       ToastManager.toast("Please select Sub Expense Head");
       return false;
     }
-    if (noOfUnit == "0") {
+
+    if (noOfUnit.isEmpty || amount.isEmpty) {
+      totalTextField.text = "";
+      setState(() {});
+      return false;
+    }
+
+    int? count = int.tryParse(noOfUnit);
+    int? amountInt = int.tryParse(amount);
+    if (count == null || amountInt == null) {
+      totalTextField.text = "";
+      setState(() {});
+      return false;
+    }
+
+    if (count == 0) {
       ToastManager.toast("Please enter No Of Unit");
       return false;
     }
 
-    if (noOfUnit.isEmpty) {
-      noOfUnit = "0";
-    }
-    int total = 0;
-
     double maxAllowedAmt = selectedSubExpenseHead?.maxAllowedAmt ?? 0.0;
-    print(maxAllowedAmt);
+    int total = amountInt * count;
 
-    int count = int.parse(noOfUnit);
-    int amountInt = int.parse(amount);
-    total = amountInt * count;
     if (total > maxAllowedAmt) {
       showPhotoUpload = true;
       ToastManager.showAlertDialog(
         context,
-        "Only one file is allowed to upload as a proof of permission",(){
+        "Only one file is allowed to upload as a proof of permission", () {
         Navigator.pop(context);
-
-      }
-      );
+      });
     } else {
       showPhotoUpload = false;
     }
 
-    totalTextField.text = "${int.parse(noOfUnit) * int.parse(amount)}";
-
+    totalTextField.text = "$total";
     setState(() {});
     return true;
   }
@@ -843,8 +847,7 @@ class _AddBillSubmissionScreenState extends State<AddBillSubmissionScreen> {
                           child: AppTextField(
                             readOnly: false,
                             textInputType: TextInputType.number,
-
-                            controller: noOfUnitTextField,
+                            controller: amountUnitTextField,
                             onChange: (value) {
                               calculateTotalNoOfUnitToAmount(value);
                             },

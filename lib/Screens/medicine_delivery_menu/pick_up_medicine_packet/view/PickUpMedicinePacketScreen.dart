@@ -101,13 +101,13 @@ class _PickUpMedicinePacketScreenState
                               hint: 'From Date*',
                               label: CommonText(
                                 text: 'From Date*',
-                                fontSize: 12.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.normal,
                                 textColor: kBlackColor,
                                 textAlign: TextAlign.start,
                               ),
                               hintStyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: FontConstants.interFonts,
                               ),
@@ -139,13 +139,13 @@ class _PickUpMedicinePacketScreenState
                               hint: 'To Date*',
                               label: CommonText(
                                 text: 'To Date*',
-                                fontSize: 12.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.normal,
                                 textColor: kBlackColor,
                                 textAlign: TextAlign.start,
                               ),
                               hintStyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: FontConstants.interFonts,
                               ),
@@ -178,13 +178,13 @@ class _PickUpMedicinePacketScreenState
                         hint: 'Taluka *',
                         label: CommonText(
                           text: 'Taluka *',
-                          fontSize: 12.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.normal,
                           textColor: kBlackColor,
                           textAlign: TextAlign.start,
                         ),
                         hintStyle: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: FontConstants.interFonts,
                         ),
@@ -225,8 +225,9 @@ class _PickUpMedicinePacketScreenState
 
               // ── Select All + Pick-Up button row ─────────────────────────
               Obx(() {
-                if (controller.packetList.isEmpty)
+                if (controller.packetList.isEmpty) {
                   return const SizedBox.shrink();
+                }
                 return Row(
                   children: [
                     Checkbox(
@@ -359,7 +360,16 @@ class _PickUpMedicinePacketScreenState
     );
     return Container(
       decoration: BoxDecoration(
-        color: isHeader ? kPrimaryColor : kWhiteColor,
+        // color: isHeader ? kPrimaryColor : kWhiteColor,
+        gradient: LinearGradient(
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft,
+          colors: [
+            isHeader ? kFirstAppBarcolor.withValues(alpha: 0.4) : kWhiteColor,
+            isHeader ? kFirstAppBarcolor : kWhiteColor,
+          ],
+        ),
+
         borderRadius:
             isHeader
                 ? BorderRadius.only(

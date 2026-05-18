@@ -49,6 +49,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
   int empCode = 0;
   int districtId = 0;
   String districtName = "";
+  bool _isRegularCamp = false;
   String? _selectedCampDate;
   String? _selectedPostCampDate;
 
@@ -87,11 +88,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     }
   }
 
-  void _showDropDownBottomSheet(
-    String title,
-    List<dynamic> list,
-    DropDownTypeMenu dropDownType,
-  ) {
+  void _showDropDownBottomSheet(String title,
+      List<dynamic> list,
+      DropDownTypeMenu dropDownType,) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -102,7 +101,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.33,
+          height: MediaQuery
+              .of(context)
+              .size
+              .width * 1.33,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -173,11 +175,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     });
   }
 
-  void _showMultiSelectionDropDownBottomSheet(
-    String title,
-    List<dynamic> list,
-    DropDownMultipleTypeMenu dropDownType,
-  ) {
+  void _showMultiSelectionDropDownBottomSheet(String title,
+      List<dynamic> list,
+      DropDownMultipleTypeMenu dropDownType,) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -188,7 +188,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.33,
+          height: MediaQuery
+              .of(context)
+              .size
+              .width * 1.33,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -200,6 +203,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
             titleString: title,
             dropDownList: list,
             dropDownMenu: dropDownType,
+            preSelectedList:
+            dropDownType == DropDownMultipleTypeMenu.ScreeningTest
+                ? selectedScreeningTest
+                : null,
             onApplyTap: (p0) {
               if (dropDownType == DropDownMultipleTypeMenu.ScreeningTest) {
                 selectedScreeningTest = p0;
@@ -235,7 +242,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
   String selectedScreeningTestSting() {
     List<String> tempScreeningTest = [];
     for (ScreeningTestCampCreationOutput screeningTest
-        in selectedScreeningTest) {
+    in selectedScreeningTest) {
       tempScreeningTest.add(screeningTest.testName ?? "");
     }
     return tempScreeningTest.join(",");
@@ -256,11 +263,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     }
   }
 
-  void apiCampTypeNonD2CallBack(
-    CampTypeResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiCampTypeNonD2CallBack(CampTypeResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -274,11 +279,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     }
   }
 
-  void apiCampTypeFlexiCallBack(
-    CampTypeResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiCampTypeFlexiCallBack(CampTypeResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -292,11 +295,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     }
   }
 
-  void apiCampTypeMMUCallBack(
-    CampTypeResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiCampTypeMMUCallBack(CampTypeResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -310,11 +311,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     }
   }
 
-  void apiCampTypeD2DCallBack(
-    CampTypeResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiCampTypeD2DCallBack(CampTypeResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -333,11 +332,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     apiManager.getInitiatedByListForCampAPI(apiInitiatedByCallBack);
   }
 
-  void apiInitiatedByCallBack(
-    InitiatedByResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiInitiatedByCallBack(InitiatedByResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -360,11 +357,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     apiManager.getTalukaAPI(data, apiTalukaCallBack);
   }
 
-  void apiTalukaCallBack(
-    TalukaCampCreationResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiTalukaCallBack(TalukaCampCreationResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -384,11 +379,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     apiManager.getLandingLabAPI(data, apiLandingLabCallBack);
   }
 
-  void apiLandingLabCallBack(
-    LandingLabCampCreationResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiLandingLabCallBack(LandingLabCampCreationResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -411,11 +404,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     apiManager.getHomeLabHubLabAPI(data, apiHomeLabHubLabCallBack);
   }
 
-  void apiHomeLabHubLabCallBack(
-    HomeAndHubLabCampCreationResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiHomeLabHubLabCallBack(HomeAndHubLabCampCreationResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -431,11 +422,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     apiManager.getScreeningTestAPI(apiScreeningTestCallBack);
   }
 
-  void apiScreeningTestCallBack(
-    ScreeningTestCampCreationResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiScreeningTestCallBack(ScreeningTestCampCreationResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -482,11 +471,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     apiManager.createCampCreationAPI(data, apiCampCreationCallBack);
   }
 
-  void apiCampCreationCallBack(
-    LandingLabCampCreationResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
+  void apiCampCreationCallBack(LandingLabCampCreationResponse? response,
+      String errorMessage,
+      bool success,) async {
     ToastManager.hideLoader();
 
     if (success) {
@@ -574,12 +561,29 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
   @override
   void initState() {
     super.initState();
-    dESGID = DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
+    dESGID = DataProvider()
+        .getParsedUserData()
+        ?.output
+        ?.first
+        .dESGID ?? 0;
     districtId =
-        DataProvider().getParsedUserData()?.output?.first.dISTLGDCODE ?? 0;
+        DataProvider()
+            .getParsedUserData()
+            ?.output
+            ?.first
+            .dISTLGDCODE ?? 0;
     districtName =
-        DataProvider().getParsedUserData()?.output?.first.district ?? "";
-    empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
+        DataProvider()
+            .getParsedUserData()
+            ?.output
+            ?.first
+            .district ?? "";
+    empCode = DataProvider()
+        .getParsedUserData()
+        ?.output
+        ?.first
+        .empCode ?? 0;
+    _isRegularCamp = DataProvider().getRegularCamp();
     // Pre-select "Internal" as default (matching native app behavior)
     selectedInitiatedBy = InitiatedByOutput(iD: 1, initiatedBy: 'Internal');
   }
@@ -603,39 +607,40 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     //     false;
 
     return await showDialog<bool>(
-          context: context,
-          builder:
-              (ctx) => AlertDialog(
-                // title: const Text('Alert'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Image.asset(warning, width: 100.w),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.",
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 80.w,
-                      child: AppActiveButton(
-                        buttontitle: "OK",
-                        onTap: () {
-                          Navigator.pop(ctx, true);
-                        },
-                      ),
-                    ),
-                  ],
+      context: context,
+      builder:
+          (ctx) =>
+          AlertDialog(
+            // title: const Text('Alert'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Image.asset(warning, width: 100.w),
                 ),
-              ),
-        ) ??
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.",
+                  ),
+                ),
+
+                SizedBox(
+                  width: 80.w,
+                  child: AppActiveButton(
+                    buttontitle: "OK",
+                    onTap: () {
+                      Navigator.pop(ctx, true);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+    ) ??
         false;
   }
 
@@ -643,10 +648,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     try {
       final uri = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-        '?input=${Uri.encodeComponent(input)}'
-        '&components=country:in'
-        '&location=19.0,76.0&radius=400000'
-        '&key=$_googleMapsApiKey',
+            '?input=${Uri.encodeComponent(input)}'
+            '&components=country:in'
+            '&location=19.0,76.0&radius=400000'
+            '&key=$_googleMapsApiKey',
       );
       final request = await HttpClient().getUrl(uri);
       final response = await request.close();
@@ -679,10 +684,16 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
           builder: (ctx, setSheetState) {
             return Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                bottom: MediaQuery
+                    .of(ctx)
+                    .viewInsets
+                    .bottom,
               ),
               child: SizedBox(
-                height: MediaQuery.of(ctx).size.height * 0.6,
+                height: MediaQuery
+                    .of(ctx)
+                    .size
+                    .height * 0.6,
                 child: Column(
                   children: [
                     Container(
@@ -707,14 +718,14 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           suffixIcon:
-                              isSearching
-                                  ? const Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                  : null,
+                          isSearching
+                              ? const Padding(
+                            padding: EdgeInsets.all(12),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                              : null,
                         ),
                         onChanged: (value) async {
                           if (value.length < 3) {
@@ -740,12 +751,12 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                           final p = predictions[index];
                           final fmt =
                               p['structured_formatting']
-                                  as Map<String, dynamic>? ??
-                              {};
+                              as Map<String, dynamic>? ??
+                                  {};
                           final primary =
                               fmt['main_text'] as String? ??
-                              p['description'] as String? ??
-                              '';
+                                  p['description'] as String? ??
+                                  '';
                           final secondary =
                               fmt['secondary_text'] as String? ?? '';
                           final placeId = p['place_id'] as String? ?? '';
@@ -753,13 +764,13 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                             leading: const Icon(Icons.location_on_outlined),
                             title: Text(primary),
                             subtitle:
-                                secondary.isNotEmpty
-                                    ? Text(
-                                      secondary,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                    : null,
+                            secondary.isNotEmpty
+                                ? Text(
+                              secondary,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                                : null,
                             onTap: () async {
                               Navigator.pop(ctx);
                               await _fetchPlaceDetails(placeId);
@@ -783,9 +794,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
     try {
       final uri = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/details/json'
-        '?place_id=$placeId'
-        '&fields=name,geometry,formatted_address'
-        '&key=$_googleMapsApiKey',
+            '?place_id=$placeId'
+            '&fields=name,geometry,formatted_address'
+            '&key=$_googleMapsApiKey',
       );
       final request = await HttpClient().getUrl(uri);
       final response = await request.close();
@@ -870,10 +881,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 onTap: () {
                   campTypeAPI();
                 },
-                hint: 'Camp Type',
+                hint: 'Select Camp Type',
                 label: CommonText(
-                  text: 'Camp Type',
-                  fontSize: 12.sp,
+                  text: 'Camp Type *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -921,13 +932,15 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                   text: selectedInitiatedBy?.initiatedBy ?? "",
                 ),
                 readOnly: true,
-                onTap: () {
+                onTap: _isRegularCamp
+                    ? () {
                   getInitiatedByAPI();
-                },
+                }
+                    : null,
                 hint: 'Initiated By',
                 label: CommonText(
-                  text: 'Initiated By',
-                  fontSize: 12.sp,
+                  text: 'Initiated By *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -950,7 +963,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                     ),
                   ),
                 ),
-                suffixIcon: Icon(Icons.keyboard_arrow_down),
+                suffixIcon: _isRegularCamp
+                    ? const Icon(Icons.keyboard_arrow_down)
+                    : null,
               ).paddingOnly(top: 12),
 
               // const SizedBox(height: 8),
@@ -966,8 +981,8 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 readOnly: true,
                 hint: 'District',
                 label: CommonText(
-                  text: 'District',
-                  fontSize: 12.sp,
+                  text: 'District *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1001,10 +1016,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 onTap: () {
                   getTalukaAPI();
                 },
-                hint: 'Taluka',
+                hint: 'Select Taluka',
                 label: CommonText(
-                  text: 'Taluka',
-                  fontSize: 12.sp,
+                  text: 'Taluka *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1047,10 +1062,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 onTap: () {
                   getLandingLabAPI();
                 },
-                hint: 'Landing Lab',
+                hint: 'Select Landing Lab',
                 label: CommonText(
-                  text: 'Landing Lab',
-                  fontSize: 12.sp,
+                  text: 'Landing Lab *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1097,10 +1112,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 // onTap: () {
                 //   getLandingLabAPI();
                 // },
-                hint: 'Camp Name',
+                hint: 'Enter Camp Name',
                 label: CommonText(
-                  text: 'Camp Name',
-                  fontSize: 12.sp,
+                  text: 'Camp Name *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1205,7 +1220,8 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                         showDialog(
                           context: context,
                           builder:
-                              (ctx) => AlertDialog(
+                              (ctx) =>
+                              AlertDialog(
                                 // title: const Text('Alert'),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -1255,19 +1271,19 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                   ),
                   Text(
                     'Enter Address Manually',
-                    style: TextStyle(fontSize: 12.sp),
+                    style: TextStyle(fontSize: 14.sp),
                   ),
                 ],
               ),
               AppTextField(
                 controller: campAddressTextField,
                 readOnly: !_isManualAddressEntry,
-                hint: 'Camp Address',
+                hint: 'Enter Camp Address',
                 maxLines: 4,
                 minLines: 1,
                 label: CommonText(
-                  text: 'Camp Address',
-                  fontSize: 12.sp,
+                  text: 'Camp Address *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1299,7 +1315,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
               // ),
               // const SizedBox(height: 8),
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 color: Colors.transparent,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1314,10 +1333,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                           text: _selectedCampDate,
                         ),
                         readOnly: true,
-                        hint: 'Camp Date',
+                        hint: 'Select Camp Date',
                         label: CommonText(
-                          text: 'Camp Date',
-                          fontSize: 12.sp,
+                          text: 'Camp Date *',
+                          fontSize: 14.sp * 1.3,
                           fontWeight: FontWeight.normal,
                           textColor: kBlackColor,
                           textAlign: TextAlign.start,
@@ -1360,8 +1379,8 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                         readOnly: true,
                         hint: 'Post Camp Date',
                         label: CommonText(
-                          text: 'Post Camp Date',
-                          fontSize: 12.sp,
+                          text: 'Post Camp Date *',
+                          fontSize: 14.sp * 1.3,
                           fontWeight: FontWeight.normal,
                           textColor: kBlackColor,
                           textAlign: TextAlign.start,
@@ -1413,10 +1432,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 onTap: () {
                   getScreeningTestAPI();
                 },
-                hint: 'Screening Tests',
+                hint: 'Select Screening Tests',
                 label: CommonText(
-                  text: 'Screening Tests',
-                  fontSize: 12.sp,
+                  text: 'Screening Tests *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1459,7 +1478,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 hint: 'Home Lab',
                 label: CommonText(
                   text: 'Home Lab',
-                  fontSize: 12.sp,
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1501,7 +1520,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 hint: 'Hub Lab',
                 label: CommonText(
                   text: 'Hub Lab',
-                  fontSize: 12.sp,
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1538,10 +1557,10 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 textInputType: TextInputType.number,
                 controller: expectedBeneficiaryTextField,
                 readOnly: false,
-                hint: 'Expected Beneficiary',
+                hint: 'Enter Expected Beneficiary',
                 label: CommonText(
-                  text: 'Expected Beneficiary',
-                  fontSize: 12.sp,
+                  text: 'Expected Beneficiary *',
+                  fontSize: 14.sp * 1.3,
                   fontWeight: FontWeight.normal,
                   textColor: kBlackColor,
                   textAlign: TextAlign.start,
@@ -1586,7 +1605,14 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                     ),
                   ),
                 ],
-              ).paddingSymmetric(horizontal: 12, vertical: 14),
+              ).paddingOnly(
+                left: 12,
+                right: 12,
+                top: 14,
+                bottom: 14 + MediaQuery
+                    .viewPaddingOf(context)
+                    .bottom,
+              ),
             ],
           ),
         ),

@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Screens/AdminDashboard/Model/D2DTeamsDivisionModel.dart';
+// export 'package:s2toperational/screen/admin_dashboard/model/d2d_teams_division_model.dart';
 
 class D2DTeamsDivisionModel {
   final String status;

@@ -13,10 +13,13 @@ import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/models/BeneficiaryResponseModel.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_card_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../Modules/constants/constants.dart';
+import '../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/DataProvider.dart';
 
@@ -194,15 +197,247 @@ class BeneficiaryCardController extends GetxController {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // handleCallTap  (moved from phone button GestureDetector onTap)
+  // callToBeneficiary  — fetches mobile numbers then shows "Call To Beneficiary"
   // ─────────────────────────────────────────────────────────────────────────
-  Future<void> handleCallTap() async {
+  Future<void> callToBeneficiary() async {
     if (isCallingLoading) return;
     isCallingLoading = true;
     update();
 
+    try {
+      final res = await BeneficiaryCardRepository().getRegdWiseListOfMobileNos(
+        beneficiary.beneficiaryNo?.toString() ?? '',
+      );
+      final jRes = jsonDecode(res.body);
+      if (jRes['status']?.toString().toLowerCase() == 'success') {
+        final List<dynamic> output = jRes['output'] ?? [];
+        final numbers =
+            output
+                .map(
+                  (e) => _CallingNumber(
+                    numberType: e['NumberType']?.toString() ?? '',
+                    mobileNo: e['MobileNo']?.toString() ?? '',
+                  ),
+                )
+                .toList();
+        isCallingLoading = false;
+        update();
+        _showCallToBeneficiarySheet(numbers);
+      } else {
+        isCallingLoading = false;
+        update();
+        ToastManager.toast(
+          jRes['message']?.toString() ?? 'Failed to load numbers',
+        );
+      }
+    } catch (_) {
+      isCallingLoading = false;
+      update();
+      ToastManager.toast('Error fetching mobile numbers');
+    }
+  }
+
+  void _showCallToBeneficiarySheet(List<_CallingNumber> numbers) {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final bottomPadding = MediaQuery.of(ctx).padding.bottom;
+        return Container(
+          decoration: const BoxDecoration(
+            color: kWhiteColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Drag handle ──────────────────────────────────────────
+              Container(
+                margin: const EdgeInsets.only(top: 10, bottom: 4),
+                width: 36.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 4.h),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.phone_in_talk_rounded,
+                      color: kPrimaryColor,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8.w),
+                    CommonText(
+                      text: 'Call To Beneficiary',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      textColor: kPrimaryColor,
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 4.h),
+                  child: CommonText(
+                    text: beneficiary.beneficiaryName?.toUpperCase() ?? '',
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    textColor: kLabelTextColor,
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
+                    maxLine: 1,
+                  ),
+                ),
+              ),
+
+              const Divider(height: 1, color: Color(0xFFEEEEEE)),
+
+              // ── Rows ─────────────────────────────────────────────────
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: numbers.length,
+                separatorBuilder:
+                    (_, __) =>
+                        const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                itemBuilder: (_, i) {
+                  final item = numbers[i];
+                  final isNA = item.mobileNo.trim().toUpperCase() == 'NA';
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CommonText(
+                                text: item.numberType,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                textColor: kLabelTextColor,
+                                textAlign: TextAlign.start,
+                              ),
+                              SizedBox(height: 3.h),
+                              CommonText(
+                                text: isNA ? 'Not Available' : item.mobileNo,
+                                fontSize: 14.sp,
+                                fontWeight:
+                                    isNA ? FontWeight.w400 : FontWeight.w600,
+                                textColor:
+                                    isNA ? Colors.grey.shade400 : kTextColor,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (!isNA)
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(ctx).pop();
+                              handleCallTap(selectedMobile: item.mobileNo);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 9.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.phone,
+                                    color: kWhiteColor,
+                                    size: 15,
+                                  ),
+                                  SizedBox(width: 6.w),
+                                  CommonText(
+                                    text: 'Call',
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    textColor: kWhiteColor,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+
+              const Divider(height: 1, color: Color(0xFFEEEEEE)),
+
+              // ── Close button ─────────────────────────────────────────
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  16.w,
+                  12.h,
+                  16.w,
+                  12.h + bottomPadding,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 44.h,
+                  child: Material(
+                    color: kButtonSecondaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () => Navigator.of(ctx).pop(),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: CommonText(
+                          text: 'Close',
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          textColor: kPrimaryColor,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // handleCallTap  (moved from phone button GestureDetector onTap)
+  // ─────────────────────────────────────────────────────────────────────────
+  Future<void> handleCallTap({String? selectedMobile}) async {
+    if (isCallingLoading) return;
+    isCallingLoading = true;
+    update();
+
+    final mobile = selectedMobile ?? beneficiary.mobile ?? '';
+
     if (isUserCreatedBy == 0) {
-      final canCall = await canMakePhoneCall(beneficiary.mobile!);
+      final canCall = await canMakePhoneCall(mobile);
       if (!canCall) {
         isCallingLoading = false;
         update();
@@ -218,10 +453,7 @@ class BeneficiaryCardController extends GetxController {
       var jsonResponse = jsonDecode(resString);
 
       if (jsonResponse['status'] == 'Success') {
-        await launchPhoneDialer(
-          beneficiary.mobile ?? '',
-          context: 'Direct call',
-        );
+        await launchPhoneDialer(mobile, context: 'Direct call');
       }
       isCallingLoading = false;
       update();
@@ -256,21 +488,29 @@ class BeneficiaryCardController extends GetxController {
                 "No additional information.";
 
             if (statusMessage.toLowerCase() == "success") {
-              showDialog(
+              // showDialog(
+              //   context: Get.context!,
+              //   builder:
+              //       (context) => AlertDialog(
+              //         title: const Text("Success"),
+              //         content: Text(data),
+              //         actions: [
+              //           AppActiveButton(
+              //             buttontitle: "OK",
+              //             onTap: () {
+              //               Navigator.of(context).pop();
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              // );
+              ToastManager().showSuccessOkayDialog(
                 context: Get.context!,
-                builder:
-                    (context) => AlertDialog(
-                      title: const Text("Success"),
-                      content: Text(data),
-                      actions: [
-                        AppActiveButton(
-                          buttontitle: "OK",
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
+                title: "Success",
+                message: data,
+                onTap: () {
+                  Get.back();
+                },
               );
             } else {
               print("failed");
@@ -302,7 +542,7 @@ class BeneficiaryCardController extends GetxController {
                 .twentyFourBySevenForWithCallPatching({
                   "apiKey": apikeyForCAllPAtching,
                   "customer_number": mobileNo.toString(),
-                  "user_number": beneficiary.mobile,
+                  "user_number": mobile,
                   "caller_id": virtualNumberForCallPAtching,
                   "reference_id": referanceId.toString(),
                 });
@@ -345,7 +585,7 @@ class BeneficiaryCardController extends GetxController {
             "secret_token": secretToken.toString(),
             "type": typeForMyOperator.toString(),
             // "user_id": myOperatorUserId.toString(),
-            "number": "+91${beneficiary.mobile}",
+            "number": "+91$mobile",
             "number_2":
                 "+91${DataProvider().getParsedUserData()?.output?[0].bMobile?.toString() ?? ''}",
             "max_call_duration": 0,
@@ -383,30 +623,39 @@ class BeneficiaryCardController extends GetxController {
 
           var jRes = jsonDecode(res.body);
           if (jRes['status'].toString().toLowerCase() == "success") {
-            showDialog(
+            ToastManager().showSuccessOkayDialog(
               context: Get.context!,
-              builder:
-                  (context) => AlertDialog(
-                    // title: Text(jRes['status']),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(icSuccessRoundGreen, width: 100.w),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Request accepted successfully"),
-                        ),
-                        AppButtonWithIcon(
-                          mWidth: 80.w,
-                          title: 'OK',
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+              title: "Success",
+              message: "Request accepted successfully",
+              onTap: () {
+                Get.back();
+              },
             );
+
+            // showDialog(
+            //   context: Get.context!,
+            //   builder:
+            //       (context) => AlertDialog(
+            //         // title: Text(jRes['status']),
+            //         content: Column(
+            //           mainAxisSize: MainAxisSize.min,
+            //           children: [
+            //             Image.asset(icSuccessRoundGreen, width: 100.w),
+            //             Padding(
+            //               padding: const EdgeInsets.all(8.0),
+            //               child: Text("Request accepted successfully"),
+            //             ),
+            //             AppButtonWithIcon(
+            //               mWidth: 80.w,
+            //               title: 'OK',
+            //               onTap: () {
+            //                 Navigator.of(context).pop();
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            // );
           } else if (jRes['status'].toString().toLowerCase() == "error") {
             ToastManager.showAlertDialog(Get.context!, jRes['message'], () {
               Navigator.pop(Get.context!);
@@ -459,7 +708,7 @@ class BeneficiaryCardController extends GetxController {
               var callPayload = {
                 "cli": virtualNumberForVodaphone,
                 "apartyno": mobileNo.toString(),
-                "bpartyno": beneficiary.mobile.toString(),
+                "bpartyno": mobile,
                 "reference_id": referanceId.toString(),
                 "channelflag": channelFlag.toString(),
                 "dtmfflag": dtmfflag.toString(),
@@ -481,25 +730,34 @@ class BeneficiaryCardController extends GetxController {
                     message['Response']?.toString().toLowerCase() ?? '';
 
                 if (responseMsg == 'success') {
-                  showDialog(
+                  ToastManager().showSuccessOkayDialog(
                     context: Get.context!,
-                    builder:
-                        (context) => AlertDialog(
-                          title: const Text("Success"),
-                          content: const Text("Please wait for call"),
-                          actions: [
-                            SizedBox(
-                              width: 80.w,
-                              child: AppActiveButton(
-                                buttontitle: "OK",
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+                    title: "Success",
+                    message: "Please wait for call",
+                    onTap: () {
+                      Get.back();
+                    },
                   );
+
+                  // showDialog(
+                  //   context: Get.context!,
+                  //   builder:
+                  //       (context) => AlertDialog(
+                  //         title: const Text("Success"),
+                  //         content: const Text("Please wait for call"),
+                  //         actions: [
+                  //           SizedBox(
+                  //             width: 80.w,
+                  //             child: AppActiveButton(
+                  //               buttontitle: "OK",
+                  //               onTap: () {
+                  //                 Navigator.of(context).pop();
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  // );
                 } else {
                   ToastManager.showAlertDialog(Get.context!, responseMsg, () {
                     Navigator.pop(Get.context!);
@@ -1131,4 +1389,11 @@ class BeneficiaryCardController extends GetxController {
       getMyoperatorDetailsStatus.value = FormzSubmissionStatus.failure;
     }
   }
+}
+
+class _CallingNumber {
+  final String numberType;
+  final String mobileNo;
+
+  const _CallingNumber({required this.numberType, required this.mobileNo});
 }

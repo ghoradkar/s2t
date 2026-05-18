@@ -24,6 +24,8 @@ class APIConstants {
   static String kclickToCall = "clickToCall";
   static String kGetIs24By7IsAccountCreatedFlag =
       "GetIs24By7IsAccountCreatedFlag_V1";
+  static String kGetRegdWiseListOfMobileNosForAppointments =
+      "GetRegdWiseListOfMobileNosForAppointments";
   static String kInsertBeneficiaryCallingAppointmentDetailsMobNew =
       "InsertBeneficiaryCallingAppointmentDetails_Mob_New";
 
@@ -311,8 +313,11 @@ class APIConstants {
   static String kGetT2TCTAssignmentRemarks = "Get_T2T_CT_AssignmentRemarks";
   static String kGetT2TCTBeneficiaryDetailsforDistCoordinatorV3 =
       "GetT2T_CT_BeneficiaryDetailsforDistCoordinator_V3";
+  static String kGetT2TCTBeneficiaryDetailsforDistCoordinatorV4 =
+      "GetT2T_CT_BeneficiaryDetailsforDistCoordinator_V4";
+  static String kGetDepartmentType = "GetDepartmentType";
   static String kGetT2TCTBeneficiaryDetailsforAssignTeamid =
-      "GetT2T_CT_BeneficiaryDetailsforAssignTeamid";
+      "GetT2T_CT_BeneficiaryDetailsforAssignTeamid_V1";
   static String kGetT2TTeamDetailsByPincode = "GetT2TTeamDetailsByPincode";
   static String kGetT2TCTUserDetails = "GetT2T_CT_UserDetails";
   static String kGetConfirmatoryTestsScreeningAppointmentDetailsV1 =
@@ -323,7 +328,7 @@ class APIConstants {
       "UpdateT2T_CT_AppointmentDate_V2";
 
   static String kInsertT2TCTTeamandBeneficiaryMapping =
-      "Insert_T2T_CT_TeamandBeneficiaryMapping";
+      "Insert_T2T_CT_TeamandBeneficiaryMapping_V1";
   static String kGetLabByUserID = "GetLabByUserID";
   static String kGetDataForPacketReceive = "GetDataForPacketReceive";
   static String kInsertPacketReceiveDetails = "InsertPacketReceiveDetails";
@@ -431,4 +436,7 @@ class APIConstants {
 
   // Visual Screening Test
   static String kInsertEyeScreeningDetails = "InsertEyeScreeningDetails_VersionNo";
+
+  static String kGetDailyCallingReportForCallerLogin =
+      "GetDailyCallingReportForCallerLogin";
 }

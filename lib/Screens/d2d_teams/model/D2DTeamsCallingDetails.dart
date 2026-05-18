@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Screens/AdminDashboard/Model/D2DTeamsCallingDetails.dart';
+// export 'package:s2toperational/screen/admin_dashboard/model/d2d_teams_calling_details.dart';
 class D2DTeamsCallingDetails {
   final String status;
   final String message;

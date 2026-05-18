@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
+// import 'package:s2toperational/screen/health_screening_details/models/camp_d2d_model.dart';
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';
 import '../../../../../Modules/constants/fonts.dart';

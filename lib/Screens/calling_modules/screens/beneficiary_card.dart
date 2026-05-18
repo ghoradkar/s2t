@@ -181,8 +181,10 @@ class _BeneficiaryCardState extends State<BeneficiaryCard> {
                                 GestureDetector(
                                   behavior: HitTestBehavior.translucent,
 
-                                  ///on call button tap
-                                  onTap: () => c.handleCallTap(),
+                                  onTap: () {
+                                    ///on call button tap
+                                    c.callToBeneficiary();
+                                  },
                                   child: Container(
                                     width: responsiveHeight(36),
                                     height: responsiveHeight(36),

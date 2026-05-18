@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+
 // import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
 // import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
 // import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
@@ -21,7 +22,8 @@ import '../model/RecollectionBeneficiaryToTeamResponse.dart';
 import '../model/SubOrganizationResponse.dart';
 
 class DailyWorkDashboardController extends GetxController {
-  final DailyWorkDashboardRepository _repository = DailyWorkDashboardRepository();
+  final DailyWorkDashboardRepository _repository =
+      DailyWorkDashboardRepository();
 
   // ─── User info ────────────────────────────────────────────────────────────────
 
@@ -31,12 +33,49 @@ class DailyWorkDashboardController extends GetxController {
   // ─── Role helpers ─────────────────────────────────────────────────────────────
 
   bool get isGroup1 => [86, 64, 35, 129, 146].contains(dESGID);
-  bool get isGroup2 => [92, 29, 160, 104, 162, 78, 77, 128, 30, 108, 84, 139, 136].contains(dESGID);
+
+  bool get isGroup2 => [
+    92,
+    29,
+    160,
+    104,
+    162,
+    78,
+    77,
+    128,
+    30,
+    108,
+    84,
+    139,
+    136,
+  ].contains(dESGID);
+
   bool get isGroup3 => [170, 171, 182, 183].contains(dESGID);
+
   bool get isAdminDesignation => [
-        170, 171, 51, 26, 30, 128, 182, 183, 78,
-        47, 83, 101, 102, 103, 168, 173, 196, 198, 60, 61, 69, 79,
-      ].contains(dESGID);
+    170,
+    171,
+    51,
+    26,
+    30,
+    128,
+    182,
+    183,
+    78,
+    47,
+    83,
+    101,
+    102,
+    103,
+    168,
+    173,
+    196,
+    198,
+    60,
+    61,
+    69,
+    79,
+  ].contains(dESGID);
 
   // ─── Loading / filter visibility ─────────────────────────────────────────────
 
@@ -83,11 +122,33 @@ class DailyWorkDashboardController extends GetxController {
     empCode = user?.empCode ?? 0;
 
     const adminDesignations = [
-      170, 171, 51, 26, 30, 128, 182, 183, 78,
-      47, 83, 101, 102, 103, 168, 173, 196, 198, 60, 61, 69, 79,
+      170,
+      171,
+      51,
+      26,
+      30,
+      128,
+      182,
+      183,
+      78,
+      47,
+      83,
+      101,
+      102,
+      103,
+      168,
+      173,
+      196,
+      198,
+      60,
+      61,
+      69,
+      79,
     ];
     final int daysBack = adminDesignations.contains(dESGID) ? 10 : 7;
-    final DateTime firstDate = DateTime.now().subtract(Duration(days: daysBack));
+    final DateTime firstDate = DateTime.now().subtract(
+      Duration(days: daysBack),
+    );
     fromDate = FormatterManager.formatDateToString(firstDate);
     toDate = FormatterManager.formatDateToString(DateTime.now());
 
@@ -118,8 +179,27 @@ class DailyWorkDashboardController extends GetxController {
         resetUI();
         ToastManager.toast('Something went wrong');
       }
-    } else if ([92, 29, 160, 104, 162, 78, 77, 128, 30, 108, 84, 139, 136, 51, 170, 171, 182, 183, 26]
-        .contains(dESGID)) {
+    } else if ([
+      92,
+      29,
+      160,
+      104,
+      162,
+      78,
+      77,
+      128,
+      30,
+      108,
+      84,
+      139,
+      136,
+      51,
+      170,
+      171,
+      182,
+      183,
+      26,
+    ].contains(dESGID)) {
       didCall = true;
       final params = {
         "Fromdate": fromDate,
@@ -156,16 +236,36 @@ class DailyWorkDashboardController extends GetxController {
     resetUI();
     for (final item in output) {
       switch (item.sequenceNo) {
-        case 0: rejectedBeneficiaryCount = item.patientCount ?? 0; break;
-        case 1: screeningConfimPendingCount = item.patientCount ?? 0; break;
-        case 2: assignmentPendingCount = item.patientCount ?? 0; break;
-        case 3: interestedInScreeningCount = item.patientCount ?? 0; break;
-        case 4: notinterestedInScreeningCount = item.patientCount ?? 0; break;
-        case 5: wrongNumberCount = item.patientCount ?? 0; break;
-        case 6: notAvailableForScreeningCount = item.patientCount ?? 0; break;
-        case 7: sampleCollectedCount = item.patientCount ?? 0; break;
-        case 8: reScreeningPendingCount = item.patientCount ?? 0; break;
-        case 9: deniedScreeningCount = item.patientCount ?? 0; break;
+        case 0:
+          rejectedBeneficiaryCount = item.patientCount ?? 0;
+          break;
+        case 1:
+          screeningConfimPendingCount = item.patientCount ?? 0;
+          break;
+        case 2:
+          assignmentPendingCount = item.patientCount ?? 0;
+          break;
+        case 3:
+          interestedInScreeningCount = item.patientCount ?? 0;
+          break;
+        case 4:
+          notinterestedInScreeningCount = item.patientCount ?? 0;
+          break;
+        case 5:
+          wrongNumberCount = item.patientCount ?? 0;
+          break;
+        case 6:
+          notAvailableForScreeningCount = item.patientCount ?? 0;
+          break;
+        case 7:
+          sampleCollectedCount = item.patientCount ?? 0;
+          break;
+        case 8:
+          reScreeningPendingCount = item.patientCount ?? 0;
+          break;
+        case 9:
+          deniedScreeningCount = item.patientCount ?? 0;
+          break;
       }
     }
   }
@@ -194,6 +294,7 @@ class DailyWorkDashboardController extends GetxController {
     );
     if (picked != null) {
       fromDate = FormatterManager.formatDateToString(picked);
+      toDate = "";
       update();
     }
   }
@@ -290,13 +391,15 @@ class DailyWorkDashboardController extends GetxController {
       if (isGroup2) {
         // Group 2 (camp coordinators): use UserID-based API
         final params = {"UserID": empCode.toString()};
-        final LabDataResponse? response =
-            await _repository.getLabForD2DCampCoordinator(params);
+        final LabDataResponse? response = await _repository
+            .getLabForD2DCampCoordinator(params);
         return response?.output
-            ?.map((e) => LandingLabCampCreationOutput(
-                  labCode: e.labCode,
-                  labName: e.labName,
-                ))
+            ?.map(
+              (e) => LandingLabCampCreationOutput(
+                labCode: e.labCode,
+                labName: e.labName,
+              ),
+            )
             .toList();
       } else {
         // Admin designations: use district-wise API
@@ -341,9 +444,15 @@ class DailyWorkDashboardController extends GetxController {
 
   // ─── Resolved filter values for navigation ────────────────────────────────────
 
-  String get resolvedOrgId => selectedSubOrganization?.subOrgId.toString() ?? "0";
+  String get resolvedOrgId =>
+      selectedSubOrganization?.subOrgId.toString() ?? "0";
+
   String get resolvedDivId => selectedDivision?.dIVID.toString() ?? "0";
-  String get resolvedDistCode => selectedDistrict?.dISTLGDCODE.toString() ?? "0";
+
+  String get resolvedDistCode =>
+      selectedDistrict?.dISTLGDCODE.toString() ?? "0";
+
   String get resolvedLabCode => selectedLabVal?.labCode.toString() ?? "0";
+
   String get resolvedCampType => regularCamp ? "1" : "3";
 }

@@ -6,7 +6,7 @@ import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictRespo
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
-// import 'package:s2toperational/Screens/health_screening_details/models/camp_d2d_model.dart';
+// import 'package:s2toperational/screen/health_screening_details/models/camp_d2d_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 
 import '../models/camp_d2d_model.dart';
