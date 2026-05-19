@@ -60,6 +60,7 @@ class AttendanceStatusOutput {
   bool get blockReadiness => isReadinessFormFilled == '0';
   bool get blockAttendance => attendanceFlag == '0';
   bool get blockTest => testFlag == '0';
+  bool get blockTeamMember => teamMemberAttendance == '1';
 }
 
 

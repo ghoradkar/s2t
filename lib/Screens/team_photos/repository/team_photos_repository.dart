@@ -68,12 +68,21 @@ class TeamPhotosRepository {
         body: {'CampID': campId},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[TeamPhotos] getCampImages raw: ${response.body}');
       final decoded = json.decode(response.body);
       final result = AttendanceImageResponse.fromJson(decoded);
+      if (result.output?.isNotEmpty == true) {
+        final o = result.output!.first;
+        // ignore: avoid_print
+        print('[TeamPhotos] In_Image=${o.inImage} IsInImageApproved=${o.isInImageApproved} IsDuringImageApproved=${o.isDuringImageApproved}');
+      }
       completer.complete(
         (result.status?.toLowerCase() == 'success') ? result : null,
       );
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[TeamPhotos] getCampImages error: $e');
       completer.complete(null);
     } finally {
       ioClient.close();
@@ -182,20 +191,16 @@ class TeamPhotosRepository {
     }
   }
 
-  // ─── Upload check-in or check-out photo ──────────────────────────────────────
+  // ─── Upload check-in / during-camp / check-out photo ────────────────────────
 
-  /// [statusId]: "1" = check-in, "2" = check-out
+  /// [statusId]: "1" = check-in, "2" = check-out, "3" = during-camp
   Future<bool> uploadPhoto({
     required String campId,
     required String userId,
     required String statusId,
     required File photoFile,
   }) async {
-    final url = Uri.parse(APIManager.kCampAttendancePhotoHandler);
-
-    final HttpClient httpClient = HttpClient()
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+    final url = Uri.parse(APIManager.kCampAttendanceDuringPhotoHandler);
     final ioClient = APIManager.getInstanceOfIo1Client();
 
     try {
@@ -204,15 +209,13 @@ class TeamPhotosRepository {
       request.fields['UserId'] = userId;
       request.fields['StatusID'] = statusId;
 
-      final fieldName = statusId == '1' ? 'InImagePath' : 'OutImagePath';
-      final ext = photoFile.path.toLowerCase().endsWith('.png') ? 'png' : 'jpg';
+      final suffix = statusId == '1' ? 'IN' : statusId == '3' ? 'DC' : 'OT';
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final uploadFileName =
-          statusId == '1' ? '${timestamp}_IN.jpg' : '${timestamp}_OT.png';
+      final uploadFileName = '${timestamp}_$suffix.jpg';
 
       request.files.add(
         await http.MultipartFile.fromPath(
-          fieldName,
+          'ImagePath',
           photoFile.path,
           filename: uploadFileName,
         ),
@@ -231,5 +234,41 @@ class TeamPhotosRepository {
     } finally {
       ioClient.close();
     }
+  }
+
+  // ─── Approve or reject a photo (DESGID 92 only) ──────────────────────────────
+
+  /// [statusId]: "1"=checkIn, "2"=checkOut, "3"=duringCamp
+  /// [approvalStatusId]: "1"=approve, "2"=reject
+  Future<bool> approveRejectPhoto({
+    required String campId,
+    required String statusId,
+    required String approvalStatusId,
+    required String createdBy,
+  }) async {
+    final completer = Completer<bool>();
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kUpdateAttendanceImageApproval}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {
+          'StatusID': statusId,
+          'CampId': campId,
+          'ApprovalStatusID': approvalStatusId,
+          'CreatedBy': createdBy,
+        },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body);
+      completer.complete(decoded['status']?.toString().toLowerCase() == 'success');
+    } catch (_) {
+      completer.complete(false);
+    } finally {
+      ioClient.close();
+    }
+    return completer.future;
   }
 }

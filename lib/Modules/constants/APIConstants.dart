@@ -170,6 +170,9 @@ class APIConstants {
   static String kGetAssignedExpectedBefForCallingMobileNewV1 =
       "GetAssignedExpectedBefForCallingMobileNew_V1";
   static String kGetScreenedDependentCount = "GetScreenedDependentCount";
+  static String kGetDependentListFromRegdId = "GetDependentListFromRegdId";
+  static String kGetDependentDetailsFromBoardData = "GetDependentDetailsFromBoardData";
+  static String kCheckDependentRegistrationStatus = "CheckDependentRegistrationStatus";
 
   static String kAuthToken = "AuthToken";
   static String kinitiatecall = "initiate-call";
@@ -412,7 +415,8 @@ class APIConstants {
   // Team Photos
   static String kGetTeamMembersAttendanceDetailsCampIDWise =
       "GetTeamMembersAttendanceDetailsCampIDWise";
-  static String kGetCampAttendanceImages = "GetCampAttendanceImages";
+  static String kGetCampAttendanceImages = "GetCampAttendanceImages_V1";
+  static String kUpdateAttendanceImageApproval = "UpdateAttendanceImageApproval";
   static String kGetUserWiseCampList = "GetUserWiseCampList";
   static String kInsertCampClosingConfirmation =
       "InsertCampClosingConfirmation";

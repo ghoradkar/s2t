@@ -19,6 +19,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
+import 'package:s2toperational/Screens/patient_registration/model/dependent_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_creation_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_demographic_creation_screen.dart';
@@ -877,6 +878,30 @@ class _D2DPatientRegistrationScreenState
               final match = _kMaritalStatus.firstWhere((e) => e.$2 == name);
               c.onWorkerMaritalStatusChanged(match.$1, match.$2);
             },
+          ),
+          SizedBox(height: 12.h),
+
+          // ── 4b. Select Dependent (always visible when isDependent=Yes) ──
+          _sectionLabel('Select Dependent'),
+          SizedBox(height: 6.h),
+          GestureDetector(
+            onTap: () { _showDependentPicker(context); },
+            child: AbsorbPointer(
+              child: AppTextField(
+                controller: TextEditingController(
+                  text: c.selectedDependent.value?.displayName ?? '',
+                ),
+                label: _label('Select Dependent *'),
+                readOnly: true,
+                suffixIcon: c.isLoadingDependents.value
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ).paddingOnly(right: 8.w)
+                    : const Icon(Icons.arrow_drop_down),
+              ),
+            ),
           ),
           SizedBox(height: 12.h),
         ],
@@ -2116,6 +2141,106 @@ class _D2DPatientRegistrationScreenState
             padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
             showRadio: true,
           ),
+    );
+  }
+
+  Future<void> _showDependentPicker(BuildContext context) async {
+    if (c.isLoadingDependents.value) return;
+
+    // Guard 1 — reg no field is empty
+    if (c.tecWorkerRegNo.text.trim().isEmpty) {
+      ToastManager.showAlertDialog(
+        context,
+        'Please search Labour No. first',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    // Guard 2 — reg no entered but API not yet returned (flag == "0" equivalent)
+    if (!c.hasApiData.value) {
+      ToastManager.showAlertDialog(
+        context,
+        'Please search Labour No. first and then fill remaining details of dependant',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    // Guard 3 — worker marital status not selected
+    if (c.selectedWorkerMaritalStatusName.value.isEmpty) {
+      ToastManager.showAlertDialog(
+        context,
+        'Please select marital status',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    // Guard 4 — worker gender not selected
+    if (c.workerGenderByPhlebo.value.isEmpty) {
+      ToastManager.showAlertDialog(
+        context,
+        'Please select worker gender',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    // Fetch dependent list from API
+    await c.fetchDependentList();
+    if (!context.mounted) return;
+
+    // API returned an error message (e.g. worker screening pending)
+    if (c.dependentListErrorMessage.isNotEmpty) {
+      ToastManager.showAlertDialog(
+        context,
+        c.dependentListErrorMessage,
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    if (c.dependentList.isEmpty) {
+      ToastManager.showAlertDialog(
+        context,
+        'No dependents found for this beneficiary',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: kWhiteColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SelectionBottomSheet<DependentOutput, String?>(
+        title: 'Select Dependent',
+        items: c.dependentList,
+        selectedValue: c.selectedDependent.value?.relId,
+        valueFor: (item) => item.relId,
+        labelFor: (item) => item.displayName,
+        onItemTap: (item) async {
+          Navigator.pop(context);
+          c.onDependentSelected(item);
+          final errorMsg = await c.checkDependentRegistrationStatus(item);
+          if (!context.mounted) return;
+          if (errorMsg != null) {
+            ToastManager.showAlertDialog(
+              context,
+              errorMsg,
+              () => Navigator.of(context, rootNavigator: true).pop(),
+            );
+            c.clearDependentSelection();
+          }
+        },
+        height: 350.h,
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+        showRadio: true,
+      ),
     );
   }
 

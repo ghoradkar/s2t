@@ -5,13 +5,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/team_photos/model/attendance_details_response.dart';
+import 'package:s2toperational/Screens/team_photos/model/attendance_image_response.dart';
 import 'package:s2toperational/Screens/team_photos/model/camp_list_response.dart';
 import 'package:s2toperational/Screens/team_photos/model/teams_details_response.dart';
 import 'package:s2toperational/Screens/team_photos/repository/team_photos_repository.dart';
@@ -70,15 +69,23 @@ class TeamPhotosController extends GetxController {
   final attendanceList = <AttendanceDetailsOutput>[].obs;
 
   // ─── Photo state ──────────────────────────────────────────────────────────────
-  // isMarkInOut: "0" = both needed, "1" = check-in done, "2" = both done
+  // isMarkInOut: "0" = none, "1" = check-in done, "2" = check-in + check-out done
 
   final inPhotoLocalPath = ''.obs;
   final outPhotoLocalPath = ''.obs;
+  final duringPhotoLocalPath = ''.obs;
   final inPhotoServerUrl = ''.obs;
   final outPhotoServerUrl = ''.obs;
+  final duringPhotoServerUrl = ''.obs;
   final inPhotoUploadedOn = ''.obs;
   final outPhotoUploadedOn = ''.obs;
+  final duringPhotoUploadedOn = ''.obs;
   final isMarkInOut = '0'.obs;
+
+  // Approval statuses: "" | "Pending" | "Approved" | "Rejected"
+  final inPhotoApprovalStatus = ''.obs;
+  final outPhotoApprovalStatus = ''.obs;
+  final duringPhotoApprovalStatus = ''.obs;
 
   // ─── Loading ──────────────────────────────────────────────────────────────────
 
@@ -89,28 +96,27 @@ class TeamPhotosController extends GetxController {
 
   // ─── Computed ─────────────────────────────────────────────────────────────────
 
-  bool get allAttendanceMarked =>
-      attendanceList.isNotEmpty &&
-      attendanceList.every((m) => !m.isInPending && !m.isOutPending);
+  bool get inPhotoUploaded => inPhotoServerUrl.value.isNotEmpty;
+  bool get outPhotoUploaded => outPhotoServerUrl.value.isNotEmpty;
+  bool get duringPhotoUploaded => duringPhotoServerUrl.value.isNotEmpty;
 
-  bool get canUploadIn =>
-      inPhotoLocalPath.value.isNotEmpty && isMarkInOut.value == '0';
+  bool get isCheckInApproved {
+    final status = inPhotoApprovalStatus.value;
+    if (status.toLowerCase() == 'approved') return true;
+    // Fallback: if the API doesn't return an approval status field but the
+    // check-in photo is already on the server, allow the during-camp card.
+    if (status.isEmpty && inPhotoServerUrl.value.isNotEmpty) return true;
+    return false;
+  }
 
-  bool get canUploadOut =>
-      outPhotoLocalPath.value.isNotEmpty && isMarkInOut.value == '1';
-
-  bool get bothPhotosUploaded => isMarkInOut.value == '2';
-
-  /// Capture Photo button is always visible once the screen is open.
-  bool get canCapturePhoto => true;
+  // All 3 photos uploaded — gate for Camp Closing Confirmation button
+  bool get bothPhotosUploaded =>
+      inPhotoUploaded && duringPhotoUploaded && outPhotoUploaded;
 
   // Native treats an empty attendance list as "all marked" (pending counts stay
   // at 0), so we match that: [].every(...) returns true in Dart (vacuous truth).
-  bool get _allCheckedIn =>
-      attendanceList.every((m) => !m.isInPending);
-
-  bool get _allCheckedOut =>
-      attendanceList.every((m) => !m.isOutPending);
+  bool get _allCheckedIn => attendanceList.every((m) => !m.isInPending);
+  bool get _allCheckedOut => attendanceList.every((m) => !m.isOutPending);
 
   String get mediaBaseUrl => APIManager.kMediaBaseURL;
 
@@ -209,87 +215,6 @@ class TeamPhotosController extends GetxController {
     }
   }
 
-  // ─── Camp dropdown ───────────────────────────────────────────────────────────
-
-  void showCampDropdown(BuildContext context) {
-    if (selectedDate.value.isEmpty) {
-      ToastManager.toast('Please select a date first');
-      return;
-    }
-    if (campList.isEmpty) {
-      _fetchThenShowCampDropdown(context);
-      return;
-    }
-    _showDropDownBottomSheet(
-      context,
-      'Select Camp ID',
-      campList.toList(),
-      DropDownTypeMenu.TeamCampID,
-      (selected) => onCampSelected(selected as CampListOutput),
-    );
-  }
-
-  Future<void> _fetchThenShowCampDropdown(BuildContext context) async {
-    ToastManager.showLoader();
-    try {
-      final result = await _repository.getCampList(
-        userId: empCode.toString(),
-        campDate: selectedDate.value,
-        campType: campType.value,
-      );
-      campList.value = result?.output ?? [];
-      if (campList.isEmpty) {
-        ToastManager.toast('No camps found for selected date');
-        return;
-      }
-      _showDropDownBottomSheet(
-        context,
-        'Select Camp ID',
-        campList.toList(),
-        DropDownTypeMenu.TeamCampID,
-        (selected) => onCampSelected(selected as CampListOutput),
-      );
-    } finally {
-      ToastManager.hideLoader();
-    }
-  }
-
-  void _showDropDownBottomSheet(
-    BuildContext context,
-    String title,
-    List<dynamic> list,
-    DropDownTypeMenu dropDownType,
-    Function(dynamic) onApply,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      constraints: const BoxConstraints(minWidth: double.infinity),
-      backgroundColor: Colors.white,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (BuildContext context) {
-        return Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.33,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: DropDownListScreen(
-            titleString: title,
-            dropDownList: list,
-            dropDownMenu: dropDownType,
-            onApplyTap: (p0) => onApply(p0),
-          ),
-        );
-      },
-    );
-  }
-
   // ─── Camp selection ──────────────────────────────────────────────────────────
 
   Future<void> onCampSelected(CampListOutput camp) async {
@@ -302,16 +227,18 @@ class TeamPhotosController extends GetxController {
     ToastManager.showLoader();
     try {
       if (isD2DOrMMU && hideTabToggle) {
-        // DESGID 35 in D2D: team is auto-resolved from the server (no picker).
+        // DESGID 35 in D2D: team is auto-resolved → _fetchAttendance → _fetchCampImages.
+        await _autoResolveTeamAndFetchAttendance(camp.campId ?? '');
+      } else if (isD2DOrMMU) {
+        // D2D / MMU with team picker: team not selected yet, so fetch images now.
+        // Images refresh again when team is selected → _fetchAttendance → _fetchCampImages.
         await Future.wait([
           _fetchCampImages(camp.campId ?? ''),
-          _autoResolveTeamAndFetchAttendance(camp.campId ?? ''),
+          fetchTeamList(camp.campId ?? ''),
         ]);
       } else {
-        await Future.wait([
-          _fetchCampImages(camp.campId ?? ''),
-          if (isD2DOrMMU) fetchTeamList(camp.campId ?? '') else _fetchAttendance(),
-        ]);
+        // Regular camp: _fetchAttendance calls _fetchCampImages internally.
+        await _fetchAttendance();
       }
     } finally {
       ToastManager.hideLoader();
@@ -367,6 +294,9 @@ class TeamPhotosController extends GetxController {
       statusId: statusType.value,
     );
     attendanceList.value = result?.output ?? [];
+    // Mirror native: getImages() is always called after attendance loads,
+    // so photo approval status stays fresh whenever attendance refreshes.
+    await _fetchCampImages(campId);
   }
 
   // ─── Camp images ─────────────────────────────────────────────────────────────
@@ -374,45 +304,112 @@ class TeamPhotosController extends GetxController {
   Future<void> _fetchCampImages(String campId) async {
     final result = await _repository.getCampImages(campId: campId);
     final img = result?.output?.firstOrNull;
-    if (img != null) {
-      if (img.hasInImage) {
-        inPhotoServerUrl.value =
-            '$mediaBaseUrl/CampTeamAttendance/${img.inImage}';
-        inPhotoUploadedOn.value = img.inImageUploadedOn ?? '';
-        isMarkInOut.value = img.hasOutImage ? '2' : '1';
+    if (img == null) return;
+
+    if (img.hasInImage) {
+      inPhotoServerUrl.value = '$mediaBaseUrl/CampTeamAttendance/${img.inImage}';
+      inPhotoUploadedOn.value = img.inImageUploadedOn ?? '';
+      inPhotoApprovalStatus.value = img.isInImageApproved ?? '';
+    }
+    if (img.hasDuringCampImage) {
+      duringPhotoServerUrl.value =
+          '$mediaBaseUrl/CampTeamAttendance/${img.duringCampImage}';
+      duringPhotoUploadedOn.value = img.duringCampImageUploadedOn ?? '';
+      duringPhotoApprovalStatus.value = img.isDuringImageApproved ?? '';
+    }
+    if (img.hasOutImage) {
+      outPhotoServerUrl.value =
+          '$mediaBaseUrl/CampTeamAttendance/${img.outImage}';
+      outPhotoUploadedOn.value = img.outImageUploadedOn ?? '';
+      outPhotoApprovalStatus.value = img.isOutImageApproved ?? '';
+    }
+
+    // Derive isMarkInOut from uploaded photos for backward compat
+    if (img.hasInImage && img.hasOutImage) {
+      isMarkInOut.value = '2';
+    } else if (img.hasInImage) {
+      isMarkInOut.value = '1';
+    } else {
+      isMarkInOut.value = '0';
+    }
+
+    // Show alert dialogs matching native AttendanceDetailsActivity conditions
+    _showImageAlerts(img);
+  }
+
+  void _showImageAlerts(AttendanceImageOutput img) {
+    if (attendanceList.isNotEmpty) {
+      if (!img.hasInImage && _allCheckedIn) {
+        _showAlertDialog('कॅम्प सुरू करण्यासाठी टीमचा फोटो अपलोड करा.');
+        return;
       }
-      if (img.hasOutImage) {
-        outPhotoServerUrl.value =
-            '$mediaBaseUrl/CampTeamAttendance/${img.outImage}';
-        outPhotoUploadedOn.value = img.outImageUploadedOn ?? '';
+      if (img.hasInImage &&
+          (img.isInImageApproved ?? '').toLowerCase() == 'approved' &&
+          !_allCheckedOut) {
+        _showAlertDialog(
+          'काही कॅम्प टीम सदस्यांनी out attendance मार्क केलेली नाही.\nकॅम्प close करण्यापूर्वी out attendance मार्क करा व टीमचा फोटो अपलोड करा.',
+        );
+        return;
       }
+      if (!img.hasOutImage && _allCheckedIn && _allCheckedOut) {
+        _showAlertDialog(
+          'कॅम्प closing confirmation देण्यापूर्वी टीमचा फोटो अपलोड करा.',
+        );
+        return;
+      }
+    }
+    if ((img.isInImageApproved ?? '') == 'Rejected') {
+      _showAlertDialog(
+        'तुमचा चेक इन फोटो रिजेक्ट केला आहे, फोटो पुन्हा अपलोड करा.',
+      );
+    }
+    if ((img.isDuringImageApproved ?? '') == 'Rejected') {
+      _showAlertDialog(
+        'तुमचा कॅम्प फोटो रिजेक्ट केला आहे, फोटो पुन्हा अपलोड करा.',
+      );
+    }
+    if ((img.isOutImageApproved ?? '') == 'Rejected') {
+      _showAlertDialog(
+        'तुमचा चेक आऊट फोटो रिजेक्ट केला आहे, फोटो पुन्हा अपलोड करा.',
+      );
     }
   }
 
-  // ─── Camera capture ───────────────────────────────────────────────────────────
+  void _showAlertDialog(String message) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Alert'),
+        content: Text(message),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('OK')),
+        ],
+      ),
+    );
+  }
 
-  Future<void> capturePhoto({required bool isCheckIn}) async {
-    // Validate: date
+  // ─── Capture + Upload (tap photo area) ───────────────────────────────────────
+
+  /// Opens camera, shows local preview immediately, then auto-uploads.
+  /// [statusId]: "1"=checkIn, "2"=checkOut, "3"=duringCamp
+  Future<void> captureAndUploadPhoto({required String statusId}) async {
     if (selectedDate.value.isEmpty) {
       ToastManager.toast('Please select date');
       return;
     }
-    // Validate: camp ID
-    if (selectedCamp.value == null) {
+    final campId = selectedCamp.value?.campId ?? '';
+    if (campId.isEmpty) {
       ToastManager.toast('Please select camp ID');
       return;
     }
-    // Validate: team (D2D / MMU only)
     if (isD2DOrMMU && selectedTeam.value == null) {
       ToastManager.toast('Please select team number');
       return;
     }
-    // Validate: all members must have marked attendance before team photo
-    if (isCheckIn && !_allCheckedIn) {
+    if (statusId == '1' && !_allCheckedIn) {
       ToastManager.toast('काही टीम सदस्यांनी उपस्थिती नोंदवलेली नाही');
       return;
     }
-    if (!isCheckIn && !_allCheckedOut) {
+    if (statusId == '2' && !_allCheckedOut) {
       ToastManager.toast('काही टीम सदस्यांनी check-out नोंदवलेली नाही');
       return;
     }
@@ -422,72 +419,119 @@ class TeamPhotosController extends GetxController {
       imageQuality: 80,
     );
     if (picked == null) return;
-    if (isCheckIn) {
-      inPhotoLocalPath.value = picked.path;
-    } else {
-      outPhotoLocalPath.value = picked.path;
-    }
-  }
 
-  // ─── Upload photo ─────────────────────────────────────────────────────────────
-
-  Future<void> uploadPhoto({required bool isCheckIn}) async {
-    // Validate: date
-    if (selectedDate.value.isEmpty) {
-      ToastManager.toast('Please select date');
-      return;
-    }
-    // Validate: camp ID
-    final campId = selectedCamp.value?.campId ?? '';
-    if (campId.isEmpty) {
-      ToastManager.toast('Please select campId');
-      return;
-    }
-    // Validate: team (D2D / MMU only)
-    if (isD2DOrMMU && selectedTeam.value == null) {
-      ToastManager.toast('Please select team number');
-      return;
-    }
-
-    // Validate: photo captured
-    final localPath = isCheckIn ? inPhotoLocalPath.value : outPhotoLocalPath.value;
-    if (localPath.isEmpty) {
-      ToastManager.toast(
-        isCheckIn ? 'Please capture check in photo' : 'Please capture check out photo',
-      );
-      return;
+    // Show local preview immediately while upload runs
+    switch (statusId) {
+      case '1': inPhotoLocalPath.value = picked.path;
+      case '3': duringPhotoLocalPath.value = picked.path;
+      case '2': outPhotoLocalPath.value = picked.path;
     }
 
     isUploadingPhoto.value = true;
     ToastManager.showLoader();
     try {
-      final statusId = isCheckIn ? '1' : '2';
       final success = await _repository.uploadPhoto(
         campId: campId,
         userId: empCode.toString(),
         statusId: statusId,
-        photoFile: File(localPath),
+        photoFile: File(picked.path),
       );
-
       if (success) {
-        ToastManager.toast(
-          isCheckIn ? 'Check-in photo uploaded successfully' : 'Check-out photo uploaded successfully',
-        );
-        // Refresh images from server
+        final msg = switch (statusId) {
+          '1' =>
+            'चेक इन फोटो यशस्वीरीत्या अपलोड झाला आहे. तुमच्या manager च्या approval नंतर तुम्ही कॅम्प सुरु करू शकतात.',
+          '3' =>
+            'Camp सुरु असतानाचा beneficiary सोबतचा फोटो यशस्वीरीत्या अपलोड झाला आहे.',
+          _ =>
+            'चेक आउट फोटो यशस्वीरीत्या अपलोड झाला आहे. तुमच्या manager च्या approval नंतर तुम्ही कॅम्प closing confirmation देऊ शकतात.',
+        };
+        ToastManager.toast(msg);
         await _fetchCampImages(campId);
-        // Clear local path after successful upload
-        if (isCheckIn) {
-          inPhotoLocalPath.value = '';
-        } else {
-          outPhotoLocalPath.value = '';
-        }
       } else {
         ToastManager.toast('Photo upload failed. Please try again.');
       }
     } finally {
+      // Clear local path regardless — on success server URL is now set,
+      // on failure user taps again to recapture.
+      switch (statusId) {
+        case '1': inPhotoLocalPath.value = '';
+        case '3': duringPhotoLocalPath.value = '';
+        case '2': outPhotoLocalPath.value = '';
+      }
       isUploadingPhoto.value = false;
       ToastManager.hideLoader();
     }
+  }
+
+  // ─── Approve / Reject photo (DESGID 92 only) ─────────────────────────────────
+
+  /// [statusId]: "1"=checkIn, "2"=checkOut, "3"=duringCamp
+  /// [approvalStatusId]: "1"=approve, "2"=reject
+  Future<void> approveRejectPhoto({
+    required String statusId,
+    required String approvalStatusId,
+  }) async {
+    final campId = selectedCamp.value?.campId ?? '';
+    if (campId.isEmpty) return;
+
+    // Guard: no photo uploaded yet
+    final serverUrl = statusId == '1'
+        ? inPhotoServerUrl.value
+        : statusId == '3'
+            ? duringPhotoServerUrl.value
+            : outPhotoServerUrl.value;
+    if (serverUrl.isEmpty) {
+      ToastManager.toast('टीमकडून फोटो अजून अपलोड झालेला नाही.');
+      return;
+    }
+
+    ToastManager.showLoader();
+    try {
+      final success = await _repository.approveRejectPhoto(
+        campId: campId,
+        statusId: statusId,
+        approvalStatusId: approvalStatusId,
+        createdBy: empCode.toString(),
+      );
+      if (success) {
+        ToastManager.toast(
+          approvalStatusId == '1'
+              ? 'फोटो approve करण्यात आलेला आहे.'
+              : 'फोटो reject करण्यात आलेला आहे.',
+        );
+        await _fetchCampImages(campId);
+      } else {
+        ToastManager.toast('Action failed. Please try again.');
+      }
+    } finally {
+      ToastManager.hideLoader();
+    }
+  }
+
+  // ─── Camp closing guard ───────────────────────────────────────────────────────
+
+  /// Returns true if all photo approvals are in place for camp closing.
+  /// Shows Marathi blocking dialog via Get.dialog() and returns false otherwise.
+  bool checkCampClosingAllowed() {
+    final outApproved = outPhotoApprovalStatus.value == 'Approved';
+    final duringApproved = duringPhotoApprovalStatus.value == 'Approved';
+    if (!outApproved || !duringApproved) {
+      Get.dialog(
+        AlertDialog(
+          content: const Text(
+            'सर्व फोटो approve झाल्याशिवाय कॅम्प क्लोसिंग confirmation देता येणार नाही याची नोंद घ्यावी',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+    return true;
   }
 
   // ─── Refresh ──────────────────────────────────────────────────────────────────
@@ -496,15 +540,28 @@ class TeamPhotosController extends GetxController {
     await _fetchAttendance();
   }
 
+  /// Pull-to-refresh / Refresh Status button: re-fetches camp images only.
+  Future<void> refreshCampImages() async {
+    final campId = selectedCamp.value?.campId ?? '';
+    if (campId.isEmpty) return;
+    await _fetchCampImages(campId);
+  }
+
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
   void _resetPhotoState() {
     inPhotoLocalPath.value = '';
     outPhotoLocalPath.value = '';
+    duringPhotoLocalPath.value = '';
     inPhotoServerUrl.value = '';
     outPhotoServerUrl.value = '';
+    duringPhotoServerUrl.value = '';
     inPhotoUploadedOn.value = '';
     outPhotoUploadedOn.value = '';
+    duringPhotoUploadedOn.value = '';
     isMarkInOut.value = '0';
+    inPhotoApprovalStatus.value = '';
+    outPhotoApprovalStatus.value = '';
+    duringPhotoApprovalStatus.value = '';
   }
 }

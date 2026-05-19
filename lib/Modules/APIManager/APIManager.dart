@@ -173,6 +173,7 @@ class APIManager {
   static String kChangeBeneficiaryAndCardImage = "";
   static String kMedicineDeliveryAckHandler = "";
   static String kCampAttendancePhotoHandler = "";
+  static String kCampAttendanceDuringPhotoHandler = "";
   static String kCTSampleCollectionConsentHandler = "";
   static String kMediaBaseURL = "";
   static String kMahabocwBaseURL = "";
@@ -206,6 +207,8 @@ class APIManager {
             "https://mcwwb.janarogyaseva.in/webservices/handler/CW_MedicineDelivery_V1_DC.ashx";
         kCampAttendancePhotoHandler =
             "https://mcwwb.janarogyaseva.in/webservices/handler/CampAttendanceCheckInOutImages.ashx";
+        kCampAttendanceDuringPhotoHandler =
+            "https://mcwwb.janarogyaseva.in/webservices/handler/CampAttendanceCheckInOutDuringCampImages.ashx";
         kCTSampleCollectionConsentHandler =
             "https://mcwwb.janarogyaseva.in/webservices/handler/CW_T2TBarcodeCollectionDetails_Consent_V1.ashx";
         kMediaBaseURL = "https://mcwwb.janarogyaseva.in/MCWWBDOCS_LIVE";
@@ -236,6 +239,8 @@ class APIManager {
             "${baseUrl}handler/CW_MedicineDelivery_V1_DC.ashx";
         kCampAttendancePhotoHandler =
             "${baseUrl}handler/CampAttendanceCheckInOutImages.ashx";
+        kCampAttendanceDuringPhotoHandler =
+            "${baseUrl}handler/CampAttendanceCheckInOutDuringCampImages.ashx";
         kCTSampleCollectionConsentHandler =
             "${baseUrl}handler/CW_T2TBarcodeCollectionDetails_Consent_V1.ashx";
 

@@ -27,6 +27,11 @@ class AttendanceImageOutput {
   String? inImageUploadedOn;
   String? outImage;
   String? outImageUploadedOn;
+  String? duringCampImage;
+  String? duringCampImageUploadedOn;
+  String? isInImageApproved;
+  String? isOutImageApproved;
+  String? isDuringImageApproved;
 
   AttendanceImageOutput({
     this.campId,
@@ -36,6 +41,11 @@ class AttendanceImageOutput {
     this.inImageUploadedOn,
     this.outImage,
     this.outImageUploadedOn,
+    this.duringCampImage,
+    this.duringCampImageUploadedOn,
+    this.isInImageApproved,
+    this.isOutImageApproved,
+    this.isDuringImageApproved,
   });
 
   AttendanceImageOutput.fromJson(Map<String, dynamic> json) {
@@ -46,8 +56,15 @@ class AttendanceImageOutput {
     inImageUploadedOn = json['In_Image_UploadedOn'];
     outImage = json['Out_Image'];
     outImageUploadedOn = json['Out_Image_UploadedOn'];
+    duringCampImage = json['DuringCamp_Image'];
+    duringCampImageUploadedOn = json['DuringCamp_Image_UploadedOn'];
+    isInImageApproved = json['IsInImageApproved'];
+    isOutImageApproved = json['IsOutImageApproved'];
+    isDuringImageApproved = json['IsDuringImageApproved'];
   }
 
   bool get hasInImage => inImage != null && inImage!.isNotEmpty && inImage != 'NA';
   bool get hasOutImage => outImage != null && outImage!.isNotEmpty && outImage != 'NA';
+  bool get hasDuringCampImage =>
+      duringCampImage != null && duringCampImage!.isNotEmpty && duringCampImage != 'NA';
 }

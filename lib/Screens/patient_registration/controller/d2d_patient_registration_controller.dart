@@ -19,6 +19,7 @@ import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserM
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
+import 'package:s2toperational/Screens/patient_registration/model/dependent_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
@@ -165,6 +166,17 @@ class D2DPatientRegistrationController extends GetxController {
   final selectedIdentityId = '0'.obs;
   final selectedIdentityName = ''.obs;
   final isLoadingIdentity = false.obs;
+
+  /// Dependent list — fetched on-demand when "Select Dependent" is tapped
+  final dependentList = <DependentOutput>[].obs;
+  final selectedDependent = Rxn<DependentOutput>();
+  final isLoadingDependents = false.obs;
+
+  /// API error message from the last fetchDependentList call (e.g. screening-pending alert)
+  String dependentListErrorMessage = '';
+
+  /// Dependent's BOCW ID set when user selects from the list
+  String bocwIdDepend = '';
 
   /// District / Taluka dropdowns (isDependent=No + hasApiData=true)
   final regDistrictList = <DistrictOutput>[].obs;
@@ -597,6 +609,127 @@ class D2DPatientRegistrationController extends GetxController {
     }
   }
 
+  /// Called when user taps "Select Dependent" and guards have passed.
+  /// Fetches list from GetDependentDetailsFromBoardData with "MH" + regNo.
+  /// On API failure stores the error message; caller checks [dependentListErrorMessage].
+  Future<void> fetchDependentList() async {
+    isLoadingDependents.value = true;
+    dependentList.clear();
+    selectedDependent.value = null;
+    dependentListErrorMessage = '';
+    try {
+      final regNo = tecWorkerRegNo.text.trim();
+      final result = await _repo.getDependentList(regdNo: 'MH$regNo');
+      if (result == null) {
+        dependentListErrorMessage = 'Server not responding';
+        return;
+      }
+      if (result.status?.toLowerCase() == 'success') {
+        dependentList.value = result.output ?? [];
+        // ignore: avoid_print
+        print('[fetchDependentList] count=${dependentList.length}');
+      } else {
+        dependentListErrorMessage = result.message?.isNotEmpty == true
+            ? result.message!
+            : 'Failed to load dependent list';
+      }
+    } finally {
+      isLoadingDependents.value = false;
+    }
+  }
+
+  void onDependentSelected(DependentOutput dep) {
+    selectedDependent.value = dep;
+    bocwIdDepend = dep.bocwIdDepend ?? '';
+
+    // ── Name: split full_name into first / middle / last ────────────────────
+    final nameParts = dep.displayName.trim().split(RegExp(r'\s+'));
+    final first  = nameParts.isNotEmpty ? nameParts[0] : '';
+    final middle = nameParts.length > 2  ? nameParts[1] : '';
+    final last   = nameParts.length > 1  ? nameParts.last : '';
+
+    tecFirstName.text  = first;
+    tecMiddleName.text = middle;
+    tecLastName.text   = last;
+
+    // Clear middle name for spouse / sibling relations (mirrors native switch)
+    const _clearMiddleRelIds = {'1', '2', '21', '22'};
+    if (_clearMiddleRelIds.contains(dep.relId)) {
+      tecMiddleName.text = '';
+    }
+
+    onNamePartsChanged();
+
+    // ── Relation: auto-fill from API field + find in relation list ───────────
+    final relIdInt = int.tryParse(dep.relId ?? '');
+    final matched = relIdInt != null
+        ? relationList.firstWhereOrNull((r) => r.relId == relIdInt)
+        : null;
+    if (matched != null) {
+      selectedRelation.value = matched;
+    } else if (dep.relation?.isNotEmpty == true) {
+      // Create a temporary RelationOutput when list not yet loaded
+      selectedRelation.value = RelationOutput(
+        relId: relIdInt,
+        relName: dep.relation,
+      );
+    }
+
+    // ── Gender: determined by RelId (mirrors native switch-case) ────────────
+    const _maleRelIds   = {'1', '5', '7', '9', '17', '22'};
+    const _femaleRelIds = {'2', '6', '8', '10', '18', '21'};
+    tecDob.clear();
+    tecAge.clear();
+    if (_maleRelIds.contains(dep.relId)) {
+      selectedGender.value = 'M';
+      isGenderLockedByRelation.value = true;
+    } else if (_femaleRelIds.contains(dep.relId)) {
+      selectedGender.value = 'F';
+      isGenderLockedByRelation.value = true;
+    } else {
+      selectedGender.value = '';
+      isGenderLockedByRelation.value = false;
+    }
+
+    // ── DOB: convert "dd-MM-yyyy" → "yyyy/MM/dd" ────────────────────────────
+    final rawDob = dep.dob ?? '';
+    if (rawDob.isNotEmpty) {
+      try {
+        final parts = rawDob.split('-');
+        if (parts.length == 3) {
+          // dd-MM-yyyy → yyyy/MM/dd
+          tecDob.text = '${parts[2]}/${parts[1]}/${parts[0]}';
+          onDobChanged(tecDob.text);
+        }
+      } catch (_) {}
+    }
+  }
+
+  /// Calls CheckDependentRegistrationStatus. Returns null on success, error message on failure.
+  Future<String?> checkDependentRegistrationStatus(DependentOutput dep) async {
+    final regNo = tecWorkerRegNo.text.trim();
+    return _repo.checkDependentRegistrationStatus(
+      regdNo: 'MH$regNo',
+      dependentName: dep.displayName,
+    );
+  }
+
+  /// Mirrors native clearDependentData() + clearPatientDetails() called on registration-status failure.
+  void clearDependentSelection() {
+    selectedDependent.value = null;
+    bocwIdDepend = '';
+    tecFirstName.clear();
+    tecMiddleName.clear();
+    tecLastName.clear();
+    tecDob.clear();
+    tecAge.clear();
+    selectedGender.value = '';
+    isGenderLockedByRelation.value = false;
+    selectedRelation.value = null;
+    tecAadhaarNo.clear();
+    onNamePartsChanged();
+  }
+
   // ── Alternate mobile OTP ─────────────────────────────────────────────────
 
   Future<void> sendAltMobileOtp() async {
@@ -729,6 +862,10 @@ class D2DPatientRegistrationController extends GetxController {
     selectedWorkerMaritalStatusName.value = '';
     selectedRelation.value = null;
     relationList.clear();
+    dependentList.clear();
+    selectedDependent.value = null;
+    dependentListErrorMessage = '';
+    bocwIdDepend = '';
 
     // District / Taluka state
     isDistrictLocked.value = false;
@@ -828,13 +965,7 @@ class D2DPatientRegistrationController extends GetxController {
             ? data.maritalStatusID!
             : '1';
     final msName = data.maritalStatus ?? 'Married';
-    selectedWorkerMaritalStatusId.value = msId;
-    selectedWorkerMaritalStatusName.value = msName;
-    maritalStatusId =
-        msId; // update from worker data (native: maritalStatus = maritalStatusId)
-    if (isDependent.value) {
-      fetchRelationList(msId, data.gender ?? '');
-    }
+    maritalStatusId = msId;
 
     // LGD codes
     if (data.talLgdCode?.isNotEmpty == true) talLgd = data.talLgdCode!;

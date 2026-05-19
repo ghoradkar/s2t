@@ -196,6 +196,10 @@ class D2DSelectCampController extends GetxController {
     if (output.blockReadiness) return 'Fill camp readiness form first';
     if (output.blockAttendance) return 'Please mark your attendance first';
     if (output.blockTest) return 'You are not mapped for patient registration';
+    if (output.blockTeamMember) return 'हा कॅम्प तुम्ही सुरू करू शकत नाही कारण \n'
+        '1. सर्व टीम सदस्यांची उपस्थिती नोंदवलेली नाही, किंवा \n'
+        '2. टीमचा फोटो अपलोड केलेला नाही, किंवा \n'
+        '3. टीम फोटो मॅनेजरने Approve केलेला नाही.';
     return '';
   }
 }

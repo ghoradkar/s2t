@@ -12,6 +12,8 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Screens/team_photos/screen/camp_closing_screen.dart';
 import 'package:s2toperational/Screens/team_photos/controller/team_photos_controller.dart';
 import 'package:s2toperational/Screens/team_photos/model/attendance_details_response.dart';
@@ -68,7 +70,9 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
+        body: RefreshIndicator(
+          onRefresh: c.refreshCampImages,
+          child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +129,7 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
                                 text: c.selectedCamp.value?.campId ?? '',
                               ),
                               readOnly: true,
-                              onTap: () => c.showCampDropdown(context),
+                              onTap: () => _showCampSheet(context, c),
                               label: _label('Camp ID'),
                               prefixIcon: const Icon(
                                 Icons.location_on_outlined,
@@ -160,7 +164,7 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
                                         // DESGID 35: team is auto-resolved on
                                         // camp selection — no manual picker.
                                         ? () {}
-                                        : () => _showTeamPicker(context, c),
+                                        : () => _showTeamSheet(context, c),
                             label: _label('Team'),
                             prefixIcon: const Icon(
                               Icons.group_outlined,
@@ -190,51 +194,45 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
               SizedBox(height: 14.h),
 
               // ── Attendance table ──────────────────────────────────────────
-              Obx(() => _AttendanceTable(list: c.attendanceList.value)),
+              Obx(() => _AttendanceTable(list: c.attendanceList.toList())),
               SizedBox(height: 14.h),
 
               // ── Photo cards ───────────────────────────────────────────────
-              _PhotoCard(title: 'Check-In Photo', isCheckIn: true, controller: c),
+              _PhotoCard(title: 'Check-In Photo', statusId: '1', controller: c),
+              SizedBox(height: 12.h),
+
+              _PhotoCard(
+                title: 'During Camp Photo With Beneficiary',
+                statusId: '3',
+                controller: c,
+              ),
               SizedBox(height: 12.h),
               _PhotoCard(
                 title: 'Check-Out Photo',
-                isCheckIn: false,
+                statusId: '2',
                 controller: c,
               ),
               SizedBox(height: 16.h),
 
-              // ── Upload / Camp Closing button ──────────────────────────────
-              Obx(() {
-                if (c.bothPhotosUploaded) {
-                  if (c.isD2DOrMMU) {
-                    // Hide if camp already closed (CampConfirmation == "1")
-                    if (c.selectedCamp.value?.isConfirmed == true) {
-                      return const SizedBox.shrink();
-                    }
-                    return AppActiveButton(
-                      buttontitle: 'Camp Closing Confirmation',
-                      onTap: () => _onCampClosingTap(context, c),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }
-                return AppActiveButton(
-                  buttontitle:
-                      c.isMarkInOut.value == '0'
-                          ? 'Upload Check-In Photo'
-                          : 'Upload Check-Out Photo',
-                  onTap:
-                      c.isUploadingPhoto.value
-                          ? () {}
-                          : () => c.uploadPhoto(
-                            isCheckIn: c.isMarkInOut.value == '0',
-                          ),
-                );
-              }),
+              // ── Camp Closing button (D2D/MMU only, non-CC) ───────────────
+              if (c.dESGID != 92 && c.isD2DOrMMU)
+                Obx(() {
+                  if (!c.bothPhotosUploaded) return const SizedBox.shrink();
+                  if (c.selectedCamp.value?.isConfirmed == true) return const SizedBox.shrink();
+                  return AppActiveButton(
+                    buttontitle: 'Camp Closing Confirmation',
+                    onTap: () {
+                      if (c.checkCampClosingAllowed()) {
+                        _onCampClosingTap(context, c);
+                      }
+                    },
+                  );
+                }),
               SizedBox(height: 20.h),
             ],
           ),
-        ),
+          ),  // SingleChildScrollView
+        ),  // RefreshIndicator
       ),
     );
   }
@@ -329,24 +327,83 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
     );
   }
 
-  static void _showTeamPicker(BuildContext context, TeamPhotosController c) {
+  static Future<void> _showCampSheet(
+    BuildContext context,
+    TeamPhotosController c,
+  ) async {
+    if (c.selectedDate.value.isEmpty) {
+      ToastManager.toast('Please select a date first');
+      return;
+    }
+    if (c.campList.isEmpty) {
+      ToastManager.showLoader();
+      try {
+        await c.fetchCampList();
+      } finally {
+        ToastManager.hideLoader();
+      }
+      if (c.campList.isEmpty) return;
+    }
+    if (!context.mounted) return;
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: kWhiteColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder:
-          (_) => _PickerSheet<TeamsDetailsOutput>(
-            title: 'Select Team',
-            items: c.teamList,
-            labelBuilder: (item) => item.displayName,
-            onSelected: (item) {
-              Navigator.pop(context);
-              c.onTeamSelected(item);
-            },
-          ),
+      builder: (_) => SelectionBottomSheet<CampListOutput, String>(
+        title: 'Select Camp ID',
+        items: c.campList.toList(),
+        valueFor: (item) => item.campId ?? '',
+        labelFor: (item) => item.campId ?? '',
+        selectedValue: c.selectedCamp.value?.campId,
+        height: 420.h,
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        titleTextStyle: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: FontConstants.interFonts,
+          fontWeight: FontWeight.w600,
+          color: kTextColor,
+        ),
+        titleBottomSpacing: 16.h,
+        itemPadding: EdgeInsets.symmetric(vertical: 4.h),
+        onItemTap: (item) {
+          Navigator.pop(context);
+          c.onCampSelected(item);
+        },
+      ),
+    );
+  }
+
+  static void _showTeamSheet(
+    BuildContext context,
+    TeamPhotosController c,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SelectionBottomSheet<TeamsDetailsOutput, String>(
+        title: 'Select Team',
+        items: c.teamList.toList(),
+        valueFor: (item) => item.teamNumber ?? '',
+        labelFor: (item) => item.displayName,
+        selectedValue: c.selectedTeam.value?.teamNumber,
+        height: 420.h,
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        titleTextStyle: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: FontConstants.interFonts,
+          fontWeight: FontWeight.w600,
+          color: kTextColor,
+        ),
+        titleBottomSpacing: 16.h,
+        itemPadding: EdgeInsets.symmetric(vertical: 4.h),
+        onItemTap: (item) {
+          Navigator.pop(context);
+          c.onTeamSelected(item);
+        },
+      ),
     );
   }
 
@@ -843,37 +900,72 @@ class _AttendanceTable extends StatelessWidget {
 
 class _PhotoCard extends StatelessWidget {
   final String title;
-  final bool isCheckIn;
+
+  /// "1" = check-in, "2" = check-out, "3" = during-camp
+  final String statusId;
   final TeamPhotosController controller;
 
   const _PhotoCard({
     required this.title,
-    required this.isCheckIn,
+    required this.statusId,
     required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final serverUrl =
-          isCheckIn
-              ? controller.inPhotoServerUrl.value
+      final serverUrl = statusId == '1'
+          ? controller.inPhotoServerUrl.value
+          : statusId == '3'
+              ? controller.duringPhotoServerUrl.value
               : controller.outPhotoServerUrl.value;
-      final localPath =
-          isCheckIn
-              ? controller.inPhotoLocalPath.value
+
+      final localPath = statusId == '1'
+          ? controller.inPhotoLocalPath.value
+          : statusId == '3'
+              ? controller.duringPhotoLocalPath.value
               : controller.outPhotoLocalPath.value;
-      final uploadedOn =
-          isCheckIn
-              ? controller.inPhotoUploadedOn.value
+
+      final uploadedOn = statusId == '1'
+          ? controller.inPhotoUploadedOn.value
+          : statusId == '3'
+              ? controller.duringPhotoUploadedOn.value
               : controller.outPhotoUploadedOn.value;
 
-      final isUploaded = serverUrl.isNotEmpty;
-      final hasLocal = localPath.isNotEmpty;
-      final isLocked = !isCheckIn && controller.isMarkInOut.value == '0';
+      final approvalStatus = statusId == '1'
+          ? controller.inPhotoApprovalStatus.value
+          : statusId == '3'
+              ? controller.duringPhotoApprovalStatus.value
+              : controller.outPhotoApprovalStatus.value;
 
-      final Color accentColor =
-          isCheckIn ? const Color(0xFF1565C0) : const Color(0xFF2E7D32);
+      final isApproved = approvalStatus == 'Approved';
+      final isRejected = approvalStatus == 'Rejected';
+      final hasLocal = localPath.isNotEmpty;
+      final isUploaded = serverUrl.isNotEmpty;
+
+      // Cards are inactive until required selections are made:
+      // Regular camp: camp must be selected
+      // D2D/MMU: both camp AND team must be selected
+      final isInactive = controller.selectedCamp.value == null ||
+          (controller.isD2DOrMMU && controller.selectedTeam.value == null);
+
+      // checkout and during-camp locked until check-in is Approved
+      final isLocked =
+          (statusId == '2' || statusId == '3') && !controller.isCheckInApproved;
+
+      final isCCDesig = controller.dESGID == 92;
+
+      final Color accentColor = statusId == '1'
+          ? const Color(0xFF1565C0)
+          : statusId == '3'
+              ? const Color(0xFF6A1B9A)
+              : const Color(0xFF2E7D32);
+
+      final IconData headerIcon = statusId == '1'
+          ? Icons.login_rounded
+          : statusId == '3'
+              ? Icons.photo_camera_outlined
+              : Icons.logout_rounded;
 
       return _SectionCard(
         child: Column(
@@ -888,11 +980,7 @@ class _PhotoCard extends StatelessWidget {
                     color: accentColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    isCheckIn ? Icons.login_rounded : Icons.logout_rounded,
-                    color: accentColor,
-                    size: 16,
-                  ),
+                  child: Icon(headerIcon, color: accentColor, size: 16),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
@@ -907,11 +995,23 @@ class _PhotoCard extends StatelessWidget {
                   ),
                 ),
                 // Status badge
-                if (isUploaded)
+                if (isApproved)
                   _statusBadge(
-                    label: 'Uploaded',
+                    label: 'Approved',
                     color: Colors.green,
-                    icon: Icons.cloud_done_rounded,
+                    icon: Icons.verified_rounded,
+                  )
+                else if (isRejected)
+                  _statusBadge(
+                    label: 'Rejected',
+                    color: Colors.red,
+                    icon: Icons.cancel_outlined,
+                  )
+                else if (isUploaded)
+                  _statusBadge(
+                    label: 'Pending',
+                    color: Colors.orange,
+                    icon: Icons.hourglass_empty_rounded,
                   )
                 else if (isLocked)
                   _statusBadge(
@@ -935,66 +1035,347 @@ class _PhotoCard extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
 
-            // ── Photo preview ────────────────────────────────────────────
+            // ── Photo preview — tap to capture+upload (non-CC, non-approved) ──
             GestureDetector(
-              onTap:
-                  isUploaded ? () => _openFullScreen(context, serverUrl) : null,
+              onTap: isInactive
+                  ? null
+                  : isCCDesig
+                      ? (isUploaded ? () => _openFullScreen(context, serverUrl) : null)
+                      : isLocked
+                          ? null
+                          : isApproved
+                              ? () => _openFullScreen(context, serverUrl)
+                              : controller.isUploadingPhoto.value
+                                  ? null
+                                  : () => controller.captureAndUploadPhoto(statusId: statusId),
               child: Container(
                 width: double.infinity,
-                height: (isUploaded || hasLocal) ? 150.h : 90.h,
+                height: 150.h,
                 decoration: BoxDecoration(
                   color: kBackground,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color:
-                        isUploaded
-                            ? Colors.green.withValues(alpha: 0.4)
-                            : kTextFieldBorder,
-                    width: isUploaded ? 1.5 : 1,
+                    color: isInactive
+                        ? kTextFieldBorder
+                        : isApproved
+                            ? Colors.green.withValues(alpha: 0.5)
+                            : isRejected
+                                ? Colors.red.withValues(alpha: 0.4)
+                                : isUploaded
+                                    ? Colors.orange.withValues(alpha: 0.4)
+                                    : (!isCCDesig && !isLocked)
+                                        ? kPrimaryColor.withValues(alpha: 0.35)
+                                        : kTextFieldBorder,
+                    width: (isUploaded || isApproved || isRejected) ? 1.5 : 1,
                   ),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: _buildPhotoWidget(
                   serverUrl: serverUrl,
                   localPath: localPath,
+                  isLocked: isLocked,
+                  isTappable: !isInactive && !isCCDesig && !isLocked && !isApproved,
+                  isInactive: isInactive,
                 ),
               ),
             ),
             SizedBox(height: 12.h),
 
             // ── Action row ───────────────────────────────────────────────
-            if (isLocked)
-              _infoRow(
-                icon: Icons.lock_outline_rounded,
-                text: 'Upload check-in photo first to unlock',
-                color: Colors.orange,
-              )
-            else if (isUploaded)
-              _infoRow(
-                icon: Icons.access_time_rounded,
-                text:
-                    uploadedOn.isNotEmpty
-                        ? 'Uploaded on $uploadedOn'
-                        : 'Photo uploaded successfully',
-                color: Colors.green,
+            if (isCCDesig)
+              _buildCCActionRow(
+                context: context,
+                isInactive: isInactive,
+                serverUrl: serverUrl,
+                isApproved: isApproved,
+                isRejected: isRejected,
+                uploadedOn: uploadedOn,
               )
             else
-              Row(
-                children: [
-                  Expanded(
-                    child: AppActiveButton(
-                      buttontitle: hasLocal ? 'Retake Photo' : 'Capture Photo',
-                      onTap:
-                          () => controller.capturePhoto(isCheckIn: isCheckIn),
-                    ),
-                  ),
-                ],
+              _buildUserActionRow(
+                context: context,
+                isInactive: isInactive,
+                isLocked: isLocked,
+                isApproved: isApproved,
+                isRejected: isRejected,
+                isUploaded: isUploaded,
+                uploadedOn: uploadedOn,
               ),
           ],
         ),
       );
     });
   }
+
+  // Action row for field team (non-CC)
+  Widget _buildUserActionRow({
+    required BuildContext context,
+    required bool isInactive,
+    required bool isLocked,
+    required bool isApproved,
+    required bool isRejected,
+    required bool isUploaded,
+    required String uploadedOn,
+  }) {
+    // 0. Inactive — camp or team not yet selected
+    if (isInactive) {
+      return _infoRow(
+        icon: Icons.touch_app_outlined,
+        text: 'Select camp & team to continue',
+        color: kLabelTextColor,
+      );
+    }
+
+    // 1. Locked — check-in not yet approved
+    if (isLocked) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _infoRow(
+            icon: Icons.lock_outline_rounded,
+            text: 'Check-in photo must be approved first',
+            color: Colors.orange,
+          ),
+          SizedBox(height: 8.h),
+          GestureDetector(
+            onTap: () => controller.refreshCampImages(),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.refresh_rounded, size: 14, color: Colors.orange),
+                  SizedBox(width: 4.w),
+                  Text(
+                    'Refresh Status',
+                    style: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontSize: 11.sp,
+                      color: Colors.orange,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    final List<Widget> rows = [];
+
+    // Upload timestamp
+    if (isUploaded && uploadedOn.isNotEmpty) {
+      final Color tsColor =
+          isApproved ? Colors.green : isRejected ? Colors.red : Colors.orange;
+      rows.add(
+        _infoRow(
+          icon: Icons.access_time_rounded,
+          text: 'Uploaded on $uploadedOn',
+          color: tsColor,
+        ),
+      );
+      if (rows.isNotEmpty) rows.add(SizedBox(height: 6.h));
+    }
+
+    if (isApproved) {
+      rows.add(
+        _infoRow(
+          icon: Icons.verified_rounded,
+          text: 'Photo Approved',
+          color: Colors.green,
+        ),
+      );
+    } else if (isRejected) {
+      rows.add(
+        _infoRow(
+          icon: Icons.cancel_outlined,
+          text: _rejectionText,
+          color: Colors.red,
+        ),
+      );
+      rows.add(SizedBox(height: 4.h));
+      rows.add(
+        _infoRow(
+          icon: Icons.touch_app_outlined,
+          text: 'Tap photo to re-capture and upload',
+          color: Colors.red.withValues(alpha: 0.75),
+        ),
+      );
+    } else if (isUploaded) {
+      rows.add(
+        _infoRow(
+          icon: Icons.hourglass_empty_rounded,
+          text: 'Waiting for approval',
+          color: Colors.orange,
+        ),
+      );
+    } else {
+      rows.add(
+        _infoRow(
+          icon: Icons.touch_app_outlined,
+          text: 'Tap photo to capture and upload',
+          color: kPrimaryColor,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: rows,
+    );
+  }
+
+  // Action row for CC / manager (DESGID 92)
+  Widget _buildCCActionRow({
+    required BuildContext context,
+    required bool isInactive,
+    required String serverUrl,
+    required bool isApproved,
+    required bool isRejected,
+    required String uploadedOn,
+  }) {
+    // Photo approved — hide buttons entirely, show confirmed status only
+    if (isApproved) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (uploadedOn.isNotEmpty) ...[
+            _infoRow(
+              icon: Icons.access_time_rounded,
+              text: 'Uploaded on $uploadedOn',
+              color: Colors.green,
+            ),
+            SizedBox(height: 6.h),
+          ],
+          _infoRow(
+            icon: Icons.verified_rounded,
+            text: 'फोटो approve करण्यात आलेला आहे.',
+            color: Colors.green,
+          ),
+        ],
+      );
+    }
+
+    // Buttons are active only when photo is uploaded and pending (not yet reviewed)
+    final bool isPending = !isInactive && serverUrl.isNotEmpty && !isRejected;
+    final List<Widget> rows = [];
+
+    if (serverUrl.isEmpty) {
+      // No photo yet — show info text then disabled buttons
+      rows.add(
+        _infoRow(
+          icon: Icons.info_outline_rounded,
+          text: 'टीमकडून फोटो अजून अपलोड झालेला नाही.',
+          color: kLabelTextColor,
+        ),
+      );
+      rows.add(SizedBox(height: 8.h));
+    } else {
+      // Photo exists — show timestamp
+      if (uploadedOn.isNotEmpty) {
+        rows.add(
+          _infoRow(
+            icon: Icons.access_time_rounded,
+            text: 'Uploaded on $uploadedOn',
+            color: isRejected ? Colors.red : Colors.orange,
+          ),
+        );
+        rows.add(SizedBox(height: 6.h));
+      }
+      if (isRejected) {
+        // Rejected — waiting for phlebo to re-upload
+        rows.add(
+          _infoRow(
+            icon: Icons.cancel_outlined,
+            text: 'फोटो reject करण्यात आलेला आहे.',
+            color: Colors.red,
+          ),
+        );
+        rows.add(SizedBox(height: 8.h));
+      }
+    }
+
+    rows.add(_approveRejectButtons(enabled: isPending));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows);
+  }
+
+  Widget _approveRejectButtons({required bool enabled}) {
+    return Opacity(
+      opacity: enabled ? 1.0 : 0.4,
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: enabled
+                  ? () => controller.approveRejectPhoto(
+                        statusId: statusId,
+                        approvalStatusId: '1',
+                      )
+                  : null,
+              child: Container(
+                height: 40.h,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  'Approve',
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: kWhiteColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: GestureDetector(
+              onTap: enabled
+                  ? () => controller.approveRejectPhoto(
+                        statusId: statusId,
+                        approvalStatusId: '2',
+                      )
+                  : null,
+              child: Container(
+                height: 40.h,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  'Reject',
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: kWhiteColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String get _rejectionText => switch (statusId) {
+    '1' => 'तुमचा चेक इन फोटो रिजेक्ट केला आहे, फोटो पुन्हा अपलोड करा.',
+    '3' => 'तुमचा कॅम्प फोटो रिजेक्ट केला आहे, फोटो पुन्हा अपलोड करा.',
+    _ => 'तुमचा चेक आऊट फोटो रिजेक्ट केला आहे, फोटो पुन्हा अपलोड करा.',
+  };
 
   Widget _statusBadge({
     required String label,
@@ -1054,21 +1435,50 @@ class _PhotoCard extends StatelessWidget {
   Widget _buildPhotoWidget({
     required String serverUrl,
     required String localPath,
+    required bool isLocked,
+    required bool isTappable,
+    required bool isInactive,
   }) {
-    if (serverUrl.isNotEmpty) {
+    // Local path means photo was just captured and is uploading
+    if (localPath.isNotEmpty) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.file(File(localPath), fit: BoxFit.cover),
+          Container(
+            color: Colors.black.withValues(alpha: 0.45),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                SizedBox(height: 8.h),
+                Text(
+                  'Uploading...',
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 12.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+    if (!isInactive && serverUrl.isNotEmpty) {
       return Image.network(
         serverUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _placeholder(),
+        errorBuilder: (_, __, ___) => _placeholder(isLocked: isLocked, isTappable: isTappable, isInactive: isInactive),
         loadingBuilder: (_, child, progress) {
           if (progress == null) return child;
           return Center(
             child: CircularProgressIndicator(
-              value:
-                  progress.expectedTotalBytes != null
-                      ? progress.cumulativeBytesLoaded /
-                          progress.expectedTotalBytes!
-                      : null,
+              value: progress.expectedTotalBytes != null
+                  ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                  : null,
               color: kPrimaryColor,
               strokeWidth: 2,
             ),
@@ -1076,29 +1486,44 @@ class _PhotoCard extends StatelessWidget {
         },
       );
     }
-    if (localPath.isNotEmpty) {
-      return Image.file(File(localPath), fit: BoxFit.cover);
-    }
-    return _placeholder();
+    return _placeholder(isLocked: isLocked, isTappable: isTappable, isInactive: isInactive);
   }
 
-  Widget _placeholder() {
-    final bool isLocked = !isCheckIn && controller.isMarkInOut.value == '0';
+  Widget _placeholder({
+    required bool isLocked,
+    required bool isTappable,
+    required bool isInactive,
+  }) {
+    final IconData icon = isInactive
+        ? Icons.camera_alt_outlined
+        : isLocked
+            ? Icons.lock_outline_rounded
+            : isTappable
+                ? Icons.camera_alt_rounded
+                : Icons.camera_alt_outlined;
+    final String text = isInactive
+        ? 'No photo yet'
+        : isLocked
+            ? 'Complete check-in first'
+            : isTappable
+                ? 'Tap here to capture photo'
+                : 'No photo captured yet';
+    final Color color = isTappable && !isLocked
+        ? kPrimaryColor.withValues(alpha: 0.5)
+        : kLabelTextColor.withValues(alpha: 0.4);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          isLocked ? Icons.lock_outline_rounded : Icons.camera_alt_outlined,
-          color: kLabelTextColor.withValues(alpha: 0.4),
-          size: 40,
-        ),
+        Icon(icon, color: color, size: 42),
         SizedBox(height: 8.h),
         Text(
-          isLocked ? 'Complete check-in first' : 'No photo captured yet',
+          text,
           style: TextStyle(
             fontFamily: FontConstants.interFonts,
             fontSize: 12.sp,
-            color: kLabelTextColor.withValues(alpha: 0.6),
+            color: color,
+            fontWeight: isTappable ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ],
@@ -1141,86 +1566,6 @@ class _FullScreenImageView extends StatelessWidget {
                 ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ─── Generic picker bottom sheet ──────────────────────────────────────────────
-
-class _PickerSheet<T> extends StatelessWidget {
-  final String title;
-  final List<T> items;
-  final String Function(T) labelBuilder;
-  final void Function(T) onSelected;
-
-  const _PickerSheet({
-    required this.title,
-    required this.items,
-    required this.labelBuilder,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.55,
-      ),
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewPadding.bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 10.h, bottom: 4.h),
-            width: 40.w,
-            height: 4.h,
-            decoration: BoxDecoration(
-              color: kTextFieldBorder,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-                color: kTextColor,
-              ),
-            ),
-          ),
-          const Divider(height: 1),
-          Flexible(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: items.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
-              itemBuilder: (_, i) {
-                final item = items[i];
-                return ListTile(
-                  title: Text(
-                    labelBuilder(item),
-                    style: TextStyle(
-                      fontFamily: FontConstants.interFonts,
-                      fontSize: 14.sp,
-                      color: kTextColor,
-                    ),
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: kPrimaryColor,
-                  ),
-                  onTap: () => onSelected(item),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

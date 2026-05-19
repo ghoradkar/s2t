@@ -18,6 +18,7 @@ import 'package:s2toperational/Screens/patient_registration/model/beneficiary_de
 import 'package:s2toperational/Screens/patient_registration/model/d2d_camp_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_registration_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/dependent_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
 import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
 import 'package:s2toperational/Screens/patient_registration/model/get_queue_response_model.dart';
@@ -272,6 +273,67 @@ class D2DPatientRegistrationRepository {
       }
       return null;
     } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Fetches the dependent list from the board data.
+  /// [regdNo] must include the "MH" prefix (e.g. "MH123456789012").
+  /// Returns the full response (including failure) so the controller can
+  /// display the API error message (e.g. worker-screening-pending alert).
+  Future<DependentListResponse?> getDependentList({
+    required String regdNo,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetDependentDetailsFromBoardData}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'RegdNo': regdNo},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      // ignore: avoid_print
+      final bodyString = utf8.decode(response.bodyBytes);
+      print('[getDependentList] status=${response.statusCode} body=${bodyString.substring(0, bodyString.length.clamp(0, 500))}');
+      final decoded = json.decode(bodyString);
+      return DependentListResponse.fromJson(decoded);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getDependentList] error=$e');
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Returns null on success (status == "Success"), or the error message string on failure.
+  Future<String?> checkDependentRegistrationStatus({
+    required String regdNo,
+    required String dependentName,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kCheckDependentRegistrationStatus}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'RegdNo': regdNo, 'DependentName': dependentName},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final bodyString = utf8.decode(response.bodyBytes);
+      final decoded = json.decode(bodyString) as Map<String, dynamic>;
+      final status = decoded['status']?.toString() ?? '';
+      if (status.toLowerCase() == 'success') return null;
+      final message = decoded['message']?.toString() ?? '';
+      return message.isNotEmpty ? message : 'Dependent already registered';
+    } catch (e) {
+      // ignore: avoid_print
+      print('[checkDependentRegistrationStatus] error=$e');
       return null;
     } finally {
       ioClient.close();

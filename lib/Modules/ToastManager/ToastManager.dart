@@ -86,11 +86,15 @@ class ToastManager {
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CommonText(
-                  text: message,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.normal,
-                  textColor: kBlackColor,
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    inherit: false,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.normal,
+                    color: kBlackColor,
+                    fontFamilyFallback: const ['Noto Sans Devanagari', 'Noto Serif Devanagari'],
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
