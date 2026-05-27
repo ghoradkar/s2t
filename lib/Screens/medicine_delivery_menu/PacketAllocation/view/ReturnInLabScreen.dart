@@ -19,7 +19,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/PacketAllocation/view/ReturnInLabRow.dart';
-import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../../../../../Modules/constants/fonts.dart';
 

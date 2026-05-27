@@ -128,10 +128,15 @@ class _RegisteredPatientListScreenState
     final empCode = (user?.empCode ?? 0).toString();
 
     setState(() => _isLoading = true);
+    final teamId = await _repo.getTeamNumber(
+      campId: widget.campId,
+      userId: empCode,
+    );
     final result = await _repo.getRegisteredPatientList(
       campId: widget.campId,
       empCode: empCode,
       campType: widget.campType,
+      teamId: teamId,
     );
     setState(() => _isLoading = false);
 

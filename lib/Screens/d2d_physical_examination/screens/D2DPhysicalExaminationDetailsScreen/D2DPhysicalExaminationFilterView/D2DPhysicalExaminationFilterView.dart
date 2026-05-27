@@ -11,7 +11,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_physical_examination_controller.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/AllDistrictListForPhyExamResponse.dart';
-import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
 class D2DPhysicalExaminationFilterView extends StatefulWidget {

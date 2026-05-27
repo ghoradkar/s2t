@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Screens/CampDetailsScreen/BeneficiaryCampDetailsScreen/BeneficiaryVerificationScreen/FullScreenImageScreen/FullScreenImageScreen.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../../Modules/Json_Class/BeneficiaryWorkerResponse/BeneficiaryWorkerResponse.dart';
 import '../../../../../Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
@@ -12,7 +13,7 @@ import '../../../../../Modules/Json_Class/PatientCheckupAnalysisReportResponse/P
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';
 import '../../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../FullScreenImageScreen/FullScreenImageScreen.dart';
+// import '../../../../FullScreenImageScreen/FullScreenImageScreen.dart';
 
 class BeneficiaryVerificationInfoScreen extends StatefulWidget {
   BeneficiaryVerificationInfoScreen({

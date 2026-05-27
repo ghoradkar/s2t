@@ -18,7 +18,7 @@ import '../../../../Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCrea
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/AppActiveButton.dart';
-import '../../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
 class CTAssignmentFilterWidget extends StatefulWidget {
   CTAssignmentFilterWidget({
@@ -43,7 +43,8 @@ class CTAssignmentFilterWidget extends StatefulWidget {
   Function() applyDidPressed;
 
   @override
-  State<CTAssignmentFilterWidget> createState() => _CTAssignmentFilterWidgetState();
+  State<CTAssignmentFilterWidget> createState() =>
+      _CTAssignmentFilterWidgetState();
 }
 
 class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
@@ -68,7 +69,10 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
     empCode = parsedUser?.output?.first.empCode ?? 0;
     empDistrictCode = parsedUser?.output?.first.dISTLGDCODE ?? 0;
 
-    selectedDeptType = DepartmentTypeOutput(deptTypeId: 0, departmentType: "All");
+    selectedDeptType = DepartmentTypeOutput(
+      deptTypeId: 0,
+      departmentType: "All",
+    );
     getDistictInitially();
   }
 
@@ -190,9 +194,9 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
             onTap: () async {
               await getDistrictByUserID();
             },
-            hint: 'District',
+            hint: 'District *',
             label: CommonText(
-              text: 'District',
+              text: 'District *',
               fontSize: 12.sp,
               fontWeight: FontWeight.normal,
               textColor: kBlackColor,
@@ -243,9 +247,9 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
             onTap: () {
               getTaluka();
             },
-            hint: 'Taluka',
+            hint: 'Taluka *',
             label: CommonText(
-              text: 'Taluka',
+              text: 'Taluka *',
               fontSize: 12.sp,
               fontWeight: FontWeight.normal,
               textColor: kBlackColor,
@@ -280,9 +284,9 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
             onTap: () {
               getDepartmentType();
             },
-            hint: 'CT Prescribed From',
+            hint: 'CT Prescribed From *',
             label: CommonText(
-              text: 'CT Prescribed From',
+              text: 'CT Prescribed From *',
               fontSize: 12.sp,
               fontWeight: FontWeight.normal,
               textColor: kBlackColor,
@@ -309,46 +313,7 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
             suffixIcon: Icon(Icons.keyboard_arrow_down),
           ),
           const SizedBox(height: 8),
-          AppTextField(
-            readOnly: false,
-            controller: pinCodeTextEditingController,
-            hint: 'Pin Code',
-            label: CommonText(
-              text: 'Pin Code',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.normal,
-              textColor: kBlackColor,
-              textAlign: TextAlign.start,
-            ),
-            hintStyle: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-              fontFamily: FontConstants.interFonts,
-            ),
-            fieldRadius: 10,
-            prefixIcon: SizedBox(
-              height: 20.h,
-              width: 20.w,
-              child: Center(
-                child: Image.asset(
-                  icHashIcon,
-                  height: 24.h,
-                  width: 24.w,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            textInputType: TextInputType.number,
-            maxLength: 6,
-          ),
-          // AppIconTextfield(
-          //   icon: icHashIcon,
-          //   titleHeaderString: "Pin Code",
-          //   controller: pinCodeTextEditingController,
-          //   textInputType: TextInputType.number,
-          //   maxLength: 6,
-          // ),
-          const SizedBox(height: 8),
+
           AppTextField(
             onTap: () {
               getAssignmentRemarks();
@@ -387,14 +352,41 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
             maxLength: 6,
             suffixIcon: Icon(Icons.keyboard_arrow_down),
           ),
-          // AppDropdownTextfield(
-          //   icon: icMapPin,
-          //   titleHeaderString: "Status*",
-          //   valueString: selectedStatusRemark?.assignmentRemarks ?? "",
-          //   onTap: () {
-          //     getAssignmentRemarks();
-          //   },
-          // ),
+          const SizedBox(height: 8),
+
+          AppTextField(
+            readOnly: false,
+            controller: pinCodeTextEditingController,
+            hint: 'Pin Code',
+            label: CommonText(
+              text: 'Pin Code',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.normal,
+              textColor: kBlackColor,
+              textAlign: TextAlign.start,
+            ),
+            hintStyle: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              fontFamily: FontConstants.interFonts,
+            ),
+            fieldRadius: 10,
+            prefixIcon: SizedBox(
+              height: 20.h,
+              width: 20.w,
+              child: Center(
+                child: Image.asset(
+                  icHashIcon,
+                  height: 24.h,
+                  width: 24.w,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            textInputType: TextInputType.number,
+            maxLength: 6,
+          ),
+
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 4, 0, 20),
@@ -564,7 +556,10 @@ class _CTAssignmentFilterWidgetState extends State<CTAssignmentFilterWidget> {
       ToastManager.hideLoader();
       if (success) {
         List<DepartmentTypeOutput> list = response?.output ?? [];
-        list.insert(0, DepartmentTypeOutput(deptTypeId: 0, departmentType: "All"));
+        list.insert(
+          0,
+          DepartmentTypeOutput(deptTypeId: 0, departmentType: "All"),
+        );
         _showDropDownBottomSheet(
           "CT Prescribed From",
           list,

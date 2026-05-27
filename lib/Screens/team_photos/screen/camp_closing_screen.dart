@@ -10,10 +10,13 @@ import 'package:s2toperational/Modules/widgets/AppButton.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/health_screening_details/screens/CampClosingColorInfoView/CampClosingColorInfoView.dart';
+import 'package:s2toperational/Screens/health_screening_details/screens/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
+import 'package:s2toperational/Screens/health_screening_details/screens/ConsumableConsumptionForCampView/ConsumableConsumptionForCampView.dart';
 import 'package:s2toperational/Screens/team_photos/controller/camp_closing_controller.dart';
-import 'package:s2toperational/Views/CampClosingColorInfoView/CampClosingColorInfoView.dart';
-import 'package:s2toperational/Views/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
-import 'package:s2toperational/Views/ConsumableConsumptionForCampView/ConsumableConsumptionForCampView.dart';
+// import 'package:s2toperational/Views/CampClosingColorInfoView/CampClosingColorInfoView.dart';
+// import 'package:s2toperational/Views/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
+// import 'package:s2toperational/Views/ConsumableConsumptionForCampView/ConsumableConsumptionForCampView.dart';
 
 class CampClosingScreen extends StatefulWidget {
   final int campID;

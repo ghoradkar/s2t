@@ -9,6 +9,8 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Screens/ResourceReMapping/AddRemoveResourceDropDownScreen/AddRemoveResourceDropDownScreen.dart';
+import 'package:s2toperational/Screens/ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampDetails/ResourceReMappingCampDetails.dart';
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/CampDetailsntApprovalResponse/CampDetailsntApprovalResponse.dart';
 import '../../../Modules/Json_Class/CampResourceAllocationResponse/CampResourceAllocationResponse.dart';
@@ -20,8 +22,8 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../../Views/AddRemoveResourceDropDownScreen/AddRemoveResourceDropDownScreen.dart';
-import '../../../Views/ResourceReMappingCampDetails/ResourceReMappingCampDetails.dart';
+// import '../../../Views/AddRemoveResourceDropDownScreen/AddRemoveResourceDropDownScreen.dart';
+// import '../../../Views/ResourceReMappingCampDetails/ResourceReMappingCampDetails.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
 class ResourceReMappingUpdateScreen extends StatefulWidget {

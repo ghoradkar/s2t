@@ -10,9 +10,9 @@ import 'package:s2toperational/Screens/calling_modules/screens/add_dependent.dar
 import 'package:s2toperational/Screens/calling_modules/screens/appointment_confirmation.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/calling_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
+import 'package:s2toperational/Screens/forgot_password/ui/forgot_password.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/forgot_password_otp.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/reset_password.dart';
-import '../../ForgotPasswordScreen/ForgotPasswordScreen.dart';
 import '../../LoginScreen/LoginScreen.dart';
 import '../../SplashScreen/SplashScreen.dart';
 import '../custom_widgets/logout_widget.dart';

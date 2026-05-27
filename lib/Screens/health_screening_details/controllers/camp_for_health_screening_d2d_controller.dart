@@ -5,7 +5,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 // import 'package:s2toperational/screen/health_screening_details/models/camp_d2d_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 
@@ -203,10 +203,6 @@ class CampForHealthScreeningD2DController extends GetxController {
     final obj = response.output?.first;
     if (obj == null) return;
 
-    if (obj.isOldCampClosed == 0) {
-      ToastManager.toast('मागील दिवसाचा कॅम्प अजूनही सुरू आहे. त्यामुळे नवीन patient registration करता येणार नाही.');
-      return;
-    }
     if (obj.isCampClosed == 1) {
       ToastManager.toast('This camp is closed');
       return;

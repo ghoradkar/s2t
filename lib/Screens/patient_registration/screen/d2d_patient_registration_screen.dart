@@ -20,6 +20,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/dependent_list_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_creation_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_demographic_creation_screen.dart';
@@ -227,6 +228,10 @@ class _D2DPatientRegistrationScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── GIS Location ─────────────────────────────────────────────────
+        _buildLocationBanner(),
+        SizedBox(height: 12.h),
+
         // ── 1. Beneficiary Reg No ────────────────────────────────────────
         _sectionLabel('Beneficiary Info'),
         SizedBox(height: 8.h),
@@ -243,6 +248,10 @@ class _D2DPatientRegistrationScreenState
                 readOnly: _hasData,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChange: _hasData ? null : c.onWorkerRegNoChanged,
+                errorText:
+                    c.workerRegNoError.value.isEmpty
+                        ? null
+                        : c.workerRegNoError.value,
                 suffixIcon:
                     c.isLoadingBeneficiary.value
                         ? const SizedBox(
@@ -618,6 +627,11 @@ class _D2DPatientRegistrationScreenState
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
+                              onChange: c.onAbhaAadhaarChanged,
+                              errorText:
+                                  c.abhaAadhaarError.value.isNotEmpty
+                                      ? c.abhaAadhaarError.value
+                                      : null,
                               prefixIcon: const Icon(
                                 Icons.credit_card_rounded,
                                 color: kPrimaryColor,
@@ -849,12 +863,14 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 12.h),
         ],
 
-        // ── 3. Worker gender dropdown (Scenarios 3 & 4: isDependent=Yes) ─
-        if (_isYes) ...[
+        // ── 3. Worker gender correction (Scenario 2: isDependent=No + data loaded) ─
+        // Req 7: worker can correct their own gender before submitting.
+        // Req 6: hidden for dependent flow — worker gender is read-only there.
+        if (_isNo && _hasData) ...[
           _sectionLabel('Worker Gender'),
           SizedBox(height: 6.h),
           _dropdownField(
-            hint: 'Click below to change worker\'s gender',
+            hint: 'Click to change worker gender',
             value:
                 c.workerGenderByPhlebo.value.isEmpty
                     ? null
@@ -863,7 +879,9 @@ class _D2DPatientRegistrationScreenState
             onSelected: (v) => c.workerGenderByPhlebo.value = v,
           ),
           SizedBox(height: 12.h),
+        ],
 
+        if (_isYes) ...[
           // ── 4. Worker marital status (Scenarios 3 & 4) ────────────────
           _sectionLabel('Worker Marital Status'),
           SizedBox(height: 6.h),
@@ -990,8 +1008,8 @@ class _D2DPatientRegistrationScreenState
           label: _label('Contact Number *'),
           maxLength: 10,
           textInputType: TextInputType.phone,
-          // Disabled after OTP verified OR after ABHA-creation fill
           readOnly:
+              _hasData ||
               c.mobileOtpVerified.value ||
               c.altMobileOtpVerified.value ||
               _isLocked,
@@ -1004,8 +1022,7 @@ class _D2DPatientRegistrationScreenState
         ),
         SizedBox(height: 8.h),
         // Show Verify Contact Number only when checkbox NOT checked (native behaviour)
-        if (c.registrationType.value == 'without_abha' &&
-            !c.isNumberNotBelongsToBeneficiary.value) ...[
+        if (!c.isNumberNotBelongsToBeneficiary.value) ...[
           if (c.mobileOtpVerified.value)
             _verifiedBanner('Contact number verified')
           else ...[
@@ -1035,15 +1052,14 @@ class _D2DPatientRegistrationScreenState
             ],
           ],
         ],
+        if (c.mobileOtpVerified.value) ...[
         SizedBox(height: 10.h),
 
         // ── 8. "This Number not belongs to beneficiary" checkbox ─────────
         // Disabled once any OTP is verified
         GestureDetector(
           onTap:
-              c.mobileOtpVerified.value ||
-                      c.altMobileOtpVerified.value ||
-                      _isLocked
+              c.altMobileOtpVerified.value || _isLocked
                   ? null
                   : () {
                     c.isNumberNotBelongsToBeneficiary.value =
@@ -1057,20 +1073,14 @@ class _D2DPatientRegistrationScreenState
                   },
           child: Opacity(
             opacity:
-                (c.mobileOtpVerified.value ||
-                        c.altMobileOtpVerified.value ||
-                        _isLocked)
-                    ? 0.45
-                    : 1.0,
+                (c.altMobileOtpVerified.value || _isLocked) ? 0.45 : 1.0,
             child: Row(
               children: [
                 Checkbox(
                   value: c.isNumberNotBelongsToBeneficiary.value,
                   activeColor: kPrimaryColor,
                   onChanged:
-                      (c.mobileOtpVerified.value ||
-                              c.altMobileOtpVerified.value ||
-                              _isLocked)
+                      (c.altMobileOtpVerified.value || _isLocked)
                           ? null
                           : (v) {
                             c.isNumberNotBelongsToBeneficiary.value =
@@ -1084,7 +1094,7 @@ class _D2DPatientRegistrationScreenState
                           },
                 ),
                 Text(
-                  'This Number not belongs to beneficiary',
+                  'Do you want to register alternate mobile no.',
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
                     fontSize: 13.sp,
@@ -1104,9 +1114,9 @@ class _D2DPatientRegistrationScreenState
             label: _label('Alternate Mobile Number *'),
             maxLength: 10,
             textInputType: TextInputType.phone,
-            // Disabled after either contact or alternate OTP is verified
             readOnly: c.mobileOtpVerified.value || c.altMobileOtpVerified.value,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChange: (v) => c.onAltMobileChanged(v),
             prefixIcon: const Icon(
               Icons.phone_android_rounded,
               color: kPrimaryColor,
@@ -1176,6 +1186,7 @@ class _D2DPatientRegistrationScreenState
             ],
           ),
         ],
+        ],
         SizedBox(height: 14.h),
 
         // ── 9b. Identity card (isDependent=Yes: Scenarios 3 & 4) ────────
@@ -1183,7 +1194,9 @@ class _D2DPatientRegistrationScreenState
           _sectionLabel('Identity Card'),
           SizedBox(height: 6.h),
           GestureDetector(
-            onTap: () => _showIdentityPicker(context),
+            onTap: c.isIdentityLockedByData.value
+                ? null
+                : () => _showIdentityPicker(context),
             child: AbsorbPointer(
               child: AppTextField(
                 controller: TextEditingController(
@@ -1198,6 +1211,8 @@ class _D2DPatientRegistrationScreenState
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ).paddingOnly(right: 8.w)
+                        : c.isIdentityLockedByData.value
+                        ? null
                         : const Icon(Icons.arrow_drop_down),
               ),
             ),
@@ -1205,14 +1220,21 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 12.h),
         ],
 
-        // ── 10. Aadhaar / Identity Number (without_abha only) ───────────
-        // Label and input behaviour change when a non-Aadhaar identity card
-        // is selected from the identity card picker above.
-        // Hidden for with_abha — ABHA itself serves as identity.
-        if (c.registrationType.value == 'without_abha') ...[
-          Builder(
-            builder: (_) {
-              final isAadhaar = c.isAadhaarMode;
+        // ── 10. Aadhaar / Identity Number ───────────────────────────────
+        // without_abha: always shown; input behaviour changes with identity card.
+        // without_abha: always shown.
+        // with_abha + worker: shown read-only when Aadhaar was entered in ABHA flow.
+        // with_abha + dependent: always shown and editable (dependent Aadhaar
+        //   is entered manually, not auto-filled from ABHA verification).
+        if (c.registrationType.value == 'without_abha' ||
+            c.aadhaarSetForAbha.value ||
+            c.isDependent.value) ...[
+          Obx(
+            () {
+              final isWithAbha =
+                  c.registrationType.value == 'with_abha';
+              final isDependent = c.isDependent.value;
+              final isAadhaar = isWithAbha || c.isAadhaarMode;
               final sectionTitle =
                   isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
               final fieldLabel =
@@ -1227,15 +1249,18 @@ class _D2DPatientRegistrationScreenState
                   AppTextField(
                     controller: c.tecAadhaarNo,
                     label: _label(fieldLabel),
-                    textInputType:
-                        isAadhaar ? TextInputType.number : TextInputType.text,
+                    textInputType: TextInputType.number,
                     maxLength: c.identityMaxLength,
-                    // isDependent=No → disabled; isDependent=Yes → enabled
-                    readOnly: _isNo,
+                    // with_abha + worker → read-only (auto-filled from ABHA)
+                    // with_abha + dependent → editable (manually entered)
+                    // without_abha + worker → disabled; dependent → editable
+                    readOnly: (isWithAbha && !isDependent) || _isNo,
                     inputFormatters:
                         isAadhaar
                             ? [
-                              FilteringTextInputFormatter.digitsOnly,
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'[\d•]'),
+                              ),
                               LengthLimitingTextInputFormatter(12),
                             ]
                             : [
@@ -1248,11 +1273,31 @@ class _D2DPatientRegistrationScreenState
                         isAadhaar
                             ? TextCapitalization.none
                             : TextCapitalization.characters,
+                    // Enable onChange for: without_abha (any) or with_abha+dependent
+                    onChange: (isAadhaar && (!isWithAbha || isDependent))
+                        ? c.onAadhaarChanged
+                        : null,
+                    errorText:
+                        (isAadhaar && c.aadhaarError.value.isNotEmpty)
+                            ? c.aadhaarError.value
+                            : null,
                     prefixIcon: const Icon(
                       Icons.credit_card_rounded,
                       color: kPrimaryColor,
                       size: 18,
                     ).paddingOnly(left: 6.w),
+                    suffixIcon: isAadhaar
+                        ? GestureDetector(
+                            onTap: c.toggleAadhaarVisibility,
+                            child: Icon(
+                              c.isAadhaarVisible.value
+                                  ? Icons.visibility_rounded
+                                  : Icons.visibility_off_rounded,
+                              color: kPrimaryColor,
+                              size: 18,
+                            ).paddingOnly(right: 8.w),
+                          )
+                        : null,
                   ),
                 ],
               );
@@ -1510,73 +1555,80 @@ class _D2DPatientRegistrationScreenState
             size: 18,
           ).paddingOnly(left: 6.w),
         ),
+        SizedBox(height: 12.h),
+
+        // ── 19. Rural / Urban + Gram Panchayat ──────────────────────────
+        _buildRuralUrbanRow(),
         SizedBox(height: 14.h),
 
-        // ── 19. Skip Face Detection switch ──────────────────────────────
-        _sectionLabel('Face Detection'),
-        SizedBox(height: 6.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-          decoration: BoxDecoration(
-            color: kWhiteColor,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: kTextFieldBorder),
+        // ── 20. Ration Card No ───────────────────────────────────────────
+        // Visible for worker (without_abha) and all dependents.
+        // Hidden for with_abha non-dependent (native sets value to "NA").
+        if (_hasData &&
+            (c.isDependent.value ||
+                c.registrationType.value == 'without_abha')) ...[
+          _sectionLabel('Ration Card No'),
+          SizedBox(height: 8.h),
+          AppTextField(
+            controller: c.tecRationCardNo,
+            hint: 'Enter ration card number',
+            maxLength: 15,
+            onChange: (_) {},
+            inputFormatters: [_UpperCaseFormatter()],
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Text(
-                    //   'Face Detection',
-                    //   style: TextStyle(
-                    //     fontSize: 13.sp,
-                    //     color: kTextColor,
-                    //     fontFamily: FontConstants.interFonts,
-                    //     fontWeight: FontWeight.w500,
-                    //   ),
-                    // ),
-                    CommonText(
-                      text: 'Face Detection',
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      textColor: kTextColor,
-                      textAlign: TextAlign.start,
-                    ),
+          SizedBox(height: 14.h),
+        ],
 
-                    // Text(
-                    //   'Turn ON to enable face detection; patient photo required',
-                    //   style: TextStyle(
-                    //     fontSize: 11.sp,
-                    //     color: kLabelTextColor,
-                    //     fontFamily: FontConstants.interFonts,
-                    //   ),
-                    // ),
-                    CommonText(
-                      text:
-                          'Turn ON to enable face detection; patient photo required',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.normal,
-                      textColor: kLabelTextColor,
-                      textAlign: TextAlign.start,
-                    ),
-                  ],
+        // ── 21. Skip Face Detection switch ──────────────────────────────
+        // Visible only when server says face detection is NOT compulsory
+        // (IsFaceDetetctionEnabled == "0" → showFaceDetectionToggle = true)
+        if (c.showFaceDetectionToggle.value) ...[
+          _sectionLabel('Skip Face Detection'),
+          SizedBox(height: 6.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: kTextFieldBorder),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonText(
+                        text: 'Skip Face Detection',
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        textColor: kTextColor,
+                        textAlign: TextAlign.start,
+                      ),
+                      CommonText(
+                        text: 'Turn ON to skip face detection',
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.normal,
+                        textColor: kLabelTextColor,
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Switch(
-                inactiveThumbColor: kTextColor,
-                inactiveTrackColor: kTextColor.withValues(alpha: 0.3),
-                value: c.isFaceDetection.value,
-                activeThumbColor: kPrimaryColor,
-                onChanged: (v) => c.isFaceDetection.value = v,
-              ),
-            ],
+                Switch(
+                  inactiveThumbColor: kTextColor,
+                  inactiveTrackColor: kTextColor.withValues(alpha: 0.3),
+                  value: c.skipFaceDetection.value,
+                  activeThumbColor: kPrimaryColor,
+                  onChanged: (v) => c.skipFaceDetection.value = v,
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 14.h),
+          SizedBox(height: 14.h),
+        ],
 
-        // ── 20. Photo Upload ─────────────────────────────────────────────
+        // ── 22. Photo Upload ─────────────────────────────────────────────
         _sectionLabel('Photo Upload'),
         SizedBox(height: 8.h),
         Row(
@@ -1586,7 +1638,7 @@ class _D2DPatientRegistrationScreenState
                 label: 'Beneficiary Photo',
                 icon: Icons.person_pin,
                 localPath: c.patientPhotoPath.value,
-                required: c.isFaceDetection.value,
+                required: !c.skipFaceDetection.value,
                 onTap: c.pickPatientPhoto,
               ),
             ),
@@ -1615,14 +1667,21 @@ class _D2DPatientRegistrationScreenState
         SizedBox(height: 20.h),
 
         // ── Register Patient button ──────────────────────────────────────
-        // without_abha → visible after mobile OTP verified
-        // with_abha    → visible after ABHA verified
+        // without_abha           → visible after mobile OTP verified
+        // with_abha + worker     → visible after ABHA verified
+        // with_abha + dependent  → visible after mobile OTP verified
+        //   (dependents do not go through ABHA verification; abhaVerified
+        //    is never set, so we use the same OTP-verified gate as without_abha)
         if ((c.registrationType.value == 'without_abha' &&
                 (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)) ||
             (c.registrationType.value == 'with_abha' &&
+                c.isDependent.value &&
+                (c.mobileOtpVerified.value || c.altMobileOtpVerified.value)) ||
+            (c.registrationType.value == 'with_abha' &&
+                !c.isDependent.value &&
                 c.abhaVerified.value)) ...[
           AppButtonWithIcon(
-            title: 'Register Patient',
+            title: c.isDependent.value ? 'VERIFY BENEFICIARY DETAILS' : 'Register Patient',
             mWidth: double.infinity,
             mHeight: 52,
             icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
@@ -2226,12 +2285,26 @@ class _D2DPatientRegistrationScreenState
         onItemTap: (item) async {
           Navigator.pop(context);
           c.onDependentSelected(item);
-          final errorMsg = await c.checkDependentRegistrationStatus(item);
+          ToastManager.showLoader();
+          final results = await Future.wait([
+            c.checkRelationWiseCount(item),
+            c.checkDependentRegistrationStatus(item),
+          ]);
+          ToastManager.hideLoader();
           if (!context.mounted) return;
-          if (errorMsg != null) {
+          final relationAllowed = results[0] as bool;
+          final dependentStatusError = results[1] as String?;
+          if (!relationAllowed) {
             ToastManager.showAlertDialog(
               context,
-              errorMsg,
+              'Selected Relation Wrong Or Relation Count Reached',
+              () => Navigator.of(context, rootNavigator: true).pop(),
+            );
+            c.clearDependentSelection();
+          } else if (dependentStatusError != null) {
+            ToastManager.showAlertDialog(
+              context,
+              dependentStatusError,
               () => Navigator.of(context, rootNavigator: true).pop(),
             );
             c.clearDependentSelection();
@@ -2288,6 +2361,187 @@ class _D2DPatientRegistrationScreenState
             padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
             showRadio: true,
           ),
+    );
+  }
+
+  Widget _buildLocationBanner() {
+    final captured =
+        c.currentLat.value != '0.0' && c.currentLong.value != '0.0';
+    final color = captured ? Colors.green : Colors.red;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.location_on_rounded, color: color, size: 18),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Text(
+                  'Your Current Location Approx.',
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                  ),
+                ),
+                Text(
+                  c.isCapturingLocation.value
+                      ? 'Fetching location...'
+                      : captured
+                      ? c.currentAddress.value.isNotEmpty
+                            ? c.currentAddress.value
+                            : '${c.currentLat.value}, ${c.currentLong.value}'
+                      : 'Not captured — tap refresh',
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 11.sp,
+                    color: kTextColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: c.isCapturingLocation.value ? null : c.refreshLocation,
+            child: Opacity(
+              opacity: c.isCapturingLocation.value ? 0.4 : 1.0,
+              child: c.isCapturingLocation.value
+                  ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: kPrimaryColor,
+                    ),
+                  )
+                  : const Icon(
+                    Icons.refresh_rounded,
+                    color: kPrimaryColor,
+                    size: 22,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRuralUrbanRow() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Radio row
+        Row(
+          children: [
+            _radioOption('Rural', c.isRural.value, () => c.setRural(true)),
+            SizedBox(width: 24.w),
+            _radioOption('Urban', !c.isRural.value, () => c.setRural(false)),
+          ],
+        ),
+        // GP field — visible only when Rural
+        if (c.isRural.value) ...[
+          SizedBox(height: 8.h),
+          GestureDetector(
+            onTap: () => _showGpPicker(),
+            child: AbsorbPointer(
+              child: AppTextField(
+                controller: TextEditingController(
+                  text: c.selectedGpName.value,
+                ),
+                label: _label('Gram Panchayat *'),
+                readOnly: true,
+                suffixIcon: c.isLoadingGp.value
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ).paddingOnly(right: 8.w)
+                    : const Icon(Icons.arrow_drop_down),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _radioOption(String label, bool selected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 18,
+            height: 18,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: kPrimaryColor, width: 2),
+            ),
+            child: selected
+                ? Center(
+                    child: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                  )
+                : null,
+          ),
+          SizedBox(width: 6.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 13.sp,
+              color: kTextColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGpPicker() {
+    c.fetchAndShowGpPicker(
+      onSuccess: (List<GpItem> items) {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: kWhiteColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (_) => SelectionBottomSheet<GpItem, String>(
+            title: 'Select Gram Panchayat',
+            items: items,
+            selectedValue: c.selectedGpCode.value,
+            valueFor: (item) => item.gpLgdCode,
+            labelFor: (item) => item.gpName,
+            showSearch: true,
+            height: 460.h,
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 20.h,
+            ),
+            onItemTap: (item) {
+              Navigator.pop(context);
+              c.selectGp(item);
+            },
+          ),
+        );
+      },
     );
   }
 

@@ -17,7 +17,7 @@ import '../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/utilities/DataProvider.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/AppActiveButton.dart';
-import '../../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
 class D2DTeamFilterView extends StatefulWidget {
   D2DTeamFilterView({

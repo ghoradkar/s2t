@@ -30,8 +30,8 @@ import '../../Modules/utilities/WidgetPaddingX.dart';
 import '../../Modules/utilities/validators.dart';
 import '../../Modules/widgets/AppActiveButton.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
-import '../../Views/DropDownListScreen/DropDownListScreen.dart';
-import '../../Views/MultiSelectionDropDownListScreen/MultiSelectionDropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/MultiSelectionDropDownListScreen/MultiSelectionDropDownListScreen.dart';
 
 class CampCreationScreen extends StatefulWidget {
   const CampCreationScreen({super.key});

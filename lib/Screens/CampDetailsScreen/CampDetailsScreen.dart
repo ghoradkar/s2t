@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Screens/CampDetailsScreen/BeneficiaryCampColorInfoView/BeneficiaryCampColorInfoView.dart';
+import 'package:s2toperational/Screens/CampDetailsScreen/CampDetailsSegmentView/CampDetailsSegmentView.dart';
 import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/SizeConfig.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
-import '../../Views/BeneficiaryCampColorInfoView/BeneficiaryCampColorInfoView.dart';
-import '../../Views/CampDetailsSegmentView/CampDetailsSegmentView.dart';
+// import '../../Views/BeneficiaryCampColorInfoView/BeneficiaryCampColorInfoView.dart';
+// import '../../Views/CampDetailsSegmentView/CampDetailsSegmentView.dart';
 import 'BeneficiaryCampDetailsScreen/BeneficiaryCampDetailsScreen.dart';
 import 'PatientStatusScreen/PatientStatusScreen.dart';
 import 'ScreeningTestCampDetailsScreen/ScreeningTestCampDetailsScreen.dart';

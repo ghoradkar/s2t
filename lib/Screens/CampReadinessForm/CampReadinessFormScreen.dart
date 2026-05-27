@@ -17,6 +17,7 @@ import '../../Modules/Json_Class/CampIdListResponse/CampIdListResponse.dart';
 import '../../Modules/Json_Class/CampReadinessFormListResponse/CampReadinessFormListResponse.dart';
 import '../../Modules/Json_Class/CampReadinessFormSubmittResponse/CampReadinessFormSubmittResponse.dart';
 import '../../Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
+import '../../Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import '../../Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
 import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/DataProvider.dart';
@@ -24,7 +25,7 @@ import '../../Modules/utilities/SizeConfig.dart';
 import '../../Modules/widgets/AppActiveButton.dart';
 import '../../Modules/widgets/AppDropdownTextfield.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
-import '../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'CampReadinessFormRow/CampReadinessFormRow.dart';
 
 class CampReadinessFormScreen extends StatefulWidget {
@@ -40,6 +41,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
   String _selectedCampDate = "";
   CampTypeOutput? selectedCampType;
   CampIdOutput? selectedCampID;
+  DistrictOutput? selectedDistrict;
 
   int dESGID = 0;
   int empCode = 0;
@@ -67,6 +69,32 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
         DataProvider().getParsedUserData()?.output?.first.dISTLGDCODE ?? 0;
     districtName =
         DataProvider().getParsedUserData()?.output?.first.district ?? "";
+  }
+
+  chooseDistrict() {
+    ToastManager.showLoader();
+    Map<String, String> params = {
+      "STATELGDCODE": "2",
+      "USERID": empCode.toString(),
+    };
+    apiManager.getDistrictByUserIDAPI(params, apiDistrictCallBack);
+  }
+
+  void apiDistrictCallBack(
+    DistrictResponse? response,
+    String errorMessage,
+    bool success,
+  ) {
+    ToastManager.hideLoader();
+    if (success) {
+      _showDropDownBottomSheet(
+        "Select District",
+        response?.output ?? [],
+        DropDownTypeMenu.District,
+      );
+    } else {
+      ToastManager.toast(errorMessage);
+    }
   }
 
   chooseCampType() {
@@ -153,13 +181,15 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
   }
 
   chooseCampID() {
-    if (selectedCampType == null) {
+    if (selectedDistrict == null) {
+      ToastManager.toast("Please select District");
+    } else if (selectedCampType == null) {
       ToastManager.toast("Please select Camp Type");
     } else {
       Map<String, String> dict = {
         "CampDATE": _selectedCampDate,
         "UserId": empCode.toString(),
-        "DISTLGDCODE": districtId.toString(),
+        "DISTLGDCODE": (selectedDistrict?.dISTLGDCODE ?? districtId).toString(),
         "CampType": selectedCampType?.cAMPTYPE.toString() ?? "0",
         "LABCODE": "0",
       };
@@ -215,8 +245,26 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
             dropDownList: list,
             dropDownMenu: dropDownType,
             onApplyTap: (p0) {
-              if (dropDownType == DropDownTypeMenu.CampType) {
+              if (dropDownType == DropDownTypeMenu.District) {
+                selectedDistrict = p0;
+                // Reset only Camp ID & Team when district changes (Camp Type is preserved)
+                selectedCampID = null;
+                teamId = "0";
+                teamName = "";
+                showTeam = false;
+                campReadinessList = [];
+                showSubmitButton = true;
+                isFormSubmitted = false;
+              } else if (dropDownType == DropDownTypeMenu.CampType) {
                 selectedCampType = p0;
+                // Reset Camp ID & Team when Camp Type changes
+                selectedCampID = null;
+                teamId = "0";
+                teamName = "";
+                showTeam = false;
+                campReadinessList = [];
+                showSubmitButton = true;
+                isFormSubmitted = false;
               } else if (dropDownType == DropDownTypeMenu.CampReadinessCampID) {
                 selectedCampID = p0;
                 if (dESGID == 35 ||
@@ -504,6 +552,40 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                           // ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    // District Dropdown
+                    AppTextField(
+                      readOnly: true,
+                      onTap: () {
+                        chooseDistrict();
+                      },
+                      controller: TextEditingController(
+                        text: selectedDistrict?.dISTNAME ?? "",
+                      ),
+                      inputStyle: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 14,
+                      ),
+                      label: RichText(
+                        text: TextSpan(
+                          text: 'District*',
+                          style: TextStyle(
+                            fontFamily: FontConstants.interFonts,
+                            color: kLabelTextColor,
+                            fontSize: responsiveFont(14),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: <TextSpan>[],
+                        ),
+                      ),
+                      labelStyle: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontWeight: FontWeight.w400,
+                        fontSize: responsiveFont(14),
+                      ),
+                      prefixIcon: Image.asset(icMapPin, scale: 4.0),
+                      suffixIcon: Icon(Icons.keyboard_arrow_down),
                     ),
                     const SizedBox(height: 8),
                     // AppDropdownTextfield(

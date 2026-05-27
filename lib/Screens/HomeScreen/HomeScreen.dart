@@ -12,7 +12,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/admin_dashboard/screen/admin_dashboard_widget.dart';
-import 'package:s2toperational/Screens/DailyWorkDashboard/screen/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
+import 'package:s2toperational/Screens/daily_work_dashboard/screen/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/calling_dashboard_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
@@ -477,8 +477,8 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.UserAttendance);
       menuList.add(DashboardMenu.DailyWorkDashboard);
       menuList.add(DashboardMenu.PatientRegistration);
+      menuList.add(DashboardMenu.AppointmentAndSampleCollectionOfCT);
       menuList.add(DashboardMenu.HealthScreeningDetails);
-      // menuList.add(DashboardMenu.AppointmentAndSampleCollectionOfCT);
       menuList.add(DashboardMenu.MedicineDeliveryMenu);
       menuList.add(DashboardMenu.PaymentAndInvoice);
       menuList.add(DashboardMenu.Acknowledgement);

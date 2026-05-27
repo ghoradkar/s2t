@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 
 typedef SelectionItemBuilder<T> =
     Widget Function(BuildContext context, T item, bool isSelected);
@@ -17,7 +18,7 @@ typedef SelectionItemBuilderWithIndex<T> =
       int itemCount,
     );
 
-class SelectionBottomSheet<T, V> extends StatelessWidget {
+class SelectionBottomSheet<T, V> extends StatefulWidget {
   const SelectionBottomSheet({
     super.key,
     required this.title,
@@ -43,6 +44,7 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
     this.useInkWell = true,
     this.itemBuilder,
     this.itemBuilderWithIndex,
+    this.showSearch = false,
   });
 
   final String title;
@@ -65,14 +67,54 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
   final bool useInkWell;
   final SelectionItemBuilder<T>? itemBuilder;
   final SelectionItemBuilderWithIndex<T>? itemBuilderWithIndex;
+  final bool showSearch;
+
+  @override
+  State<SelectionBottomSheet<T, V>> createState() =>
+      _SelectionBottomSheetState<T, V>();
+}
+
+class _SelectionBottomSheetState<T, V>
+    extends State<SelectionBottomSheet<T, V>> {
+  final _searchController = TextEditingController();
+  List<T> _filtered = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filtered = widget.items;
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filtered =
+          query.isEmpty
+              ? widget.items
+              : widget.items
+                  .where(
+                    (item) =>
+                        widget.labelFor(item).toLowerCase().contains(query),
+                  )
+                  .toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final resolvedTitleStyle =
-        titleTextStyle ??
+        widget.titleTextStyle ??
         TextStyle(fontSize: 14.sp, fontFamily: FontConstants.interFonts);
     final resolvedItemTextStyle =
-        itemTextStyle ??
+        widget.itemTextStyle ??
         TextStyle(
           fontFamily: FontConstants.interFonts,
           fontSize: 13.sp,
@@ -80,41 +122,59 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
           color: kBlackColor,
         );
     final resolvedSelectedTextStyle =
-        selectedItemTextStyle ?? resolvedItemTextStyle;
+        widget.selectedItemTextStyle ?? resolvedItemTextStyle;
     final resolvedSelectedBgColor =
-        selectedBackgroundColor ?? kPrimaryColor.withOpacity(0.1);
+        widget.selectedBackgroundColor ?? kPrimaryColor.withOpacity(0.1);
+
+    final displayItems = widget.showSearch ? _filtered : widget.items;
 
     return Padding(
-      padding: padding,
+      padding: widget.padding,
       child: SizedBox(
         width: SizeConfig.screenWidth,
-        height: height,
+        height: widget.height,
         child: Column(
           children: [
-            Text(title, textAlign: TextAlign.center, style: resolvedTitleStyle),
-            SizedBox(height: titleBottomSpacing ?? 20.h),
+            Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: resolvedTitleStyle,
+            ),
+            SizedBox(height: widget.titleBottomSpacing ?? 12.h),
+            if (widget.showSearch) ...[
+              AppTextField(
+                controller: _searchController,
+                hint: 'Search...',
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(left: 4),
+                  child: Icon(Icons.search, color: kPrimaryColor, size: 20),
+                ),
+                onChange: (_) {},
+              ),
+              SizedBox(height: 8.h),
+            ],
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: items.length,
+                itemCount: displayItems.length,
                 itemBuilder: (context, index) {
-                  final item = items[index];
-                  final itemValue = valueFor(item);
-                  final isSelected = selectedValue == itemValue;
+                  final item = displayItems[index];
+                  final itemValue = widget.valueFor(item);
+                  final isSelected = widget.selectedValue == itemValue;
 
                   final child =
-                      itemBuilderWithIndex != null
-                          ? itemBuilderWithIndex!(
+                      widget.itemBuilderWithIndex != null
+                          ? widget.itemBuilderWithIndex!(
                             context,
                             item,
                             isSelected,
                             index,
-                            items.length,
+                            displayItems.length,
                           )
-                          : itemBuilder != null
-                          ? itemBuilder!(context, item, isSelected)
+                          : widget.itemBuilder != null
+                          ? widget.itemBuilder!(context, item, isSelected)
                           : Container(
-                            padding: itemContainerPadding,
+                            padding: widget.itemContainerPadding,
                             decoration: BoxDecoration(
                               color:
                                   isSelected
@@ -124,13 +184,13 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
                             ),
                             child: Row(
                               children: [
-                                if (showRadio)
+                                if (widget.showRadio)
                                   IgnorePointer(
                                     child: Transform.scale(
-                                      scale: radioScale,
+                                      scale: widget.radioScale,
                                       child: Radio<V>(
                                         value: itemValue,
-                                        groupValue: selectedValue,
+                                        groupValue: widget.selectedValue,
                                         onChanged: (value) {},
                                         materialTapTargetSize:
                                             MaterialTapTargetSize.shrinkWrap,
@@ -143,7 +203,7 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
                                   ),
                                 Expanded(
                                   child: Text(
-                                    labelFor(item),
+                                    widget.labelFor(item),
                                     style:
                                         isSelected
                                             ? resolvedSelectedTextStyle
@@ -155,21 +215,21 @@ class SelectionBottomSheet<T, V> extends StatelessWidget {
                           );
 
                   final tapChild =
-                      useInkWell
+                      widget.useInkWell
                           ? InkWell(
                             onTap: () async {
-                              await onItemTap(item);
+                              await widget.onItemTap(item);
                             },
                             child: child,
                           )
                           : GestureDetector(
                             onTap: () async {
-                              await onItemTap(item);
+                              await widget.onItemTap(item);
                             },
                             child: child,
                           );
 
-                  return Padding(padding: itemPadding, child: tapChild);
+                  return Padding(padding: widget.itemPadding, child: tapChild);
                 },
               ),
             ),

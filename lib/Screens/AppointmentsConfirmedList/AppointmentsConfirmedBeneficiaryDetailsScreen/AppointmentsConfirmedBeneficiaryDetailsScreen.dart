@@ -24,7 +24,7 @@ import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/AppActiveButton.dart';
 import '../../../Modules/widgets/AppDateTextfield.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'AppointmentConfirmScreenedBenefiView/AppointmentConfirmScreenedBenefiView.dart';
 import 'ScreeningDetailsView/ScreeningDetailsAppointConfimedView.dart';
 

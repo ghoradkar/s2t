@@ -30,7 +30,7 @@ import '../../../../Modules/utilities/DataProvider.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/S2TAppBar.dart';
 import '../../../../Modules/widgets/S2TYesNoAlertView.dart';
-import '../../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'AudioScreeningTestInfoScreen/AudioScreeningTestInfoScreen.dart';
 import 'BeneficiaryVerificationInfoScreen/BeneficiaryVerificationInfoScreen.dart';
 import 'BloodPressureAndSugarInfoScreen/BloodPressureAndSugarInfoScreen.dart';
@@ -139,13 +139,12 @@ class _BeneficiaryVerificationScreenState
           isShowDeny = false;
         }
       }
-    }
 
-    int campCreatedBy = widget.obj.campCreatedBy ?? 0;
-
-    if (campCreatedBy != empCode) {
-      isShowApprove = false;
-      isShowDeny = false;
+      int campCreatedBy = widget.obj.campCreatedBy ?? 0;
+      if (campCreatedBy != empCode) {
+        isShowApprove = false;
+        isShowDeny = false;
+      }
     }
 
     if (dESGID == 77 ||

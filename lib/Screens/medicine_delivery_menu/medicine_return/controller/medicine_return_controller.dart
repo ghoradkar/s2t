@@ -9,7 +9,7 @@ import 'package:s2toperational/Modules/Json_Class/ReportDeliveryExecutiveRespons
 import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 enum MedicineReturnMode { acceptInLab, returnToPharmacy }

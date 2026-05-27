@@ -80,6 +80,10 @@ class BeneficiaryWorkerOutput {
   int? photoSentForVerification;
   int? photoVerifiedByCT;
   int? screeningPatientID;
+  String? totalDays;
+  String? aadharCardNo;
+  String? rationCardNo1;
+  String? rcImagePath1;
 
   BeneficiaryWorkerOutput({
     this.regdId,
@@ -132,6 +136,10 @@ class BeneficiaryWorkerOutput {
     this.photoSentForVerification,
     this.photoVerifiedByCT,
     this.screeningPatientID,
+    this.totalDays,
+    this.aadharCardNo,
+    this.rationCardNo1,
+    this.rcImagePath1,
   });
 
   BeneficiaryWorkerOutput.fromJson(Map<String, dynamic> json) {
@@ -170,7 +178,9 @@ class BeneficiaryWorkerOutput {
     testId = json['TestId'];
     reason = json['Reason'];
     aLLTESTDONE = json['ALLTESTDONE'];
-    campCreatedBy = json['CampCreatedBy'];
+    campCreatedBy = json['CampCreatedBy'] is int
+        ? json['CampCreatedBy'] as int
+        : int.tryParse(json['CampCreatedBy']?.toString() ?? '');
     workerName = json['WorkerName'];
     workerAge = json['WorkerAge'];
     workerGender = json['WorkerGender'];
@@ -186,6 +196,10 @@ class BeneficiaryWorkerOutput {
     photoSentForVerification = json['PhotoSentForVerification'];
     photoVerifiedByCT = json['PhotoVerifiedByCT'];
     screeningPatientID = json['ScreeningPatientID'];
+    totalDays = json['TotalDays']?.toString();
+    aadharCardNo = json['AadharCardNo']?.toString();
+    rationCardNo1 = json['RationCardNo1']?.toString();
+    rcImagePath1 = json['RCImagePath1']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -241,6 +255,10 @@ class BeneficiaryWorkerOutput {
     data['PhotoSentForVerification'] = photoSentForVerification;
     data['PhotoVerifiedByCT'] = photoVerifiedByCT;
     data['ScreeningPatientID'] = screeningPatientID;
+    data['TotalDays'] = totalDays;
+    data['AadharCardNo'] = aadharCardNo;
+    data['RationCardNo1'] = rationCardNo1;
+    data['RCImagePath1'] = rcImagePath1;
     return data;
   }
 }

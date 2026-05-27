@@ -62,6 +62,7 @@ class AttendancesListUsingSiteDetailsIDOutput {
   String? screeningDoneCnt;
   int? isRtpcr;
   int? isDependent;
+  String? isDependentStatus;
   int? releationID;
   String? relName;
   String? isCall;
@@ -72,6 +73,9 @@ class AttendancesListUsingSiteDetailsIDOutput {
   String? campType;
   int? campTypeID;
   int? screeningPatientID;
+  String? doctorMapStatus;
+  String? doctorName;
+  String? doctorMobile;
 
   AttendancesListUsingSiteDetailsIDOutput({
     this.createdDate,
@@ -100,6 +104,7 @@ class AttendancesListUsingSiteDetailsIDOutput {
     this.screeningDoneCnt,
     this.isRtpcr,
     this.isDependent,
+    this.isDependentStatus,
     this.releationID,
     this.relName,
     this.isCall,
@@ -110,6 +115,9 @@ class AttendancesListUsingSiteDetailsIDOutput {
     this.campType,
     this.campTypeID,
     this.screeningPatientID,
+    this.doctorMapStatus,
+    this.doctorName,
+    this.doctorMobile,
   });
 
   AttendancesListUsingSiteDetailsIDOutput.fromJson(Map<String, dynamic> json) {
@@ -127,8 +135,8 @@ class AttendancesListUsingSiteDetailsIDOutput {
     localAddress = json['LocalAddress'];
     pincode = json['Pincode'];
     gender = json['Gender'];
-    bloodSugarPP = json['BloodSugar_PP'];
-    isSignature = json['IsSignature'];
+    bloodSugarPP = json['BloodSugar_PP'] is int ? json['BloodSugar_PP'] : null;
+    isSignature = json['IsSignature']?.toString();
     age = json['Age'];
     regdNo = json['RegdNo'];
     patientPhoto = json['patientPhoto'];
@@ -139,9 +147,10 @@ class AttendancesListUsingSiteDetailsIDOutput {
     screeningDoneCnt = json['ScreeningDoneCnt'];
     isRtpcr = json['IsRtpcr'];
     isDependent = json['IsDependent'];
+    isDependentStatus = json['IsDependentStatus'];
     releationID = json['ReleationID'];
     relName = json['RelName'];
-    isCall = json['IsCall'];
+    isCall = json['IsCall']?.toString();
     subOrgId = json['SubOrgId'];
     subOrgName = json['SubOrgName'];
     isPhy = json['IsPhy'];
@@ -149,6 +158,9 @@ class AttendancesListUsingSiteDetailsIDOutput {
     campType = json['CampType'];
     campTypeID = json['CampTypeID'];
     screeningPatientID = json['ScreeningPatientID'];
+    doctorMapStatus = json['DoctorMapStatus']?.toString();
+    doctorName = json['DoctorName']?.toString();
+    doctorMobile = json['DoctorMobile']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -179,6 +191,7 @@ class AttendancesListUsingSiteDetailsIDOutput {
     data['ScreeningDoneCnt'] = screeningDoneCnt;
     data['IsRtpcr'] = isRtpcr;
     data['IsDependent'] = isDependent;
+    data['IsDependentStatus'] = isDependentStatus;
     data['ReleationID'] = releationID;
     data['RelName'] = relName;
     data['IsCall'] = isCall;
@@ -189,6 +202,9 @@ class AttendancesListUsingSiteDetailsIDOutput {
     data['CampType'] = campType;
     data['CampTypeID'] = campTypeID;
     data['ScreeningPatientID'] = screeningPatientID;
+    data['DoctorMapStatus'] = doctorMapStatus;
+    data['DoctorName'] = doctorName;
+    data['DoctorMobile'] = doctorMobile;
     return data;
   }
 }

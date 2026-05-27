@@ -15,7 +15,7 @@ import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/widgets/AppDropdownTextfield.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
 class BeneficiaryCampDetailsScreen extends StatefulWidget {
   final int? cAMPTYPE;

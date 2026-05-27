@@ -17,6 +17,12 @@ class FormatterManager {
     return outputFormat.format(date);
   }
 
+  /// Formats date as "dd-MMMM-yyyy" (e.g. "25-May-2026") — required by
+  /// GetBeneficiaryAppoinmentDetails_V1 AppoinmentDate parameter (matches native).
+  static String formatDateForAppointmentAPI(DateTime date) {
+    return DateFormat('dd-MMMM-yyyy').format(date);
+  }
+
   static String getDay(DateTime date) {
     var outputFormat = DateFormat('dd');
     return outputFormat.format(date);

@@ -3,22 +3,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-// import 'package:s2toperational/Modules/Json_Class/AttendancesListUsingSiteDetailsIDResponse/AttendancesListUsingSiteDetailsIDResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import '../../../model/AttendancesListUsingSiteDetailsIDResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/AttendancesListUsingSiteDetailsIDResponse.dart';
 
 class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
   AttendancesListUsingSiteDetailsIDOutput obj;
   final int serialNumber;
-  Function() onCallDidPressed;
+  Function()? onCallDidPressed;
 
   AssignedD2DPhysicalExaminationPatientRow({
     super.key,
     required this.obj,
     required this.serialNumber,
-    required this.onCallDidPressed,
+    this.onCallDidPressed,
   });
 
   @override
@@ -32,8 +31,10 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
             decoration: BoxDecoration(
               color:
                   obj.isCall == "1"
-                      ? Color(0xffC8E6C9).withValues(alpha: 0.6)
-                      : Colors.white,
+                      ? const Color(0xffC8E6C9)        // green  : PE done / called
+                      : obj.doctorMapStatus == "1"
+                          ? const Color(0xffFFF9C4)     // yellow : doctor assigned
+                          : Colors.white,               // white  : not yet assigned
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
@@ -106,7 +107,7 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Unique Screening Id : ".toUpperCase(),
+                                  "Reg No : ".toUpperCase(),
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontFamily: FontConstants.interFonts,
@@ -116,7 +117,7 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    obj.screeningPatientID?.toString().toUpperCase() ?? "NA",
+                                    obj.regdNo?.toString() ?? "NA",
                                     style: TextStyle(
                                       color: dropDownTitleHeader,
                                       fontFamily: FontConstants.interFonts,
@@ -157,7 +158,7 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    "W".toUpperCase(),
+                                    obj.isDependentStatus ?? "W",
                                     style: TextStyle(
                                       color: dropDownTitleHeader,
                                       fontFamily: FontConstants.interFonts,
@@ -172,21 +173,6 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
                         ],
                       ),
                     ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    onCallDidPressed();
-                  },
-                  child: Container(
-                    width: 32.w,
-                    height: 32.h,
-                    padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
-                    decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Image.asset(icPhoneWhiteIcon),
                   ),
                 ),
               ],

@@ -22,6 +22,7 @@ import 'package:s2toperational/Screens/patient_registration/model/dependent_list
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
 import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
 import 'package:s2toperational/Screens/patient_registration/model/get_queue_response_model.dart';
+import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
 
 class D2DPatientRegistrationRepository {
@@ -168,12 +169,13 @@ class D2DPatientRegistrationRepository {
   }
 
   /// Calls the native D2D API with "MH" prefix — mirrors GetWorkerInfoNew AsyncTask
+  /// Uses _GP variant (matches native) which returns GPLGDCODE, TALLGDCODE, DISTLGDCODE.
   Future<WorkerInfoResponse?> getWorkerInfoWithMaritalStatus({
     required String regNo,
   }) async {
     final completer = Completer<WorkerInfoResponse?>();
     final url = Uri.parse(
-      '${APIManager.kD2DBaseURL}${APIConstants.kGetBeneficiaryRegistrationDetailsWithMaritalStatus}',
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetBeneficiaryRegistrationDetailsWithMaritalStatus_GP}',
     );
     final ioClient = _api.getInstanceOfIoClient();
     try {
@@ -340,6 +342,44 @@ class D2DPatientRegistrationRepository {
     }
   }
 
+  /// Returns true = relation slot available (Column1 != 0), false = blocked (Column1 == 0).
+  /// On any error returns true so the selection is never silently blocked.
+  Future<bool> checkRelationWiseCount({
+    required String regdNo,
+    required String relId,
+    required String gender,
+    required String maritalStatusId,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetRelationWiseDependantCountwithMaritalStatus}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {
+          'RegdNo': regdNo,
+          'ReleationID': relId,
+          'Gender': gender,
+          'MARITALSTATUSID': maritalStatusId,
+        },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final bodyString = utf8.decode(response.bodyBytes);
+      final decoded = json.decode(bodyString) as Map<String, dynamic>;
+      final status = decoded['status']?.toString() ?? '';
+      if (status.toLowerCase() != 'success') return true;
+      final output = decoded['output'] as List?;
+      if (output == null || output.isEmpty) return true;
+      final column1 = (output[0] as Map<String, dynamic>)['Column1'];
+      return column1 != 0;
+    } catch (_) {
+      return true;
+    } finally {
+      ioClient.close();
+    }
+  }
+
   /// GET request — same base as ConstructionWorker_V2.asmx (native: webservice + GetDocumenttype)
   Future<DocumentTypeResponse?> getDocumentTypeList() async {
     final completer = Completer<DocumentTypeResponse?>();
@@ -498,7 +538,7 @@ class D2DPatientRegistrationRepository {
   /// Native appends Count to the worker reg number to form RegdNo in the submit payload.
   Future<Map<String, String>> getWorkerRegdId({required String regdNo}) async {
     final url = Uri.parse(
-      '${APIManager.kD2DBaseURL}${APIConstants.kGetBenificiaryRegisterOrNot}',
+      '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetBenificiaryRegisterOrNot}',
     );
     final ioClient = _api.getInstanceOfIoClient();
     try {
@@ -544,6 +584,40 @@ class D2DPatientRegistrationRepository {
       ioClient.close();
     }
     return {'regdId': '0', 'count': '0'};
+  }
+
+  /// POST GetGPListTalukaWise — returns GP list for a taluka.
+  /// Native: apiService.getGramPanchayat(talukaId) with field TALLGDCODE.
+  Future<List<GpItem>> getGramPanchayatList({required String talLgd}) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetGPListTalukaWise}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'TALLGDCODE': talLgd},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      // ignore: avoid_print
+      print('[getGramPanchayatList] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 400))}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final status = decoded['status']?.toString().toLowerCase();
+      if (status == 'success') {
+        final output = decoded['output'] as List?;
+        if (output != null) {
+          return output
+              .map((e) => GpItem.fromJson(e as Map<String, dynamic>))
+              .toList();
+        }
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getGramPanchayatList] error=$e');
+    } finally {
+      ioClient.close();
+    }
+    return [];
   }
 
   // ────────────────────────────────────────────────────────
@@ -1545,13 +1619,47 @@ class D2DPatientRegistrationRepository {
     }
   }
 
+  /// Fetches the team number for a camp. Mirrors native GetTeamNumberByCampIdAndUSerId.
+  /// Returns the TeamNumber string, or empty string on failure.
+  Future<String> getTeamNumber({
+    required String campId,
+    required String userId,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetTeamNumberByCampIdAndUSerId}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'CampId': campId, 'UserID': userId},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      if (decoded['status']?.toString().toLowerCase() == 'success') {
+        final output = decoded['output'] as List?;
+        if (output != null && output.isNotEmpty) {
+          return (output[0] as Map<String, dynamic>)['TeamNumber']
+                  ?.toString() ??
+              '';
+        }
+      }
+    } catch (_) {
+    } finally {
+      ioClient.close();
+    }
+    return '';
+  }
+
   /// Fetches registered patient list for the given camp.
   /// [campType]: '1' = Regular Camp, '3' = D2D Camp.
+  /// [teamId]: team number from GetTeamNumberByCampIdAndUSerId — mirrors native behaviour.
   /// Mirrors native AttendanceMarkedPatients_Activity GetUserAttendancesUsingSitedetailsID.
   Future<UserAttendancesUsingSitedetailsIDResponse?> getRegisteredPatientList({
     required String campId,
     required String empCode,
     required String campType,
+    String teamId = '',
   }) async {
     // Regular camp → GetUserAttendancesUsingSitedetailsID_New
     // D2D camp     → GetUserAttendancesUsingSitedetailsID_Anti
@@ -1570,7 +1678,7 @@ class D2DPatientRegistrationRepository {
           'DistrictId': '0',
           'TestId': '0',
           'UserId': empCode,
-          'TeamId': '',
+          'TeamId': teamId,
         },
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );

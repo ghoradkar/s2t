@@ -31,6 +31,12 @@ class PatientFingerSignatureController extends GetxController {
   final String? prefillAge;
   final String? prefillDob;
 
+  /// Ration card fields — only used for dependent registrations.
+  /// When [dependentBocId] != '0', the ration card photo upload screen is
+  /// shown after signature upload succeeds.
+  final String dependentBocId;
+  final String rationCardNumber;
+
   PatientFingerSignatureController({
     required this.campId,
     required this.siteId,
@@ -42,6 +48,8 @@ class PatientFingerSignatureController extends GetxController {
     this.prefillGender,
     this.prefillAge,
     this.prefillDob,
+    this.dependentBocId = '',
+    this.rationCardNumber = '',
   });
 
   final _repo = RegularPatientRegistrationRepository();
@@ -61,6 +69,15 @@ class PatientFingerSignatureController extends GetxController {
   final isSignatureApplicable = true.obs; // true = signature required
   late final SignatureController signatureController;
   final isSigned = false.obs;
+
+  // ── Ration card section (fingerprint screen, dependent only) ─────────────
+  // 'manual' = 2 photos required, 'digital' = 1 photo required
+  final rcType = 'manual'.obs;
+  final rcPhotos = <File>[].obs;
+  final isUploadingRc = false.obs;
+
+  int get rcMaxPhotos => rcType.value == 'digital' ? 1 : 2;
+  int get rcMinPhotos => rcMaxPhotos;
 
   // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -130,6 +147,111 @@ class PatientFingerSignatureController extends GetxController {
     );
     if (picked != null) {
       thumbImageFile.value = File(picked.path);
+    }
+  }
+
+  // ── Ration card photo capture (fingerprint screen, dependent only) ───────
+
+  void onRcTypeChanged(String type) {
+    rcType.value = type;
+    rcPhotos.clear(); // clear captured photos when type is switched
+  }
+
+  Future<void> captureRcPhoto(BuildContext context) async {
+    if (rcPhotos.length >= rcMaxPhotos) {
+      ToastManager.toast('Maximum $rcMaxPhotos photo(s) allowed');
+      return;
+    }
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+    if (picked != null) {
+      rcPhotos.add(File(picked.path));
+    }
+  }
+
+  void removeRcPhoto(int index) {
+    if (index >= 0 && index < rcPhotos.length) {
+      rcPhotos.removeAt(index);
+    }
+  }
+
+  /// Validates ration card photos, uploads each one, then navigates to the
+  /// signature screen on success.
+  Future<void> uploadRcAndProceed(
+    BuildContext context,
+    Widget Function() signatureRouteBuilder,
+  ) async {
+    if (thumbImageFile.value == null) {
+      ToastManager.showAlertDialog(
+        context,
+        'Please capture thumb/fingerprint image first',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    if (rcPhotos.length < rcMinPhotos) {
+      ToastManager.showAlertDialog(
+        context,
+        'Please capture at least $rcMinPhotos photo(s) for '
+        '${rcType.value == "digital" ? "Digital" : "Old"} ration card',
+        () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      return;
+    }
+
+    if (regdId.isEmpty) {
+      ToastManager.toast('Patient details not loaded. Please try again.');
+      return;
+    }
+
+    final user = DataProvider().getParsedUserData()?.output?.first;
+    final empCode = (user?.empCode ?? 0).toString();
+    final rcNo =
+        rationCardNumber.trim().isEmpty ? 'NA' : rationCardNumber.trim();
+
+    isUploadingRc.value = true;
+    try {
+      for (final photo in List<File>.from(rcPhotos)) {
+        final result = await _repo.insertRationCardDetails(
+          regdId: regdId,
+          empCode: empCode,
+          bocwDependentId: dependentBocId,
+          rationCardNo: rcNo,
+          photoFile: photo,
+        );
+
+        if (result == null ||
+            result['status']?.toString().toLowerCase() != 'success') {
+          if (!context.mounted) return;
+          ToastManager.showAlertDialog(
+            context,
+            result?['message']?.toString() ??
+                'Failed to upload ration card photo. Please try again.',
+            () => Navigator.of(context, rootNavigator: true).pop(),
+          );
+          return;
+        }
+      }
+
+      if (!context.mounted) return;
+      ToastManager.showSuccessPopup(
+        context,
+        icSuccessIcon,
+        'Ration card photos uploaded successfully',
+        () {
+          Navigator.of(context).pop(); // close success dialog
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => signatureRouteBuilder()),
+          );
+        },
+      );
+    } finally {
+      isUploadingRc.value = false;
     }
   }
 
@@ -224,8 +346,8 @@ class PatientFingerSignatureController extends GetxController {
     if (!context.mounted) return;
 
     if (status.toLowerCase() == 'success') {
-      // _showSuccessDialog(context, message);
-
+      // Ration card upload is handled in the fingerprint screen (before this).
+      // For both dependent and non-dependent, show success and pop back.
       ToastManager.showSuccessPopup(
         context,
         icSuccessIcon,

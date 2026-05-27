@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Screens/CampDetailsScreen/CampCalenderCampDetails/CampCalenderCampDetails.dart';
+import 'package:s2toperational/Screens/CampDetailsScreen/ScreeningDetailsView/ScreeningDetailsView.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 
 import '../../../Modules/Enums/Enums.dart';
@@ -15,9 +17,9 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/widgets/AppDropdownTextfield.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
-import '../../../Views/CampCalenderCampDetails/CampCalenderCampDetails.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
-import '../../../Views/ScreeningDetailsView/ScreeningDetailsView.dart';
+// import '../../../Views/CampCalenderCampDetails/CampCalenderCampDetails.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+// import '../../../Views/ScreeningDetailsView/ScreeningDetailsView.dart';
 
 class ScreeningTestCampDetailsScreen extends StatefulWidget {
   int campId = 0;

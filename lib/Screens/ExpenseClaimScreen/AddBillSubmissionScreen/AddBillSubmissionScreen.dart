@@ -25,7 +25,7 @@ import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
 class AddBillSubmissionScreen extends StatefulWidget {
   AddBillSubmissionScreen({super.key, required this.advanceDetails});

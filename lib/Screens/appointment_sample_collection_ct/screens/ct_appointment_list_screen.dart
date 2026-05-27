@@ -213,14 +213,7 @@ class _CTAppointmentListScreenState extends State<CTAppointmentListScreen> {
           ],
         ),
         body: GetBuilder<CTAppointmentListController>(
-          builder:
-              (c) => Column(
-                children: [
-                  _buildSearchBar(c),
-                  // _buildCountRow(c),
-                  Expanded(child: _buildBody(c)),
-                ],
-              ),
+          builder: (c) => _buildBody(c),
         ),
       ),
     );
@@ -250,52 +243,186 @@ class _CTAppointmentListScreenState extends State<CTAppointmentListScreen> {
     );
   }
 
-  Widget _buildCountRow(CTAppointmentListController c) {
-    if (c.fullList.isEmpty) return const SizedBox();
+  // ── Table header with rounded top corners ─────────────────────────────────
+  Widget _tableHeader() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-      alignment: Alignment.centerRight,
-      child: CommonText(
-        text: 'Total Members: ${c.totalMemberCount}',
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w600,
-        textColor: kPrimaryColor,
-        textAlign: TextAlign.end,
+      decoration: const BoxDecoration(
+        color: kPrimaryColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 28.w,
+            child: Text(
+              'Sr.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            flex: 3,
+            child: Text(
+              'Beneficiary Name',
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 70.w,
+            child: Text(
+              'Members',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Total row sits between header and data rows ────────────────────────────
+  Widget _totalRow(CTAppointmentListController c) {
+    return Container(
+      decoration: BoxDecoration(
+        color: kPrimaryColor.withValues(alpha: 0.08),
+        border: Border.symmetric(
+          vertical: BorderSide(color: Colors.grey.shade200),
+          horizontal: BorderSide(color: Colors.grey.shade200),
+        ),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+      child: Row(
+        children: [
+          SizedBox(width: 28.w + 8.w),
+          Expanded(
+            flex: 3,
+            child: Text(
+              'Total',
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: kPrimaryColor,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 70.w,
+            child: Text(
+              '${c.totalMemberCount}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: kPrimaryColor,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildBody(CTAppointmentListController c) {
     if (c.isLoading) {
-      return const CommonSkeletonPatientList().paddingSymmetric(horizontal: 10.w);
+      return Column(
+        children: [
+          _buildSearchBar(c),
+          const Expanded(
+            child: CommonSkeletonScreeningDetailsTable(),
+          ),
+        ],
+      );
     }
     if (c.filteredList.isEmpty) {
-      return NoDataFound().paddingOnly(left: 14.w, right: 12.w, top: 8.h);
+      return Column(
+        children: [
+          _buildSearchBar(c),
+          Expanded(
+            child: NoDataFound().paddingOnly(
+              left: 14.w,
+              right: 12.w,
+              top: 8.h,
+            ),
+          ),
+        ],
+      );
     }
-    return ListView.builder(
-      itemCount: c.filteredList.length,
-      padding: EdgeInsets.only(top: 4.h, bottom: 16.h),
-      itemBuilder: (context, index) {
-        final item = c.filteredList[index];
-        return CTConfirmatoryRow(
-          item: item,
-          index: index,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (_) => CTAppointmentConfirmationScreen(
-                      beneficiaryName: item.beneficiaryName ?? '',
-                      regNo: item.regdNo ?? '',
-                      mobile: item.mobileNo ?? '',
-                      status: item.arId ?? '',
-                    ),
-              ),
-            ).then((_) => _c.fetchList());
-          },
-        );
-      },
+    return Column(
+      children: [
+        _buildSearchBar(c),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 20.h),
+            child: Column(
+              children: [
+                // ── Drop shadow wrapper around entire table ──
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      _tableHeader(),
+                      _totalRow(c),
+                      ...List.generate(c.filteredList.length, (index) {
+                        final item = c.filteredList[index];
+                        final isLast = index == c.filteredList.length - 1;
+                        return CTConfirmatoryRow(
+                          item: item,
+                          index: index,
+                          isLast: isLast,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CTAppointmentConfirmationScreen(
+                                  beneficiaryName: item.beneficiaryName ?? '',
+                                  regNo: item.regdNo ?? '',
+                                  mobile: item.mobileNo ?? '',
+                                  status: item.arId ?? '',
+                                ),
+                              ),
+                            ).then((_) => _c.fetchList());
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

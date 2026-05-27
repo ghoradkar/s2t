@@ -9,6 +9,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_card_repository.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/AttendancesListUsingSiteDetailsIDResponse.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/GetMyOpratorResponse.dart';
@@ -278,14 +279,14 @@ class AssignedPatientListController extends GetxController
             "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDUrineChange}";
       } else if (healthScreentype == "16") {
         jsonObject = {
-          "EmpCode": campId.toString(),
+          "SiteDetailId": campId.toString(),
           "DistrictId": "0",
           "TestId": "16",
-          "userid": empCode.toString(),
-          "teamid": teamId,
+          "UserId": empCode.toString(),
+          "TeamId": teamId,
         };
         urlString =
-            "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDNewD2DV1}";
+            "${APIManager.kD2DBaseURL}${APIConstants.kGetuserAttendanceForSitedetailsIDPhysicalExam}";
       } else {
         jsonObject = {
           "EmpCode": campId.toString(),
@@ -355,6 +356,7 @@ class AssignedPatientListController extends GetxController
 
   void refreshAfterNav() {
     if (flag == "2") {
+
       getD2DGetUserAttendancesUsingSitedetailsID();
     } else {
       getUserAttendancesUsingSitedetailsID();

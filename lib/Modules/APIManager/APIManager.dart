@@ -18,6 +18,8 @@ import 'package:s2toperational/Screens/d2d_physical_examination/model/YearsRespo
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../../Screens/admin_dashboard/model/home_and_hub_processing_model.dart';
 import '../../Screens/d2d_physical_examination/model/AttendancesListUsingSiteDetailsIDResponse.dart';
+import '../../Screens/d2d_physical_examination/model/BeneficiaryListByRegIDResponse.dart';
+import '../../Screens/d2d_physical_examination/model/D2DCampMappedDoctorListResponse.dart';
 import '../../Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsResponse.dart';
 import '../../Screens/d2d_physical_examination/model/GetMyOpratorResponse.dart';
 import '../../Screens/d2d_physical_examination/model/InsertDetailsResponse.dart';
@@ -2270,7 +2272,6 @@ class APIManager {
       );
       print(url);
       print(data);
-      print(json.decode(response.body));
       BeneficiaryWorkerResponse person = BeneficiaryWorkerResponse.fromJson(
         json.decode(response.body),
       );
@@ -7436,6 +7437,96 @@ class APIManager {
       }
     } catch (e) {
       callback(null, "Exception: $e", false);
+    }
+  }
+
+  Future<void> getBeneficiaryListByRegIDAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kGetBeneficiaryListByRegID;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(response.body);
+      BeneficiaryListByRegIDResponse person =
+          BeneficiaryListByRegIDResponse.fromJson(json.decode(response.body));
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message ?? "", false);
+      }
+    } catch (e) {
+      callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> getD2DCampMappedDoctorListAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kGetD2DCampMappedDoctorList;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(response.body);
+      D2DCampMappedDoctorListResponse person =
+          D2DCampMappedDoctorListResponse.fromJson(json.decode(response.body));
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message ?? "", false);
+      }
+    } catch (e) {
+      callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> insertBeneficiaryDoctorMappingAPI(
+    List<Map<String, dynamic>> dataList,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kInsertBeneficiaryDoctorMapping;
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      // Native sends JSON array as URL-encoded form parameter "MapData"
+      final mapDataValue = json.encode(dataList);
+      final response = await ioClient.post(
+        url,
+        body: {"MapData": mapDataValue},
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(response.body);
+      final decoded = json.decode(response.body);
+      final status = decoded['status']?.toString() ?? '';
+      final message = decoded['message']?.toString() ?? '';
+      if (status == 'Success') {
+        callback(true, "");
+      } else {
+        callback(false, message);
+      }
+    } catch (e) {
+      callback(false, "Expections: $e");
     }
   }
 }

@@ -50,6 +50,9 @@ class WorkerInfoOutput {
 
   String? talLgdCode;
   String? distLgdCode;
+  String? gpLgdCode;
+  String? gpName;
+  String? isUrban;
 
   WorkerInfoOutput.fromJson(Map<String, dynamic> json) {
     firstNamePersonal = _nullSafe(json['firstNamePersonal']);
@@ -81,6 +84,9 @@ class WorkerInfoOutput {
 
     talLgdCode = _nullSafe(json['TALLGDCODE']);
     distLgdCode = _nullSafe(json['DISTLGDCODE']);
+    gpLgdCode = _nullSafe(json['GPLGDCODE']);
+    gpName = _nullSafe(json['GPName']);
+    isUrban = _nullSafe(json['IsUrban']);
   }
 
   /// API returns the string "null" for missing values — treat it as empty

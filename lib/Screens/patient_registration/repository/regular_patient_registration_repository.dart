@@ -269,6 +269,39 @@ class RegularPatientRegistrationRepository {
     }
   }
 
+  /// Uploads one ration card photo to the server.
+  /// Call once per photo; RCID is always "0".
+  Future<Map<String, dynamic>?> insertRationCardDetails({
+    required String regdId,
+    required String empCode,
+    required String bocwDependentId,
+    required String rationCardNo,
+    required File photoFile,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kWebservicesBaseURL}${APIConstants.kInsertRationCardDetails}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final request = http.MultipartRequest('POST', url);
+      request.fields['RegdID'] = regdId;
+      request.fields['UserId'] = empCode;
+      request.fields['Bocw_Dependent_Id'] = bocwDependentId;
+      request.fields['RationCardNo'] = rationCardNo;
+      request.fields['RCID'] = '0';
+      request.files.add(
+        await http.MultipartFile.fromPath('RationCardImage', photoFile.path),
+      );
+      final streamed = await ioClient.send(request);
+      final response = await http.Response.fromStream(streamed);
+      return json.decode(response.body) as Map<String, dynamic>?;
+    } catch (_) {
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
   Future<void> syncToBocw({required Map<String, dynamic> payload}) async {
     final url = Uri.parse('${APIManager.kMahabocwBaseURL}bocw-registration');
     final ioClient = _api.getInstanceOfIoClient();

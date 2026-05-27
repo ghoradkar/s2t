@@ -16,7 +16,7 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../controllers/raise_invoice_controller.dart';
 import '../widgets/otp_verify_sheet.dart';
 import '../widgets/verification_remark_sheet.dart';

@@ -19,7 +19,7 @@ import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/AppDropdownTextfield.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
 class PatientStatusScreen extends StatefulWidget {
   final int? cAMPTYPE;

@@ -15,7 +15,7 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/AppActiveButton.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../controllers/payment_details_controller.dart';
 import '../widgets/otp_verify_sheet.dart';
 

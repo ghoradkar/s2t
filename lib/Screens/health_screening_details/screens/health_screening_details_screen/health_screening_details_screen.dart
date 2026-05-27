@@ -14,6 +14,7 @@ import '../basic_health_info_screen/basic_health_info_patient_list_screen.dart';
 import '../lung_function_test_screen/lung_function_test_patient_list_screen.dart';
 import '../visual_screening_test_screen/visual_screening_patient_list_screen.dart';
 import '../health_screening_patient_list_screen/health_screening_patient_list_screen.dart';
+import '../../../d2d_physical_examination/screens/AssignedD2DPhysicalExaminationPatientListScreen/AssignedD2DPhysicalExaminationPatientListScreen.dart';
 import 'health_screening_menu_row/health_screening_menu_row.dart';
 
 class HealthScreeningDetailsScreen extends StatelessWidget {
@@ -216,6 +217,17 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         break;
 
       case HealthScreeningDetailsMenu.D2DPhysicalExamination:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AssignedD2DPhysicalExaminationPatientListScreen(
+              dISTLGDCODE: dISTLGDCODE,
+              campId: campID,
+              healthScreentype: "16",
+              flag: "2",
+            ),
+          ),
+        );
         break;
     }
   }

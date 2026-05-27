@@ -49,7 +49,6 @@ class CTAppointmentConfirmationController extends GetxController {
   bool _hasLoaded = false;
 
   final DateFormat _displayFormat = DateFormat('dd-MM-yyyy');
-  final DateFormat _apiFormat = DateFormat('yyyy/MM/dd');
 
   @override
   void onReady() {
@@ -81,7 +80,6 @@ class CTAppointmentConfirmationController extends GetxController {
     ToastManager.showLoader();
     final empCode =
         DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
-    final now = DateTime.now();
 
     final response = await _repo.getAppointmentDetails({
       'USERID': empCode.toString(),
@@ -89,8 +87,8 @@ class CTAppointmentConfirmationController extends GetxController {
       'AREA': '0',
       'Type': '3',
       'REDNO': regNo,
-      'FROMDATE': _apiFormat.format(now.subtract(const Duration(days: 365))),
-      'TODATE': _apiFormat.format(now),
+      'FROMDATE': '2024/01/01',
+      'TODATE': '2027/07/24',
       'T2T_Order_Id': '0',
     });
 

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/ct_assignment/RejectedBeneficiaryTeamView/RejectedBeneficiaryTeamView.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
@@ -21,8 +22,8 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../../Views/DropDownListScreen/DropDownListScreen.dart';
-import '../../../Views/RejectedBeneficiaryTeamView/RejectedBeneficiaryTeamView.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+// import '../../../Views/RejectedBeneficiaryTeamView/RejectedBeneficiaryTeamView.dart';
 import '../assign_team_for_ct_sample_collection/assign_team_for_ct_sample_collection_screen.dart';
 
 class AssignTeamForCTDetailsScreen extends StatefulWidget {

@@ -11,6 +11,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Screens/DeviceAndResourceMapping/SubDeviceDropDownScreen/SubDeviceDropDownScreen.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../Modules/DeviceMappingManager/DeviceMappingManager.dart';
 import '../../Modules/Enums/Enums.dart';
@@ -27,9 +28,9 @@ import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/widgets/AppActiveButton.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
-import '../../Views/DropDownListScreen/DropDownListScreen.dart';
-import '../../Views/MultiSelectionDropDownListScreen/MultiSelectionDropDownListScreen.dart';
-import '../../Views/SubDeviceDropDownScreen/SubDeviceDropDownScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/MultiSelectionDropDownListScreen/MultiSelectionDropDownListScreen.dart';
+// import '../../Views/SubDeviceDropDownScreen/SubDeviceDropDownScreen.dart';
 
 class DeviceAllocationScreen extends StatefulWidget {
   const DeviceAllocationScreen({super.key});

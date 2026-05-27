@@ -37,7 +37,21 @@
       "mcp__ide__getDiagnostics",
       "Bash(dart analyze *)",
       "Bash(Get-Content \"D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\calling_modules\\\\native\" -Raw)",
-      "Bash(Select-Object -First 200)"
+      "Bash(Select-Object -First 200)",
+      "Bash(findstr /i \"error\")",
+      "Bash(Get-ChildItem -Path \"D:\\\\s2toperational\\\\s2toperational\\\\S2T Operational - After - DependentChange \\(3\\)\\\\S2T Operational - After - DependentChange\" -Recurse -Include \"*.java\",\"*.kt\",\"*.xml\")",
+      "Bash(Select-Object -First 20 FullName)",
+      "Bash(grep -v \"^\\\\s*//\")",
+      "Bash(dir \"D:\\\\s2toperational\\\\s2toperational\\\\S2T Operational - After - DependentChange \\(3\\)\\\\S2T Operational - After - DependentChange\")",
+      "Bash(grep -v \"multipart\\\\|//\")",
+      "Bash(grep -v \"//\")",
+      "Bash(grep -v \"^.*//.*\")",
+      "PowerShell(dart analyze *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\s2toperational\\\\s2toperational\\\\S2T Operational - DependentChange_23_05_26\\\\S2T Operational - After - DependentChange\\\\app\\\\src\\\\main\\\\java\\\\com\\\\myhindlab\\\\abkat\\\\activities\" -Recurse -Filter \"*Appointment*\")",
+      "Bash(Select-Object FullName)",
+      "Bash(dir \"D:\\\\s2toperational\\\\s2toperational\")",
+      "Bash(findstr /i \"dependent native S2T\")",
+      "PowerShell(Select-String *)"
     ]
   }
 }

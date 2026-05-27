@@ -8,7 +8,9 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Views/AppointmentsConfirmedFilterView/AppointmentsConfirmedFilterView.dart';
+import 'package:s2toperational/Screens/AppointmentsConfirmedList/AppointmentsConfirmedListScreen/AppointmentsConfirmedFilterView/AppointmentsConfirmedFilterView.dart';
+import 'package:s2toperational/Screens/AppointmentsConfirmedList/AppointmentsConfirmedListScreen/AppointmentsConfirmedTeamView/AppointmentsConfirmedTeamView.dart';
+// import 'package:s2toperational/Views/AppointmentsConfirmedFilterView/AppointmentsConfirmedFilterView.dart';
 
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/FormatterManager/FormatterManager.dart';
@@ -21,7 +23,7 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../../../Views/AppointmentsConfirmedTeamView/AppointmentsConfirmedTeamView.dart';
+// import '../../../Views/AppointmentsConfirmedTeamView/AppointmentsConfirmedTeamView.dart';
 import '../AppointmentsConfirmedBeneficiaryDetailsScreen/AppointmentsConfirmedBeneficiaryDetailsScreen.dart';
 import 'AppointmentsConfirmedRow/AppointmentsConfirmedRow.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
@@ -64,7 +66,7 @@ class _AppointmentsConfirmedListScreenState
       assignStatusID: 2,
       appointmentStatus: "Confirmed",
     );
-    selectedCampDate = FormatterManager.formatDateToString(DateTime.now());
+    selectedCampDate = FormatterManager.formatDateForAppointmentAPI(DateTime.now());
     callAPI();
   }
 

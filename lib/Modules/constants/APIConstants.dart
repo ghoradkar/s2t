@@ -128,7 +128,7 @@ class APIConstants {
       "GetUserAttendancesUsingSitedetailsID_Anti";
 
   static String kGetRegiWorkerDetailsOncampIdInCampTest =
-      "GetRegiWorkerDetailsOncampId_InCampTest";
+      "GetRegiWorkerDetailsOncampId_InCampTest_V1";
 
   static String kCAMPPatientCheckupAnalysisReportV1 =
       "CAMPPatientCheckupAnalysis_Report_V1";
@@ -173,6 +173,8 @@ class APIConstants {
   static String kGetDependentListFromRegdId = "GetDependentListFromRegdId";
   static String kGetDependentDetailsFromBoardData = "GetDependentDetailsFromBoardData";
   static String kCheckDependentRegistrationStatus = "CheckDependentRegistrationStatus";
+  static String kGetRelationWiseDependantCountwithMaritalStatus =
+      "GetRelationWiseDependantCountwithMaritalStatus";
 
   static String kAuthToken = "AuthToken";
   static String kinitiatecall = "initiate-call";
@@ -282,6 +284,10 @@ class APIConstants {
       "InsertBeneficiaryCallingLog_V2";
   static String kGetuserAttendanceForSitedetailsIDPhysicalExam =
       "GetuserAttendanceForSitedetailsID_PhysicalExam";
+  static String kGetBeneficiaryListByRegID = "GetBeneficiaryListByRegID";
+  static String kGetD2DCampMappedDoctorList = "GetD2DCampMappedDoctorList";
+  static String kInsertBeneficiaryDoctorMapping =
+      "InsertBeneficiaryDoctorMapping";
   static String kGetOTPForLogin = "GetOTPForLogin";
   static String kVerifyOTPForLogin = "VerifyOTPForLogin";
   static String kGetUSERAndroidID = "GetUSERAndroidID";
@@ -305,6 +311,8 @@ class APIConstants {
   static String kGetDistrictByUserID = "GetDistrictByUserID";
   static String kGetBeneficiaryRegistrationDetailsWithMaritalStatus =
       "GetBeneficiaryRegistrationDetailsWithMaritalStatus";
+  static String kGetBeneficiaryRegistrationDetailsWithMaritalStatus_GP =
+      "GetBeneficiaryRegistrationDetailsWithMaritalStatus_GP";
   static String kGetBenificiaryRegisterOrNot = "GetBenificiaryRegisterOrNot";
   static String kGetDocumenttype = "GetDocumenttype";
   static String kGetOTPforRegistrationOrg = "GetOTPforRegistration_Org";
@@ -313,6 +321,8 @@ class APIConstants {
   static String kGetWorkerInfroFromWorkerRegid = "GetWorkerInfroFromWorkerRegid";
   static String kInsertSignatureandThumbDetails =
       "handler/InsertSignatureandThumbDetails.ashx";
+  static String kInsertRationCardDetails =
+      "handler/CW_Registration_RationCard.ashx";
   static String kGetT2TCTAssignmentRemarks = "Get_T2T_CT_AssignmentRemarks";
   static String kGetT2TCTBeneficiaryDetailsforDistCoordinatorV3 =
       "GetT2T_CT_BeneficiaryDetailsforDistCoordinator_V3";
@@ -420,6 +430,9 @@ class APIConstants {
   static String kGetUserWiseCampList = "GetUserWiseCampList";
   static String kInsertCampClosingConfirmation =
       "InsertCampClosingConfirmation";
+
+  // Gram Panchayat
+  static String kGetGPListTalukaWise = "GetGPListTalukaWise";
 
   // ABHA
   static String kInsertAbhaRegistration = "InsertAbhaRegistration";

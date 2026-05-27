@@ -75,7 +75,7 @@ class _RejectTestInCampInfoScreenState
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
+              padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
               decoration: BoxDecoration(
                 color: kPrimaryColor,
                 borderRadius:
@@ -94,8 +94,8 @@ class _RejectTestInCampInfoScreenState
                       style: TextStyle(
                         color: kWhiteColor,
                         fontFamily: FontConstants.interFonts,
-                        fontWeight: FontWeight.w400,
-                        fontSize: responsiveFont(16),
+                        fontWeight: FontWeight.normal,
+                        fontSize: responsiveFont(12),
                       ),
                     ),
                   ),
@@ -141,7 +141,7 @@ class _RejectTestInCampInfoScreenState
 
                   inputStyle: TextStyle(
                     fontFamily: FontConstants.interFonts,
-                    fontSize: 18,
+                    fontSize: 14,
                   ),
                   label: RichText(
                     text: TextSpan(
@@ -149,7 +149,7 @@ class _RejectTestInCampInfoScreenState
                       style: TextStyle(
                         fontFamily: FontConstants.interFonts,
                         color: kLabelTextColor,
-                        fontSize: responsiveFont(20),
+                        fontSize: responsiveFont(14),
                         fontWeight: FontWeight.w400,
                       ),
                       children: <TextSpan>[],
@@ -158,9 +158,9 @@ class _RejectTestInCampInfoScreenState
                   labelStyle: TextStyle(
                     fontFamily: FontConstants.interFonts,
                     fontWeight: FontWeight.w400,
-                    fontSize: responsiveFont(20),
+                    fontSize: responsiveFont(214),
                   ),
-                  prefixIcon: Image.asset(icScreeningTests, scale: 4.0),
+                  prefixIcon: Image.asset(icScreeningTests),
                   suffixIcon: Icon(Icons.keyboard_arrow_down),
                 )
                 : Container(),
@@ -193,7 +193,7 @@ class _RejectTestInCampInfoScreenState
 
               inputStyle: TextStyle(
                 fontFamily: FontConstants.interFonts,
-                fontSize: 18,
+                fontSize: 14,
               ),
               label: RichText(
                 text: TextSpan(
@@ -201,7 +201,7 @@ class _RejectTestInCampInfoScreenState
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
                     color: kLabelTextColor,
-                    fontSize: responsiveFont(20),
+                    fontSize: responsiveFont(14),
                     fontWeight: FontWeight.w400,
                   ),
                   children: <TextSpan>[],
@@ -210,9 +210,9 @@ class _RejectTestInCampInfoScreenState
               labelStyle: TextStyle(
                 fontFamily: FontConstants.interFonts,
                 fontWeight: FontWeight.w400,
-                fontSize: responsiveFont(20),
+                fontSize: responsiveFont(14),
               ),
-              prefixIcon: Image.asset(icScreeningTests, scale: 4.0),
+              prefixIcon: Image.asset(icScreeningTests),
               suffixIcon: Icon(Icons.keyboard_arrow_down),
             )
                 : Container(),

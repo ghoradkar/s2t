@@ -13,6 +13,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
@@ -23,6 +24,9 @@ import 'package:s2toperational/Screens/patient_registration/model/dependent_list
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
+import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery/view/FaceDetectionScreen.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_success_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/patient_finger_signature_screen.dart';
@@ -30,6 +34,7 @@ import 'package:s2toperational/Screens/patient_registration/screen/patient_finge
 class D2DPatientRegistrationController extends GetxController {
   final _repo = D2DPatientRegistrationRepository();
   final _picker = ImagePicker();
+  final _api = APIManager();
 
   String navCampId = '';
   String navCampLocation = '';
@@ -62,7 +67,7 @@ class D2DPatientRegistrationController extends GetxController {
   final tecFirstName = TextEditingController();
   final tecMiddleName = TextEditingController();
   final tecLastName = TextEditingController();
-  final tecMobileNo = TextEditingController();
+  final tecMobileNo = TextEditingController(text: '9322183452');
   final tecAltMobileNo = TextEditingController();
   final tecAadhaarNo = TextEditingController();
   final tecDob = TextEditingController();
@@ -90,7 +95,12 @@ class D2DPatientRegistrationController extends GetxController {
   final whatsAppMode = '1'.obs;
   final isHCRenewal = false.obs;
   final showRenewal = false.obs;
-  final isFaceDetection = false.obs;
+  /// true = skip face detection (same as native switch ON); false = face detection required (default)
+  final skipFaceDetection = false.obs;
+
+  /// true = show "Skip Face Detection" toggle (server returns IsFaceDetetctionEnabled == "0")
+  /// false = toggle hidden — face detection is mandatory, cannot skip
+  final showFaceDetectionToggle = false.obs;
   final selectedRelation = Rxn<RelationOutput>();
   final relationList = <RelationOutput>[].obs;
 
@@ -145,12 +155,16 @@ class D2DPatientRegistrationController extends GetxController {
   final altMobileOtpSent = false.obs;
   final altMobileOtpVerified = false.obs;
   String _generatedAltOtp = '';
+  bool isAlternateMessageShown = false;
 
   /// Alternate mobile belongs to (1=Self, 2=Spouse, 3=Child)
   final altMobileBelongsTo = '1'.obs;
 
   /// Worker's gender selected by phlebo (for isDependent=Yes)
   final workerGenderByPhlebo = ''.obs;
+
+  /// Inline validation error for Beneficiary Reg. No field (shown while typing)
+  final workerRegNoError = ''.obs;
 
   /// Worker marital status selection (drives relation list)
   final selectedWorkerMaritalStatusId = '0'.obs;
@@ -166,6 +180,9 @@ class D2DPatientRegistrationController extends GetxController {
   final selectedIdentityId = '0'.obs;
   final selectedIdentityName = ''.obs;
   final isLoadingIdentity = false.obs;
+
+  /// true when worker-info API loaded for a dependent → identity locked to Aadhaar
+  final isIdentityLockedByData = false.obs;
 
   /// Dependent list — fetched on-demand when "Select Dependent" is tapped
   final dependentList = <DependentOutput>[].obs;
@@ -191,6 +208,7 @@ class D2DPatientRegistrationController extends GetxController {
 
   // New text controllers
   final tecAltMobileOtp = TextEditingController();
+  final tecRationCardNo = TextEditingController();
 
   final patientPhotoPath = ''.obs;
   final healthCardPhotoPath = ''.obs;
@@ -199,6 +217,71 @@ class D2DPatientRegistrationController extends GetxController {
 
   final currentLat = '0.0'.obs;
   final currentLong = '0.0'.obs;
+  final currentAddress = ''.obs;
+  final isCapturingLocation = false.obs;
+  Timer? _locationTimer;
+
+  // ── Aadhaar masking ───────────────────────────────────────────────────────
+  String originalAadhaar = '';
+  bool _isAadhaarUpdating = false;
+  final isAadhaarVisible = false.obs;
+
+  // true after ABHA verification when Aadhaar was provided — reveals masked field
+  final aadhaarSetForAbha = false.obs;
+
+  // Inline validation error shown below the Aadhaar field while typing
+  final aadhaarError = ''.obs;
+
+  // Inline validation error for the ABHA-flow Aadhaar input (tecAbhaAadhaar)
+  final abhaAadhaarError = ''.obs;
+
+  static final _aadhaarRegex = RegExp(r'^[2-9][0-9]{11}$');
+
+  /// Full Aadhaar validation — mirrors native Utilities.isaadharNumberValidate:
+  ///   1. Pattern  ^[2-9][0-9]{11}$  (12 digits, first digit 2–9)
+  ///   2. Verhoeff checksum (same tables as native VerhoeffAlgorithm class)
+  static bool _isValidAadhaar(String aadhar) {
+    if (!_aadhaarRegex.hasMatch(aadhar)) return false;
+    return _verhoeffValidate(aadhar);
+  }
+
+  static bool _verhoeffValidate(String num) {
+    const d = [
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+      [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+      [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+      [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+      [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+      [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+      [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+      [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+      [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+    ];
+    const p = [
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+      [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+      [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+      [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+      [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+      [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+      [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
+    ];
+    final digits = num.split('').reversed.map((c) => int.parse(c)).toList();
+    int c = 0;
+    for (int i = 0; i < digits.length; i++) {
+      c = d[c][p[i % 8][digits[i]]];
+    }
+    return c == 0;
+  }
+
+  // ── Gram Panchayat ────────────────────────────────────────────────────────
+  final isRural = true.obs;
+  final gpList = <GpItem>[].obs;
+  final selectedGpName = ''.obs;
+  final selectedGpCode = ''.obs;
+  final isLoadingGp = false.obs;
 
   final isLoadingBeneficiary = false.obs;
   final isSubmitting = false.obs;
@@ -212,8 +295,10 @@ class D2DPatientRegistrationController extends GetxController {
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
     final rawMsId = user?.maritialstatusId?.toString() ?? '';
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
-    _captureLocation();
+    tecMobileNo.text = '9322183452';
+    _startAutoLocationUpdates();
     _loadAppVersion();
+    _fetchFaceDetectionFlag();
   }
 
   Future<void> _loadAppVersion() async {
@@ -221,27 +306,259 @@ class D2DPatientRegistrationController extends GetxController {
     _appVersion = info.version;
   }
 
+  /// Mirrors native getFaceDetectionFlag() — calls GetFaceDetectionFlag API.
+  /// If IsFaceDetetctionEnabled == "0"  → show skip toggle (optional).
+  /// If IsFaceDetetctionEnabled == "1"  → hide skip toggle (mandatory, cannot skip).
+  void _fetchFaceDetectionFlag() {
+    _api.getFaceDetectionFlagAPI(empCode.toString(), (response, error, success) {
+      if (success && response != null) {
+        final output = response['output'] as List? ?? [];
+        if (output.isNotEmpty) {
+          final compulsory =
+              output.first['IsFaceDetetctionEnabled']?.toString() ?? '1';
+          // Show toggle only when server says it is NOT compulsory ("0")
+          showFaceDetectionToggle.value = compulsory == '0';
+        }
+      }
+      // On failure: keep showFaceDetectionToggle = false (toggle hidden,
+      // face detection stays required — same as native on failure)
+    });
+  }
+
+  /// Starts on init and repeats every 5 s — mirrors native locationRequest interval.
+  void _startAutoLocationUpdates() {
+    _captureLocation();
+    _locationTimer?.cancel();
+    _locationTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (!isCapturingLocation.value) _captureLocation();
+    });
+  }
+
   Future<void> _captureLocation() async {
+    isCapturingLocation.value = true;
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return;
+      if (!serviceEnabled) {
+        currentLat.value = '0.0';
+        currentLong.value = '0.0';
+        return;
+      }
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return;
+        if (permission == LocationPermission.denied) {
+          currentLat.value = '0.0';
+          currentLong.value = '0.0';
+          return;
+        }
       }
-      if (permission == LocationPermission.deniedForever) return;
+      if (permission == LocationPermission.deniedForever) {
+        currentLat.value = '0.0';
+        currentLong.value = '0.0';
+        return;
+      }
 
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
-      currentLat.value = position.latitude.toStringAsFixed(6);
-      currentLong.value = position.longitude.toStringAsFixed(6);
+      // ── Step 1: last known location (instant, mirrors native getLastKnownLocation) ──
+      // Show cached coordinates immediately so the field is never empty on open.
+      Position? position;
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null) {
+        position = lastKnown;
+        currentLat.value = position.latitude.toStringAsFixed(6);
+        currentLong.value = position.longitude.toStringAsFixed(6);
+        // Show coords as address placeholder while reverse-geocode runs
+        if (currentAddress.value.isEmpty) {
+          currentAddress.value =
+              '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+        }
+      }
+
+      // ── Step 2: fresh high-accuracy fix (background update) ─────────────────
+      try {
+        final fresh = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+          ),
+        ).timeout(const Duration(seconds: 15));
+        position = fresh;
+        currentLat.value = position.latitude.toStringAsFixed(6);
+        currentLong.value = position.longitude.toStringAsFixed(6);
+      } catch (_) {
+        // Fresh fix timed out or failed — keep lastKnown values already set
+      }
+
+      if (position == null) {
+        currentLat.value = '0.0';
+        currentLong.value = '0.0';
+        return;
+      }
+
+      // Reverse-geocode via Google Maps API — same provider as native Geocoder
+      try {
+        const apiKey = 'AIzaSyDbtPLpwrcS571PfdJw9ednQAemxBiNhUA';
+        final url = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json'
+          '?latlng=${position.latitude},${position.longitude}&key=$apiKey',
+        );
+        final response = await http
+            .get(url)
+            .timeout(const Duration(seconds: 8));
+        if (response.statusCode == 200) {
+          final json = jsonDecode(response.body) as Map<String, dynamic>;
+          final results = json['results'] as List?;
+          if (results != null && results.isNotEmpty) {
+            currentAddress.value =
+                (results.first as Map<String, dynamic>)['formatted_address']
+                    as String? ??
+                '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+          } else {
+            currentAddress.value =
+                '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+          }
+        } else {
+          currentAddress.value =
+              '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+        }
+      } catch (_) {
+        currentAddress.value =
+            '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+      }
     } catch (_) {
-      // GPS unavailable — values remain '0.0'
+      currentLat.value = '0.0';
+      currentLong.value = '0.0';
+    } finally {
+      isCapturingLocation.value = false;
+    }
+  }
+
+  Future<void> refreshLocation() => _captureLocation();
+
+  // ── Gram Panchayat helpers ────────────────────────────────────────────────
+
+  void setRural(bool rural) {
+    isRural.value = rural;
+    if (!rural) {
+      selectedGpName.value = '';
+      selectedGpCode.value = '0';
+    }
+  }
+
+  /// Fetches GP list then invokes [onSuccess] with the loaded items so the
+  /// screen can show the picker dialog. Mirrors native getGramPanchayat().
+  Future<void> fetchAndShowGpPicker({
+    required void Function(List<GpItem>) onSuccess,
+  }) async {
+    if (tecWorkerRegNo.text.trim().isEmpty) {
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Please search worker number first',
+        () => Get.back(),
+      );
+      return;
+    }
+    if (talLgd == '0' || talLgd.isEmpty) {
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Please select taluka',
+        () => Get.back(),
+      );
+      return;
+    }
+    isLoadingGp.value = true;
+    final list = await _repo.getGramPanchayatList(talLgd: talLgd);
+    isLoadingGp.value = false;
+    if (list.isEmpty) {
+      ToastManager.toast('No GP list found for this taluka');
+      return;
+    }
+    gpList.assignAll(list);
+    onSuccess(list);
+  }
+
+  void selectGp(GpItem item) {
+    selectedGpName.value = item.gpName;
+    selectedGpCode.value = item.gpLgdCode;
+  }
+
+  // ── Aadhaar masking helpers ───────────────────────────────────────────────
+
+  String _maskAadhaar(String aadhaar) {
+    if (aadhaar.isEmpty) return '';
+    final sb = StringBuffer();
+    for (int i = 0; i < aadhaar.length; i++) {
+      sb.write(i < 8 ? '•' : aadhaar[i]);
+    }
+    return sb.toString();
+  }
+
+  void onAadhaarChanged(String value) {
+    if (_isAadhaarUpdating) return;
+    _isAadhaarUpdating = true;
+
+    final prevLength = originalAadhaar.length;
+    final newLength = value.length;
+
+    if (newLength > prevLength) {
+      // User typed a character — grab the last char of the displayed value
+      final newChar = value[value.length - 1];
+      if (RegExp(r'\d').hasMatch(newChar) && originalAadhaar.length < 12) {
+        originalAadhaar += newChar;
+      }
+    } else if (newLength < prevLength) {
+      final removed = prevLength - newLength;
+      originalAadhaar =
+          originalAadhaar.length >= removed
+              ? originalAadhaar.substring(0, originalAadhaar.length - removed)
+              : '';
+    }
+
+    // Inline validation: show error only once all 12 digits are entered.
+    // Uses full Verhoeff check (mirrors native isaadharNumberValidate).
+    if (originalAadhaar.length == 12) {
+      aadhaarError.value =
+          _isValidAadhaar(originalAadhaar)
+              ? ''
+              : 'Please enter valid Aadhar Card No.';
+    } else {
+      aadhaarError.value = '';
+    }
+
+    final display =
+        isAadhaarVisible.value
+            ? originalAadhaar
+            : _maskAadhaar(originalAadhaar);
+    tecAadhaarNo.value = TextEditingValue(
+      text: display,
+      selection: TextSelection.collapsed(offset: display.length),
+    );
+
+    _isAadhaarUpdating = false;
+  }
+
+  void toggleAadhaarVisibility() {
+    isAadhaarVisible.value = !isAadhaarVisible.value;
+    _isAadhaarUpdating = true;
+    final text =
+        isAadhaarVisible.value
+            ? originalAadhaar
+            : _maskAadhaar(originalAadhaar);
+    tecAadhaarNo.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+    _isAadhaarUpdating = false;
+  }
+
+  /// Inline validation for the ABHA-flow Aadhaar input field.
+  void onAbhaAadhaarChanged(String val) {
+    if (val.length == 12) {
+      abhaAadhaarError.value =
+          _isValidAadhaar(val)
+              ? ''
+              : 'Please enter valid Aadhar Card No.';
+    } else {
+      abhaAadhaarError.value = '';
     }
   }
 
@@ -265,6 +582,7 @@ class D2DPatientRegistrationController extends GetxController {
       abhaOtpAttempts.value = 0;
       tecAbhaLinkedMobile.clear();
       tecAbhaAadhaar.clear();
+      abhaAadhaarError.value = '';
       abhaCardAvailable.value = false;
       _findAbhaTxnId = '';
       _findAbhaSelectedIndex = '';
@@ -321,9 +639,10 @@ class D2DPatientRegistrationController extends GetxController {
 
       // Use worker display name first; fall back to pre-filled last-name field.
       final workerDisplay = workerNameDisplay.value.trim();
-      final boardWords = workerDisplay.isNotEmpty
-          ? workerDisplay.split(RegExp(r'\s+'))
-          : tecLastName.text.trim().split(RegExp(r'\s+'));
+      final boardWords =
+          workerDisplay.isNotEmpty
+              ? workerDisplay.split(RegExp(r'\s+'))
+              : tecLastName.text.trim().split(RegExp(r'\s+'));
       final boardLastWord = boardWords.isNotEmpty ? boardWords.last : '';
 
       if (boardLastWord.isNotEmpty &&
@@ -443,6 +762,16 @@ class D2DPatientRegistrationController extends GetxController {
     tecCurrentAddr.clear();
     // Local Address — native does NOT set it from ABHA (left for user entry)
 
+    // ── Aadhaar from ABHA verification (mirrors native lines 11357–11363) ──
+    // After ABHA OTP verification, native copies edtABHAAadhaar into
+    // originalAadhaar and shows edt_aadhaarno with the masked value.
+    final abhaAadhaarRaw = tecAbhaAadhaar.text.trim().replaceAll('-', '');
+    if (abhaAadhaarRaw.isNotEmpty) {
+      originalAadhaar = abhaAadhaarRaw;
+      tecAadhaarNo.text = _maskAadhaar(originalAadhaar);
+      aadhaarSetForAbha.value = true;
+    }
+
     // ── Lock internal name snapshot (used by submit validation) ───────
     _abhaNameAtVerify = tecFullName.text.trim();
     _abhaGenderAtVerify = selectedGender.value;
@@ -476,6 +805,7 @@ class D2DPatientRegistrationController extends GetxController {
     _findAbhaHealthCard = {};
     _findAbhaAddress = '';
     abhaCardAvailable.value = false;
+    aadhaarSetForAbha.value = false;
   }
 
   /// Called by the Clear button shown in the verified banner after ABHA-creation
@@ -549,8 +879,14 @@ class D2DPatientRegistrationController extends GetxController {
   }
 
   void onWorkerRegNoChanged(String val) {
-    if (val.length == 12 && !isLoadingBeneficiary.value) {
-      _fetchBeneficiary(val);
+    if (val.isEmpty) {
+      workerRegNoError.value = '';
+    } else if (val.length < 12) {
+      workerRegNoError.value =
+          'Enter valid 12 digit worker registration number';
+    } else {
+      workerRegNoError.value = '';
+      if (!isLoadingBeneficiary.value) _fetchBeneficiary(val);
     }
   }
 
@@ -570,10 +906,13 @@ class D2DPatientRegistrationController extends GetxController {
               ? workerInfo!.output!.first
               : null;
       if (data == null) {
-        ToastManager.toast('Beneficiary not found');
-        ToastManager.showAlertDialog(Get.context!, 'Beneficiary not found', () {
-          Get.back();
-        });
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'बांधकाम कामगार मंडळाकडून लाभार्थ्याची अद्ययावत माहिती प्राप्त झालेली नाही. \nत्यामुळे सध्या या लाभार्थ्याची नोंदणी करता येणार नाही याची नोंद घ्यावी',
+          () {
+            Get.back();
+          },
+        );
         return;
       }
 
@@ -583,7 +922,8 @@ class D2DPatientRegistrationController extends GetxController {
         final regDate = await _repo.getReRegistrationDate(workerRegNo: regNo);
         if (regDate != null && regDate.isNotEmpty) {
           final parsed = _tryParseDate(regDate);
-          if (parsed != null && DateTime.now().difference(parsed).inDays < 365) {
+          if (parsed != null &&
+              DateTime.now().difference(parsed).inDays < 365) {
             tecWorkerRegNo.clear();
             _clearForm();
             // Re-enable ABHA section so the user can still perform ABHA
@@ -629,9 +969,10 @@ class D2DPatientRegistrationController extends GetxController {
         // ignore: avoid_print
         print('[fetchDependentList] count=${dependentList.length}');
       } else {
-        dependentListErrorMessage = result.message?.isNotEmpty == true
-            ? result.message!
-            : 'Failed to load dependent list';
+        dependentListErrorMessage =
+            result.message?.isNotEmpty == true
+                ? result.message!
+                : 'Failed to load dependent list';
       }
     } finally {
       isLoadingDependents.value = false;
@@ -644,13 +985,13 @@ class D2DPatientRegistrationController extends GetxController {
 
     // ── Name: split full_name into first / middle / last ────────────────────
     final nameParts = dep.displayName.trim().split(RegExp(r'\s+'));
-    final first  = nameParts.isNotEmpty ? nameParts[0] : '';
-    final middle = nameParts.length > 2  ? nameParts[1] : '';
-    final last   = nameParts.length > 1  ? nameParts.last : '';
+    final first = nameParts.isNotEmpty ? nameParts[0] : '';
+    final middle = nameParts.length > 2 ? nameParts[1] : '';
+    final last = nameParts.length > 1 ? nameParts.last : '';
 
-    tecFirstName.text  = first;
+    tecFirstName.text = first;
     tecMiddleName.text = middle;
-    tecLastName.text   = last;
+    tecLastName.text = last;
 
     // Clear middle name for spouse / sibling relations (mirrors native switch)
     const _clearMiddleRelIds = {'1', '2', '21', '22'};
@@ -662,9 +1003,10 @@ class D2DPatientRegistrationController extends GetxController {
 
     // ── Relation: auto-fill from API field + find in relation list ───────────
     final relIdInt = int.tryParse(dep.relId ?? '');
-    final matched = relIdInt != null
-        ? relationList.firstWhereOrNull((r) => r.relId == relIdInt)
-        : null;
+    final matched =
+        relIdInt != null
+            ? relationList.firstWhereOrNull((r) => r.relId == relIdInt)
+            : null;
     if (matched != null) {
       selectedRelation.value = matched;
     } else if (dep.relation?.isNotEmpty == true) {
@@ -676,7 +1018,7 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // ── Gender: determined by RelId (mirrors native switch-case) ────────────
-    const _maleRelIds   = {'1', '5', '7', '9', '17', '22'};
+    const _maleRelIds = {'1', '5', '7', '9', '17', '22'};
     const _femaleRelIds = {'2', '6', '8', '10', '18', '21'};
     tecDob.clear();
     tecAge.clear();
@@ -714,6 +1056,18 @@ class D2DPatientRegistrationController extends GetxController {
     );
   }
 
+  /// Calls GetRelationWiseDependantCountwithMaritalStatus.
+  /// Returns true if the relation slot is available, false if blocked (Column1 == 0).
+  /// RegdNo is sent without MH prefix; Gender is the worker's gender.
+  Future<bool> checkRelationWiseCount(DependentOutput dep) {
+    return _repo.checkRelationWiseCount(
+      regdNo: tecWorkerRegNo.text.trim(),
+      relId: dep.relId ?? '',
+      gender: workerGenderByPhlebo.value,
+      maritalStatusId: maritalStatusId,
+    );
+  }
+
   /// Mirrors native clearDependentData() + clearPatientDetails() called on registration-status failure.
   void clearDependentSelection() {
     selectedDependent.value = null;
@@ -726,11 +1080,30 @@ class D2DPatientRegistrationController extends GetxController {
     selectedGender.value = '';
     isGenderLockedByRelation.value = false;
     selectedRelation.value = null;
+    originalAadhaar = '';
+    isAadhaarVisible.value = false;
+    aadhaarSetForAbha.value = false;
     tecAadhaarNo.clear();
     onNamePartsChanged();
+    selectedGpName.value = '';
+    selectedGpCode.value = '';
   }
 
   // ── Alternate mobile OTP ─────────────────────────────────────────────────
+
+  void onAltMobileChanged(String value) {
+    if (!isAlternateMessageShown && value.length == 1) {
+      isAlternateMessageShown = true;
+      if (Get.context != null) {
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'नोंदणीकृत मोबाईल क्रमांक कार्यरत नसल्यास किंवा त्यावर OTP प्राप्त होत नसल्यास पर्यायी क्रमांक शेअर करावा. मात्र, स्क्रीनिंग प्रक्रियेसाठी पर्यायी मोबाईल क्रमांकाचा वापर केला जाणार नाही, याची नोंद घ्यावी.',
+          () => Navigator.of(Get.context!, rootNavigator: true).pop(),
+          title: 'सूचना',
+        );
+      }
+    }
+  }
 
   Future<void> sendAltMobileOtp() async {
     final mob = tecAltMobileNo.text.trim();
@@ -794,9 +1167,13 @@ class D2DPatientRegistrationController extends GetxController {
     tecLastName.clear();
 
     // Contact
-    tecMobileNo.clear();
+    tecMobileNo.text = '9322183452'; // TEST OVERRIDE
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
+    originalAadhaar = '';
+    isAadhaarVisible.value = false;
+    aadhaarError.value = '';
+    aadhaarSetForAbha.value = false;
     tecAadhaarNo.clear();
     tecAbhaNumber.clear();
     tecAbhaAddress.clear();
@@ -826,6 +1203,7 @@ class D2DPatientRegistrationController extends GetxController {
     showRenewal.value = false;
     isHCRenewal.value = false;
     isNumberNotBelongsToBeneficiary.value = false;
+    skipFaceDetection.value = false; // reset to face detection ON (matches native isfaceDetection = "1")
 
     // OTP flows
     mobileOtpSent.value = false;
@@ -859,6 +1237,11 @@ class D2DPatientRegistrationController extends GetxController {
     workerGenderDisplay.value = '';
     workerGenderByPhlebo.value = '';
     selectedWorkerMaritalStatusId.value = '0';
+
+    // Identity card
+    selectedIdentityId.value = '0';
+    selectedIdentityName.value = '';
+    isIdentityLockedByData.value = false;
     selectedWorkerMaritalStatusName.value = '';
     selectedRelation.value = null;
     relationList.clear();
@@ -885,6 +1268,15 @@ class D2DPatientRegistrationController extends GetxController {
     healthCardPhotoPath.value = '';
     renewalFormPath.value = '';
     hivLetterPath.value = '';
+
+    // Ration card
+    tecRationCardNo.clear();
+
+    // GP
+    isRural.value = true;
+    selectedGpName.value = '';
+    selectedGpCode.value = '';
+    gpList.clear();
   }
 
   void _applyWorkerInfo(WorkerInfoOutput data) {
@@ -903,19 +1295,37 @@ class D2DPatientRegistrationController extends GetxController {
       tecFullName.text = fullName;
       // Store board name/gender for ABHA mismatch check
       benefBoardName = fullName;
+      // Pre-fill worker gender correction dropdown (req 7) — normalize to
+      // 'Male'/'Female' so dropdown items match and API receives correct value.
+      final wGStr = (data.gender ?? '').toLowerCase();
+      workerGenderByPhlebo.value =
+          wGStr.startsWith('f')
+              ? 'Female'
+              : wGStr.startsWith('m')
+              ? 'Male'
+              : '';
     } else {
       // Scenario 4 (Yes + Data):
       // Worker display cards at top show full name, age, gender
       workerNameDisplay.value = fullName;
+      // Auto-select Aadhaar Card and lock identity field (mirrors native identityId="1")
+      selectedIdentityId.value = '1';
+      selectedIdentityName.value = 'Adhar Card';
+      isIdentityLockedByData.value = true;
       workerAgeDisplay.value =
           (int.tryParse(
             (data.age ?? '').split('.').first.trim(),
           )?.toString()) ??
           '';
       workerGenderDisplay.value = data.gender ?? '';
-      // Pre-select worker gender dropdown (native: benefBoardGender = gender)
+      // Pre-select worker gender for API (normalize to 'Male'/'Female')
+      final dGStr = (data.gender ?? '').toLowerCase();
       workerGenderByPhlebo.value =
-          (data.gender ?? '').isNotEmpty ? data.gender! : '';
+          dGStr.startsWith('f')
+              ? 'Female'
+              : dGStr.startsWith('m')
+              ? 'Male'
+              : '';
       // Last name from API (disabled), first+middle editable
       tecLastName.text = lastName;
       // Native: for male → first-name field shows firstName; for female → empty
@@ -927,14 +1337,18 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // Mobile
-    tecMobileNo.text = data.mobile ?? '';
+    final apiMobile = (data.mobile ?? '').trim();
+    if (apiMobile.isNotEmpty) tecMobileNo.text = apiMobile;
+    tecMobileNo.text = '9322183452'; // TEST OVERRIDE
 
     // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
     // (isDependent=No). When registering a dependent the phlebo enters these
     // fields manually for the dependent person.
     if (!isDependent.value) {
-      // Aadhaar
-      tecAadhaarNo.text = data.aadhaar ?? '';
+      // Aadhaar — store real value, display masked (mirrors native originalAadhaar pattern)
+      originalAadhaar = data.aadhaar ?? '';
+      isAadhaarVisible.value = false;
+      tecAadhaarNo.text = _maskAadhaar(originalAadhaar);
 
       // Age + DOB (calculated from age; API has no DOB field)
       final ageInt =
@@ -966,6 +1380,8 @@ class D2DPatientRegistrationController extends GetxController {
             : '1';
     final msName = data.maritalStatus ?? 'Married';
     maritalStatusId = msId;
+    selectedWorkerMaritalStatusId.value = msId;
+    selectedWorkerMaritalStatusName.value = msName;
 
     // LGD codes
     if (data.talLgdCode?.isNotEmpty == true) talLgd = data.talLgdCode!;
@@ -1003,6 +1419,18 @@ class D2DPatientRegistrationController extends GetxController {
       tecRenewalDate.text = _normalizeDate(renewal);
       tecCardExpiry.text = _normalizeDate(renewal);
     }
+
+    // GP auto-populate — mirrors native IsUrban/GPName/GPLGDCODE handling
+    final isUrbanVal = data.isUrban ?? '';
+    if (isUrbanVal == '0') {
+      isRural.value = true;
+      selectedGpName.value = data.gpName ?? '';
+      selectedGpCode.value = data.gpLgdCode ?? '';
+    } else if (isUrbanVal.isNotEmpty) {
+      isRural.value = false;
+      selectedGpName.value = '';
+      selectedGpCode.value = '0';
+    }
   }
 
   void onDobChanged(String date) {
@@ -1019,6 +1447,7 @@ class D2DPatientRegistrationController extends GetxController {
     if (isDependent.value) {
       final msg = _dependentAgeMessage(age);
       if (msg != null) {
+        clearDependentSelection();
         if (Get.context != null) {
           ToastManager.showAlertDialog(
             Get.context!,
@@ -1119,6 +1548,7 @@ class D2DPatientRegistrationController extends GetxController {
   /// True when no identity card selected OR the selected card is Aadhaar.
   bool get isAadhaarMode =>
       selectedIdentityId.value == '0' ||
+      selectedIdentityId.value == '1' || // ID 1 = Adhar Card
       selectedIdentityName.value.toLowerCase().contains('aadh');
 
   /// Max character length for the identity number field (matches native).
@@ -1298,8 +1728,12 @@ class D2DPatientRegistrationController extends GetxController {
 
     // ── Find mode, Using Aadhaar: real ABDM API ──────────────────────────────
     if (abhaValidateMode.value == 'aadhaar') {
-      if (aadhaar.length != 12) {
-        ToastManager.toast('Enter valid 12-digit Aadhaar number');
+      if (!_isValidAadhaar(aadhaar)) {
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'Please enter valid Aadhar Card No.',
+          () => Get.back(),
+        );
         return;
       }
       if (abhaResendCount >= 3) {
@@ -1361,7 +1795,8 @@ class D2DPatientRegistrationController extends GetxController {
   /// Parses an ABDM error body (which may be a JSON string like
   /// `{"message":"..."}` or a plain string) into a human-readable message.
   String _extractAbdmErrorMessage(String? raw) {
-    if (raw == null || raw.isEmpty) return 'Failed to send OTP. Please try again.';
+    if (raw == null || raw.isEmpty)
+      return 'Failed to send OTP. Please try again.';
     try {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
       // ABDM wraps errors as {"error":{"message":"..."}} or {"message":"..."}
@@ -1410,7 +1845,11 @@ class D2DPatientRegistrationController extends GetxController {
     if (isClosed) return;
 
     if (result == null || result['error'] != null) {
-      final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
+      final raw = result?['error']?.toString() ?? '';
+      // Native (line 12386): ABDM-1114 "User not found." → show custom message
+      final errMsg = raw.contains('User not found')
+          ? 'The mobile number you have entered does not match with any of the records.Please enter a different number'
+          : _extractAbdmErrorMessage(raw.isNotEmpty ? raw : null);
       ToastManager.showAlertDialog(Get.context!, errMsg, () => Get.back());
       return;
     }
@@ -1768,11 +2207,7 @@ class D2DPatientRegistrationController extends GetxController {
 
     if (result == null || result['error'] != null) {
       final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
-      ToastManager.showAlertDialog(
-        Get.context!,
-        errMsg,
-        () => Get.back(),
-      );
+      ToastManager.showAlertDialog(Get.context!, errMsg, () => Get.back());
       return;
     }
 
@@ -1828,11 +2263,7 @@ class D2DPatientRegistrationController extends GetxController {
 
     if (result == null || result['error'] != null) {
       final errMsg = _extractAbdmErrorMessage(result?['error']?.toString());
-      ToastManager.showAlertDialog(
-        Get.context!,
-        errMsg,
-        () => Get.back(),
-      );
+      ToastManager.showAlertDialog(Get.context!, errMsg, () => Get.back());
       return;
     }
 
@@ -1860,13 +2291,15 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // ── Verify mode, Using Mobile: real ABDM verify ──────────────────────────
-    if (abhaSearchMode.value == 'verify' && abhaValidateMode.value == 'mobile') {
+    if (abhaSearchMode.value == 'verify' &&
+        abhaValidateMode.value == 'mobile') {
       await _verifyFindAbhaMobileOtp();
       return;
     }
 
     // ── Verify mode, Using Aadhaar: real ABDM verify ──────────────────────────
-    if (abhaSearchMode.value == 'verify' && abhaValidateMode.value == 'aadhaar') {
+    if (abhaSearchMode.value == 'verify' &&
+        abhaValidateMode.value == 'aadhaar') {
       await _verifyFindAbhaAadhaarOtp();
       return;
     }
@@ -1921,8 +2354,8 @@ class D2DPatientRegistrationController extends GetxController {
     final authResult = (verifyResult['authResult'] as String?) ?? '';
     if (authResult.isNotEmpty && authResult.toLowerCase() != 'success') {
       ToastManager.hideLoader();
-      final msg = (verifyResult['message'] as String?) ??
-          'OTP verification failed';
+      final msg =
+          (verifyResult['message'] as String?) ?? 'OTP verification failed';
       ToastManager.toast(msg);
       return;
     }
@@ -2042,11 +2475,20 @@ class D2DPatientRegistrationController extends GetxController {
   }
 
   Future<void> pickPatientPhoto() async {
-    final picked = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-    );
-    if (picked != null) patientPhotoPath.value = picked.path;
+    if (!skipFaceDetection.value) {
+      // Face detection ON → launch liveness camera (mirrors native FaceDetectionActivity)
+      final File? result = await Navigator.of(Get.context!).push<File>(
+        MaterialPageRoute(builder: (_) => const FaceDetectionScreen()),
+      );
+      if (result != null) patientPhotoPath.value = result.path;
+    } else {
+      // Skip face detection ON → regular camera (no liveness check)
+      final picked = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+      if (picked != null) patientPhotoPath.value = picked.path;
+    }
   }
 
   Future<void> pickHealthCardPhoto() async {
@@ -2074,6 +2516,26 @@ class D2DPatientRegistrationController extends GetxController {
   }
 
   bool _validateForm() {
+    // GPS guard — matches native submitData() check at line 6882
+    if (currentLat.value == '0.0' && currentLong.value == '0.0') {
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Location not captured. Please enable GPS and tap the refresh button.',
+        () => Get.back(),
+      );
+      return false;
+    }
+
+    // GP guard — mirrors native radioRural check before submit
+    if (isRural.value && selectedGpCode.value.isEmpty) {
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Please select Gram Panchayat',
+        () => Get.back(),
+      );
+      return false;
+    }
+
     if (tecWorkerRegNo.text.trim().length != 12) {
       // ToastManager.toast('Beneficiary Reg. No must be 12 digits');
       ToastManager.showAlertDialog(
@@ -2085,6 +2547,18 @@ class D2DPatientRegistrationController extends GetxController {
       );
       return false;
     }
+
+    // Mirrors native submitData() lines 6890-6896: dependent list field must be
+    // filled for BOTH with_abha and without_abha when isDependent==1.
+    if (isDependent.value && selectedDependent.value == null) {
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Please select dependent first',
+        () => Get.back(),
+      );
+      return false;
+    }
+
     if (isDependent.value) {
       if (tecFirstName.text.trim().isEmpty ||
           tecMiddleName.text.trim().isEmpty ||
@@ -2136,9 +2610,37 @@ class D2DPatientRegistrationController extends GetxController {
       return false;
     }
 
-    if (registrationType.value == 'without_abha' &&
-        tecAadhaarNo.text.trim().length != 12) {
-      ToastManager.toast('Aadhaar number must be 12 digits');
+    // Mirrors native submitData() lines 7097-7108: if alternate number is
+    // entered it must be 10 digits AND OTP-verified (applies to both flows).
+    if (tecAltMobileNo.text.trim().isNotEmpty) {
+      if (tecAltMobileNo.text.trim().length != 10) {
+        ToastManager.toast('Please enter valid alternate mobile number');
+        return false;
+      }
+      if (!altMobileOtpVerified.value) {
+        ToastManager.toast('Please verify alternate number');
+        return false;
+      }
+    }
+
+    // Aadhaar validation — covers both flows:
+    // without_abha: required when isDependent=Yes or identity=Aadhaar
+    // with_abha + worker: required when Aadhaar was provided during ABHA flow
+    // with_abha + dependent: always required (dependent enters Aadhaar manually)
+    // Full validation: pattern ^[2-9][0-9]{11}$ + Verhoeff checksum,
+    // mirrors native isaadharNumberValidate (Utilities.java).
+    final needsAadhaarCheck =
+        registrationType.value == 'without_abha'
+            ? (isDependent.value || isAadhaarMode)
+            : (isDependent.value || aadhaarSetForAbha.value);
+    if (needsAadhaarCheck && !_isValidAadhaar(originalAadhaar)) {
+      // Set inline field error (mirrors native edt_aadhaarno.setError())
+      aadhaarError.value = 'Please enter valid Aadhar Card No.';
+      ToastManager.showAlertDialog(
+        Get.context!,
+        'Please enter valid Aadhar Card No.',
+        () => Get.back(),
+      );
       return false;
     }
 
@@ -2192,17 +2694,49 @@ class D2DPatientRegistrationController extends GetxController {
       }
     }
 
-    // Patient photo is required when face detection is enabled
-    if (isFaceDetection.value && patientPhotoPath.value.isEmpty) {
+    // Ration card — required when visible (worker without_abha, or any dependent)
+    final _showRationCard =
+        isDependent.value || registrationType.value == 'without_abha';
+    if (_showRationCard) {
+      final rc = tecRationCardNo.text.trim();
+      if (rc.isEmpty) {
+        ToastManager.showAlertDialog(
+          Get.context!,
+          'Please enter ration card number',
+          () => Get.back(),
+        );
+        return false;
+      }
+      if (isDependent.value) {
+        if (rc.length < 3 || rc.length > 15) {
+          ToastManager.showAlertDialog(
+            Get.context!,
+            'Ration card number must be between 3 to 15 digits',
+            () => Get.back(),
+          );
+          return false;
+        }
+        if (RegExp(r'^(.)\1+$').hasMatch(rc)) {
+          ToastManager.showAlertDialog(
+            Get.context!,
+            'Invalid ration card number',
+            () => Get.back(),
+          );
+          return false;
+        }
+      }
+    }
+
+    // Patient photo is required when face detection is NOT skipped
+    if (!skipFaceDetection.value && patientPhotoPath.value.isEmpty) {
       ToastManager.toast(
         'Please capture patient photo (Face Detection is enabled)',
       );
       return false;
     }
 
-    final needsCardPhoto =
-        !isDependent.value || registrationType.value == 'without_abha';
-    if (needsCardPhoto && healthCardPhotoPath.value.isEmpty) {
+    // Req 1: Identity/health card photo always required (including dependent+with_abha)
+    if (healthCardPhotoPath.value.isEmpty) {
       ToastManager.toast('Health/Identity card photo is required');
       return false;
     }
@@ -2249,7 +2783,7 @@ class D2DPatientRegistrationController extends GetxController {
         'Title': selectedTitle.value,
         'EnglishName': tecFullName.text.trim(),
         'MobileNo': tecMobileNo.text.trim(),
-        'UID': tecAadhaarNo.text.trim(),
+        'UID': isAadhaarMode ? originalAadhaar : tecAadhaarNo.text.trim(),
         'DOB': tecDob.text.trim(),
         'Age': tecAge.text.trim(),
         'Gender': selectedGender.value,
@@ -2263,7 +2797,7 @@ class D2DPatientRegistrationController extends GetxController {
         'IsDependent': isDependent.value ? '1' : '0',
         'Education': tecEducation.text.trim(),
         'ReleationID': selectedRelation.value?.relId?.toString() ?? '0',
-        'DependREGID': _workerRegdId,
+        'DependREGID': isDependent.value ? _workerRegdId : '0',
         'IndentityId': selectedIdentityId.value,
         'CW_WorkerName':
             isDependent.value
@@ -2276,27 +2810,32 @@ class D2DPatientRegistrationController extends GetxController {
         'CurrentAddress': tecCurrentAddr.text.trim(),
         'LandMark': tecLandmark.text.trim(),
         'AlternateMobNo': tecAltMobileNo.text.trim(),
-        'IsMobNoVerified': mobileOtpVerified.value ? '1' : '0',
+        'IsMobNoVerified': '0',
+        // native hardcodes "0" (params[33]); IsSelfMobNo carries the checkbox flag
         'IsSelfMobNo': isNumberNotBelongsToBeneficiary.value ? '0' : '1',
         'MobNoOf': altMobileBelongsTo.value,
-        'OptionMode': isDependent.value ? '2' : '1',
-        'VersionNo':
-            _appVersion.isNotEmpty
-                ? _appVersion
-                : (isFaceDetection.value ? '14' : '15'),
+        'OptionMode': '2',
+        'VersionNo': '9.79',
         'Isrecollection': navType == '5' ? '1' : '0',
         'Rej_Regdid': '0',
         'Rej_CampID': '0',
         'MaritalStatusID': maritalStatusId,
-        'IsFaceDetectionEnabled': isFaceDetection.value ? '1' : '0',
+        'IsFaceDetectionEnabled': skipFaceDetection.value ? '0' : '1',
         'TALLGDCODE': talLgd,
         'DISTLGDCODE': navDistLgd,
         'IsRegdByCall': navType == '7' ? '1' : '0',
+        'Latitude': currentLat.value,
+        'Longitude': currentLong.value,
+        'GPLGDCODE': isRural.value ? selectedGpCode.value : '0',
         'ABHANumber': tecAbhaNumber.text.trim(),
         'ABHAAddress': tecAbhaAddress.text.trim(),
         'IsWhatsAppNo': whatsAppMode.value,
         'WorkerGenderByPhlebo':
             isDependent.value
+                ? (workerGenderByPhlebo.value.toLowerCase().startsWith('f')
+                    ? 'Female'
+                    : 'Male')
+                : workerGenderByPhlebo.value.isNotEmpty
                 ? (workerGenderByPhlebo.value.toLowerCase().startsWith('f')
                     ? 'Female'
                     : 'Male')
@@ -2308,12 +2847,21 @@ class D2DPatientRegistrationController extends GetxController {
                     )?.toString() ??
                     '0')
                 : tecAge.text.trim(),
+        // params[51]: native sends isfaceDetection again as IsFaceMatchFlag
+        'IsFaceMatchFlag': skipFaceDetection.value ? '0' : '1',
+        // params[52]: dependent's BOCW ID (set when user selects from dependent list)
+        'Bocw_idDepend': bocwIdDepend.isNotEmpty ? bocwIdDepend : '0',
+        // Native sends "NA" when ration card field is empty
+        'RationCardNo':
+            tecRationCardNo.text.trim().isEmpty
+                ? 'NA'
+                : tecRationCardNo.text.trim(),
       };
       print("===== REQUEST FIELDS =====");
       print(jsonEncode(fields));
       final result = await _repo.saveD2DRegistration(
         fields: fields,
-        isFaceDetectionEnabled: isFaceDetection.value,
+        isFaceDetectionEnabled: !skipFaceDetection.value,
         patientPhoto:
             patientPhotoPath.value.isNotEmpty
                 ? File(patientPhotoPath.value)
@@ -2336,8 +2884,7 @@ class D2DPatientRegistrationController extends GetxController {
         // Build display name (Title + Full Name)
         final title = selectedTitle.value;
         final fullName = tecFullName.text.trim();
-        final displayName =
-            title.isNotEmpty ? '$title $fullName' : fullName;
+        final displayName = title.isNotEmpty ? '$title $fullName' : fullName;
 
         // Gender display value
         final genderVal = selectedGender.value; // 'M', 'F', or 'O'
@@ -2357,6 +2904,8 @@ class D2DPatientRegistrationController extends GetxController {
                   prefillGender: genderVal,
                   prefillAge: tecAge.text.trim(),
                   prefillDob: tecDob.text.trim(),
+                  rationCardNumber: tecRationCardNo.text.trim(),
+                  dependentBocId: bocwIdDepend.isNotEmpty ? bocwIdDepend : '0',
                 ),
           ),
         );
@@ -2397,7 +2946,7 @@ class D2DPatientRegistrationController extends GetxController {
     try {
       return DateTime.parse(input);
     } catch (_) {}
-    final formats = ['yyyy/MM/dd', 'dd/MM/yyyy', 'yyyy-MM-dd'];
+    final formats = ['yyyy/MM/dd', 'dd/MM/yyyy', 'yyyy-MM-dd', 'dd-MM-yyyy'];
     for (final f in formats) {
       try {
         return DateFormat(f).parseStrict(input);
@@ -2408,6 +2957,7 @@ class D2DPatientRegistrationController extends GetxController {
 
   @override
   void onClose() {
+    _locationTimer?.cancel();
     _abhaTimer?.cancel();
     tecWorkerRegNo.dispose();
     tecFullName.dispose();
@@ -2436,6 +2986,7 @@ class D2DPatientRegistrationController extends GetxController {
     tecMobileOtp.dispose();
     tecAbhaLinkedMobile.dispose();
     tecAbhaAadhaar.dispose();
+    tecRationCardNo.dispose();
     super.onClose();
   }
 
@@ -2450,10 +3001,8 @@ class D2DPatientRegistrationController extends GetxController {
   }) {
     try {
       final responseObj = json.decode(response) as Map<String, dynamic>;
-      final profileObj =
-          responseObj['profile'] as Map<String, dynamic>? ?? {};
-      final patientObj =
-          profileObj['patient'] as Map<String, dynamic>? ?? {};
+      final profileObj = responseObj['profile'] as Map<String, dynamic>? ?? {};
+      final patientObj = profileObj['patient'] as Map<String, dynamic>? ?? {};
 
       final abhaNumber = patientObj['abhaNumber']?.toString() ?? '';
       final abhaAddress = patientObj['abhaAddress']?.toString() ?? '';
@@ -2464,8 +3013,7 @@ class D2DPatientRegistrationController extends GetxController {
       final dayOfBirth = patientObj['dayOfBirth']?.toString() ?? '';
       final phoneNumber = patientObj['phoneNumber']?.toString() ?? '';
 
-      final addressObj =
-          patientObj['address'] as Map<String, dynamic>? ?? {};
+      final addressObj = patientObj['address'] as Map<String, dynamic>? ?? {};
       final addressLine = addressObj['line']?.toString() ?? '';
       final pincode = addressObj['pincode']?.toString() ?? '';
 

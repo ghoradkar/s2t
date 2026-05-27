@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
@@ -30,6 +31,14 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
   final String? prefillAge;
   final String? prefillDob;
 
+  /// Ration card number entered during registration — passed to the ration
+  /// card photo upload flow (req 3).
+  final String? rationCardNumber;
+
+  /// Dependent's BOCW ID — non-empty/'0' value triggers ration card photo
+  /// upload after signature upload succeeds (req 3).
+  final String? dependentBocId;
+
   const PatientFingerAndSignatureScreen({
     super.key,
     required this.campId,
@@ -42,6 +51,8 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
     this.prefillGender,
     this.prefillAge,
     this.prefillDob,
+    this.rationCardNumber,
+    this.dependentBocId,
   });
 
   @override
@@ -63,6 +74,8 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
         prefillGender: prefillGender,
         prefillAge: prefillAge,
         prefillDob: prefillDob,
+        dependentBocId: dependentBocId ?? '',
+        rationCardNumber: rationCardNumber ?? '',
       ),
     );
 
@@ -89,6 +102,9 @@ class _Body extends StatelessWidget {
 
   const _Body({required this.c});
 
+  bool get _isDependent =>
+      c.dependentBocId.isNotEmpty && c.dependentBocId != '0';
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -96,6 +112,7 @@ class _Body extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           // ── Patient Info Card ──────────────────────────────────────────
           _PatientInfoCard(c: c),
           SizedBox(height: 16.h),
@@ -128,15 +145,39 @@ class _Body extends StatelessWidget {
           ),
           SizedBox(height: 24.h),
 
-          // ── Next Button ───────────────────────────────────────────────
-          AppActiveButton(
-            buttontitle: 'Next',
-            onTap:
-                () => c.onNextTapped(
-                  context,
-                  () => const PatientSignatureScreen(),
-                ),
-          ),
+          // ── Ration Card section (dependent only) ──────────────────────
+          if (_isDependent) ...[
+            _RationCardSection(c: c),
+            SizedBox(height: 16.h),
+
+            // "Upload Ration Card" replaces the "Next" button for dependent
+            Obx(
+              () => AppActiveButton(
+                buttontitle:
+                    c.isUploadingRc.value
+                        ? 'Uploading...'
+                        : 'Upload Ration Card',
+                onTap:
+                    c.isUploadingRc.value
+                        ? () {}
+                        : () => c.uploadRcAndProceed(
+                          context,
+                          () => const PatientSignatureScreen(),
+                        ),
+              ),
+            ),
+          ] else ...[
+            // ── Next Button (non-dependent) ────────────────────────────
+            AppActiveButton(
+              buttontitle: 'Next',
+              onTap:
+                  () => c.onNextTapped(
+                    context,
+                    () => const PatientSignatureScreen(),
+                  ),
+            ),
+          ],
+
           SizedBox(height: 16.h),
         ],
       ),
@@ -144,15 +185,12 @@ class _Body extends StatelessWidget {
   }
 
   Widget _captureAreaContent(PatientFingerSignatureController c) {
-    // Image captured
     if (c.thumbImageFile.value != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.file(c.thumbImageFile.value!, fit: BoxFit.cover),
       );
     }
-
-    // Placeholder
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -180,17 +218,219 @@ class _Body extends StatelessWidget {
     textColor: kLabelTextColor,
     textAlign: TextAlign.start,
   );
+}
 
-  // Text(
-  //
-  // text,
-  // style: TextStyle(
-  // color: kLabelTextColor,
-  // fontSize: 13.sp,
-  // fontFamily: FontConstants.interFonts,
-  // fontWeight: FontWeight.w600,
-  // ),
-  // );
+// ── Ration card section (dependent only) ─────────────────────────────────────
+
+class _RationCardSection extends StatelessWidget {
+  final PatientFingerSignatureController c;
+
+  const _RationCardSection({required this.c});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return _SectionCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section label
+            CommonText(
+              text: 'Ration Card Photos',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              textColor: kLabelTextColor,
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 8.h),
+
+            // Note
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(10.w),
+              decoration: BoxDecoration(
+                color: kPrimaryColor.withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: CommonText(
+                text:
+                    'For Old ration card 2 photos required and for digital ration card only 1 photo required',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                textColor: kTextColor,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: 12.h),
+
+            // Radio buttons
+            CommonText(
+              text: 'Select Ration Card Status',
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w500,
+              textColor: kBlackColor,
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 4.h),
+            Row(
+              children: [
+                _RadioOption(
+                  label: 'Old',
+                  value: 'manual',
+                  groupValue: c.rcType.value,
+                  onChanged: c.onRcTypeChanged,
+                ),
+                SizedBox(width: 16.w),
+                _RadioOption(
+                  label: 'Digital',
+                  value: 'digital',
+                  groupValue: c.rcType.value,
+                  onChanged: c.onRcTypeChanged,
+                ),
+              ],
+            ),
+            SizedBox(height: 12.h),
+
+            // Capture button
+            Row(
+              children: [
+                GestureDetector(
+                  onTap:
+                      c.rcPhotos.length < c.rcMaxPhotos
+                          ? () => c.captureRcPhoto(context)
+                          : null,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 10.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          c.rcPhotos.length < c.rcMaxPhotos
+                              ? kPrimaryColor
+                              : kPrimaryColor.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.camera_alt_outlined,
+                          color: kWhiteColor,
+                          size: 20,
+                        ),
+                        SizedBox(width: 6.w),
+                        CommonText(
+                          text: 'Capture Photo',
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                          textColor: kWhiteColor,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                CommonText(
+                  text: '${c.rcPhotos.length}/${c.rcMaxPhotos} photos',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  textColor: kLabelTextColor,
+                  textAlign: TextAlign.start,
+                ),
+              ],
+            ),
+
+            // Photo grid
+            if (c.rcPhotos.isNotEmpty) ...[
+              SizedBox(height: 12.h),
+              Wrap(
+                spacing: 10.w,
+                runSpacing: 10.h,
+                children: List.generate(c.rcPhotos.length, (index) {
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          c.rcPhotos[index],
+                          width: 90.w,
+                          height: 90.h,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: GestureDetector(
+                          onTap: () => c.removeRcPhoto(index),
+                          child: Container(
+                            width: 22,
+                            height: 22,
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ],
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class _RadioOption extends StatelessWidget {
+  final String label;
+  final String value;
+  final String groupValue;
+  final void Function(String) onChanged;
+
+  const _RadioOption({
+    required this.label,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onChanged(value),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Radio<String>(
+            value: value,
+            groupValue: groupValue,
+            activeColor: kPrimaryColor,
+            visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            onChanged: (v) => onChanged(v!),
+          ),
+          CommonText(
+            text: label,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w500,
+            textColor: kBlackColor,
+            textAlign: TextAlign.start,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ── Patient info card ─────────────────────────────────────────────────────────

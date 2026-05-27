@@ -1,126 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_confirmatory_list_model.dart';
 
 class CTConfirmatoryRow extends StatelessWidget {
   final CTConfirmatoryListOutput item;
   final VoidCallback onTap;
   final int index;
+  final bool isLast;
 
   const CTConfirmatoryRow({
     super.key,
     required this.item,
     required this.onTap,
     this.index = 0,
+    this.isLast = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final hasAppointment = (item.appointmentDate ?? '').isNotEmpty;
-
+    final isEven = index % 2 == 0;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
-        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 6,
-              spreadRadius: 6,
-            ),
-          ],
+          color: isEven ? kWhiteColor : const Color(0xFFF7F8FA),
+          borderRadius: isLast
+              ? const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                )
+              : null,
+          border: Border(
+            left: BorderSide(color: Colors.grey.shade200),
+            right: BorderSide(color: Colors.grey.shade200),
+            bottom: BorderSide(color: Colors.grey.shade200),
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Name row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CommonText(
-                  text: '${index + 1}. ',
+            // Sr No
+            SizedBox(
+              width: 28.w,
+              child: Text(
+                '${index + 1}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
                   fontSize: 13.sp,
-                  fontWeight: FontWeight.w700,
-                  textColor: kPrimaryColor,
-                  textAlign: TextAlign.start,
+                  fontWeight: FontWeight.w400,
+                  color: kTextColor,
                 ),
-                Expanded(
-                  child: CommonText(
-                    text: (item.beneficiaryName ?? 'N/A').toUpperCase(),
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                    textColor: kBlackColor,
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                Container(
-                  width: responsiveHeight(30),
-                  height: responsiveHeight(30),
-                  decoration: BoxDecoration(
-                    color: kPrimaryColor.withValues(alpha: 0.85),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.remove_red_eye_outlined,
-                      color: kWhiteColor,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // Info rows
-            _infoRow(Icons.tag_rounded, 'Reg No', item.regdNo),
-            _infoRow(Icons.phone_outlined, 'Mobile', item.mobileNo),
-            _infoRow(Icons.people_outline_rounded, 'Members', item.memberCount),
-            if (hasAppointment)
-              _infoRow(
-                Icons.calendar_today_outlined,
-                'Appointment',
-                item.appointmentDate,
               ),
+            ),
+            SizedBox(width: 8.w),
+            // Beneficiary Name
+            Expanded(
+              flex: 3,
+              child: Text(
+                item.beneficiaryName ?? 'N/A',
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
+                  color: kBlackColor,
+                ),
+              ),
+            ),
+            // Member Count
+            SizedBox(
+              width: 70.w,
+              child: Text(
+                item.memberCount ?? '0',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: FontConstants.interFonts,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: kPrimaryColor,
+                ),
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _infoRow(IconData icon, String label, String? value) {
-    return Padding(
-      padding: EdgeInsets.only(top: 4.h),
-      child: Row(
-        children: [
-          Icon(icon, size: 16.sp, color: kBlackColor),
-          SizedBox(width: 6.w),
-          CommonText(
-            text: '$label: ',
-            fontSize: 14.sp,
-
-            fontWeight: FontWeight.w500,
-            textColor: kBlackColor,
-            textAlign: TextAlign.start,
-          ),
-          Expanded(
-            child: CommonText(
-              text: value ?? 'N/A',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              textColor: kBlackColor,
-              textAlign: TextAlign.start,
-              maxLine: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
       ),
     );
   }

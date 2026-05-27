@@ -56,7 +56,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                         Text(
                           "Camp ID : ".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.black,
+                            color: kTextColor,
                             fontFamily: FontConstants.interFonts,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.sp,
@@ -66,7 +66,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                           child: Text(
                             "${campDetailsonLabForDoorToDoorOutput.campId ?? 0}",
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: kBlackColor,
                               fontFamily: FontConstants.interFonts,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
@@ -93,7 +93,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                         Text(
                           "District : ".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.black,
+                            color: kTextColor,
                             fontFamily: FontConstants.interFonts,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.sp,
@@ -105,7 +105,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                                     ?.toUpperCase() ??
                                 "",
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: kBlackColor,
                               fontFamily: FontConstants.interFonts,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
@@ -132,7 +132,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                         Text(
                           "Camp Type : ".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.black,
+                            color: kTextColor,
                             fontFamily: FontConstants.interFonts,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.sp,
@@ -145,7 +145,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                                     ?.toUpperCase() ??
                                 "",
                             style: TextStyle(
-                              color: dropDownTitleHeader,
+                              color: kBlackColor,
                               fontFamily: FontConstants.interFonts,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
@@ -172,7 +172,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                         Text(
                           "Camp Name : ".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.black,
+                            color: kTextColor,
                             fontFamily: FontConstants.interFonts,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.sp,
@@ -184,7 +184,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                                     ?.toUpperCase() ??
                                 "",
                             style: TextStyle(
-                              color: dropDownTitleHeader,
+                              color: kBlackColor,
                               fontFamily: FontConstants.interFonts,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
@@ -211,7 +211,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                         Text(
                           "Initiated By : ".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.black,
+                            color: kTextColor,
                             fontFamily: FontConstants.interFonts,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.sp,
@@ -223,7 +223,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                                     ?.toUpperCase() ??
                                 "",
                             style: TextStyle(
-                              color: dropDownTitleHeader,
+                              color: kBlackColor,
                               fontFamily: FontConstants.interFonts,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
@@ -250,7 +250,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                         Text(
                           "Created By : ".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.black,
+                            color: kTextColor,
                             fontFamily: FontConstants.interFonts,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.sp,
@@ -262,7 +262,7 @@ class CampForHealthScreeningD2DRow extends StatelessWidget {
                                     ?.toUpperCase() ??
                                 "",
                             style: TextStyle(
-                              color: dropDownTitleHeader,
+                              color: kBlackColor,
                               fontFamily: FontConstants.interFonts,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,

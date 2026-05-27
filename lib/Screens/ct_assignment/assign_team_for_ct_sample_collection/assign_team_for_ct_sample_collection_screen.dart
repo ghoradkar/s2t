@@ -129,7 +129,10 @@ class _AssignTeamForCTSampleCollectionState
         }
       }
 
-      if (mounted && !_isAppointmentConfirmed && !_isSampleCollected) {
+      if (widget.isAppointmentFlow &&
+          mounted &&
+          !_isAppointmentConfirmed &&
+          !_isSampleCollected) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) _showAppointmentPendingAlert();
         });
@@ -152,7 +155,6 @@ class _AssignTeamForCTSampleCollectionState
   }
 
   void getTestInfo() {
-    final today = _apiFormat.format(DateTime.now());
     Map<String, String> params = {
       "USERID": empCode.toString(),
       "DISTLGDCODE": "0",
@@ -161,13 +163,12 @@ class _AssignTeamForCTSampleCollectionState
       "REDNO": widget.beneficiaryDetails?.regdno ?? "",
       "T2T_Order_Id": (widget.beneficiaryDetails?.t2tOrderId ?? 0).toString(),
       "FROMDATE": "2024/01/01",
-      "TODATE": today,
+      "TODATE": "2027/07/24",
     };
     apiManager.getTestInfoAPI(params, apiTestInfoCallBack);
   }
 
   void getTestInfoCount() {
-    final today = _apiFormat.format(DateTime.now());
     Map<String, String> params = {
       "USERID": empCode.toString(),
       "DISTLGDCODE": "0",
@@ -176,7 +177,7 @@ class _AssignTeamForCTSampleCollectionState
       "REDNO": widget.beneficiaryDetails?.regdno ?? "",
       "T2T_Order_Id": (widget.beneficiaryDetails?.t2tOrderId ?? 0).toString(),
       "FROMDATE": "2024/01/01",
-      "TODATE": today,
+      "TODATE": "2027/10/24",
     };
     apiManager.getTestInfoCount(params, apiTestInfoCountCallBack);
   }
@@ -387,9 +388,11 @@ class _AssignTeamForCTSampleCollectionState
                 list: tubesDetailslist,
                 countControllers: _tubeCountControllers,
               ),
-              const SizedBox(height: 12),
-              _buildSampleCollectionSection(),
-              const SizedBox(height: 20),
+              if (widget.isAppointmentFlow) ...[
+                const SizedBox(height: 12),
+                _buildSampleCollectionSection(),
+                const SizedBox(height: 20),
+              ],
             ],
           ),
         ),

@@ -84,7 +84,7 @@ class _CTAssignmentScreenState extends State<CTAssignmentScreen> {
     return NetworkWrapper(
       child: Scaffold(
         appBar: mAppBar(
-          scTitle: "Assign Team for CT",
+          scTitle: "Assign Team For CT",
           showActions: true,
           leadingIcon: iconBackArrow,
           onLeadingIconClick: () {
@@ -148,16 +148,7 @@ class _CTAssignmentScreenState extends State<CTAssignmentScreen> {
                     ),
                   ),
                 ),
-                // AppIconSearchTextfield(
-                //   icon: icSearch,
-                //   titleHeaderString: "Search Beneficiary Name / Pincode",
-                //   controller: searchBeneficiaryNamePincodeTextField,
-                //   onChange: (p0) {
-                //     setState(() {
-                //       searchList = searchByDescEn(p0);
-                //     });
-                //   },
-                // ),
+
               ),
               const SizedBox(height: 16),
               Expanded(

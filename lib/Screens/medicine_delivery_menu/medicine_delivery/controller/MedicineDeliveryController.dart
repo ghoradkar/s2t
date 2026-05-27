@@ -9,7 +9,7 @@ import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserM
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery/view/MedicineDeliveryAcknowledgementScreen.dart';
-import 'package:s2toperational/Views/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class MedicineDeliveryController extends GetxController {

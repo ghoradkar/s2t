@@ -51,6 +51,7 @@ class T2TCTBeneficiaryDetailsOutput {
   int? arId;
   String? assignmentRemarks;
   String? appointmentDate;
+  String? isEmergency;
 
   T2TCTBeneficiaryDetailsOutput({
     this.campId,
@@ -73,6 +74,7 @@ class T2TCTBeneficiaryDetailsOutput {
     this.arId,
     this.assignmentRemarks,
     this.appointmentDate,
+    this.isEmergency,
   });
 
   T2TCTBeneficiaryDetailsOutput.fromJson(Map<String, dynamic> json) {
@@ -96,6 +98,7 @@ class T2TCTBeneficiaryDetailsOutput {
     arId = json['ArId'];
     assignmentRemarks = json['AssignmentRemarks'];
     appointmentDate = json['AppointmentDate'];
+    isEmergency = json['IsEmergency'];
   }
 
   Map<String, dynamic> toJson() {
@@ -119,6 +122,7 @@ class T2TCTBeneficiaryDetailsOutput {
     data['ArId'] = arId;
     data['AssignmentRemarks'] = assignmentRemarks;
     data['AppointmentDate'] = appointmentDate;
+    data['IsEmergency'] = isEmergency;
     return data;
   }
 }
