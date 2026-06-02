@@ -57,6 +57,7 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       appBar: mAppBar(
         scTitle: 'Camp Closing',
@@ -82,10 +83,13 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
             children: [
               Positioned(
                 top: 0,
-                bottom: 8,
+                bottom: 0,
                 left: 8,
                 right: 8,
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewPadding.bottom + 8,
+                  ),
                   child: Obx(
                     () => Column(
                       children: [
@@ -127,7 +131,7 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                         ),
                         ConsumableConsumptionForCampView(
                           consumableCampList:
-                              controller.consumableCampList.toList(),
+                              controller.consumableCampList.value.toList(),
                         ),
                         if (controller.isShowRemark.value) ...[
                           SizedBox(height: responsiveHeight(20)),

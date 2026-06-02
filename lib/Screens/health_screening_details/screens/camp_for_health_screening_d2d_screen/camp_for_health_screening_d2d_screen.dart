@@ -141,6 +141,8 @@ class CampForHealthScreeningD2DScreen extends StatelessWidget {
                                                 districtName:
                                                     obj.dISTNAME ?? '',
                                                 campID: obj.campId ?? 0,
+                                                siteDetailId:
+                                                    obj.siteDetailId ?? 0,
                                                 dISTLGDCODE:
                                                     obj.dISTLGDCODE ?? 0,
                                                 campType: obj.campType ?? 0,

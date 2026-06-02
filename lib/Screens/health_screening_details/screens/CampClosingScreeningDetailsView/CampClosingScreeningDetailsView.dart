@@ -58,6 +58,13 @@ class CampClosingScreeningDetailsView extends StatefulWidget {
 class _CampClosingScreeningDetailsViewState
     extends State<CampClosingScreeningDetailsView> {
   bool isExpaneded = true;
+
+  @override
+  void didUpdateWidget(CampClosingScreeningDetailsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(

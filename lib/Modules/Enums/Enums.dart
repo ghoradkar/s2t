@@ -24,7 +24,7 @@ enum DashboardMenu {
   PacketAllocation,
   PacketCollection,
   CTAssignment,
-  PacketReceive,
+  // PacketReceive,
   D2DTeam,
   TeamCampMapping,
   AppointmentConfirmedList,

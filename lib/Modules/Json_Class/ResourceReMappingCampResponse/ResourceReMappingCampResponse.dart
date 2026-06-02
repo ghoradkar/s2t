@@ -48,6 +48,7 @@ class ResourceReMappingCampOutput {
   int? isCampClosed;
   int? createdBy;
   int? lABCODE;
+  int? isRegdDone;
 
   ResourceReMappingCampOutput({
     this.fLAG,
@@ -68,6 +69,7 @@ class ResourceReMappingCampOutput {
     this.isCampClosed,
     this.createdBy,
     this.lABCODE,
+    this.isRegdDone,
   });
 
   ResourceReMappingCampOutput.fromJson(Map<String, dynamic> json) {
@@ -89,6 +91,7 @@ class ResourceReMappingCampOutput {
     isCampClosed = json['IsCampClosed'];
     createdBy = json['CreatedBy'];
     lABCODE = json['LABCODE'];
+    isRegdDone = json['IsRegdDone'];
   }
 
   Map<String, dynamic> toJson() {
@@ -111,6 +114,7 @@ class ResourceReMappingCampOutput {
     data['IsCampClosed'] = this.isCampClosed;
     data['CreatedBy'] = this.createdBy;
     data['LABCODE'] = this.lABCODE;
+    data['IsRegdDone'] = this.isRegdDone;
     return data;
   }
 }

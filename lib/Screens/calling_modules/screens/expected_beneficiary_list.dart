@@ -25,7 +25,7 @@ class ExpectedBeneficiaryList
   const ExpectedBeneficiaryList({super.key});
 
   // Service controller — for loading Rx states (beneficiaryStatus, etc.)
-  ExpectedBeneficiaryController get _svc =>
+  ExpectedBeneficiaryController get expectedBeneController =>
       Get.find<ExpectedBeneficiaryController>();
 
   @override
@@ -77,8 +77,8 @@ class ExpectedBeneficiaryList
         ),
         body: Obx(() {
           final isLoading =
-              _svc.beneficiaryStatus.value.isInProgress ||
-              _svc.dateTypeWiseDataStatus.value.isInProgress ||
+              expectedBeneController.beneficiaryStatus.value.isInProgress ||
+              expectedBeneController.dateTypeWiseDataStatus.value.isInProgress ||
               !controller.hasLoadedOnce.value;
           return isLoading
               ? CommonSkeletonList(
@@ -208,7 +208,7 @@ class ExpectedBeneficiaryList
                 ),
                 SizedBox(height: 26.h),
                 AppTextField(
-                  onTap: () => _svc.fetchCallStatus(),
+                  onTap: () => expectedBeneController.fetchCallStatus(),
                   controller: controller.callStatusTextController,
                   readOnly: true,
                   label: RichText(
@@ -233,7 +233,7 @@ class ExpectedBeneficiaryList
                   ).paddingOnly(left: 6.0),
                   suffixIcon: Obx(
                     () =>
-                        _svc.getCallStatus.value.isInProgress
+                        expectedBeneController.getCallStatus.value.isInProgress
                             ? SizedBox(
                               height: 20.h,
                               width: 20.w,
@@ -257,7 +257,7 @@ class ExpectedBeneficiaryList
                 ),
                 SizedBox(height: 26.h),
                 AppTextField(
-                  onTap: () => _svc.fetchTeamData(const {}),
+                  onTap: () => expectedBeneController.fetchTeamData(const {}),
                   controller: controller.teamNumberTextController,
                   readOnly: true,
                   label: RichText(
@@ -282,7 +282,7 @@ class ExpectedBeneficiaryList
                   ).paddingOnly(left: 6.0),
                   suffixIcon: Obx(
                     () =>
-                        _svc.teamStatus.value.isInProgress
+                        expectedBeneController.teamStatus.value.isInProgress
                             ? SizedBox(
                               height: 20.h,
                               width: 20.w,
@@ -484,7 +484,7 @@ class ExpectedBeneficiaryList
                 await Future.delayed(const Duration(milliseconds: 200));
                 controller.onDateTypeSelected(item);
                 Navigator.pop(ctx);
-                _svc.resetState();
+                expectedBeneController.resetState();
               },
             );
           },

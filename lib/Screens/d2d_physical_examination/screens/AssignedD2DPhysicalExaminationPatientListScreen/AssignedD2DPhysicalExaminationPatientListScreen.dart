@@ -11,7 +11,6 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/assigned_patient_list_controller.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/CallToDoctorScreen/CallToDoctorScreen.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/screens/PhysicalExaminationFormScreen/PhysicalExaminationFormScreen.dart';
 import 'AssignedD2DPhysicalExaminationPatientRow/AssignedD2DPhysicalExaminationPatientRow.dart';
 
 class AssignedD2DPhysicalExaminationPatientListScreen extends StatelessWidget {
@@ -91,37 +90,14 @@ class AssignedD2DPhysicalExaminationPatientListScreen extends StatelessWidget {
                                     final obj = ctrl.searchPatientList[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        final subOrgId = obj.isPhy ?? 0;
                                         final isCall = obj.isCall ?? "0";
-                                        if (isCall == "0") {
+                                        if (isCall == "0" || isCall == "1") {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (_) => CallToDoctorScreen(
                                                 regdId: obj.regdId ?? 0,
                                                 campId: ctrl.campId,
-                                                healthScreentype: ctrl.healthScreentype,
-                                              ),
-                                            ),
-                                          ).then((_) => ctrl.refreshAfterNav());
-                                        } else if (subOrgId == 2) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => PhysicalExaminationFormScreen(
-                                                regdId: obj.regdId ?? 0,
-                                                campTypeID: 0,
-                                                healthScreentype: "",
-                                              ),
-                                            ),
-                                          );
-                                        } else if (subOrgId == 3) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => PhysicalExaminationFormScreen(
-                                                regdId: obj.regdId ?? 0,
-                                                campTypeID: obj.campTypeID ?? 0,
                                                 healthScreentype: ctrl.healthScreentype,
                                               ),
                                             ),

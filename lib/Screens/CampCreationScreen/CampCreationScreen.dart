@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../Modules/Enums/Enums.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
 import '../../Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
+import '../../Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import '../../Modules/Json_Class/HomeAndHubLabCampCreationResponse/HomeAndHubLabCampCreationResponse.dart';
 import '../../Modules/Json_Class/InitiatedByResponse/InitiatedByResponse.dart';
 import '../../Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
@@ -132,6 +133,14 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 _selectedCampDate = "";
                 _selectedPostCampDate = "";
                 expectedBeneficiaryTextField.text = "";
+              } else if (dropDownType == DropDownTypeMenu.District) {
+                DistrictOutput selected = p0;
+                districtId = selected.dISTLGDCODE ?? 0;
+                districtName = selected.dISTNAME ?? "";
+                // Reset district-dependent fields (matching native behavior)
+                selectedTaluka = null;
+                selectedLandingLab = null;
+                selectedHomeAndHubLab = null;
               } else if (dropDownType == DropDownTypeMenu.InitiatedBy) {
                 selectedInitiatedBy = p0;
                 selectedTaluka = null;
@@ -343,6 +352,24 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
         response?.output ?? [],
         DropDownTypeMenu.InitiatedBy,
       );
+    } else {
+      ToastManager.toast(errorMessage);
+    }
+  }
+
+  void getDistrictAPI() {
+    ToastManager.showLoader();
+    Map<String, dynamic> data = {
+      "STATELGDCODE": "2",
+      "USERID": empCode.toString(),
+    };
+    apiManager.getDistrictByUserIDAPI(data, apiDistrictCallBack);
+  }
+
+  void apiDistrictCallBack(DistrictResponse? response, String errorMessage, bool success) {
+    ToastManager.hideLoader();
+    if (success) {
+      _showDropDownBottomSheet("District", response?.output ?? [], DropDownTypeMenu.District);
     } else {
       ToastManager.toast(errorMessage);
     }
@@ -871,6 +898,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
       body: KeyboardDismissOnTap(
         dismissOnCapturedTaps: true,
         child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewPadding.bottom,
+          ),
           child: Column(
             children: [
               AppTextField(
@@ -979,6 +1009,11 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
               AppTextField(
                 controller: TextEditingController(text: districtName),
                 readOnly: true,
+                onTap: !_isRegularCamp
+                    ? () {
+                        getDistrictAPI();
+                      }
+                    : null,
                 hint: 'District',
                 label: CommonText(
                   text: 'District *',
@@ -1005,6 +1040,9 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                     ),
                   ),
                 ),
+                suffixIcon: !_isRegularCamp
+                    ? const Icon(Icons.keyboard_arrow_down)
+                    : null,
               ).paddingOnly(top: 12),
 
               // const SizedBox(height: 8),
@@ -1609,9 +1647,7 @@ class _CampCreationScreenState extends State<CampCreationScreen> {
                 left: 12,
                 right: 12,
                 top: 14,
-                bottom: 14 + MediaQuery
-                    .viewPaddingOf(context)
-                    .bottom,
+                bottom: 14,
               ),
             ],
           ),

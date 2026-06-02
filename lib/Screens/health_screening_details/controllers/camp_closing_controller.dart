@@ -73,6 +73,14 @@ class CampClosingController extends GetxController {
       _loadConsumables(campId: campId),
     ]);
 
+    // If GetCampCloseDetails failed, populate summary text fields from count data
+    if (totalApprovedBeneTextField.text.isEmpty) {
+      totalApprovedBeneTextField.text = '${approvedBeneficiaries.value}';
+    }
+    if (sampleCollectionTextField.text.isEmpty) {
+      sampleCollectionTextField.text = '${sampleCollection.value}';
+    }
+
     ToastManager.hideLoader();
     isLoading.value = false;
   }
@@ -143,6 +151,7 @@ class CampClosingController extends GetxController {
     final rejectedBene = rejectedBeneficiaries.value;
     final countNew = approvedBene + rejectedBene;
     final countAppRej = totalBenificiaryTextField + rejectedBeneficiariesTF;
+    final allRejected = totalBeneCount == rejectedBene;
 
     if (countNew != totalBeneCount) {
       _alert(
@@ -168,7 +177,7 @@ class CampClosingController extends GetxController {
       return false;
     }
 
-    if (totalSampleScreened == 0) {
+    if (!allRejected && totalSampleScreened == 0) {
       _alert("Can't close this camp without sample collection");
       isUserInteractionEnabled.value = false;
       return false;
@@ -230,7 +239,25 @@ class CampClosingController extends GetxController {
       return false;
     }
 
+    if (allRejected) {
+      _showAllRejectedConfirmation();
+      return false;
+    }
+
     return true;
+  }
+
+  void _showAllRejectedConfirmation() {
+    ToastManager.showAlertDialog(
+      Get.context!,
+      'सर्व नोंदणीकृत लाभार्थी Reject झालेले दिसत आहेत. कृपया हा कॅम्प बंद करायचा आहे का, याची पुष्टी करा.',
+      () => Get.back(),
+      title: 'Alert',
+      onNoTap: () {
+        Get.back();
+        Get.back();
+      },
+    );
   }
 
   void _alert(String message) {

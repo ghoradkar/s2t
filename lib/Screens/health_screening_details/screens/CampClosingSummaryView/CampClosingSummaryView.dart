@@ -285,7 +285,7 @@ class _CampClosingSummaryViewState extends State<CampClosingSummaryView> {
                                 ),
                                 child: TextField(
                                   textAlign: TextAlign.center,
-                                  readOnly: true,
+                                  readOnly: false,
                                   controller: widget.sampleCollectionTextField,
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(

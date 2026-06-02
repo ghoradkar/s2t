@@ -26,6 +26,13 @@ class ConsumableConsumptionForCampView extends StatefulWidget {
 class _ConsumableConsumptionForCampViewState
     extends State<ConsumableConsumptionForCampView> {
   bool isExpaneded = true;
+
+  @override
+  void didUpdateWidget(ConsumableConsumptionForCampView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(

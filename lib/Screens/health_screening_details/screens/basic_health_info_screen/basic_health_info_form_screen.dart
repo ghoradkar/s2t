@@ -268,12 +268,14 @@ class _ChipSelector extends StatelessWidget {
   final List<String> options;
   final int selectedIndex;
   final ValueChanged<int> onChanged;
+  final bool enabled;
 
   const _ChipSelector({
     required this.heading,
     required this.options,
     required this.selectedIndex,
     required this.onChanged,
+    this.enabled = true,
   });
 
   @override
@@ -288,7 +290,7 @@ class _ChipSelector extends StatelessWidget {
           children: List.generate(options.length, (i) {
             final selected = selectedIndex == i;
             return GestureDetector(
-              onTap: () => onChanged(i),
+              onTap: enabled ? () => onChanged(i) : null,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 160),
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
@@ -319,7 +321,11 @@ class _ChipSelector extends StatelessWidget {
                     fontFamily: FontConstants.interFonts,
                     fontSize: 14.sp,
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                    color: selected ? kWhiteColor : kTextColor,
+                    color: !enabled
+                        ? kTextColor.withValues(alpha: 0.35)
+                        : selected
+                        ? kWhiteColor
+                        : kTextColor,
                   ),
                 ),
               ),
@@ -523,7 +529,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
       icon: Icons.monitor_heart_outlined,
       content: GetBuilder<BasicHealthInfoFormController>(
         builder: (c) {
-          final bool editable = !c.isLive;
+          // final bool editable = !c.isLive;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -590,7 +596,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
                   Expanded(
                     child: AppTextField(
                       controller: c.heightCtrl,
-                      readOnly: !editable,
+                      readOnly: false,
                       onTap: () {},
                       onChange: (_) => c.recalculateBMI(),
                       textInputType: const TextInputType.numberWithOptions(
@@ -602,6 +608,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
                         ),
                       ],
                       label: _label('Height (cms)'),
+                      errorText: c.heightError.isEmpty ? null : c.heightError,
                       prefixIcon: Image.asset(
                         icHeightIcon,
                         color: kPrimaryColor,
@@ -612,9 +619,10 @@ class _BasicHealthInfoSection extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w),
                   Expanded(
-                    child: AppTextField(
+                    child: Obx(() => AppTextField(
                       controller: c.weightCtrl,
-                      readOnly: !editable,
+                      readOnly: c.isWeightMachineAvailable.value,
+                      // readOnly: !editable || c.isWeightMachineAvailable.value,
                       onTap: () {},
                       onChange: (_) => c.recalculateBMI(),
                       textInputType: const TextInputType.numberWithOptions(
@@ -632,7 +640,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
                         width: 20.w,
                         height: 20.h,
                       ).paddingOnly(left: 6.w),
-                    ),
+                    )),
                   ),
                 ],
               ),
@@ -693,15 +701,16 @@ class _BasicHealthInfoSection extends StatelessWidget {
               ),
               _gap(),
 
-              _ChipSelector(
+              Obx(() => _ChipSelector(
                 heading: 'BMI Status',
                 options: const ['Underweight', 'Normal', 'Overweight'],
                 selectedIndex: c.bmiStatusIndex,
+                enabled: !c.isWeightMachineAvailable.value,
                 onChanged: (i) {
                   c.bmiStatusIndex = i;
                   c.update();
                 },
-              ),
+              )),
               _gap(14),
 
               // ── Fasting ──────────────────────────────────────
@@ -1054,15 +1063,16 @@ class _BloodSugarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool editable = !ctrl.isLive;
+    // final bool editable = !ctrl.isLive;
     return _ExpandableCard(
       title: 'Blood Sugar',
       icon: Icons.water_drop_outlined,
       content: Column(
         children: [
-          AppTextField(
+          Obx(() => AppTextField(
             controller: ctrl.bloodSugarRCtrl,
-            readOnly: !editable,
+            readOnly:  ctrl.isSugarDeviceAvailable.value,
+            // readOnly: !editable || ctrl.isSugarDeviceAvailable.value,
             onTap: () {},
             textInputType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [
@@ -1075,7 +1085,7 @@ class _BloodSugarSection extends StatelessWidget {
               width: 20.w,
               height: 20.h,
             ).paddingOnly(left: 6.w),
-          ),
+          )),
           _gap(10),
           _btSearchButton(
             label: 'Search Sugar Device',
@@ -1115,7 +1125,7 @@ class _BloodPressureSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool editable = !ctrl.isLive;
+    // final bool editable = !ctrl.isLive;
     return _ExpandableCard(
       title: 'Blood Pressure',
       icon: Icons.favorite_outline,
@@ -1125,9 +1135,10 @@ class _BloodPressureSection extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: AppTextField(
+                child: Obx(() => AppTextField(
                   controller: ctrl.systolicCtrl,
-                  readOnly: !editable,
+                  readOnly: ctrl.isBPMachineAvailable.value,
+                  // readOnly: !editable || ctrl.isBPMachineAvailable.value,
                   onTap: () {},
                   textInputType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -1138,13 +1149,14 @@ class _BloodPressureSection extends StatelessWidget {
                     width: 20.w,
                     height: 20.h,
                   ).paddingOnly(left: 6.w),
-                ),
+                )),
               ),
               SizedBox(width: 10.w),
               Expanded(
-                child: AppTextField(
+                child: Obx(() => AppTextField(
                   controller: ctrl.diastolicCtrl,
-                  readOnly: !editable,
+                  readOnly: ctrl.isBPMachineAvailable.value,
+                  // readOnly: !editable || ctrl.isBPMachineAvailable.value,
                   onTap: () {},
                   textInputType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -1155,7 +1167,7 @@ class _BloodPressureSection extends StatelessWidget {
                     width: 20.w,
                     height: 20.h,
                   ).paddingOnly(left: 6.w),
-                ),
+                )),
               ),
             ],
           ),

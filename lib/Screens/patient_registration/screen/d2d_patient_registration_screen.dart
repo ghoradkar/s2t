@@ -1925,15 +1925,7 @@ class _D2DPatientRegistrationScreenState
                       children: [
                         Expanded(
                           child:
-                          // Text(
-                          //   'WhatsApp Number Availability',
-                          //   style: TextStyle(
-                          //     fontFamily: FontConstants.interFonts,
-                          //     fontSize: 15.sp,
-                          //     fontWeight: FontWeight.w600,
-                          //     color: kTextColor,
-                          //   ),
-                          // ),
+
                           CommonText(
                             text: 'WhatsApp Number Availability',
                             fontSize: 14.sp,

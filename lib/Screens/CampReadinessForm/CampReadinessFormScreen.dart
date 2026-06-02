@@ -23,7 +23,6 @@ import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/utilities/SizeConfig.dart';
 import '../../Modules/widgets/AppActiveButton.dart';
-import '../../Modules/widgets/AppDropdownTextfield.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'CampReadinessFormRow/CampReadinessFormRow.dart';
@@ -473,7 +472,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
 
                             inputStyle: TextStyle(
                               fontFamily: FontConstants.interFonts,
-                              fontSize: 14,
+                              fontSize: 12,
                             ),
                             label: RichText(
                               text: TextSpan(
@@ -481,7 +480,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                                 style: TextStyle(
                                   fontFamily: FontConstants.interFonts,
                                   color: kLabelTextColor,
-                                  fontSize: responsiveFont(20),
+                                  fontSize: responsiveFont(14),
                                   fontWeight: FontWeight.w400,
                                 ),
                                 children: <TextSpan>[],
@@ -492,9 +491,13 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                               fontWeight: FontWeight.w400,
                               fontSize: responsiveFont(14),
                             ),
-                            prefixIcon: Image.asset(
-                              icCalendarMonth,
-                              scale: 4.0,
+                            prefixIcon: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Image.asset(
+                                icCalendarMonth,
+                                // scale: 4.0,
+                              ),
                             ),
                           ),
                           // AppDateTextfield(
@@ -518,7 +521,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
 
                             inputStyle: TextStyle(
                               fontFamily: FontConstants.interFonts,
-                              fontSize: 14,
+                              fontSize: 12,
                             ),
                             label: RichText(
                               text: TextSpan(
@@ -537,7 +540,11 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                               fontWeight: FontWeight.w400,
                               fontSize: responsiveFont(14),
                             ),
-                            prefixIcon: Image.asset(icnTent, scale: 4.0),
+                            prefixIcon: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Image.asset(icnTent),
+                            ),
                             suffixIcon: Icon(Icons.keyboard_arrow_down),
                           ),
 
@@ -565,7 +572,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                       ),
                       inputStyle: TextStyle(
                         fontFamily: FontConstants.interFonts,
-                        fontSize: 14,
+                        fontSize: 12,
                       ),
                       label: RichText(
                         text: TextSpan(
@@ -584,7 +591,11 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                         fontWeight: FontWeight.w400,
                         fontSize: responsiveFont(14),
                       ),
-                      prefixIcon: Image.asset(icMapPin, scale: 4.0),
+                      prefixIcon: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Image.asset(icMapPin),
+                      ),
                       suffixIcon: Icon(Icons.keyboard_arrow_down),
                     ),
                     const SizedBox(height: 8),
@@ -607,7 +618,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
 
                       inputStyle: TextStyle(
                         fontFamily: FontConstants.interFonts,
-                        fontSize: 14,
+                        fontSize: 12,
                       ),
                       label: RichText(
                         text: TextSpan(
@@ -615,7 +626,7 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                           style: TextStyle(
                             fontFamily: FontConstants.interFonts,
                             color: kLabelTextColor,
-                            fontSize: responsiveFont(20),
+                            fontSize: responsiveFont(14),
                             fontWeight: FontWeight.w400,
                           ),
                           children: <TextSpan>[],
@@ -626,18 +637,59 @@ class _CampReadinessFormScreenState extends State<CampReadinessFormScreen> {
                         fontWeight: FontWeight.w400,
                         fontSize: responsiveFont(14),
                       ),
-                      prefixIcon: Image.asset(icHashIcon, scale: 4.0),
+                      prefixIcon: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Image.asset(icHashIcon),
+                      ),
                       suffixIcon: Icon(Icons.keyboard_arrow_down),
                     ),
                     showTeam == true ? const SizedBox(height: 8) : Container(),
-                    showTeam == true
-                        ? AppDropdownTextfield(
-                          icon: icTeamIcon,
-                          titleHeaderString: "Team Id*",
-                          valueString: teamName,
-                          onTap: () {},
-                        )
-                        : Container(),
+                    Visibility(
+                      visible: showTeam == true,
+                      child: AppTextField(
+                        readOnly: true,
+
+                        controller: TextEditingController(text: teamName),
+
+                        inputStyle: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          fontSize: 12,
+                        ),
+                        label: RichText(
+                          text: TextSpan(
+                            text: 'Team Id*',
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
+                              color: kLabelTextColor,
+                              fontSize: responsiveFont(14),
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: <TextSpan>[],
+                          ),
+                        ),
+                        labelStyle: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          fontWeight: FontWeight.w400,
+                          fontSize: responsiveFont(14),
+                        ),
+                        prefixIcon: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Image.asset(icTeamIconn),
+                        ),
+                        suffixIcon: Icon(Icons.keyboard_arrow_down),
+                      ),
+                    ),
+
+                    // showTeam == true
+                    //     ? AppDropdownTextfield(
+                    //       icon: icTeamIcon,
+                    //       titleHeaderString: "Team Id*",
+                    //       valueString: teamName,
+                    //       onTap: () {},
+                    //     )
+                    //     : Container(),
                   ],
                 ),
               ),

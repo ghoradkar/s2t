@@ -325,23 +325,25 @@ class APIManager {
       print(url);
       print(data);
       print(json.decode(response.body));
-      LoginResponseModel person = LoginResponseModel.fromJson(
-        json.decode(response.body),
-      );
-
-      if (person.status == 'Success') {
-        DataProvider().storeUserData(response.body);
-        DataProvider().storeUserCredential(jsonEncode(data));
-        DataProvider().isRegularCamp(true);
-        DataProvider().save(DataProvider().kUserName, data['username']);
-        DataProvider().save(DataProvider().kPassword, data['password']);
-        callback(person, "", true);
-      } else {
-        callback(person, person.message, false);
+      if (response.statusCode == 200) {
+        LoginResponseModel person = LoginResponseModel.fromJson(
+          json.decode(response.body),
+        );
+        if (person.status == 'Success') {
+          DataProvider().storeUserData(response.body);
+          DataProvider().storeUserCredential(jsonEncode(data));
+          DataProvider().isRegularCamp(true);
+          DataProvider().save(DataProvider().kUserName, data['username']);
+          DataProvider().save(DataProvider().kPassword, data['password']);
+          callback(person, "", true);
+        } else {
+          callback(person, person.message, false);
+        }
       }
     } catch (e) {
       // Handle error
-      callback(null, "Expections: $e", false);
+      callback(null, "Server Not Responding", false);
+      print("Expections: $e");
     }
   }
 
@@ -1035,6 +1037,42 @@ class APIManager {
     } catch (e) {
       // Handle error
       callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> getPatientAndTestValidationCountAPI(
+    Map<String, String> data,
+    dynamic callback,
+  ) async {
+    final url = Uri.parse(
+      '$kD2DBaseURL${APIConstants.kGetPatientAndTestValidationCount}',
+    );
+    print('getPatientAndTestValidationCountAPI URL: $url');
+    print('getPatientAndTestValidationCountAPI body: $data');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      print('getPatientAndTestValidationCountAPI response: ${response.body}');
+      final decoded =
+          json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      final status = decoded['status'] as String? ?? '';
+      if (status == 'Success') {
+        final output = decoded['output'] as List?;
+        if (output != null && output.isNotEmpty) {
+          final allTestDone = output.first['ALLTESTDONE']?.toString() ?? '1';
+          callback(allTestDone, '', true);
+        } else {
+          callback('1', '', true);
+        }
+      } else {
+        callback('1', decoded['message'] as String? ?? '', false);
+      }
+    } catch (e) {
+      callback('1', 'Exception: $e', false);
     }
   }
 
@@ -4505,6 +4543,8 @@ class APIManager {
     final url = Uri.parse(
       '$kD2DBaseURL${APIConstants.kInsertBasicHealthInfoNewWithVersionFastingHrs}',
     );
+    print('insertBasicHealthInfoNewAPI URL: $url');
+    print('insertBasicHealthInfoNewAPI body: $data');
     final IOClient ioClient = getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -4512,6 +4552,7 @@ class APIManager {
         body: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      print('insertBasicHealthInfoNewAPI response: ${response.body}');
       final decoded = json.decode(response.body) as Map<String, dynamic>;
       final status = decoded['status'] as String? ?? '';
       final message = decoded['message'] as String? ?? '';
@@ -4521,6 +4562,7 @@ class APIManager {
         callback(null, message, false);
       }
     } catch (e) {
+      print('insertBasicHealthInfoNewAPI error: $e');
       callback(null, 'Exception: $e', false);
     }
   }
@@ -6549,6 +6591,39 @@ class APIManager {
       }
     } catch (e) {
       // Handle error
+      callback(null, "Expections: $e", false);
+    }
+  }
+
+  Future<void> getDoctorListClusterAPI(
+    Map<String, dynamic> data,
+    dynamic callback,
+  ) async {
+    String method = APIConstants.kGetResourceFromDesignationCluster;
+
+    final url = Uri.parse('$kD2DBaseURL$method');
+    final IOClient ioClient = getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: data,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      print(url);
+      print(data);
+      print(json.decode(response.body));
+      TeamsDoctorListResponse person = TeamsDoctorListResponse.fromJson(
+        json.decode(response.body),
+      );
+
+      if (person.status == 'Success') {
+        callback(person, "", true);
+      } else {
+        callback(person, person.message, false);
+      }
+    } catch (e) {
       callback(null, "Expections: $e", false);
     }
   }

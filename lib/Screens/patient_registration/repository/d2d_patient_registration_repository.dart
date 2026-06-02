@@ -142,25 +142,32 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingD2DClose}',
     );
+    final body = {
+      'CampDATE': campDate,
+      'UserId': userId,
+      'DISTLGDCODE': distLgdCode,
+      'CampType': '3',
+      'CampID': campId,
+    };
+    // ignore: avoid_print
+    print('[checkAttendanceStatus] url=$url body=$body');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
         url,
-        body: {
-          'CampDATE': campDate,
-          'UserId': userId,
-          'DISTLGDCODE': distLgdCode,
-          'CampType': '3',
-          'CampID': campId,
-        },
+        body: body,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[checkAttendanceStatus] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 400))}');
       final decoded = json.decode(response.body);
       final result = AttendanceStatusResponse.fromJson(decoded);
       completer.complete(
         (result.status?.toLowerCase() == 'success') ? result : null,
       );
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[checkAttendanceStatus] error=$e');
       completer.complete(null);
     } finally {
       ioClient.close();
@@ -177,6 +184,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetBeneficiaryRegistrationDetailsWithMaritalStatus_GP}',
     );
+    // ignore: avoid_print
+    print('[getWorkerInfoWithMaritalStatus] url=$url body={regno: MH$regNo}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -184,12 +193,16 @@ class D2DPatientRegistrationRepository {
         body: {'regno': 'MH$regNo'},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[getWorkerInfoWithMaritalStatus] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 500))}');
       final decoded = json.decode(response.body);
       final result = WorkerInfoResponse.fromJson(decoded);
       completer.complete(
         (result.status?.toLowerCase() == 'success') ? result : null,
       );
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getWorkerInfoWithMaritalStatus] error=$e');
       completer.complete(null);
     } finally {
       ioClient.close();
@@ -225,6 +238,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetWorkerInfroReRegistration}',
     );
+    // ignore: avoid_print
+    print('[checkInternalRegistration] url=$url body={RegdNo: $workerRegNo}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -232,12 +247,16 @@ class D2DPatientRegistrationRepository {
         body: {'RegdNo': workerRegNo},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[checkInternalRegistration] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 400))}');
       final decoded = json.decode(response.body);
       final result = BeneficiaryDetailsResponse.fromJson(decoded);
       completer.complete(
         (result.status?.toLowerCase() == 'success') ? result : null,
       );
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[checkInternalRegistration] error=$e');
       completer.complete(null);
     } finally {
       ioClient.close();
@@ -256,6 +275,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetWorkerInfroReRegistration}',
     );
+    // ignore: avoid_print
+    print('[getReRegistrationDate] url=$url body={RegdNo: $workerRegNo}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -263,6 +284,8 @@ class D2DPatientRegistrationRepository {
         body: {'RegdNo': workerRegNo},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[getReRegistrationDate] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 400))}');
       final decoded = json.decode(response.body) as Map<String, dynamic>;
       final status = (decoded['status'] as String? ?? '').toLowerCase();
       if (status != 'success') return null;
@@ -274,7 +297,9 @@ class D2DPatientRegistrationRepository {
             (first['RegistrationDate'] as String?);
       }
       return null;
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getReRegistrationDate] error=$e');
       return null;
     } finally {
       ioClient.close();
@@ -410,6 +435,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetRelationwithMaritalStatus}',
     );
+    // ignore: avoid_print
+    print('[getRelationList] url=$url body={MaritalStatusID:$maritalStatusId, Gender:$genderId}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -420,12 +447,16 @@ class D2DPatientRegistrationRepository {
         },
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[getRelationList] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 300))}');
       final decoded = json.decode(response.body);
       final result = RelationModel.fromJson(decoded);
       completer.complete(
         (result.status?.toLowerCase() == 'success') ? result : null,
       );
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getRelationList] error=$e');
       completer.complete(null);
     } finally {
       ioClient.close();
@@ -444,6 +475,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetOTPforRegistrationOrg}',
     );
+    // ignore: avoid_print
+    print('[sendOtp] url=$url body={MOBNO:$mobileNo, OTP:$otp, RegdId:$regdId, CreatedBy:$createdBy, SubOrgID:$subOrgId}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -458,14 +491,18 @@ class D2DPatientRegistrationRepository {
         },
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[sendOtp] status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       if (decoded['status']?.toString().toLowerCase() == 'success') {
-        return null; // success
+        return null;
       }
       return decoded['message']?.toString().isNotEmpty == true
           ? decoded['message'].toString()
           : 'Failed to send OTP';
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[sendOtp] error=$e');
       return 'Failed to send OTP';
     } finally {
       ioClient.close();
@@ -476,6 +513,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kVerifyRegistrationOTP}',
     );
+    // ignore: avoid_print
+    print('[verifyOtp] url=$url body={MOBNO:$mobileNo, OTP:$otp}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -483,9 +522,13 @@ class D2DPatientRegistrationRepository {
         body: {'MOBNO': mobileNo, 'OTP': otp},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[verifyOtp] status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       return decoded['status']?.toString().toLowerCase() == 'success';
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[verifyOtp] error=$e');
       return false;
     } finally {
       ioClient.close();
@@ -565,7 +608,8 @@ class D2DPatientRegistrationRepository {
                   item['Regdid'])
               ?.toString() ??
               '0';
-          final count = (item['Count'] ??
+          final count = (item['REGDEPCOUNT'] ??
+                  item['Count'] ??
                   item['COUNT'] ??
                   item['count'] ??
                   item['BenCount'] ??
@@ -1559,18 +1603,25 @@ class D2DPatientRegistrationRepository {
     File? renewalSlipPhoto,
     File? hivLetterPhoto,
   }) async {
-    const endpoint =
-        'handler/DtoDBeneficiaryRe_RegistrationWithVersionNo_MaritalStatus_Taluka_Gender.ashx';
+    final endpoint = isFaceDetectionEnabled
+        ? 'handler/DtoDBeneficiaryRegistration_Gender_FaceMatch_V1_Dependent.ashx'
+        : 'handler/DtoDBeneficiaryRegistration_Gender_V1_Dependent.ashx';
     final url = Uri.parse('${APIManager.kWebservicesBaseURL}$endpoint');
+    // ignore: avoid_print
+    print('[saveD2DRegistration] URL: $url');
+    // ignore: avoid_print
+    print('[saveD2DRegistration] isFaceDetectionEnabled=$isFaceDetectionEnabled');
+    // ignore: avoid_print
+    print('[saveD2DRegistration] FIELDS: ${fields.entries.map((e) => "${e.key}=${e.value}").join(", ")}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
-      // ignore: avoid_print
-      print('[saveD2DRegistration] FIELDS: ${fields.entries.map((e) => "${e.key}=${e.value}").join(", ")}');
       final request = http.MultipartRequest('POST', url);
       fields.forEach((key, value) => request.fields[key] = value);
 
       final regdNo = fields['RegdNo'] ?? '';
       if (patientPhoto != null) {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file1=patientPhoto path=${patientPhoto.path} filename=${regdNo}_PR.jpg');
         request.files.add(
           await http.MultipartFile.fromPath(
             'file1',
@@ -1578,8 +1629,13 @@ class D2DPatientRegistrationRepository {
             filename: '${regdNo}_PR.jpg',
           ),
         );
+      } else {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file1=null (no patient photo)');
       }
       if (healthCardPhoto != null) {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file2=healthCardPhoto path=${healthCardPhoto.path} filename=${regdNo}_HC.jpg');
         request.files.add(
           await http.MultipartFile.fromPath(
             'file2',
@@ -1587,6 +1643,9 @@ class D2DPatientRegistrationRepository {
             filename: '${regdNo}_HC.jpg',
           ),
         );
+      } else {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file2=null (no health card photo)');
       }
       if (renewalSlipPhoto != null) {
         request.files.add(
@@ -1609,10 +1668,14 @@ class D2DPatientRegistrationRepository {
 
       final streamed = await ioClient.send(request);
       final response = await http.Response.fromStream(streamed);
+      // ignore: avoid_print
+      print('[saveD2DRegistration] response status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       final result = D2DRegistrationResponse.fromJson(decoded);
       return (result.status?.toLowerCase() == 'success') ? result : result;
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[saveD2DRegistration] error=$e');
       return null;
     } finally {
       ioClient.close();
@@ -1628,6 +1691,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetTeamNumberByCampIdAndUSerId}',
     );
+    // ignore: avoid_print
+    print('[getTeamNumber] url=$url body={CampId:$campId, UserID:$userId}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -1635,6 +1700,8 @@ class D2DPatientRegistrationRepository {
         body: {'CampId': campId, 'UserID': userId},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+      // ignore: avoid_print
+      print('[getTeamNumber] status=${response.statusCode} body=${response.body.substring(0, response.body.length.clamp(0, 300))}');
       final decoded = json.decode(response.body) as Map<String, dynamic>;
       if (decoded['status']?.toString().toLowerCase() == 'success') {
         final output = decoded['output'] as List?;
@@ -1644,7 +1711,9 @@ class D2DPatientRegistrationRepository {
               '';
         }
       }
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getTeamNumber] error=$e');
     } finally {
       ioClient.close();
     }
@@ -1661,13 +1730,16 @@ class D2DPatientRegistrationRepository {
     required String campType,
     String teamId = '',
   }) async {
-    // Regular camp → GetUserAttendancesUsingSitedetailsID_New
-    // D2D camp     → GetUserAttendancesUsingSitedetailsID_Anti
+    // Regular camp → ConstructionWorker_V2.asmx/GetUserAttendancesUsingSitedetailsID_New
+    // D2D camp     → D2D_V2.asmx/GetUserAttendancesUsingSitedetailsID_Anti (native uses D2D base)
     final isRegular = campType == '1';
     final method = isRegular
         ? APIConstants.kGetUserAttendancesUsingSitedetailsIDNew
         : APIConstants.kGetUserAttendancesUsingSitedetailsIDAnti;
-    final url = Uri.parse('${APIManager.kConstructionWorkerBaseURL}$method');
+    final baseUrl = isRegular
+        ? APIManager.kConstructionWorkerBaseURL
+        : APIManager.kD2DBaseURL;
+    final url = Uri.parse('$baseUrl$method');
 
     final ioClient = _api.getInstanceOfIoClient();
     try {

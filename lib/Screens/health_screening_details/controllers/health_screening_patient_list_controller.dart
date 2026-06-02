@@ -18,6 +18,7 @@ class HealthScreeningPatientListController extends GetxController {
 
   int _testId = 0;
   int _campId = 0;
+  int _siteDetailId = 0;
   String _teamNumber = '0';
   bool _isRegularCamp = false;
   int _empCode = 0;
@@ -37,11 +38,13 @@ class HealthScreeningPatientListController extends GetxController {
   void loadData({
     required int testId,
     required int campId,
+    int siteDetailId = 0,
     required String teamNumber,
     required bool isRegularCamp,
   }) {
     _testId = testId;
     _campId = campId;
+    _siteDetailId = siteDetailId;
     _teamNumber = teamNumber;
     _isRegularCamp = isRegularCamp;
     _empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
@@ -50,9 +53,16 @@ class HealthScreeningPatientListController extends GetxController {
 
   Future<void> fetchPatients() async {
     isLoading.value = true;
+    if (_teamNumber == '0' && !_isRegularCamp) {
+      _teamNumber = await _repo.getTeamNumber(
+        campId: _campId,
+        userId: _empCode,
+      );
+    }
     final response = await _repo.getPatientList(
       testId: _testId,
       campId: _campId,
+      siteDetailId: _siteDetailId,
       userId: _empCode,
       teamNumber: _teamNumber,
       isRegularCamp: _isRegularCamp,

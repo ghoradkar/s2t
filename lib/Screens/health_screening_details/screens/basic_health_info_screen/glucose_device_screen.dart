@@ -61,7 +61,7 @@ class GlucoseDeviceScreen extends StatelessWidget {
                                 context,
                                 GlucoseResult(
                                   glucose: g,
-                                  deviceNameStr: ctrl.deviceName.value,
+                                  deviceNameStr: ctrl.macAddress.value,
                                 ),
                               );
                             },

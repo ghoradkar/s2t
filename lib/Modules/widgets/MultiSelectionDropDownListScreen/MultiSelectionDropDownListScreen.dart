@@ -185,7 +185,10 @@ class _MultiSelectionDropDownListScreenState
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+          padding: EdgeInsets.fromLTRB(
+            16, 4, 16,
+            20 + MediaQuery.of(context).viewPadding.bottom,
+          ),
           child: Container(
             width: MediaQuery.of(context).size.width,
             color: Colors.transparent,

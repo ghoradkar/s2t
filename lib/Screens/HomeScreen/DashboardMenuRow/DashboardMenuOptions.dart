@@ -76,8 +76,8 @@ class DashboardMenuOptions extends StatelessWidget {
         icon = icPacketCollection;
       case DashboardMenu.CTAssignment:
         icon = icCTAssignment;
-      case DashboardMenu.PacketReceive:
-        icon = icPacketReceived;
+      // case DashboardMenu.PacketReceive:
+      //   icon = icPacketReceived;
       case DashboardMenu.D2DTeam:
         icon = icCampReadinessForm;
       case DashboardMenu.TeamCampMapping:
@@ -200,9 +200,9 @@ class DashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.CTAssignment:
         title = "CT Assignment";
         break;
-      case DashboardMenu.PacketReceive:
-        title = "Packet Receive";
-        break;
+      // case DashboardMenu.PacketReceive:
+      //   title = "Packet Receive";
+      //   break;
       case DashboardMenu.D2DTeam:
         title = "D2D Team";
         break;
@@ -384,8 +384,8 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         icon = icPacketCollection;
       case DashboardMenu.CTAssignment:
         icon = icCTAssignment;
-      case DashboardMenu.PacketReceive:
-        icon = icPacketReceived;
+      // case DashboardMenu.PacketReceive:
+      //   icon = icPacketReceived;
       case DashboardMenu.D2DTeam:
         icon = icCampReadinessForm;
       case DashboardMenu.TeamCampMapping:
@@ -509,9 +509,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.CTAssignment:
         title = "CT Assignment";
         break;
-      case DashboardMenu.PacketReceive:
-        title = "Packet Receive";
-        break;
+      // case DashboardMenu.PacketReceive:
+      //   title = "Packet Receive";
+      //   break;
       case DashboardMenu.D2DTeam:
         title = "D2D Team";
         break;
@@ -633,9 +633,9 @@ class AdminDashboardMenuOptions extends StatelessWidget {
       case DashboardMenu.CTAssignment:
         color = kCallingBackGroundColor;
         break;
-      case DashboardMenu.PacketReceive:
-        color = kCallingBackGroundColor;
-        break;
+      // case DashboardMenu.PacketReceive:
+      //   color = kCallingBackGroundColor;
+      //   break;
       case DashboardMenu.D2DTeam:
         color = kCallingBackGroundColor;
         break;

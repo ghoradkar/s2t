@@ -296,7 +296,7 @@ class _VisionScreeningTestInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.visionSnellelchartR ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,
@@ -351,7 +351,7 @@ class _VisionScreeningTestInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.visionSnellelchartL ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,
@@ -442,7 +442,7 @@ class _VisionScreeningTestInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.visionSnellelchartL1 ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,
@@ -481,7 +481,7 @@ class _VisionScreeningTestInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.visionSnellelchartL ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,
@@ -579,7 +579,7 @@ class _VisionScreeningTestInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.rightRemark ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: rightRemarkColor,
@@ -623,7 +623,7 @@ class _VisionScreeningTestInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.leftRemark ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: leftRemarkColor,

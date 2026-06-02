@@ -175,6 +175,19 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
                     ],
                   ),
                 ),
+                GestureDetector(
+                  onTap: onCallDidPressed,
+                  child: Container(
+                    width: 32.w,
+                    height: 32.h,
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Image.asset(icPhoneWhiteIcon),
+                  ),
+                ),
               ],
             ),
           ).paddingOnly(top: 10),

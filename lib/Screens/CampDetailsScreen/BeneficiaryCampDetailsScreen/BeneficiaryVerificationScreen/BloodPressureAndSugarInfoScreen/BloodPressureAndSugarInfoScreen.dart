@@ -177,7 +177,7 @@ class _BloodPressureAndSugarInfoScreenState
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "${widget.visionScreeningDetailsOutput?.systolic ?? ""}",
+                                      "${widget.visionScreeningDetailsOutput?.systolic ?? "NA"}",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,
@@ -280,7 +280,7 @@ class _BloodPressureAndSugarInfoScreenState
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "${widget.visionScreeningDetailsOutput?.diastolic ?? ""}",
+                                      "${widget.visionScreeningDetailsOutput?.diastolic ?? "NA"}",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,
@@ -396,7 +396,7 @@ class _BloodPressureAndSugarInfoScreenState
                                       widget
                                               .visionScreeningDetailsOutput
                                               ?.bloodSugarR ??
-                                          "",
+                                          "NA",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: uploadBillTitleColor,

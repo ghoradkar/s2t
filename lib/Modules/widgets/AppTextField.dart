@@ -165,6 +165,7 @@ class AppTextField extends StatelessWidget {
         // ),
         label: label,
         errorText: errorText,
+        errorMaxLines: 2,
         errorStyle: TextStyle(
           fontFamily: FontConstants.interFonts,
           fontSize: 12.sp,

@@ -62,24 +62,25 @@ class _CampReadinessFormRowState extends State<CampReadinessFormRow> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 6),
-                          GestureDetector(
-                            onTap: () {
-                              if (!widget.isFormSubmitted) {
-                                widget.object.isAvailableSelected = true;
-                                widget.object.isNotAvailableSelected = false;
-                                widget.object.isNotWorkingSelected = false;
-                                widget.object.itemStatus = 1;
-                                setState(() {});
-                              }
-                            },
-                            child: SizedBox(
+                    child: InkWell(
+                      onTap: () {
+                        if (!widget.isFormSubmitted) {
+                          widget.object.isAvailableSelected = true;
+                          widget.object.isNotAvailableSelected = false;
+                          widget.object.isNotWorkingSelected = false;
+                          widget.object.itemStatus = 1;
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 6),
+
+                            SizedBox(
                               width: responsiveHeight(26),
                               height: responsiveHeight(26),
                               child: Image.asset(
@@ -88,41 +89,43 @@ class _CampReadinessFormRowState extends State<CampReadinessFormRow> {
                                     : icUnRadioSelected,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            "Available",
-                            style: TextStyle(
-                              color: kBlackColor,
-                              fontFamily: FontConstants.interFonts,
-                              fontWeight: FontWeight.normal,
-                              fontSize: responsiveFont(14),
+
+                            const SizedBox(height: 6),
+                            Text(
+                              "Available",
+                              style: TextStyle(
+                                color: kBlackColor,
+                                fontFamily: FontConstants.interFonts,
+                                fontWeight: FontWeight.normal,
+                                fontSize: responsiveFont(14),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 6),
-                          GestureDetector(
-                            onTap: () {
-                              if (!widget.isFormSubmitted) {
-                                widget.object.isAvailableSelected = false;
-                                widget.object.isNotAvailableSelected = true;
-                                widget.object.isNotWorkingSelected = false;
-                                widget.object.itemStatus = 2;
-                              }
+                    child: InkWell(
+                      onTap: () {
+                        if (!widget.isFormSubmitted) {
+                          widget.object.isAvailableSelected = false;
+                          widget.object.isNotAvailableSelected = true;
+                          widget.object.isNotWorkingSelected = false;
+                          widget.object.itemStatus = 2;
+                        }
 
-                              setState(() {});
-                            },
-                            child: SizedBox(
+                        setState(() {});
+                      },
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 6),
+
+                            SizedBox(
                               width: responsiveHeight(26),
                               height: responsiveHeight(26),
                               child: Image.asset(
@@ -131,40 +134,41 @@ class _CampReadinessFormRowState extends State<CampReadinessFormRow> {
                                     : icUnRadioSelected,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            "Not Available",
-                            style: TextStyle(
-                              color: kBlackColor,
-                              fontFamily: FontConstants.interFonts,
-                              fontWeight: FontWeight.normal,
-                              fontSize: responsiveFont(14),
+
+                            const SizedBox(height: 6),
+                            Text(
+                              "Not Available",
+                              style: TextStyle(
+                                color: kBlackColor,
+                                fontFamily: FontConstants.interFonts,
+                                fontWeight: FontWeight.normal,
+                                fontSize: responsiveFont(14),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 6),
-                          GestureDetector(
-                            onTap: () {
-                              if (!widget.isFormSubmitted) {
-                                widget.object.isAvailableSelected = false;
-                                widget.object.isNotAvailableSelected = false;
-                                widget.object.isNotWorkingSelected = true;
-                                widget.object.itemStatus = 3;
-                                setState(() {});
-                              }
-                            },
-                            child: SizedBox(
+                    child: InkWell(
+                      onTap: () {
+                        if (!widget.isFormSubmitted) {
+                          widget.object.isAvailableSelected = false;
+                          widget.object.isNotAvailableSelected = false;
+                          widget.object.isNotWorkingSelected = true;
+                          widget.object.itemStatus = 3;
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 6),
+                            SizedBox(
                               width: responsiveHeight(26),
                               height: responsiveHeight(26),
                               child: Image.asset(
@@ -173,18 +177,18 @@ class _CampReadinessFormRowState extends State<CampReadinessFormRow> {
                                     : icUnRadioSelected,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            "Not Working",
-                            style: TextStyle(
-                              color: kBlackColor,
-                              fontFamily: FontConstants.interFonts,
-                              fontWeight: FontWeight.normal,
-                              fontSize: responsiveFont(14),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Not Working",
+                              style: TextStyle(
+                                color: kBlackColor,
+                                fontFamily: FontConstants.interFonts,
+                                fontWeight: FontWeight.normal,
+                                fontSize: responsiveFont(14),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

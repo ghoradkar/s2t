@@ -26,7 +26,6 @@ import 'package:s2toperational/Screens/patient_registration/model/document_type_
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery/view/FaceDetectionScreen.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_success_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/patient_finger_signature_screen.dart';
@@ -67,7 +66,7 @@ class D2DPatientRegistrationController extends GetxController {
   final tecFirstName = TextEditingController();
   final tecMiddleName = TextEditingController();
   final tecLastName = TextEditingController();
-  final tecMobileNo = TextEditingController(text: '9322183452');
+  final tecMobileNo = TextEditingController(text: '8830378568');
   final tecAltMobileNo = TextEditingController();
   final tecAadhaarNo = TextEditingController();
   final tecDob = TextEditingController();
@@ -95,6 +94,7 @@ class D2DPatientRegistrationController extends GetxController {
   final whatsAppMode = '1'.obs;
   final isHCRenewal = false.obs;
   final showRenewal = false.obs;
+
   /// true = skip face detection (same as native switch ON); false = face detection required (default)
   final skipFaceDetection = false.obs;
 
@@ -287,6 +287,8 @@ class D2DPatientRegistrationController extends GetxController {
   final isSubmitting = false.obs;
 
   @override
+  String _teamId = '0';
+
   void onInit() {
     super.onInit();
     final user = DataProvider().getParsedUserData()?.output?.first;
@@ -295,10 +297,75 @@ class D2DPatientRegistrationController extends GetxController {
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
     final rawMsId = user?.maritialstatusId?.toString() ?? '';
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
-    tecMobileNo.text = '9322183452';
+    tecMobileNo.text = '8830378568';
     _startAutoLocationUpdates();
     _loadAppVersion();
     _fetchFaceDetectionFlag();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // Only D2D camps need the screening-completion gate (mirrors native isHllUser check)
+    if (navCampType == '3') {
+      _getTeamIdForValidation();
+    }
+  }
+
+  void _getTeamIdForValidation() {
+    _api.getTeamNumberByCampIdAndUSerIdAPI(
+      {'campid': navCampId, 'UserID': empCode.toString()},
+      (response, error, success) {
+        if (success && response != null) {
+          _teamId = response.output?.first.teamNumber ?? '0';
+        }
+        _checkPatientRegistrationAllowed();
+      },
+    );
+  }
+
+  Future<void> _checkPatientRegistrationAllowed() async {
+    await _api.getPatientAndTestValidationCountAPI(
+      {'CAMPID': navCampId, 'Teamid': _teamId, 'Userid': empCode.toString()},
+      (allTestDone, error, success) {
+        if (success && allTestDone == '0') {
+          _showScreeningIncompleteAlert();
+        }
+      },
+    );
+  }
+
+  void _showScreeningIncompleteAlert() {
+    final context = Get.context;
+    if (context == null) return;
+    ToastManager.showAlertDialog(
+      context,
+      "You cannot register new patients until registered beneficiaries screening is completed",
+      (){
+        Get.back();
+        Get.back();
+      },
+    );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder:
+    //       (_) => AlertDialog(
+    //         title: const Text('Alert'),
+    //         content: const Text(
+    //           'You cannot register new patients until registered beneficiaries screening is completed',
+    //         ),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.of(context).pop(); // dismiss dialog
+    //               Navigator.of(context).pop(); // go back to Select Camp
+    //             },
+    //             child: const Text('OK'),
+    //           ),
+    //         ],
+    //       ),
+    // );
   }
 
   Future<void> _loadAppVersion() async {
@@ -310,7 +377,11 @@ class D2DPatientRegistrationController extends GetxController {
   /// If IsFaceDetetctionEnabled == "0"  → show skip toggle (optional).
   /// If IsFaceDetetctionEnabled == "1"  → hide skip toggle (mandatory, cannot skip).
   void _fetchFaceDetectionFlag() {
-    _api.getFaceDetectionFlagAPI(empCode.toString(), (response, error, success) {
+    _api.getFaceDetectionFlagAPI(empCode.toString(), (
+      response,
+      error,
+      success,
+    ) {
       if (success && response != null) {
         final output = response['output'] as List? ?? [];
         if (output.isNotEmpty) {
@@ -554,9 +625,7 @@ class D2DPatientRegistrationController extends GetxController {
   void onAbhaAadhaarChanged(String val) {
     if (val.length == 12) {
       abhaAadhaarError.value =
-          _isValidAadhaar(val)
-              ? ''
-              : 'Please enter valid Aadhar Card No.';
+          _isValidAadhaar(val) ? '' : 'Please enter valid Aadhar Card No.';
     } else {
       abhaAadhaarError.value = '';
     }
@@ -1167,7 +1236,7 @@ class D2DPatientRegistrationController extends GetxController {
     tecLastName.clear();
 
     // Contact
-    tecMobileNo.text = '9322183452'; // TEST OVERRIDE
+    tecMobileNo.text = '8830378568'; // TEST OVERRIDE
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
     originalAadhaar = '';
@@ -1203,7 +1272,8 @@ class D2DPatientRegistrationController extends GetxController {
     showRenewal.value = false;
     isHCRenewal.value = false;
     isNumberNotBelongsToBeneficiary.value = false;
-    skipFaceDetection.value = false; // reset to face detection ON (matches native isfaceDetection = "1")
+    skipFaceDetection.value =
+        false; // reset to face detection ON (matches native isfaceDetection = "1")
 
     // OTP flows
     mobileOtpSent.value = false;
@@ -1339,7 +1409,7 @@ class D2DPatientRegistrationController extends GetxController {
     // Mobile
     final apiMobile = (data.mobile ?? '').trim();
     if (apiMobile.isNotEmpty) tecMobileNo.text = apiMobile;
-    tecMobileNo.text = '9322183452'; // TEST OVERRIDE
+    tecMobileNo.text = '8830378568'; // TEST OVERRIDE
 
     // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
     // (isDependent=No). When registering a dependent the phlebo enters these
@@ -1847,9 +1917,10 @@ class D2DPatientRegistrationController extends GetxController {
     if (result == null || result['error'] != null) {
       final raw = result?['error']?.toString() ?? '';
       // Native (line 12386): ABDM-1114 "User not found." → show custom message
-      final errMsg = raw.contains('User not found')
-          ? 'The mobile number you have entered does not match with any of the records.Please enter a different number'
-          : _extractAbdmErrorMessage(raw.isNotEmpty ? raw : null);
+      final errMsg =
+          raw.contains('User not found')
+              ? 'The mobile number you have entered does not match with any of the records.Please enter a different number'
+              : _extractAbdmErrorMessage(raw.isNotEmpty ? raw : null);
       ToastManager.showAlertDialog(Get.context!, errMsg, () => Get.back());
       return;
     }
@@ -2475,20 +2546,13 @@ class D2DPatientRegistrationController extends GetxController {
   }
 
   Future<void> pickPatientPhoto() async {
-    if (!skipFaceDetection.value) {
-      // Face detection ON → launch liveness camera (mirrors native FaceDetectionActivity)
-      final File? result = await Navigator.of(Get.context!).push<File>(
-        MaterialPageRoute(builder: (_) => const FaceDetectionScreen()),
-      );
-      if (result != null) patientPhotoPath.value = result.path;
-    } else {
-      // Skip face detection ON → regular camera (no liveness check)
-      final picked = await _picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 80,
-      );
-      if (picked != null) patientPhotoPath.value = picked.path;
-    }
+    // Native uses CameraActivity for ALL cases — FaceDetectionActivity is commented out.
+    // The switch only controls IsFaceDetectionEnabled sent to the server, not the capture method.
+    final picked = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+    if (picked != null) patientPhotoPath.value = picked.path;
   }
 
   Future<void> pickHealthCardPhoto() async {
@@ -2796,13 +2860,10 @@ class D2DPatientRegistrationController extends GetxController {
             isHCRenewal.value ? _toApiDate(tecRenewalDate.text.trim()) : '',
         'IsDependent': isDependent.value ? '1' : '0',
         'Education': tecEducation.text.trim(),
-        'ReleationID': selectedRelation.value?.relId?.toString() ?? '0',
+        'ReleationID': selectedRelation.value?.relId?.toString() ?? '20',
         'DependREGID': isDependent.value ? _workerRegdId : '0',
-        'IndentityId': selectedIdentityId.value,
-        'CW_WorkerName':
-            isDependent.value
-                ? workerNameDisplay.value
-                : tecFullName.text.trim(),
+        'IndentityId': '1',
+        'CW_WorkerName': isDependent.value ? workerNameDisplay.value : '',
         'next_renewal_date': _toApiDate(tecCardExpiry.text.trim()),
         'residential_address_postOffice': tecPostOffice.text.trim(),
         'residential_address_taluka': tecTaluka.text.trim(),

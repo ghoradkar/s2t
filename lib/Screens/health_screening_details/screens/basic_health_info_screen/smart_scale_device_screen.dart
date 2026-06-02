@@ -76,7 +76,7 @@ class SmartScaleDeviceScreen extends StatelessWidget {
                                     SmartScaleResult(
                                       weight: w,
                                       bmi: b == '—' ? '' : b,
-                                      deviceNameStr: ctrl.deviceName.value,
+                                      deviceNameStr: ctrl.macAddress.value,
                                     ),
                                   );
                                 },

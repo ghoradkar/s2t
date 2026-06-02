@@ -140,7 +140,11 @@ class _BeneficiaryCampDetailsScreenState
                         itemBuilder: (context, index) {
                           BeneficiaryWorkerOutput obj =
                               beneficiaryWorkerList[index];
-                          return BeneficiaryCampRow(index: index, obj: obj);
+                          return BeneficiaryCampRow(
+                            index: index,
+                            obj: obj,
+                            onRefresh: getRegiWorkerDetailsOncampId,
+                          );
                         },
                       )
                       : NoDataFound(),

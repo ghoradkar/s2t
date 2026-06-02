@@ -55,6 +55,8 @@ class APIConstants {
   static String kGetCampListCampReadiness = "GetCampList_CampReadiness";
   static String kGetTeamNumberByCampIdAndUSerId =
       "GetTeamNumberByCampIdAndUSerId";
+  static String kGetPatientAndTestValidationCount =
+      "GetPatientAndTestValidationCount";
   static String kGetCampReadinessFormItems = "GetCampReadinessFormItems";
   static String kInsertCampReadinessFormDetails =
       "InsertCampReadinessFormDetails";
@@ -288,6 +290,7 @@ class APIConstants {
   static String kGetD2DCampMappedDoctorList = "GetD2DCampMappedDoctorList";
   static String kInsertBeneficiaryDoctorMapping =
       "InsertBeneficiaryDoctorMapping";
+  static String kGetMachineAvailabilityFlagV1 = "GetMachineAvailabilityFlag_V1";
   static String kGetOTPForLogin = "GetOTPForLogin";
   static String kVerifyOTPForLogin = "VerifyOTPForLogin";
   static String kGetUSERAndroidID = "GetUSERAndroidID";
@@ -386,6 +389,8 @@ class APIConstants {
   static String kGetAssignedTeamDetailsFlexi = "GetAssignedTeamDetailsFlexi";
 
   static String kGetResourceFromDesignation = "GetResourceFromDesignation";
+  static String kGetResourceFromDesignationCluster =
+      "GetResourceFromDesignation_Cluster";
 
   static String kInsertTeamCampMapping = "InsertTeamCampMapping";
 

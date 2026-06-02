@@ -93,8 +93,9 @@ class _ResourceReMappingUpdateScreenState
     List<dynamic> list,
     DropDownMultipleTypeMenu dropDownType,
   ) {
+    final screenContext = context;
     showModalBottomSheet(
-      context: context,
+      context: screenContext,
       isScrollControlled: true,
       constraints: const BoxConstraints(minWidth: double.infinity),
       backgroundColor: Colors.white,
@@ -118,6 +119,17 @@ class _ResourceReMappingUpdateScreenState
             empCode: empCode,
             onRefreshData: (p0) {
               groupAPI();
+            },
+            onAddSuccess: () {
+              ToastManager().showSuccessOkayDialog(
+                context: screenContext,
+                title: "Success",
+                message:
+                    "या कॅम्पसाठी Resource Mapping यशस्वीरीत्या पूर्ण झाले आहे. कृपया लक्षात घ्या की एकदा patient registration झाल्यानंतर या कॅम्पमध्ये कोणताही नवीन phlebotomist/doctor जोडता किंवा हटवता येणार नाही.",
+                onTap: () {
+                  Navigator.pop(screenContext);
+                },
+              );
             },
           ),
         );
@@ -200,7 +212,7 @@ class _ResourceReMappingUpdateScreenState
     return KeyboardDismissOnTap(
       child: Scaffold(
         appBar: mAppBar(
-          scTitle: "Resource Re-Mapping",
+          scTitle: "Camp Update",
           leadingIcon: iconBackArrow,
           onLeadingIconClick: () {
             Navigator.pop(context);

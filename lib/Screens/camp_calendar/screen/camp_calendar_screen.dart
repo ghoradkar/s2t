@@ -15,6 +15,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/admin_dashboard/screen/pending_count_screen/pending_count_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/camp_calendar/screen/CalenderScreen/CalenderScreen.dart';
+
 // import 'package:s2toperational/Views/CalenderScreen/CalenderScreen.dart';
 import '../controller/camp_calendar_controller.dart';
 import 'camp_calendar_camp_list_screen/camp_calendar_camp_list_screen.dart';
@@ -51,6 +52,9 @@ class CampCalendarScreen extends StatelessWidget {
                   height: SizeConfig.screenHeight,
                   width: SizeConfig.screenWidth,
                   child: SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewPadding.bottom,
+                    ),
                     child: Container(
                       color: Colors.transparent,
                       width: SizeConfig.screenWidth,

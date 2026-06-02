@@ -61,158 +61,6 @@ class _ResourceReMappingCampListScreenState
     getApprovedCampListDetailsForApp();
   }
 
-  Future<void> _selectCampDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1880),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      setState(() {
-        _selectedCampDate = FormatterManager.formatDateToString(picked);
-        getApprovedCampListDetailsForApp();
-      });
-    }
-  }
-
-  void getApprovedCampListDetailsForApp() {
-    ToastManager.showLoader();
-    Map<String, String> params = {
-      "CampDATE": _selectedCampDate,
-      "SubOrgId": subOrgId.toString(),
-      "Divison": "0",
-      "DISTLGDCODE": "0",
-      "USERID": empCode.toString(),
-      "DesgId": dESGID.toString(),
-    };
-    print(params);
-    apiManager.getApprovedCampListDetailsForAppFlexiCampAPI(
-      params,
-      apiApprovedCampListDetailsForAppFlexiCampCallBack,
-    );
-  }
-
-  void apiApprovedCampListDetailsForAppFlexiCampCallBack(
-    ResourceReMappingCampResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      campList = response?.output ?? [];
-      searchCampList = campList;
-    } else {
-      campList = [];
-      searchCampList = campList;
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
-  }
-
-  void getUserCampMappingAndAttendanceStatus() {
-    Map<String, String> params = {
-      "CampDATE": _selectedCampDate,
-      "UserId": empCode.toString(),
-      "DISTLGDCODE": dISTLGDCODE.toString(),
-      "CampType": _resourceReMappingCampOutput?.campType?.toString() ?? "",
-      "CampID": _resourceReMappingCampOutput?.campId?.toString() ?? "",
-      "TestId": "1",
-    };
-
-    apiManager.getUserCampMappingAndAttendanceStatusAPI(
-      params,
-      apiUserCampMappingAndAttendanceStatusCallBack,
-    );
-  }
-
-  void apiUserCampMappingAndAttendanceStatusCallBack(
-    UserCampMappingStatusResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      UserCampMappingStatusOutput? obj = response?.output?.first;
-
-      if (obj != null) {
-        if (obj.isCampClosed == 1) {
-          ToastManager.toast("This camp is closed");
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => ResourceReMappingUpdateScreen(
-                    reMappingCampOutput: _resourceReMappingCampOutput!,
-                  ),
-            ),
-          );
-        }
-      }
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
-  }
-
-  void getCampAssignUserList() {
-    Map<String, String> params = {
-      "campid": _resourceReMappingCampOutput?.campId?.toString() ?? "",
-      "ResourceUserId": empCode.toString(),
-      "TestId": "0",
-    };
-
-    apiManager.getCampAssignUserListAPI(params, apiCampAssignUserListCallBack);
-  }
-
-  void apiCampAssignUserListCallBack(
-    GetCampAssignUserResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      List<GetCampAssignUserOutput> list = response?.output ?? [];
-      bool allow = false;
-
-      if (list.isEmpty) {
-        ToastManager.toast("You are not authorise to Conduct this camp");
-      } else {
-        for (GetCampAssignUserOutput obj in list) {
-          if (obj.resourceUserId == empCode) {
-            if (obj.statusRes == 1) {
-              allow = true;
-            }
-          }
-        }
-
-        if (allow) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => ResourceReMappingUpdateScreen(
-                    reMappingCampOutput: _resourceReMappingCampOutput!,
-                  ),
-            ),
-          );
-        } else {
-          ToastManager.toast("You are not authorise to Conduct this camp");
-        }
-      }
-    } else {
-      ToastManager.toast("You are not authorise to Conduct this camp");
-    }
-    setState(() {});
-  }
-
-  List<ResourceReMappingCampOutput> searchByDescEn(String query) {
-    return campList.where((item) {
-      final desc = item.campId?.toString().toLowerCase() ?? '';
-      return desc.contains(query.toLowerCase());
-    }).toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -363,6 +211,15 @@ class _ResourceReMappingCampListScreenState
                           );
                           return;
                         }
+                        if (reMappingCampOutput.isRegdDone == 1) {
+                          ToastManager.showAlertDialog(
+                            context,
+                            "या कॅम्पमध्ये काही patient registration झालेले असल्यामुळे नवीन phlebotomist/doctor जोडण्यास किंवा हटवण्यास परवानगी नाही.",
+                            () { Navigator.pop(context); },
+                            title: "Alert",
+                          );
+                          return;
+                        }
                         _resourceReMappingCampOutput = reMappingCampOutput;
                         getUserCampMappingAndAttendanceStatus();
                       } else {
@@ -378,6 +235,161 @@ class _ResourceReMappingCampListScreenState
       ),
     );
   }
+
+
+  Future<void> _selectCampDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1880),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedCampDate = FormatterManager.formatDateToString(picked);
+        getApprovedCampListDetailsForApp();
+      });
+    }
+  }
+
+  void getApprovedCampListDetailsForApp() {
+    ToastManager.showLoader();
+    Map<String, String> params = {
+      "CampDATE": _selectedCampDate,
+      "SubOrgId": subOrgId.toString(),
+      "Divison": "0",
+      "DISTLGDCODE": "0",
+      "USERID": empCode.toString(),
+      "DesgId": dESGID.toString(),
+    };
+    print(params);
+    apiManager.getApprovedCampListDetailsForAppFlexiCampAPI(
+      params,
+      apiApprovedCampListDetailsForAppFlexiCampCallBack,
+    );
+  }
+
+  void apiApprovedCampListDetailsForAppFlexiCampCallBack(
+      ResourceReMappingCampResponse? response,
+      String errorMessage,
+      bool success,
+      ) async {
+    ToastManager.hideLoader();
+    if (success) {
+      campList = response?.output ?? [];
+      searchCampList = campList;
+    } else {
+      campList = [];
+      searchCampList = campList;
+      ToastManager.toast(errorMessage);
+    }
+    setState(() {});
+  }
+
+  void getUserCampMappingAndAttendanceStatus() {
+    Map<String, String> params = {
+      "CampDATE": _selectedCampDate,
+      "UserId": empCode.toString(),
+      "DISTLGDCODE": dISTLGDCODE.toString(),
+      "CampType": _resourceReMappingCampOutput?.campType?.toString() ?? "",
+      "CampID": _resourceReMappingCampOutput?.campId?.toString() ?? "",
+      "TestId": "1",
+    };
+
+    apiManager.getUserCampMappingAndAttendanceStatusAPI(
+      params,
+      apiUserCampMappingAndAttendanceStatusCallBack,
+    );
+  }
+
+  void apiUserCampMappingAndAttendanceStatusCallBack(
+      UserCampMappingStatusResponse? response,
+      String errorMessage,
+      bool success,
+      ) async {
+    ToastManager.hideLoader();
+    if (success) {
+      UserCampMappingStatusOutput? obj = response?.output?.first;
+
+      if (obj != null) {
+        if (obj.isCampClosed == 1) {
+          ToastManager.toast("This camp is closed");
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => ResourceReMappingUpdateScreen(
+                reMappingCampOutput: _resourceReMappingCampOutput!,
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      ToastManager.toast(errorMessage);
+    }
+    setState(() {});
+  }
+
+  void getCampAssignUserList() {
+    Map<String, String> params = {
+      "campid": _resourceReMappingCampOutput?.campId?.toString() ?? "",
+      "ResourceUserId": empCode.toString(),
+      "TestId": "0",
+    };
+
+    apiManager.getCampAssignUserListAPI(params, apiCampAssignUserListCallBack);
+  }
+
+  void apiCampAssignUserListCallBack(
+      GetCampAssignUserResponse? response,
+      String errorMessage,
+      bool success,
+      ) async {
+    ToastManager.hideLoader();
+    if (success) {
+      List<GetCampAssignUserOutput> list = response?.output ?? [];
+      bool allow = false;
+
+      if (list.isEmpty) {
+        ToastManager.toast("You are not authorise to Conduct this camp");
+      } else {
+        for (GetCampAssignUserOutput obj in list) {
+          if (obj.resourceUserId == empCode) {
+            if (obj.statusRes == 1) {
+              allow = true;
+            }
+          }
+        }
+
+        if (allow) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => ResourceReMappingUpdateScreen(
+                reMappingCampOutput: _resourceReMappingCampOutput!,
+              ),
+            ),
+          );
+        } else {
+          ToastManager.toast("You are not authorise to Conduct this camp");
+        }
+      }
+    } else {
+      ToastManager.toast("You are not authorise to Conduct this camp");
+    }
+    setState(() {});
+  }
+
+  List<ResourceReMappingCampOutput> searchByDescEn(String query) {
+    return campList.where((item) {
+      final desc = item.campId?.toString().toLowerCase() ?? '';
+      return desc.contains(query.toLowerCase());
+    }).toList();
+  }
+
 }
 
 // class ResourceReMappingCampListScreen extends StatefulWidget {

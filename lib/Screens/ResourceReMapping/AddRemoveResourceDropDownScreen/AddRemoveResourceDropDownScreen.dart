@@ -25,6 +25,7 @@ class AddRemoveResourceDropDownScreen extends StatefulWidget {
     required this.reMappingCampOutput,
     required this.onRefreshData,
     required this.empCode,
+    this.onAddSuccess,
   });
 
   List<dynamic> dropDownList = [];
@@ -32,6 +33,7 @@ class AddRemoveResourceDropDownScreen extends StatefulWidget {
   Function(UpdateSubResourceOutput?) onRefreshData;
   ResourceReMappingCampOutput reMappingCampOutput;
   int empCode = 0;
+  Function()? onAddSuccess;
 
   @override
   State<AddRemoveResourceDropDownScreen> createState() =>
@@ -116,12 +118,14 @@ class _AddRemoveResourceDropDownScreenState
     ToastManager.hideLoader();
 
     if (success) {
-      ToastManager.toast("Resource updated successfully");
+      Navigator.pop(context);
+      widget.onRefreshData(selectedSubResource);
+      widget.onAddSuccess?.call();
     } else {
       ToastManager.toast("Resource already exists.");
+      widget.onRefreshData(selectedSubResource);
+      Navigator.pop(context);
     }
-    widget.onRefreshData(selectedSubResource);
-    Navigator.pop(context);
   }
 
   bool removeValidation() {

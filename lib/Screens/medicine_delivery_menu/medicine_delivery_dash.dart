@@ -22,7 +22,7 @@ class MedicineDeliveryDash extends StatefulWidget {
 class _MedicineDeliveryDashState extends State<MedicineDeliveryDash> {
   List<DashboardMenu> list = [
     DashboardMenu.PacketCollection,
-    DashboardMenu.PacketReceive,
+    // DashboardMenu.PacketReceive,
     DashboardMenu.PacketAllocation,
     DashboardMenu.MedicineReturn,
     DashboardMenu.PickupMedicinePacket,
@@ -100,12 +100,12 @@ class _MedicineDeliveryDashState extends State<MedicineDeliveryDash> {
         break;
 
       case DashboardMenu.CTAssignment:
-      case DashboardMenu.PacketReceive:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PacketReceiveScreen()),
-        );
-        break;
+      // case DashboardMenu.PacketReceive:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => PacketReceiveScreen()),
+      //   );
+      //   break;
       case DashboardMenu.D2DTeam:
       case DashboardMenu.TeamCampMapping:
       case DashboardMenu.AppointmentConfirmedList:

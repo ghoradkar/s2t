@@ -51,7 +51,9 @@
       "Bash(Select-Object FullName)",
       "Bash(dir \"D:\\\\s2toperational\\\\s2toperational\")",
       "Bash(findstr /i \"dependent native S2T\")",
-      "PowerShell(Select-String *)"
+      "PowerShell(Select-String *)",
+      "Bash(awk -F'/' '{print $1}')",
+      "Bash(git add *)"
     ]
   }
 }

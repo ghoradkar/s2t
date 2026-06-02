@@ -539,7 +539,12 @@ class _PacketCollectionScreenState extends State<PacketCollectionScreen> {
                 ),
               ),
             ],
-          ).paddingSymmetric(vertical: 12.h, horizontal: 12.w),
+          ).paddingOnly(
+            top: 12.h,
+            bottom: 12.h + MediaQuery.of(context).viewPadding.bottom,
+            left: 12.w,
+            right: 12.w,
+          ),
         ),
       ),
     );

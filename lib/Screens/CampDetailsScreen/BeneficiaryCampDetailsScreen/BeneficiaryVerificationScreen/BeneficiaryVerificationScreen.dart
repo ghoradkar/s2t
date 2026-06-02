@@ -139,12 +139,6 @@ class _BeneficiaryVerificationScreenState
           isShowDeny = false;
         }
       }
-
-      int campCreatedBy = widget.obj.campCreatedBy ?? 0;
-      if (campCreatedBy != empCode) {
-        isShowApprove = false;
-        isShowDeny = false;
-      }
     }
 
     if (dESGID == 77 ||
@@ -280,7 +274,6 @@ class _BeneficiaryVerificationScreenState
                   isShowPhlebotomistName == true
                       ? Row(
                         children: [
-
                           Expanded(
                             child: AppTextField(
                               readOnly: false,
@@ -290,7 +283,7 @@ class _BeneficiaryVerificationScreenState
 
                               inputStyle: TextStyle(
                                 fontFamily: FontConstants.interFonts,
-                                fontSize: 18,
+                                fontSize: 14,
                               ),
                               label: RichText(
                                 text: TextSpan(
@@ -298,7 +291,7 @@ class _BeneficiaryVerificationScreenState
                                   style: TextStyle(
                                     fontFamily: FontConstants.interFonts,
                                     color: kLabelTextColor,
-                                    fontSize: responsiveFont(20),
+                                    fontSize: responsiveFont(14),
                                     fontWeight: FontWeight.w400,
                                   ),
                                   children: <TextSpan>[],
@@ -307,7 +300,7 @@ class _BeneficiaryVerificationScreenState
                               labelStyle: TextStyle(
                                 fontFamily: FontConstants.interFonts,
                                 fontWeight: FontWeight.w400,
-                                fontSize: responsiveFont(20),
+                                fontSize: responsiveFont(14),
                               ),
                               prefixIcon: Image.asset(icMapPin, scale: 4.0),
                             ),
@@ -396,7 +389,9 @@ class _BeneficiaryVerificationScreenState
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(
+                    height: 30 + MediaQuery.of(context).viewPadding.bottom,
+                  ),
                 ],
               ).paddingSymmetric(vertical: 10, horizontal: 12),
             ),
@@ -655,22 +650,28 @@ class _BeneficiaryVerificationScreenState
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Select Photo"),
-          content: Text(""),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextButton(
+                child: const Text("Take a Photo"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _handleFilePick(FileSourceType.camera, isBeneficiary);
+                },
+              ),
+              TextButton(
+                child: const Text("Choose from Photo Library"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _handleFilePick(FileSourceType.gallery, isBeneficiary);
+                },
+              ),
+            ],
+          ),
           actions: [
-            TextButton(
-              child: const Text("Take a Photo"),
-              onPressed: () {
-                Navigator.pop(context);
-                _handleFilePick(FileSourceType.camera, isBeneficiary);
-              },
-            ),
-            TextButton(
-              child: const Text("Choose from Photo Library"),
-              onPressed: () {
-                Navigator.pop(context);
-                _handleFilePick(FileSourceType.gallery, isBeneficiary);
-              },
-            ),
             // TextButton(
             //   child: const Text("PDF"),
             //   onPressed: () {
@@ -817,10 +818,11 @@ class _BeneficiaryVerificationScreenState
       ToastManager.showSuccessPopup(
         context,
         icSuccessIcon,
-        response?.message ?? "",(){
-        Get.back();
-        Get.back();
-      }
+        response?.message ?? "",
+        () {
+          Get.back();
+          Get.back();
+        },
       );
     } else {
       ToastManager.toast(errorMessage);
@@ -844,17 +846,18 @@ class _BeneficiaryVerificationScreenState
             icon: icApproveIcon,
             message: title,
             onYesTap: () {
+              Navigator.pop(context);
               int regdId = widget.obj.regdId ?? 0;
               int campId = widget.obj.campId ?? 0;
 
               insertRejectOrAccept(
                 regdId.toString(),
                 campId.toString(),
-                testToRejectID.toString(),
+                (testToRejectID ?? 0).toString(),
                 reasonDescription,
                 "1",
                 empCode.toString(),
-                reasonId.toString(),
+                (reasonId ?? 0).toString(),
                 otherReasonTextField.text,
               );
             },
@@ -882,6 +885,7 @@ class _BeneficiaryVerificationScreenState
             icon: icDeniedIcon,
             message: title,
             onYesTap: () {
+              Navigator.pop(context);
               int regdId = widget.obj.regdId ?? 0;
               int campId = widget.obj.campId ?? 0;
 

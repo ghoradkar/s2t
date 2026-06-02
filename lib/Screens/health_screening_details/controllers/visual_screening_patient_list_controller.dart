@@ -17,6 +17,7 @@ class VisualScreeningPatientListController extends GetxController {
 
   int _campId = 0;
   int _empCode = 0;
+  String _teamNumber = '0';
 
   @override
   void onInit() {
@@ -38,11 +39,17 @@ class VisualScreeningPatientListController extends GetxController {
 
   Future<void> fetchPatients() async {
     isLoading.value = true;
+    if (_teamNumber == '0' && !DataProvider().getRegularCamp()) {
+      _teamNumber = await _repo.getTeamNumber(
+        campId: _campId,
+        userId: _empCode,
+      );
+    }
     final response = await _repo.getPatientList(
       testId: 6,
       campId: _campId,
       userId: _empCode,
-      teamNumber: '0',
+      teamNumber: _teamNumber,
       isRegularCamp: DataProvider().getRegularCamp(),
     );
     if (response != null && (response.output?.isNotEmpty ?? false)) {

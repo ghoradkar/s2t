@@ -239,7 +239,7 @@ class VisionScreeningDetailsOutput {
       bMIStatus: json['BMIStatus'],
       bMIStatus1: json['BMIStatus1'],
       beneficiaryName: json['BeneficiaryName'],
-      beneficiaryRegdNo: json['BeneficiaryRegdNo'],
+      beneficiaryRegdNo: json['BeneficiaryRegdNo'] != null ? int.tryParse(json['BeneficiaryRegdNo'].toString()) : null,
       bloodGroup: json['BloodGroup'],
       bloodPressure: json['BloodPressure'],
       bloodPressureHigh: json['BloodPressure_High'],

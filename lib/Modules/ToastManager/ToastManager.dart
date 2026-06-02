@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import '../constants/constants.dart';
 import '../constants/fonts.dart';
 import '../constants/images.dart';
@@ -767,7 +766,7 @@ class ToastManager {
           ),
           Image.asset(icon, width: 100.w),
           Visibility(
-            visible: content != null && content!.isNotEmpty,
+            visible: content != null && content.isNotEmpty,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CommonText(

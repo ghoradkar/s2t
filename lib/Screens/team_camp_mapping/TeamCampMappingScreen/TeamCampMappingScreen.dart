@@ -14,8 +14,6 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/team_camp_mapping/TeamDetailsListForAssignView/TeamDetailsListForAssignView.dart';
-import 'package:s2toperational/Screens/team_camp_mapping/TeamsCampTypeWiseTeamView/TeamsCampTypeWiseTeamView.dart';
-import 'package:s2toperational/Screens/team_camp_mapping/TeamsDetailsListForAssignView/TeamsDetailsListForAssignView.dart';
 import '../../../Modules/DispatchGroup/DispatchGroup.dart';
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
@@ -37,6 +35,8 @@ import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
+
 // import '../../../Views/TeamDetailsListForAssignView/TeamDetailsListForAssignView.dart';
 // import '../../../Views/TeamsCampTypeWiseTeamView/TeamsCampTypeWiseTeamView.dart';
 // import '../../../Views/TeamsDetailsListForAssignView/TeamsDetailsListForAssignView.dart';
@@ -92,6 +92,7 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
 
   bool showTeamDropDown = true;
   bool assignButtonDisabled = false;
+  bool _openTeamBottomSheet = false;
 
   @override
   void initState() {
@@ -326,7 +327,8 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.33,
+          height: MediaQuery.of(context).size.width * 1.33 +
+              MediaQuery.of(context).viewPadding.bottom,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -352,6 +354,7 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
                 getAllDetails();
               } else if (dropDownType == DropDownTypeMenu.SelectTeam) {
                 selectedTeam = p0;
+                _openTeamBottomSheet = true;
                 getTeamsList();
               } else if (dropDownType == DropDownTypeMenu.AssignResources) {
                 selectedAssignResources = p0;
@@ -401,6 +404,7 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
   }
 
   void getAllDetails() {
+    apiGroup.reset();
     apiGroup.enter();
     apiGroup.enter();
     apiGroup.enter();
@@ -563,32 +567,32 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
     apiGroup.leave();
   }
 
-  void assignedTeamDelete(String member1, String teamId) {
+  void assignedTeamDelete(
+    String member1,
+    String teamId, {
+    String userId = "0",
+  }) {
     ToastManager().showConfirmationDialog(
       context: context,
-      message: "Do you really want to remove $member1 Team?",
+      message: "Do you really want to remove $member1?",
       didSelectYes: (isYes) {
         if (isYes) {
           Navigator.pop(context);
-
-          debugPrint("User pressed YES");
-          removeTeamMapping(teamId);
+          removeTeamMapping(teamId, userId: userId);
         } else {
           Navigator.pop(context);
-
-          debugPrint("User pressed NO");
         }
       },
     );
   }
 
-  void removeTeamMapping(String teamNumber) {
+  void removeTeamMapping(String teamNumber, {String userId = "0"}) {
     Map<String, String> params = {
       "campid": selectedCampID?.campId.toString() ?? "0",
       "RemovedBy": empCode.toString(),
-      "Userid": "0",
+      "Userid": userId,
       "TeamId": teamNumber,
-      "IsTeam": "1",
+      "IsTeam": type == 1 ? "1" : "0",
     };
 
     apiManager.removeTeamMappingAPI(params, apiRemoveTeamMappingCallBack);
@@ -654,7 +658,10 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
   ) async {
     ToastManager.hideLoader();
     teamList = response?.output ?? [];
-    showAppointmentTeamBottomSheet();
+    if (_openTeamBottomSheet) {
+      _openTeamBottomSheet = false;
+      showAppointmentTeamBottomSheet();
+    }
   }
 
   void getPhleboList() {
@@ -702,10 +709,12 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
     ToastManager.showLoader();
     Map<String, String> params = {
       "DesgId": selectedAssignResources?.desgId.toString() ?? "0",
-      "LabCode": selectedLab?.labCode.toString() ?? "0",
+      "LabCode": "0",
       "CampDate": fromDate,
+      "DISTLGDCODE": dISTLGDCODE.toString(),
+      "USERID": empCode.toString(),
     };
-    apiManager.getDeOpListAPI(params, apiDoctorCallBack);
+    apiManager.getDoctorListClusterAPI(params, apiDoctorCallBack);
   }
 
   void apiDoctorCallBack(
@@ -782,28 +791,144 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      constraints: const BoxConstraints(minWidth: double.infinity),
-      backgroundColor: Colors.white,
-      isDismissible: true,
-      enableDrag: true,
-      builder: (BuildContext context) {
-        return Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.38,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: TeamsCampTypeWiseTeamView(
-            list: teamList,
-            onTapTeam: (p0) {
-              refreshFlag = 1;
-              submitData();
-            },
-          ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        TeamsCampTypeWiseOutput? tempSelected;
+        return StatefulBuilder(
+          builder: (c, sheetState) {
+            return SelectionBottomSheet<TeamsCampTypeWiseOutput, int>(
+              title: 'Select Team',
+              items: teamList,
+              selectedValue: tempSelected?.teamid,
+              valueFor: (item) => item.teamid ?? 0,
+              labelFor:
+                  (item) =>
+                      '${item.teamid ?? ''} ${item.teamname ?? ''} ${item.member1 ?? ''} ${item.member2 ?? ''}',
+              showSearch: true,
+              height: MediaQuery.of(ctx).size.height * 0.7,
+              padding: EdgeInsets.only(
+                top: responsiveHeight(20),
+                left: responsiveHeight(20),
+                right: responsiveHeight(20),
+                bottom: responsiveHeight(20),
+              ),
+              titleTextStyle: TextStyle(
+                fontSize: responsiveFont(16),
+                fontWeight: FontWeight.normal,
+                fontFamily: FontConstants.interFonts,
+              ),
+              titleBottomSpacing: responsiveHeight(16),
+              showRadio: false,
+              useInkWell: false,
+              itemBuilder: (context, item, isSelected) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 8.h),
+                  decoration: BoxDecoration(
+                    color: isSelected ? kTextOutlineColor : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color:
+                          isSelected
+                              ? const Color(0xFF3B5998)
+                              : Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.h,
+                          horizontal: 16.w,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomRight,
+                            end: Alignment.topLeft,
+                            colors: [
+                              kFirstAppBarcolor.withValues(alpha: 0.4),
+                              kFirstAppBarcolor,
+                            ],
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          '( ${item.teamname ?? 'NA'} )',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
+                      ),
+                      if (item.member1 != null && item.member1!.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 6.h,
+                          ),
+                          child: Text(
+                            item.member1!,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontConstants.interFonts,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ),
+                      if (item.member1 != null && item.member2 != null)
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Divider(
+                            height: 1,
+                            color:
+                                isSelected
+                                    ? Colors.white38
+                                    : Colors.grey.shade300,
+                          ),
+                        ),
+                      if (item.member2 != null && item.member2!.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 6.h,
+                          ),
+                          child: Text(
+                            item.member2!,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontConstants.interFonts,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+              onItemTap: (item) {
+                sheetState(() => tempSelected = item);
+                for (final t in teamList) {
+                  t.selected = false;
+                }
+                item.selected = true;
+                Navigator.pop(ctx);
+                refreshFlag = 1;
+                submitData();
+              },
+            );
+          },
         );
       },
     ).whenComplete(() {
@@ -815,28 +940,137 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      constraints: const BoxConstraints(minWidth: double.infinity),
-      backgroundColor: Colors.white,
-      isDismissible: true,
-      enableDrag: true,
-      builder: (BuildContext context) {
-        return Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.38,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: TeamsDetailsListForAssignView(
-            list: teamsList,
-            onTapTeam: (p0) {
-              selectedTeams = p0;
-              setState(() {});
-            },
-          ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        TeamDetailsListForAssignOutput? tempSelected = selectedTeams;
+        return StatefulBuilder(
+          builder: (c, sheetState) {
+            return SelectionBottomSheet<TeamDetailsListForAssignOutput, String>(
+              title: 'Select Team',
+              items: teamsList,
+              selectedValue: tempSelected?.teamNumber,
+              valueFor: (item) => item.teamNumber ?? '',
+              labelFor: (item) => item.teamName ?? 'NA',
+              height: MediaQuery.of(ctx).size.height * 0.7,
+              padding: EdgeInsets.only(
+                top: responsiveHeight(20),
+                left: responsiveHeight(20),
+                right: responsiveHeight(20),
+                bottom: responsiveHeight(20),
+              ),
+              titleTextStyle: TextStyle(
+                fontSize: responsiveFont(16),
+                fontWeight: FontWeight.normal,
+                fontFamily: FontConstants.interFonts,
+              ),
+              titleBottomSpacing: responsiveHeight(16),
+              showRadio: false,
+              useInkWell: false,
+              itemBuilder: (context, item, isSelected) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 8.h),
+                  decoration: BoxDecoration(
+                    color: isSelected ? kTextOutlineColor : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color:
+                          isSelected
+                              ? const Color(0xFF3B5998)
+                              : Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.h,
+                          horizontal: 16.w,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomRight,
+                            end: Alignment.topLeft,
+                            colors: [
+                              kFirstAppBarcolor.withValues(alpha: 0.4),
+                              kFirstAppBarcolor,
+                            ],
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          '( ${item.teamName ?? 'NA'} )',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                            fontFamily: FontConstants.interFonts,
+                          ),
+                        ),
+                      ),
+                      if (item.member1 != null && item.member1!.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 6.h,
+                          ),
+                          child: Text(
+                            item.member1!,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontConstants.interFonts,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ),
+                      if (item.member1 != null && item.member2 != null)
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Divider(
+                            height: 1,
+                            color:
+                                isSelected
+                                    ? Colors.white38
+                                    : Colors.grey.shade300,
+                          ),
+                        ),
+                      if (item.member2 != null && item.member2!.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 6.h,
+                          ),
+                          child: Text(
+                            item.member2!,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontConstants.interFonts,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+              onItemTap: (item) {
+                sheetState(() => tempSelected = item);
+                selectedTeams = item;
+                setState(() {});
+                Navigator.pop(ctx);
+              },
+            );
+          },
         );
       },
     ).whenComplete(() {
@@ -852,21 +1086,15 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      constraints: const BoxConstraints(minWidth: double.infinity),
       backgroundColor: Colors.white,
       isDismissible: true,
       enableDrag: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (BuildContext context) {
-        return Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.width * 1.38,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.75,
           child: TeamDetailsListForAssignView(
             titleString: titleString,
             list: list,
@@ -1128,20 +1356,20 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
             apiGroup.enter();
             apiGroup.enter();
             apiGroup.enter();
-            apiGroup.enter();
             getPhleboDetailsList();
             getDeopDetailsList();
             getDoctorDetailsList();
             getFlexiPhleboDetailsList();
             getFlexiDoctorDetailsList();
             getMMUDoctorDetailsList();
-            getTeamsList();
             getTeamDetailsList();
             apiGroup.notify(() {
               apiGroup.reset();
               debugPrint("All APIs Completed!");
               ToastManager.hideLoader();
               setState(() {});
+              _openTeamBottomSheet = true;
+              getTeamsList();
             });
           } else {
             getAllDetails();
@@ -1619,7 +1847,7 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
               AssignedTeamsView(
                 assignedTeamsList: assignedTeamsList,
                 deleteDidPressed: (deleteItem) {
-                  type = 0;
+                  type = 1;
                   assignedTeamDelete(
                     deleteItem.member1 ?? "",
                     deleteItem.teamNumber ?? "",
@@ -1630,7 +1858,11 @@ class _TeamCampMappingScreenState extends State<TeamCampMappingScreen> {
                 list: assignedDoctorsList,
                 deleteDidPressed: (deleteItem) {
                   type = 2;
-                  assignedTeamDelete(deleteItem.memberName ?? "", "0");
+                  assignedTeamDelete(
+                    deleteItem.memberName ?? "",
+                    deleteItem.teamNumber ?? "0",
+                    userId: deleteItem.userID?.toString() ?? "0",
+                  );
                 },
               ),
               AssignedFlexiDoctorsView(

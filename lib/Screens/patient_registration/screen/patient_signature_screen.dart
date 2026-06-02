@@ -32,26 +32,26 @@ class PatientSignatureScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // ── Signature Not Applicable checkbox ──────────────────────
-                _SectionCard(
-                  child: Obx(
-                    () => CheckboxListTile(
-                      value: !c.isSignatureApplicable.value,
-                      onChanged:
-                          (v) => c.onSignatureApplicableToggled(v ?? false),
-                      title: CommonText(
-                        text: 'Signature Not Applicable',
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w500,
-                        textColor: kTextColor,
-                        textAlign: TextAlign.start,
-                      ),
-                      activeColor: kPrimaryColor,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.h),
+                // _SectionCard(
+                //   child: Obx(
+                //     () => CheckboxListTile(
+                //       value: !c.isSignatureApplicable.value,
+                //       onChanged:
+                //           (v) => c.onSignatureApplicableToggled(v ?? false),
+                //       title: CommonText(
+                //         text: 'Signature Not Applicable',
+                //         fontSize: 13.sp,
+                //         fontWeight: FontWeight.w500,
+                //         textColor: kTextColor,
+                //         textAlign: TextAlign.start,
+                //       ),
+                //       activeColor: kPrimaryColor,
+                //       controlAffinity: ListTileControlAffinity.leading,
+                //       contentPadding: EdgeInsets.zero,
+                //     ),
+                //   ),
+                // ),
+                SizedBox(height: 4.h),
 
                 // ── Signature Pad ──────────────────────────────────────────
                 Obx(() {

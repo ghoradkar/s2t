@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
@@ -38,6 +41,7 @@ class BasicHealthInfoFormController extends GetxController {
   final heightCtrl = TextEditingController();
   final weightCtrl = TextEditingController();
   final bmiCtrl = TextEditingController();
+  String heightError = '';
 
   // BMI Status: 0=Underweight, 1=Normal, 2=Overweight
   int bmiStatusIndex = -1;
@@ -91,8 +95,15 @@ class BasicHealthInfoFormController extends GetxController {
 
   bool get isSugarConnected => _sugarDevice != null || isSugarDataReceived.value;
 
+  String _weightDeviceName = '';
+  String _sugarDeviceName = '';
 
   int _empCode = 0;
+
+  // ── Machine availability flags (from GetMachineAvailabilityFlag_V1) ────────
+  final isWeightMachineAvailable = false.obs;
+  final isBPMachineAvailable = false.obs;
+  final isSugarDeviceAvailable = false.obs;
 
   bool get isLive => _api.apiMode == APIMode.Live;
 
@@ -115,6 +126,7 @@ class BasicHealthInfoFormController extends GetxController {
     _empCode = userData?.empCode ?? 0;
     _prefillFromListItem();
     _fetchPatient();
+    _fetchMachineStatus();
   }
 
   @override
@@ -182,6 +194,33 @@ class BasicHealthInfoFormController extends GetxController {
     }
     // Silent on failure — patient details already filled from list item
     update();
+  }
+
+  Future<void> _fetchMachineStatus() async {
+    try {
+      final url = Uri.parse(
+        '${APIManager.kD2DBaseURL}${APIConstants.kGetMachineAvailabilityFlagV1}',
+      );
+      final ioClient = _api.getInstanceOfIoClient();
+      final response = await ioClient.post(
+        url,
+        body: {'USERID': _empCode.toString()},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      ioClient.close();
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      if (decoded['status']?.toString().toLowerCase() == 'success') {
+        final output = (decoded['output'] as List?)?.first as Map<String, dynamic>?;
+        if (output != null) {
+          isWeightMachineAvailable.value =
+              output['IsWeightingMachineAvailable']?.toString() == '1';
+          isBPMachineAvailable.value =
+              output['IsBPMachineAvailable']?.toString() == '1';
+          isSugarDeviceAvailable.value =
+              output['IsSugarDeviceAvailable']?.toString() == '1';
+        }
+      }
+    } catch (_) {}
   }
 
   void _prefill() {
@@ -318,6 +357,18 @@ class BasicHealthInfoFormController extends GetxController {
   // ── BMI auto-calculate ──────────────────────────────────────────────────
 
   void recalculateBMI() {
+    final text = heightCtrl.text.trim();
+    if (text.isNotEmpty) {
+      final hVal = double.tryParse(text);
+      if (hVal == null || hVal < 61 || hVal > 243) {
+        heightError = 'Please enter height between 61 to 243 cm';
+      } else {
+        heightError = '';
+      }
+    } else {
+      heightError = '';
+    }
+
     final h = double.tryParse(heightCtrl.text);
     final w = double.tryParse(weightCtrl.text);
     if (h != null && h > 0 && w != null && w > 0) {
@@ -526,14 +577,14 @@ class BasicHealthInfoFormController extends GetxController {
         'DrugSinceYear': drugsIndex == 1 ? drugsYearCtrl.text.trim() : '0',
         'Temperature': '0',
         'SPO2': '0',
-        'AppVersion': '9.63',
-        'isBPManual': '1',
-        'IsFromWeightMachine': '0',
-        'IsFromSugarDevice': '0',
-        'IsFromBloodPressureDevice': '0',
-        'NameOfWeightMachine': '',
-        'NameOfSugarDevice': '',
-        'NameOfBloodPressureDevice': '',
+        'AppVersion': '9.79',
+        'isBPManual': bpController.getLastReading() != null ? '0' : '1',
+        'IsFromWeightMachine': isWeightDataReceived.value ? '1' : '0',
+        'IsFromSugarDevice': isSugarDataReceived.value ? '1' : '0',
+        'IsFromBloodPressureDevice': bpController.getLastReading() != null ? '0' : '1',
+        'NameOfWeightMachine': _weightDeviceName,
+        'NameOfSugarDevice': _sugarDeviceName,
+        'NameOfBloodPressureDevice': bpController.savedDeviceMac.value,
         'FastingHrs': fastingHrs,
       },
       _onSaveResult,
@@ -570,6 +621,7 @@ class BasicHealthInfoFormController extends GetxController {
     required String deviceNameStr,
   }) {
     weightCtrl.text = weight;
+    _weightDeviceName = deviceNameStr;
     if (bmi.isNotEmpty) {
       bmiCtrl.text = bmi;
       final bmiVal = double.tryParse(bmi);
@@ -595,6 +647,7 @@ class BasicHealthInfoFormController extends GetxController {
     final parts = glucose.split(' ');
     final numericValue = parts.isNotEmpty ? parts[0] : glucose;
     bloodSugarRCtrl.text = numericValue;
+    _sugarDeviceName = deviceNameStr;
     isSugarDataReceived.value = true;
     update();
   }
@@ -618,6 +671,10 @@ class BasicHealthInfoFormController extends GetxController {
     }
     if (heightCtrl.text.trim().isEmpty) {
       ToastManager.toast('Please enter height');
+      return false;
+    }
+    if (heightError.isNotEmpty) {
+      ToastManager.toast(heightError);
       return false;
     }
     if (weightCtrl.text.trim().isEmpty) {

@@ -13,10 +13,16 @@ import '../../../../Modules/utilities/SizeConfig.dart';
 import '../BeneficiaryVerificationScreen/BeneficiaryVerificationScreen.dart';
 
 class BeneficiaryCampRow extends StatelessWidget {
-  BeneficiaryCampRow({super.key, required this.index, required this.obj});
+  BeneficiaryCampRow({
+    super.key,
+    required this.index,
+    required this.obj,
+    this.onRefresh,
+  });
 
   int index = 0;
   BeneficiaryWorkerOutput obj;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +168,7 @@ class BeneficiaryCampRow extends StatelessWidget {
                                               obj: obj,
                                             ),
                                   ),
-                                );
+                                ).then((_) => onRefresh?.call());
                               },
                               child: Image.asset(icViewIcon,width: 24.w,height: 24.h,),
                             ),

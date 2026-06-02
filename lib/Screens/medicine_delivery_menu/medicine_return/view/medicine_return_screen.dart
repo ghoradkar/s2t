@@ -609,7 +609,9 @@ class _MedicineReturnScreenState extends State<MedicineReturnScreen> {
                       controller.submitSelected(context);
                     },
                   ),
-                ).paddingOnly(bottom: 10.h),
+                ).paddingOnly(
+                  bottom: 10.h + MediaQuery.of(context).viewPadding.bottom,
+                ),
               ),
             ],
           ),

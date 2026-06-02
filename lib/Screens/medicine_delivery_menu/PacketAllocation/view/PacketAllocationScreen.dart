@@ -253,7 +253,7 @@ class _PacketAllocationScreenState extends State<PacketAllocationScreen> {
               showRadioCampButton(),
               Positioned(
                 top: 64,
-                bottom: 8,
+                bottom: 8 + MediaQuery.of(context).viewPadding.bottom,
                 left: 8,
                 right: 8,
                 child:

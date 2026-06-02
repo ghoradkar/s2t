@@ -224,7 +224,7 @@ class RegularPatientRegistrationRepository {
   /// Submits fingerprint image (File1) and signature image (File2) to the server.
   ///
   /// [isSignatureApplicable] → `IsSignature` field ("1"/"0")
-  /// [isFingerPrintIssue]    → `IsDeviceIssue` field ("0"/"1") — intentionally inverted
+  /// [isFingerPrintIssue]    → `IsDeviceIssue` field: true→"1" (has issue), false→"0" (no issue)
   Future<Map<String, dynamic>?> insertSignatureAndThumb({
     required String regdId,
     required String siteId,
@@ -238,6 +238,12 @@ class RegularPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kWebservicesBaseURL}${APIConstants.kInsertSignatureandThumbDetails}',
     );
+    // ignore: avoid_print
+    print('[insertSignatureAndThumb] URL: $url');
+    // ignore: avoid_print
+    print('[insertSignatureAndThumb] RegdId=$regdId SiteId=$siteId CampId=$campId IsSignature=${isSignatureApplicable ? "1" : "0"} IsDeviceIssue=${isFingerPrintIssue ? "1" : "0"} CreatedBy=$empCode');
+    // ignore: avoid_print
+    print('[insertSignatureAndThumb] file1=${thumbImageFile?.path ?? "null"} file2=${signatureImageFile?.path ?? "null"}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final request = http.MultipartRequest('POST', url);
@@ -245,7 +251,7 @@ class RegularPatientRegistrationRepository {
       request.fields['SiteId'] = siteId;
       request.fields['CampId'] = campId;
       request.fields['IsSignature'] = isSignatureApplicable ? '1' : '0';
-      request.fields['IsDeviceIssue'] = isFingerPrintIssue ? '0' : '1';
+      request.fields['IsDeviceIssue'] = isFingerPrintIssue ? '1' : '0';
       request.fields['CreatedBy'] = empCode;
 
       if (thumbImageFile != null) {
@@ -261,8 +267,12 @@ class RegularPatientRegistrationRepository {
 
       final streamed = await ioClient.send(request);
       final response = await http.Response.fromStream(streamed);
+      // ignore: avoid_print
+      print('[insertSignatureAndThumb] response status=${response.statusCode} body=${response.body}');
       return json.decode(response.body) as Map<String, dynamic>?;
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[insertSignatureAndThumb] error=$e');
       return null;
     } finally {
       ioClient.close();

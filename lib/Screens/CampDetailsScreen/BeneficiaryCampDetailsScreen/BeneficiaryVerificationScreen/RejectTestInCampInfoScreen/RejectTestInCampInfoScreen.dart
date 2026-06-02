@@ -118,17 +118,6 @@ class _RejectTestInCampInfoScreenState
 
             isExpaneded == true ? const SizedBox(height: 10) : Container(),
 
-            // isExpaneded == true
-            //     ? AppDropdownTextfield(
-            //       icon: icScreeningTests,
-            //       titleHeaderString: "Select Test to Reject*",
-            //       valueString: widget.testToRejectString,
-            //       onTap: () {
-            //         widget.onTestToRejectTap();
-            //         // getScreeningTestAPI();
-            //       },
-            //     )
-            //     : Container(),
             isExpaneded == true
                 ? AppTextField(
                   readOnly: true,
@@ -158,115 +147,96 @@ class _RejectTestInCampInfoScreenState
                   labelStyle: TextStyle(
                     fontFamily: FontConstants.interFonts,
                     fontWeight: FontWeight.w400,
-                    fontSize: responsiveFont(214),
+                    fontSize: responsiveFont(14),
                   ),
-                  prefixIcon: Image.asset(icScreeningTests),
+                  prefixIcon: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Image.asset(icScreeningTests),
+                  ),
                   suffixIcon: Icon(Icons.keyboard_arrow_down),
                 )
                 : Container(),
 
             isExpaneded == true ? const SizedBox(height: 8) : Container(),
-            // isExpaneded == true
-            //     ? Padding(
-            //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            //       child: AppDropdownTextfield(
-            //         icon: icScreeningTests,
-            //         titleHeaderString: "Reason*",
-            //         valueString: widget.reasonDescription,
-            //         onTap: () {
-            //           widget.onReasonTap();
-            //           // getScreeningTestAPI();
-            //         },
-            //       ),
-            //     )
-            //     : Container(),
 
             isExpaneded == true
                 ? AppTextField(
-              readOnly: true,
-              onTap: () {
-                widget.onReasonTap();
-              },
-              controller: TextEditingController(
-                text: widget.reasonDescription,
-              ),
-
-              inputStyle: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 14,
-              ),
-              label: RichText(
-                text: TextSpan(
-                  text: 'Reason*',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    color: kLabelTextColor,
-                    fontSize: responsiveFont(14),
-                    fontWeight: FontWeight.w400,
+                  readOnly: true,
+                  onTap: () {
+                    widget.onReasonTap();
+                  },
+                  controller: TextEditingController(
+                    text: widget.reasonDescription,
                   ),
-                  children: <TextSpan>[],
-                ),
-              ),
-              labelStyle: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontWeight: FontWeight.w400,
-                fontSize: responsiveFont(14),
-              ),
-              prefixIcon: Image.asset(icScreeningTests),
-              suffixIcon: Icon(Icons.keyboard_arrow_down),
-            )
+
+                  inputStyle: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontSize: 14,
+                  ),
+                  label: RichText(
+                    text: TextSpan(
+                      text: 'Reason*',
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        color: kLabelTextColor,
+                        fontSize: responsiveFont(14),
+                        fontWeight: FontWeight.w400,
+                      ),
+                      children: <TextSpan>[],
+                    ),
+                  ),
+                  labelStyle: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontWeight: FontWeight.w400,
+                    fontSize: responsiveFont(14),
+                  ),
+                  prefixIcon: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Image.asset(icScreeningTests),
+                  ),
+                  suffixIcon: Icon(Icons.keyboard_arrow_down),
+                )
                 : Container(),
 
-            // isExpaneded == true ? const SizedBox(height: 10) : Container(),
             isExpaneded == true
                 ? showOtherTextField == true
                     ? const SizedBox(height: 8)
                     : Container()
                 : Container(),
 
-            // isExpaneded == true
-            //     ? showOtherTextField == true
-            //         ? Padding(
-            //           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            //           child: AppIconTextfield(
-            //             icon: icScreeningTests,
-            //             titleHeaderString: "Other Descrption",
-            //             controller: widget.otherReasonTextField,
-            //           ),
-            //         )
-            //         : Container()
-            //     : Container(),
             isExpaneded == true
                 ? showOtherTextField == true
-                ?  AppTextField(
-              controller: TextEditingController(
-                text: widget.otherReasonTextField.text,
-              ),
+                    ? AppTextField(
+                      controller: TextEditingController(
+                        text: widget.otherReasonTextField.text,
+                      ),
 
-              inputStyle: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 18,
-              ),
-              label: RichText(
-                text: TextSpan(
-                  text: 'Other Descrption',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    color: kLabelTextColor,
-                    fontSize: responsiveFont(20),
-                    fontWeight: FontWeight.w400,
-                  ),
-                  children: <TextSpan>[],
-                ),
-              ),
-              labelStyle: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontWeight: FontWeight.w400,
-                fontSize: responsiveFont(20),
-              ),
-              prefixIcon: Image.asset(icScreeningTests, scale: 4.0),
-
-            ) : Container()
+                      inputStyle: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontSize: 14,
+                      ),
+                      label: RichText(
+                        text: TextSpan(
+                          text: 'Other Description',
+                          style: TextStyle(
+                            fontFamily: FontConstants.interFonts,
+                            color: kLabelTextColor,
+                            fontSize: responsiveFont(14),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: <TextSpan>[],
+                        ),
+                      ),
+                      labelStyle: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontWeight: FontWeight.w400,
+                        fontSize: responsiveFont(14),
+                      ),
+                      prefixIcon: Image.asset(icScreeningTests, scale: 4.0),
+                    )
+                    : Container()
                 : Container(),
 
             isExpaneded == true

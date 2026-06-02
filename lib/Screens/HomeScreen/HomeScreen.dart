@@ -487,7 +487,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.AppointmentConfirmedList);
       menuList.add(DashboardMenu.PacketAllocation);
       menuList.add(DashboardMenu.DailyWorkDashboard);
-      menuList.add(DashboardMenu.PacketReceive);
+      // menuList.add(DashboardMenu.PacketReceive);
       menuList.add(DashboardMenu.TeamCampMapping);
       menuList.add(DashboardMenu.CampCreation);
       menuList.add(DashboardMenu.D2DTeam);
@@ -516,7 +516,7 @@ class _HomeScreenState extends State<HomeScreen> {
       menuList.add(DashboardMenu.DailyWorkDashboard);
       menuList.add(DashboardMenu.AppointmentConfirmedList);
       menuList.add(DashboardMenu.PacketAllocation);
-      menuList.add(DashboardMenu.PacketReceive);
+      // menuList.add(DashboardMenu.PacketReceive);
       menuList.add(DashboardMenu.PacketCollection);
       menuList.add(DashboardMenu.CampCreation);
       menuList.add(DashboardMenu.CTAssignment);
@@ -742,12 +742,12 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (context) => const CTAssignmentScreen()),
         );
         break;
-      case DashboardMenu.PacketReceive:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const PacketReceiveScreen()),
-        );
-        break;
+      // case DashboardMenu.PacketReceive:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const PacketReceiveScreen()),
+      //   );
+      //   break;
       case DashboardMenu.D2DTeam:
         Navigator.push(
           context,

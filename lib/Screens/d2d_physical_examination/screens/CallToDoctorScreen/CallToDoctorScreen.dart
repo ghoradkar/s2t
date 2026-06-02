@@ -298,6 +298,7 @@ class CallToDoctorScreen extends StatelessWidget {
                             itemCount: ctrl.beneficiaryList.length,
                             itemBuilder: (context, index) {
                               final obj = ctrl.beneficiaryList[index];
+                              final isGreen = obj.peStatus == "1";
                               return _BeneficiaryRow(
                                 index: index,
                                 name: obj.englishName ?? "",
@@ -308,7 +309,8 @@ class CallToDoctorScreen extends StatelessWidget {
                                   obj.peStatus,
                                   obj.doctorMappedStatus,
                                 ),
-                                onToggle: () => ctrl.toggleCheck(index),
+                                showCheckbox: !isGreen,
+                                onToggle: isGreen ? null : () => ctrl.toggleCheck(index),
                               );
                             },
                           ),
@@ -489,7 +491,8 @@ class _BeneficiaryRow extends StatelessWidget {
   final String assignedDoctor;
   final bool isChecked;
   final Color bgColor;
-  final VoidCallback onToggle;
+  final bool showCheckbox;
+  final VoidCallback? onToggle;
 
   const _BeneficiaryRow({
     required this.index,
@@ -498,6 +501,7 @@ class _BeneficiaryRow extends StatelessWidget {
     required this.assignedDoctor,
     required this.isChecked,
     required this.bgColor,
+    required this.showCheckbox,
     required this.onToggle,
   });
 
@@ -513,16 +517,18 @@ class _BeneficiaryRow extends StatelessWidget {
           children: [
             SizedBox(
               width: 36.w,
-              child: Checkbox(
-                value: isChecked,
-                activeColor: kPrimaryColor,
-                onChanged: (_) => onToggle(),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: const VisualDensity(
-                  horizontal: -4,
-                  vertical: -4,
-                ),
-              ),
+              child: showCheckbox
+                  ? Checkbox(
+                      value: isChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (_) => onToggle?.call(),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: const VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
             Expanded(
               flex: 3,

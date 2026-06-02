@@ -56,7 +56,8 @@ class _HealthScreeningPatientListScreenState
     controller.loadData(
       testId: widget.testId,
       campId: widget.campID,
-      teamNumber: '0',
+      siteDetailId: widget.siteDetailId,
+      teamNumber: widget.teamid.toString(),
       isRegularCamp: DataProvider().getRegularCamp(),
     );
   }
