@@ -72,7 +72,10 @@
       "Bash(flutter *)",
       "Bash(mkdir -p /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks)",
       "Bash(cp -R \"/Users/ganeshshirole/Documents/kiran_projects/s2t_operational/OmeronDeviceSwift/OmeronDeviceSwift/StaticLibrary/OmronConnectivityLibrary.xcframework\" /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks/)",
-      "Bash(cp -R \"/Users/ganeshshirole/Documents/kiran_projects/s2t_operational/OmeronDeviceSwift/OmeronDeviceSwift/StaticLibrary/OmronConnectivityLibraryAssets.bundle\" /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks/)"
+      "Bash(cp -R \"/Users/ganeshshirole/Documents/kiran_projects/s2t_operational/OmeronDeviceSwift/OmeronDeviceSwift/StaticLibrary/OmronConnectivityLibraryAssets.bundle\" /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks/)",
+      "Bash(git config *)",
+      "Bash(git remote *)",
+      "Bash(git push *)"
     ]
   }
 }
