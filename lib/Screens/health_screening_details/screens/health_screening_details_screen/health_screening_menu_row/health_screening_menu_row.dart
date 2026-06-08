@@ -67,6 +67,9 @@ class HealthScreeningMenuRow extends StatelessWidget {
       case HealthScreeningDetailsMenu.ScreeningStatus:
         icon = icScreeningStatus;
         break;
+      case HealthScreeningDetailsMenu.Acknowledgement:
+        icon = icAcknowledgement;
+        break;
       case HealthScreeningDetailsMenu.CampClosing:
         icon = icCampClosing;
         break;
@@ -104,6 +107,9 @@ class HealthScreeningMenuRow extends StatelessWidget {
     switch (dashboardMenu) {
       case HealthScreeningDetailsMenu.ScreeningStatus:
         title = "Screening Status";
+        break;
+      case HealthScreeningDetailsMenu.Acknowledgement:
+        title = "RationCard Acknowledgement";
         break;
       case HealthScreeningDetailsMenu.CampClosing:
         title = "Camp Closing";

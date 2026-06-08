@@ -49,6 +49,7 @@ class HealthScreeningDetailsController extends GetxController {
       menuList.add(HealthScreeningDetailsMenu.BasicHealthInfo);
       menuList.add(HealthScreeningDetailsMenu.SampleCollection);
       menuList.add(HealthScreeningDetailsMenu.UrineSampleCollection);
+      menuList.add(HealthScreeningDetailsMenu.Acknowledgement);
 
       if (!DataProvider().getRegularCamp()) {
         menuList.add(HealthScreeningDetailsMenu.D2DPhysicalExamination);

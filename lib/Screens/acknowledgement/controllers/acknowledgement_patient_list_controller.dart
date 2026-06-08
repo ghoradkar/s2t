@@ -19,6 +19,7 @@ class AcknowledgementPatientListController extends GetxController {
   final int campId;
   final int siteDetailId;
   final String districtName;
+  final String testId;
 
   int empCode = 0;
 
@@ -26,6 +27,7 @@ class AcknowledgementPatientListController extends GetxController {
     required this.campId,
     required this.siteDetailId,
     required this.districtName,
+    this.testId = '9',
   });
 
   @override
@@ -49,6 +51,7 @@ class AcknowledgementPatientListController extends GetxController {
       campId: campId,
       userId: empCode,
       teamId: teamId,
+      testId: testId,
     );
     if (response != null && response.status?.toLowerCase() == 'success') {
       patientList.assignAll(response.output ?? []);

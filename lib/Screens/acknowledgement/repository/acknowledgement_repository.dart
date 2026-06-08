@@ -108,6 +108,7 @@ class AcknowledgementRepository {
     required int campId,
     required int userId,
     required String teamId,
+    String testId = '9',
   }) async {
     AcknowledgementPatientListResponse? result;
 
@@ -121,7 +122,7 @@ class AcknowledgementRepository {
     final params = <String, String>{
       'EmpCode': campId.toString(),
       'DistrictId': '0',
-      'TestId': '9',
+      'TestId': testId,
       'UserId': userId.toString(),
     };
     if (isD2D) params['TeamId'] = teamId;

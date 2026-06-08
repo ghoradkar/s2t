@@ -287,6 +287,7 @@ class RegularPatientRegistrationRepository {
     required String bocwDependentId,
     required String rationCardNo,
     required File photoFile,
+    String rcId = '0',
   }) async {
     final url = Uri.parse(
       '${APIManager.kWebservicesBaseURL}${APIConstants.kInsertRationCardDetails}',
@@ -298,7 +299,7 @@ class RegularPatientRegistrationRepository {
       request.fields['UserId'] = empCode;
       request.fields['Bocw_Dependent_Id'] = bocwDependentId;
       request.fields['RationCardNo'] = rationCardNo;
-      request.fields['RCID'] = '0';
+      request.fields['RCID'] = rcId;
       request.files.add(
         await http.MultipartFile.fromPath('RationCardImage', photoFile.path),
       );

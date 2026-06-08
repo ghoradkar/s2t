@@ -102,6 +102,7 @@ enum HealthScreeningDetailsMenu {
   LungFunctionTest,
   AudioScreeningTest,
   VisualScreeningTest,
+  Acknowledgement,
 }
 
 enum APIMode { Live, Beta }
