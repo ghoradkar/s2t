@@ -53,7 +53,22 @@
       "Bash(findstr /i \"dependent native S2T\")",
       "PowerShell(Select-String *)",
       "Bash(awk -F'/' '{print $1}')",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(Get-ChildItem D:\\\\s2toperational\\\\getx_migration_estimation_s2t_operational *)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\payment_and_invoice\" -Recurse -Force | Select-Object FullName | ForEach-Object { $_.FullName -replace [regex]::Escape\\(\"D:\\\\s2toperational\\\\s2toperational\\\\\"\\), \"\" })",
+      "Bash(Get-ChildItem *)",
+      "Bash(Find-Item *)",
+      "PowerShell(\\(Get-Item -Path \"D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Modules\\\\APIManager\\\\APIManager.dart\"\\).Length)",
+      "Bash(dir \"D:\\\\s2toperational\\\\s2toperational\\\\S2T Operational - DependentChange_23_05_26\\\\\" 2>&1)",
+      "Bash(dir \"D:\\\\s2toperational\\\\\" 2>&1 *)",
+      "Bash(Format-Table -HideTableHeaders)",
+      "Bash(grep -E \"\\\\.\\(dart|java|kt\\)$\")",
+      "Bash(Remove-Item *)",
+      "Bash(dir D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\d2d_physical_examination *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(git rm *)",
+      "Bash(git reset *)",
+      "Bash(git commit *)"
     ]
   }
 }
