@@ -321,9 +321,10 @@ class _ChipSelector extends StatelessWidget {
                     fontFamily: FontConstants.interFonts,
                     fontSize: 14.sp,
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                    color: !enabled
-                        ? kTextColor.withValues(alpha: 0.35)
-                        : selected
+                    color:
+                    // !enabled
+                    //     ? kTextColor.withValues(alpha: 0.35) :
+                    selected
                         ? kWhiteColor
                         : kTextColor,
                   ),

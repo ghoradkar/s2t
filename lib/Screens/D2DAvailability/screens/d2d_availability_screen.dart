@@ -1,35 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 
-import '../../Modules/constants/constants.dart';
-import '../../Modules/constants/fonts.dart';
-import '../../Modules/utilities/SizeConfig.dart';
-import 'controller/d2d_availability_controller.dart';
+import '../../../Modules/constants/constants.dart';
+import '../../../Modules/constants/fonts.dart';
+import '../../../Modules/constants/images.dart';
+import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/widgets/S2TAppBar.dart';
+import '../controllers/d2d_availability_controller.dart';
 
-class D2DAvailabilityScreen extends StatefulWidget {
+class D2DAvailabilityScreen extends GetView<D2DAvailabilityController> {
   const D2DAvailabilityScreen({super.key});
-
-  @override
-  State<D2DAvailabilityScreen> createState() => _D2DAvailabilityScreenState();
-}
-
-class _D2DAvailabilityScreenState extends State<D2DAvailabilityScreen> {
-  late final D2DAvailabilityController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = Get.put(D2DAvailabilityController());
-  }
-
-  @override
-  void dispose() {
-    Get.delete<D2DAvailabilityController>();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +19,7 @@ class _D2DAvailabilityScreenState extends State<D2DAvailabilityScreen> {
         child: Obx(() {
           final disabled = controller.isUpdating.value;
           return InkWell(
-            onTap:
-                disabled
-                    ? null
-                    : () {
-                      controller.updateStatus(value);
-                    },
+            onTap: disabled ? null : () => controller.updateStatus(value),
             child: Row(
               children: [
                 Radio<int>(
@@ -52,10 +28,8 @@ class _D2DAvailabilityScreenState extends State<D2DAvailabilityScreen> {
                   onChanged:
                       disabled
                           ? null
-                          : (status) {
-                            if (status != null) {
-                              controller.updateStatus(status);
-                            }
+                          : (v) {
+                            if (v != null) controller.updateStatus(v);
                           },
                   activeColor: kPrimaryColor,
                 ),
@@ -81,9 +55,7 @@ class _D2DAvailabilityScreenState extends State<D2DAvailabilityScreen> {
       appBar: mAppBar(
         scTitle: "D2D Availability",
         leadingIcon: iconBackArrow,
-        onLeadingIconClick: () {
-          Navigator.pop(context);
-        },
+        onLeadingIconClick: () => Get.back(),
       ),
       body: SizedBox(
         height: SizeConfig.screenHeight,
@@ -116,7 +88,7 @@ class _D2DAvailabilityScreenState extends State<D2DAvailabilityScreen> {
                 height: 150,
                 fit: BoxFit.contain,
               ),
-              SizedBox(height: 60.h,)
+              SizedBox(height: 60.h),
             ],
           ),
         ),

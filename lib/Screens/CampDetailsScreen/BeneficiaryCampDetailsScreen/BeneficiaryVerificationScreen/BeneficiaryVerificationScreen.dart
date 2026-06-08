@@ -67,6 +67,8 @@ class _BeneficiaryVerificationScreenState
   bool isShowApprove = true;
 
   int _apiCallCount = 0;
+  bool _hasAnyFailure = false;
+  String _failureMessage = '';
   VisionScreeningDetailsOutput? visionScreeningDetailsOutput;
   LungFunctionTestDetailsOutput? lungFunctionTestDetailsOutput;
 
@@ -403,6 +405,9 @@ class _BeneficiaryVerificationScreenState
 
   groupAPICall() {
     _apiCallCount = 0;
+    _hasAnyFailure = false;
+    _failureMessage = '';
+    alertManager.messagesList.clear();
     ToastManager.showLoader();
     getCAMPPatientCheckupAnalysisReportNewAPI();
     getAudioScreeningDetailsAPI();
@@ -415,7 +420,28 @@ class _BeneficiaryVerificationScreenState
 
     if (_apiCallCount == 4) {
       ToastManager.hideLoader();
+      if (_hasAnyFailure) {
+        // Clear ALL values — mirrors native where exception prevents any data being set
+        rightRemark = '';
+        remark = '';
+        visionScreeningDetailsOutput = null;
+        lungFunctionTestDetailsOutput = null;
+        patientCheckupAnalysisReportOutput = null;
+      }
       setState(() {});
+      final ctx = context;
+      if (_hasAnyFailure) {
+        if (ctx.mounted) {
+          ToastManager.showAlertDialog(
+            ctx,
+            'Server not responding',
+            () => Navigator.of(ctx).pop(),
+            title: 'Please Try Again',
+          );
+        }
+      } else if (alertManager.messagesList.isNotEmpty && ctx.mounted) {
+        alertManager.showAlertMessages(ctx);
+      }
     }
   }
 
@@ -448,8 +474,13 @@ class _BeneficiaryVerificationScreenState
     bool success,
   ) async {
     _apiCallCount += 1;
+    print('[BenVerification] CAMPPatientCheckupAnalysis_Report_V1 RegdId=${widget.obj.regdId} success=$success errorMessage=$errorMessage');
     if (success) {
       patientCheckupAnalysisReportOutput = response?.output?.first;
+    } else {
+      patientCheckupAnalysisReportOutput = null;
+      _hasAnyFailure = true;
+      if (_failureMessage.isEmpty) _failureMessage = errorMessage;
     }
     refreshUI();
   }
@@ -469,6 +500,7 @@ class _BeneficiaryVerificationScreenState
     bool success,
   ) async {
     _apiCallCount += 1;
+    print('[BenVerification] GetAudioScreeningDetails RegdId=${widget.obj.regdId} success=$success errorMessage=$errorMessage');
     if (success) {
       rightRemark = response?.output?.first.rightRemark ?? "";
       remark = response?.output?.first.remark ?? "";
@@ -485,7 +517,8 @@ class _BeneficiaryVerificationScreenState
     } else {
       rightRemark = "";
       remark = "";
-      // ToastManager.toast(errorMessage);
+      _hasAnyFailure = true;
+      if (_failureMessage.isEmpty) _failureMessage = errorMessage;
     }
     refreshUI();
   }
@@ -505,13 +538,15 @@ class _BeneficiaryVerificationScreenState
     bool success,
   ) async {
     _apiCallCount += 1;
+    print('[BenVerification] GetVisionScreeningDetails RegdId=${widget.obj.regdId} success=$success errorMessage=$errorMessage');
     if (success) {
       String rightRemark = response?.output?.first.rightRemark ?? "";
       String leftRemark = response?.output?.first.leftRemark ?? "";
       visionScreeningDetailsOutput = response?.output?.first;
+
       if (rightRemark.toLowerCase() == "Right Eye Blind".toLowerCase()) {
         alertManager.messagesList.add(
-          "लाभार्थी उजव्या कानाने मूकबधिर आहे. बरोबर असल्याची खात्री करा.",
+          "लाभार्थी उजव्या डोळ्याने अंध आहे. बरोबर असल्याची खात्री करा.",
         );
       }
       if (leftRemark.toLowerCase() == "Left Eye Blind".toLowerCase()) {
@@ -519,6 +554,10 @@ class _BeneficiaryVerificationScreenState
           "लाभार्थी डाव्या डोळ्याने अंध आहे. बरोबर असल्याची खात्री करा.",
         );
       }
+    } else {
+      visionScreeningDetailsOutput = null;
+      _hasAnyFailure = true;
+      if (_failureMessage.isEmpty) _failureMessage = errorMessage;
     }
     refreshUI();
   }
@@ -538,9 +577,14 @@ class _BeneficiaryVerificationScreenState
     bool success,
   ) async {
     _apiCallCount += 1;
-    // if (success) {
-    lungFunctionTestDetailsOutput = response?.output?.first;
-    // }
+    print('[BenVerification] GetLungFunctionTestDetails RegdId=${widget.obj.regdId} success=$success errorMessage=$errorMessage');
+    if (success) {
+      lungFunctionTestDetailsOutput = response?.output?.first;
+    } else {
+      lungFunctionTestDetailsOutput = null;
+      _hasAnyFailure = true;
+      if (_failureMessage.isEmpty) _failureMessage = errorMessage;
+    }
     refreshUI();
   }
 

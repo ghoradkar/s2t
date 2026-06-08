@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:s2toperational/Modules/Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
@@ -11,9 +12,9 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/acknowledgement/controllers/acknowledgement_patient_list_controller.dart';
 import 'package:s2toperational/Screens/acknowledgement/screens/acknowledgement_confirmation_screen.dart';
-import 'package:s2toperational/Screens/acknowledgement/widgets/acknowledgement_patient_row.dart';
+import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
 
-class AcknowledgementPatientListScreenNew extends StatelessWidget {
+class AcknowledgementPatientListScreenNew extends StatefulWidget {
   final int campId;
   final int siteDetailId;
   final String districtName;
@@ -26,98 +27,275 @@ class AcknowledgementPatientListScreenNew extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(
-      AcknowledgementPatientListController(
-        campId: campId,
-        siteDetailId: siteDetailId,
-        districtName: districtName,
-      ),
-      tag: 'ack_patient_$campId',
-    );
+  State<AcknowledgementPatientListScreenNew> createState() =>
+      _AcknowledgementPatientListScreenNewState();
+}
 
-    return KeyboardDismissOnTap(
-      child: Scaffold(
-        appBar: mAppBar(
-          scTitle: 'Patient List',
-          leadingIcon: iconBackArrow,
-          onLeadingIconClick: () => Navigator.pop(context),
-        ),
-        body: Column(
+class _AcknowledgementPatientListScreenNewState
+    extends State<AcknowledgementPatientListScreenNew> {
+  late final AcknowledgementPatientListController controller;
+  String _searchText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(
+      AcknowledgementPatientListController(
+        campId: widget.campId,
+        siteDetailId: widget.siteDetailId,
+        districtName: widget.districtName,
+      ),
+      tag: 'ack_patient_${widget.campId}',
+    );
+    controller.searchController.addListener(() {
+      setState(() => _searchText = controller.searchController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    Get.delete<AcknowledgementPatientListController>(
+      tag: 'ack_patient_${widget.campId}',
+    );
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kBackground,
+      appBar: mAppBar(
+        scTitle: 'Patient List',
+        leadingIcon: iconBackArrow,
+        onLeadingIconClick: () => Navigator.pop(context),
+      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Column(
+            children: [
+              _searchBarDisabled().paddingSymmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
+              _tableHeader().paddingSymmetric(horizontal: 12.w),
+              const Expanded(child: CommonSkeletonInvoiceTable()),
+            ],
+          );
+        }
+
+        if (controller.patientList.isEmpty) {
+          return Column(
+            children: [
+              _searchBarDisabled().paddingSymmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
+              Expanded(
+                child: NoDataFound().paddingSymmetric(horizontal: 12.w),
+              ),
+            ],
+          );
+        }
+
+        return Column(
           children: [
-            AppTextField(
-              controller: controller.searchController,
-              readOnly: false,
-              onChange: controller.filterBySearch,
-              hint: 'Search Name / Registration No.',
-              label: CommonText(
-                text: 'Search Name / Registration No.',
-                fontSize: 12.sp,
-                fontWeight: FontWeight.normal,
-                textColor: kBlackColor,
-                textAlign: TextAlign.start,
-              ),
-              hintStyle: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: FontConstants.interFonts,
-              ),
-              fieldRadius: 10,
-              prefixIcon: SizedBox(
-                height: 20.h,
-                width: 20.w,
-                child: Center(
-                  child: Image.asset(
-                    icSearch,
-                    height: 24.h,
-                    width: 24.w,
-                    fit: BoxFit.contain,
-                  ),
+            _searchBar().paddingSymmetric(horizontal: 12.w, vertical: 8.h),
+            _tableHeader().paddingOnly(left: 12.w, right: 12.w),
+            Expanded(
+              child: Obx(() {
+                if (controller.searchList.isEmpty) {
+                  return NoDataFound().paddingSymmetric(
+                    vertical: 6.h,
+                    horizontal: 12.w,
+                  );
+                }
+                return ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w),
+                  itemCount: controller.searchList.length,
+                  itemBuilder: (context, index) {
+                    final patient = controller.searchList[index];
+                    return _PatientRow(
+                      index: index,
+                      patient: patient,
+                      onTap: () => _onRowTapped(context, patient),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  void _onRowTapped(
+      BuildContext context, AcknowledgementPatientOutput patient) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AcknowledgementConfirmationScreen(
+          patient: patient,
+          campId: widget.campId,
+        ),
+      ),
+    ).then((_) => controller.fetchPatients());
+  }
+
+  Widget _searchBarDisabled() {
+    return AppTextField(
+      controller: controller.searchController,
+      readOnly: true,
+      hint: 'Search by Name / Reg. No.',
+      label: CommonText(
+        text: 'Search by Name / Reg. No.',
+        fontSize: 12.sp,
+        fontWeight: FontWeight.normal,
+        textColor: kBlackColor,
+        textAlign: TextAlign.start,
+      ),
+      hintStyle: TextStyle(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w400,
+        fontFamily: FontConstants.interFonts,
+      ),
+      fieldRadius: 8,
+      prefixIcon: Icon(Icons.search, color: kLabelTextColor, size: 20.r)
+          .paddingOnly(left: 6.w),
+    );
+  }
+
+  Widget _searchBar() {
+    return AppTextField(
+      controller: controller.searchController,
+      readOnly: false,
+      onChange: controller.filterBySearch,
+      hint: 'Search by Name / Reg. No.',
+      label: CommonText(
+        text: 'Search by Name / Reg. No.',
+        fontSize: 12.sp,
+        fontWeight: FontWeight.normal,
+        textColor: kBlackColor,
+        textAlign: TextAlign.start,
+      ),
+      hintStyle: TextStyle(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w400,
+        fontFamily: FontConstants.interFonts,
+      ),
+      fieldRadius: 8,
+      prefixIcon: Icon(Icons.search, color: kLabelTextColor, size: 20.r)
+          .paddingOnly(left: 6.w),
+      suffixIcon: _searchText.isNotEmpty
+          ? GestureDetector(
+              onTap: () {
+                controller.searchController.clear();
+                controller.filterBySearch('');
+              },
+              child: Icon(Icons.close, color: kLabelTextColor, size: 18.r),
+            )
+          : null,
+    );
+  }
+
+  Widget _tableHeader() {
+    return Container(
+      color: kPrimaryColor,
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+      child: Row(
+        children: [
+          _headerCell('SN', flex: 1),
+          _headerCell('Patient Name', flex: 3, align: TextAlign.left),
+          _headerCell('Type', flex: 1),
+          _headerCell('Reg. No.', flex: 2),
+          _headerCell('Call', flex: 1),
+        ],
+      ),
+    );
+  }
+
+  Widget _headerCell(String text,
+      {required int flex, TextAlign align = TextAlign.center}) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontFamily: FontConstants.interFonts,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+          color: kWhiteColor,
+        ),
+        textAlign: align,
+      ),
+    );
+  }
+}
+
+class _PatientRow extends StatelessWidget {
+  final int index;
+  final AcknowledgementPatientOutput patient;
+  final VoidCallback onTap;
+
+  const _PatientRow({
+    required this.index,
+    required this.patient,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isEven = index % 2 == 0;
+    final typeLabel = (patient.isDependent == 1) ? 'D' : 'W';
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: isEven ? kWhiteColor : kBackground,
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _cell('${index + 1}', flex: 1),
+            _cell(patient.englishName ?? '-', flex: 3, align: TextAlign.left),
+            _cell(typeLabel, flex: 1),
+            _cell(patient.regdNo?.toString() ?? '-', flex: 2),
+            Expanded(
+              flex: 1,
+              child: Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    final uri = Uri(scheme: 'tel', path: patient.mobileNo ?? '');
+                    if (await canLaunchUrl(uri)) await launchUrl(uri);
+                  },
+                  child: Icon(Icons.phone, color: kPrimaryColor, size: 18.r),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Obx(
-                () => controller.isLoading.value
-                    ? const CommonSkeletonList()
-                    : controller.searchList.isEmpty
-                        ? Center(
-                            child: CommonText(
-                              text: 'No patients found',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              textColor: kBlackColor,
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: controller.searchList.length,
-                            itemBuilder: (context, index) {
-                              final patient = controller.searchList[index];
-                              return AcknowledgementPatientRow(
-                                patient: patient,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          AcknowledgementConfirmationScreen(
-                                        patient: patient,
-                                        campId: campId,
-                                      ),
-                                    ),
-                                  ).then(
-                                    (_) => controller.fetchPatients(),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-              ),
-            ),
           ],
-        ).paddingSymmetric(vertical: 10, horizontal: 10),
+        ),
+      ),
+    );
+  }
+
+  Widget _cell(String text,
+      {required int flex, TextAlign align = TextAlign.center}) {
+    return Expanded(
+      flex: flex,
+      child: Align(
+        alignment:
+            align == TextAlign.left ? Alignment.centerLeft : Alignment.center,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: FontConstants.interFonts,
+            fontSize: 13.sp,
+            color: kTextColor,
+          ),
+          textAlign: align,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

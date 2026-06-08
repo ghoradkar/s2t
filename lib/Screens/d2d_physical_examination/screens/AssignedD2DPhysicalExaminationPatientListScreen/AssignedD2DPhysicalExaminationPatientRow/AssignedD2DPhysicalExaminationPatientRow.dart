@@ -30,11 +30,9 @@ class AssignedD2DPhysicalExaminationPatientRow extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(8.w, 20.h, 8.w, 12.h),
             decoration: BoxDecoration(
               color:
-                  obj.isCall == "1"
-                      ? const Color(0xffC8E6C9)        // green  : PE done / called
-                      : obj.doctorMapStatus == "1"
-                          ? const Color(0xffFFF9C4)     // yellow : doctor assigned
-                          : Colors.white,               // white  : not yet assigned
+                  (obj.isCall == "1" || obj.doctorMapStatus == "1")
+                      ? const Color(0xffC8E6C9)   // green : called / doctor assigned
+                      : Colors.white,              // white : not yet assigned
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(

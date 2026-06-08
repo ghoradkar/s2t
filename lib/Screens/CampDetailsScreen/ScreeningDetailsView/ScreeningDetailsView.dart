@@ -114,7 +114,7 @@ class ScreeningDetailsView extends StatelessWidget {
             ),
              SizedBox(height: 4.h),
             _buildRow(
-              "acknowledgement",
+              "Acknowledgement",
               campDetailOutput?.ackowledgement.toString() ?? "0",
               uploadBillTitleColor,
               isLast: true,

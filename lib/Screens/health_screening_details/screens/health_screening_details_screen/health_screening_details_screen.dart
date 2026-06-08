@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/screens/CallToDoctorScreen/patient_list_d2d_phy_exa.dart';
 import '../../../../Modules/Enums/Enums.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
@@ -220,7 +221,7 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => AssignedD2DPhysicalExaminationPatientListScreen(
+            builder: (_) => PatientListD2DPhyExa(
               dISTLGDCODE: dISTLGDCODE,
               campId: campID,
               healthScreentype: "16",

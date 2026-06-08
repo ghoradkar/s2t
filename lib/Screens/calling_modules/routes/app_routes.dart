@@ -13,8 +13,10 @@ import 'package:s2toperational/Screens/calling_modules/screens/expected_benefici
 import 'package:s2toperational/Screens/forgot_password/ui/forgot_password.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/forgot_password_otp.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/reset_password.dart';
-import '../../LoginScreen/LoginScreen.dart';
-import '../../SplashScreen/SplashScreen.dart';
+import '../../LoginScreen/controllers/login_controller.dart';
+import '../../LoginScreen/screens/login_screen.dart';
+import '../../SplashScreen/controllers/splash_controller.dart';
+import '../../SplashScreen/screens/splash_screen.dart';
 import '../custom_widgets/logout_widget.dart';
 
 class AppRoutes {
@@ -53,11 +55,25 @@ class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        return MaterialPageRoute(
+          builder: (_) {
+            if (!Get.isRegistered<SplashController>()) {
+              Get.lazyPut(() => SplashController());
+            }
+            return const SplashScreen();
+          },
+        );
       // case introScreen:
       //   return MaterialPageRoute(builder: (_) => const IntroScreen());
       case loginScreen:
-        return MaterialPageRoute(builder: (_) => LoginScreen());
+        return MaterialPageRoute(
+          builder: (_) {
+            if (!Get.isRegistered<LoginController>()) {
+              Get.lazyPut(() => LoginController());
+            }
+            return const LoginScreen();
+          },
+        );
 
       case forgotScreen:
         return MaterialPageRoute(builder: (_) => ForgotPasswordScreen());
@@ -116,9 +132,7 @@ class AppRoutes {
       case callingDashboard:
         Get.delete<CallingDashboardController>(force: true);
         Get.put(
-          CallingDashboardController(
-            repository: CallingDashboardRepository(),
-          ),
+          CallingDashboardController(repository: CallingDashboardRepository()),
         );
         return MaterialPageRoute(
           builder: (_) => const CallingDashboardScreen(),

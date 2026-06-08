@@ -725,7 +725,7 @@ class _CampClosingScreeningDetailsViewState
                                 padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
                                 color: Colors.transparent,
                                 child: Text(
-                                  "acknowledgement",
+                                  "Acknowledgement",
                                   style: TextStyle(
                                     color: uploadBillTitleColor,
                                     fontFamily: FontConstants.interFonts,

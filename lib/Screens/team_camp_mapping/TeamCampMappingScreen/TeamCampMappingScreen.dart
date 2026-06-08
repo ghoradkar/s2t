@@ -22,7 +22,7 @@ import '../../../Modules/Json_Class/AssignedExternalResourceDetailsResponse/Assi
 import '../../../Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
 import '../../../Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
 import '../../../Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
-import '../../../Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
+import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
 import '../../../Modules/Json_Class/TeamCampDetailsListResponse/TeamCampDetailsListResponse.dart';
 import '../../../Modules/Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
 import '../../../Modules/Json_Class/TeamDetailsListForAssignResponse/TeamDetailsListForAssignResponse.dart';

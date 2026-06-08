@@ -49,6 +49,8 @@ class ResourceReMappingCampOutput {
   int? createdBy;
   int? lABCODE;
   int? isRegdDone;
+  String? campName;
+  String? campCreatedBy;
 
   ResourceReMappingCampOutput({
     this.fLAG,
@@ -70,6 +72,8 @@ class ResourceReMappingCampOutput {
     this.createdBy,
     this.lABCODE,
     this.isRegdDone,
+    this.campName,
+    this.campCreatedBy,
   });
 
   ResourceReMappingCampOutput.fromJson(Map<String, dynamic> json) {

@@ -26,29 +26,6 @@ import 'package:s2toperational/Screens/patient_registration/screen/abha_creation
 import 'package:s2toperational/Screens/patient_registration/screen/abha_demographic_creation_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/registered_patient_list_screen.dart';
 
-/// Forces every character to uppercase as the user types.
-class _UpperCaseFormatter extends TextInputFormatter {
-  const _UpperCaseFormatter();
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) => newValue.copyWith(text: newValue.text.toUpperCase());
-}
-
-const _kUpper = [_UpperCaseFormatter()];
-
-// Hardcoded marital status list — IDs match the GetMaritalMaster API response
-// (native fetches dynamically; Flutter hardcodes these verified values)
-// API returns: 1=Married, 2=Unmarried, 3=Divorced, 4=Widowed
-const _kMaritalStatus = [
-  ('1', 'Married'),
-  ('2', 'Unmarried'),
-  ('3', 'Divorced'),
-  ('4', 'Widowed'),
-];
-
 class D2DPatientRegistrationScreen extends StatefulWidget {
   const D2DPatientRegistrationScreen({super.key});
 
@@ -83,42 +60,6 @@ class _D2DPatientRegistrationScreenState
 
   // Renewal date + post office: only when isDependent=No AND hasApiData (Scenario 2)
   bool get _showRenewalRow => _isNo && _hasData;
-
-  // ── Date picker helper ────────────────────────────────────────────────────
-
-  Future<void> _pickDate(
-    BuildContext context,
-    TextEditingController tec,
-    void Function(String) onPicked, {
-    bool readOnly = false,
-  }) async {
-    if (readOnly) return;
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: DateTime(1900),
-      lastDate: now,
-    );
-    if (picked != null) {
-      final formatted = FormatterManager.formatDateToString(picked);
-      tec.text = formatted;
-      onPicked(formatted);
-    }
-  }
-
-  void _onViewQueueTapped() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (_) => RegisteredPatientListScreen(
-              campId: c.navCampId,
-              campType: c.navCampType,
-            ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -891,9 +832,9 @@ class _D2DPatientRegistrationScreenState
                 c.selectedWorkerMaritalStatusName.value.isEmpty
                     ? null
                     : c.selectedWorkerMaritalStatusName.value,
-            items: _kMaritalStatus.map((e) => e.$2).toList(),
+            items: c.kMaritalStatus.map((e) => e.$2).toList(),
             onSelected: (name) {
-              final match = _kMaritalStatus.firstWhere((e) => e.$2 == name);
+              final match = c.kMaritalStatus.firstWhere((e) => e.$2 == name);
               c.onWorkerMaritalStatusChanged(match.$1, match.$2);
             },
           ),
@@ -903,7 +844,9 @@ class _D2DPatientRegistrationScreenState
           _sectionLabel('Select Dependent'),
           SizedBox(height: 6.h),
           GestureDetector(
-            onTap: () { _showDependentPicker(context); },
+            onTap: () {
+              _showDependentPicker(context);
+            },
             child: AbsorbPointer(
               child: AppTextField(
                 controller: TextEditingController(
@@ -911,13 +854,14 @@ class _D2DPatientRegistrationScreenState
                 ),
                 label: _label('Select Dependent *'),
                 readOnly: true,
-                suffixIcon: c.isLoadingDependents.value
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ).paddingOnly(right: 8.w)
-                    : const Icon(Icons.arrow_drop_down),
+                suffixIcon:
+                    c.isLoadingDependents.value
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ).paddingOnly(right: 8.w)
+                        : const Icon(Icons.arrow_drop_down),
               ),
             ),
           ),
@@ -1053,139 +997,139 @@ class _D2DPatientRegistrationScreenState
           ],
         ],
         if (c.mobileOtpVerified.value) ...[
-        SizedBox(height: 10.h),
+          SizedBox(height: 10.h),
 
-        // ── 8. "This Number not belongs to beneficiary" checkbox ─────────
-        // Disabled once any OTP is verified
-        GestureDetector(
-          onTap:
-              c.altMobileOtpVerified.value || _isLocked
-                  ? null
-                  : () {
-                    c.isNumberNotBelongsToBeneficiary.value =
-                        !c.isNumberNotBelongsToBeneficiary.value;
-                    if (!c.isNumberNotBelongsToBeneficiary.value) {
-                      c.tecAltMobileNo.clear();
-                      c.tecAltMobileOtp.clear();
-                      c.altMobileOtpSent.value = false;
-                      c.altMobileOtpVerified.value = false;
-                    }
-                  },
-          child: Opacity(
-            opacity:
-                (c.altMobileOtpVerified.value || _isLocked) ? 0.45 : 1.0,
-            child: Row(
-              children: [
-                Checkbox(
-                  value: c.isNumberNotBelongsToBeneficiary.value,
-                  activeColor: kPrimaryColor,
-                  onChanged:
-                      (c.altMobileOtpVerified.value || _isLocked)
-                          ? null
-                          : (v) {
-                            c.isNumberNotBelongsToBeneficiary.value =
-                                v ?? false;
-                            if (!(v ?? false)) {
-                              c.tecAltMobileNo.clear();
-                              c.tecAltMobileOtp.clear();
-                              c.altMobileOtpSent.value = false;
-                              c.altMobileOtpVerified.value = false;
-                            }
-                          },
-                ),
-                Text(
-                  'Do you want to register alternate mobile no.',
-                  style: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    fontSize: 13.sp,
-                    color: kTextColor,
+          // ── 8. "This Number not belongs to beneficiary" checkbox ─────────
+          // Disabled once any OTP is verified
+          GestureDetector(
+            onTap:
+                c.altMobileOtpVerified.value || _isLocked
+                    ? null
+                    : () {
+                      c.isNumberNotBelongsToBeneficiary.value =
+                          !c.isNumberNotBelongsToBeneficiary.value;
+                      if (!c.isNumberNotBelongsToBeneficiary.value) {
+                        c.tecAltMobileNo.clear();
+                        c.tecAltMobileOtp.clear();
+                        c.altMobileOtpSent.value = false;
+                        c.altMobileOtpVerified.value = false;
+                      }
+                    },
+            child: Opacity(
+              opacity: (c.altMobileOtpVerified.value || _isLocked) ? 0.45 : 1.0,
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: c.isNumberNotBelongsToBeneficiary.value,
+                    activeColor: kPrimaryColor,
+                    onChanged:
+                        (c.altMobileOtpVerified.value || _isLocked)
+                            ? null
+                            : (v) {
+                              c.isNumberNotBelongsToBeneficiary.value =
+                                  v ?? false;
+                              if (!(v ?? false)) {
+                                c.tecAltMobileNo.clear();
+                                c.tecAltMobileOtp.clear();
+                                c.altMobileOtpSent.value = false;
+                                c.altMobileOtpVerified.value = false;
+                              }
+                            },
                   ),
+                  Text(
+                    'Do you want to register alternate mobile no.',
+                    style: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontSize: 13.sp,
+                      color: kTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Alternate mobile section — visible when checkbox checked
+          if (c.isNumberNotBelongsToBeneficiary.value) ...[
+            SizedBox(height: 8.h),
+            AppTextField(
+              controller: c.tecAltMobileNo,
+              label: _label('Alternate Mobile Number *'),
+              maxLength: 10,
+              textInputType: TextInputType.phone,
+              readOnly:
+                  c.mobileOtpVerified.value || c.altMobileOtpVerified.value,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChange: (v) => c.onAltMobileChanged(v),
+              prefixIcon: const Icon(
+                Icons.phone_android_rounded,
+                color: kPrimaryColor,
+                size: 18,
+              ).paddingOnly(left: 6.w),
+            ),
+            SizedBox(height: 8.h),
+            if (c.altMobileOtpVerified.value)
+              _verifiedBanner('Alternate number verified')
+            else ...[
+              AppButtonWithIcon(
+                title: 'Verify Alternate Number',
+                mHeight: 40,
+                mWidth: double.infinity,
+                onTap: () => _showWhatsAppDialog(context, isAlternate: true),
+              ),
+              if (c.altMobileOtpSent.value) ...[
+                SizedBox(height: 8.h),
+                AppTextField(
+                  controller: c.tecAltMobileOtp,
+                  label: _label('Enter OTP *'),
+                  hint: '5-digit OTP',
+                  textInputType: TextInputType.number,
+                  maxLength: 5,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+                SizedBox(height: 8.h),
+                AppButtonWithIcon(
+                  title: 'Verify OTP',
+                  mHeight: 40,
+                  mWidth: double.infinity,
+                  onTap: () => c.verifyAltMobileOtp(),
+                ),
+              ],
+            ],
+            SizedBox(height: 10.h),
+            // "Alternate mobile belongs to" radios
+            Text(
+              'Alternate mobile number belongs to:',
+              style: TextStyle(
+                fontFamily: FontConstants.interFonts,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+                color: kTextColor,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Row(
+              children: [
+                _radioChip(
+                  label: 'Self',
+                  selected: c.altMobileBelongsTo.value == '1',
+                  onTap: () => c.altMobileBelongsTo.value = '1',
+                ),
+                SizedBox(width: 6.w),
+                _radioChip(
+                  label: 'Spouse',
+                  selected: c.altMobileBelongsTo.value == '2',
+                  onTap: () => c.altMobileBelongsTo.value = '2',
+                ),
+                SizedBox(width: 6.w),
+                _radioChip(
+                  label: 'Child',
+                  selected: c.altMobileBelongsTo.value == '3',
+                  onTap: () => c.altMobileBelongsTo.value = '3',
                 ),
               ],
             ),
-          ),
-        ),
-
-        // Alternate mobile section — visible when checkbox checked
-        if (c.isNumberNotBelongsToBeneficiary.value) ...[
-          SizedBox(height: 8.h),
-          AppTextField(
-            controller: c.tecAltMobileNo,
-            label: _label('Alternate Mobile Number *'),
-            maxLength: 10,
-            textInputType: TextInputType.phone,
-            readOnly: c.mobileOtpVerified.value || c.altMobileOtpVerified.value,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChange: (v) => c.onAltMobileChanged(v),
-            prefixIcon: const Icon(
-              Icons.phone_android_rounded,
-              color: kPrimaryColor,
-              size: 18,
-            ).paddingOnly(left: 6.w),
-          ),
-          SizedBox(height: 8.h),
-          if (c.altMobileOtpVerified.value)
-            _verifiedBanner('Alternate number verified')
-          else ...[
-            AppButtonWithIcon(
-              title: 'Verify Alternate Number',
-              mHeight: 40,
-              mWidth: double.infinity,
-              onTap: () => _showWhatsAppDialog(context, isAlternate: true),
-            ),
-            if (c.altMobileOtpSent.value) ...[
-              SizedBox(height: 8.h),
-              AppTextField(
-                controller: c.tecAltMobileOtp,
-                label: _label('Enter OTP *'),
-                hint: '5-digit OTP',
-                textInputType: TextInputType.number,
-                maxLength: 5,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              SizedBox(height: 8.h),
-              AppButtonWithIcon(
-                title: 'Verify OTP',
-                mHeight: 40,
-                mWidth: double.infinity,
-                onTap: () => c.verifyAltMobileOtp(),
-              ),
-            ],
           ],
-          SizedBox(height: 10.h),
-          // "Alternate mobile belongs to" radios
-          Text(
-            'Alternate mobile number belongs to:',
-            style: TextStyle(
-              fontFamily: FontConstants.interFonts,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: kTextColor,
-            ),
-          ),
-          SizedBox(height: 6.h),
-          Row(
-            children: [
-              _radioChip(
-                label: 'Self',
-                selected: c.altMobileBelongsTo.value == '1',
-                onTap: () => c.altMobileBelongsTo.value = '1',
-              ),
-              SizedBox(width: 6.w),
-              _radioChip(
-                label: 'Spouse',
-                selected: c.altMobileBelongsTo.value == '2',
-                onTap: () => c.altMobileBelongsTo.value = '2',
-              ),
-              SizedBox(width: 6.w),
-              _radioChip(
-                label: 'Child',
-                selected: c.altMobileBelongsTo.value == '3',
-                onTap: () => c.altMobileBelongsTo.value = '3',
-              ),
-            ],
-          ),
-        ],
         ],
         SizedBox(height: 14.h),
 
@@ -1194,9 +1138,10 @@ class _D2DPatientRegistrationScreenState
           _sectionLabel('Identity Card'),
           SizedBox(height: 6.h),
           GestureDetector(
-            onTap: c.isIdentityLockedByData.value
-                ? null
-                : () => _showIdentityPicker(context),
+            onTap:
+                c.isIdentityLockedByData.value
+                    ? null
+                    : () => _showIdentityPicker(context),
             child: AbsorbPointer(
               child: AppTextField(
                 controller: TextEditingController(
@@ -1229,65 +1174,63 @@ class _D2DPatientRegistrationScreenState
         if (c.registrationType.value == 'without_abha' ||
             c.aadhaarSetForAbha.value ||
             c.isDependent.value) ...[
-          Obx(
-            () {
-              final isWithAbha =
-                  c.registrationType.value == 'with_abha';
-              final isDependent = c.isDependent.value;
-              final isAadhaar = isWithAbha || c.isAadhaarMode;
-              final sectionTitle =
-                  isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
-              final fieldLabel =
-                  isAadhaar
-                      ? 'Aadhaar Number *'
-                      : '${c.selectedIdentityName.value} Number *';
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionLabel(sectionTitle),
-                  SizedBox(height: 6.h),
-                  AppTextField(
-                    controller: c.tecAadhaarNo,
-                    label: _label(fieldLabel),
-                    textInputType: TextInputType.number,
-                    maxLength: c.identityMaxLength,
-                    // with_abha + worker → read-only (auto-filled from ABHA)
-                    // with_abha + dependent → editable (manually entered)
-                    // without_abha + worker → disabled; dependent → editable
-                    readOnly: (isWithAbha && !isDependent) || _isNo,
-                    inputFormatters:
-                        isAadhaar
-                            ? [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'[\d•]'),
-                              ),
-                              LengthLimitingTextInputFormatter(12),
-                            ]
-                            : [
-                              ..._kUpper,
-                              LengthLimitingTextInputFormatter(
-                                c.identityMaxLength,
-                              ),
-                            ],
-                    textCapitalization:
-                        isAadhaar
-                            ? TextCapitalization.none
-                            : TextCapitalization.characters,
-                    // Enable onChange for: without_abha (any) or with_abha+dependent
-                    onChange: (isAadhaar && (!isWithAbha || isDependent))
-                        ? c.onAadhaarChanged
-                        : null,
-                    errorText:
-                        (isAadhaar && c.aadhaarError.value.isNotEmpty)
-                            ? c.aadhaarError.value
-                            : null,
-                    prefixIcon: const Icon(
-                      Icons.credit_card_rounded,
-                      color: kPrimaryColor,
-                      size: 18,
-                    ).paddingOnly(left: 6.w),
-                    suffixIcon: isAadhaar
-                        ? GestureDetector(
+          Obx(() {
+            final isWithAbha = c.registrationType.value == 'with_abha';
+            final isDependent = c.isDependent.value;
+            final isAadhaar = isWithAbha || c.isAadhaarMode;
+            final sectionTitle =
+                isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
+            final fieldLabel =
+                isAadhaar
+                    ? 'Aadhaar Number *'
+                    : '${c.selectedIdentityName.value} Number *';
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _sectionLabel(sectionTitle),
+                SizedBox(height: 6.h),
+                AppTextField(
+                  controller: c.tecAadhaarNo,
+                  label: _label(fieldLabel),
+                  textInputType: TextInputType.number,
+                  maxLength: c.identityMaxLength,
+                  // with_abha + worker → read-only (auto-filled from ABHA)
+                  // with_abha + dependent → editable (manually entered)
+                  // without_abha + worker → disabled; dependent → editable
+                  readOnly: (isWithAbha && !isDependent) || _isNo,
+                  inputFormatters:
+                      isAadhaar
+                          ? [
+                            FilteringTextInputFormatter.allow(RegExp(r'[\d•]')),
+                            LengthLimitingTextInputFormatter(12),
+                          ]
+                          : [
+                            ..._kUpper,
+                            LengthLimitingTextInputFormatter(
+                              c.identityMaxLength,
+                            ),
+                          ],
+                  textCapitalization:
+                      isAadhaar
+                          ? TextCapitalization.none
+                          : TextCapitalization.characters,
+                  // Enable onChange for: without_abha (any) or with_abha+dependent
+                  onChange:
+                      (isAadhaar && (!isWithAbha || isDependent))
+                          ? c.onAadhaarChanged
+                          : null,
+                  errorText:
+                      (isAadhaar && c.aadhaarError.value.isNotEmpty)
+                          ? c.aadhaarError.value
+                          : null,
+                  prefixIcon: const Icon(
+                    Icons.credit_card_rounded,
+                    color: kPrimaryColor,
+                    size: 18,
+                  ).paddingOnly(left: 6.w),
+                  suffixIcon:
+                      isAadhaar
+                          ? GestureDetector(
                             onTap: c.toggleAadhaarVisibility,
                             child: Icon(
                               c.isAadhaarVisible.value
@@ -1297,12 +1240,11 @@ class _D2DPatientRegistrationScreenState
                               size: 18,
                             ).paddingOnly(right: 8.w),
                           )
-                        : null,
-                  ),
-                ],
-              );
-            },
-          ),
+                          : null,
+                ),
+              ],
+            );
+          }),
           SizedBox(height: 14.h),
         ],
 
@@ -1681,7 +1623,10 @@ class _D2DPatientRegistrationScreenState
                 !c.isDependent.value &&
                 c.abhaVerified.value)) ...[
           AppButtonWithIcon(
-            title: c.isDependent.value ? 'VERIFY BENEFICIARY DETAILS' : 'Register Patient',
+            title:
+                c.isDependent.value
+                    ? 'VERIFY BENEFICIARY DETAILS'
+                    : 'Register Patient',
             mWidth: double.infinity,
             mHeight: 52,
             icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
@@ -1705,6 +1650,42 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 20.h),
         ],
       ],
+    );
+  }
+
+  // ── Date picker helper ────────────────────────────────────────────────────
+
+  Future<void> _pickDate(
+    BuildContext context,
+    TextEditingController tec,
+    void Function(String) onPicked, {
+    bool readOnly = false,
+  }) async {
+    if (readOnly) return;
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+    if (picked != null) {
+      final formatted = FormatterManager.formatDateToString(picked);
+      tec.text = formatted;
+      onPicked(formatted);
+    }
+  }
+
+  void _onViewQueueTapped() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => RegisteredPatientListScreen(
+              campId: c.navCampId,
+              campType: c.navCampType,
+            ),
+      ),
     );
   }
 
@@ -1747,15 +1728,6 @@ class _D2DPatientRegistrationScreenState
     textColor: kLabelTextColor,
     textAlign: TextAlign.start,
   );
-
-  //     Text(
-  //   text,
-  //   style: TextStyle(
-  //     color: kLabelTextColor,
-  //     fontSize: 14.sp,
-  //     fontFamily: FontConstants.interFonts,
-  //   ),
-  // );
 
   /// Read-only info card (used for worker name/age/gender when Yes+Data)
   Widget _infoCard({
@@ -1924,9 +1896,7 @@ class _D2DPatientRegistrationScreenState
                     Row(
                       children: [
                         Expanded(
-                          child:
-
-                          CommonText(
+                          child: CommonText(
                             text: 'WhatsApp Number Availability',
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
@@ -2268,44 +2238,45 @@ class _D2DPatientRegistrationScreenState
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => SelectionBottomSheet<DependentOutput, String?>(
-        title: 'Select Dependent',
-        items: c.dependentList,
-        selectedValue: c.selectedDependent.value?.relId,
-        valueFor: (item) => item.relId,
-        labelFor: (item) => item.displayName,
-        onItemTap: (item) async {
-          Navigator.pop(context);
-          c.onDependentSelected(item);
-          ToastManager.showLoader();
-          final results = await Future.wait([
-            c.checkRelationWiseCount(item),
-            c.checkDependentRegistrationStatus(item),
-          ]);
-          ToastManager.hideLoader();
-          if (!context.mounted) return;
-          final relationAllowed = results[0] as bool;
-          final dependentStatusError = results[1] as String?;
-          if (!relationAllowed) {
-            ToastManager.showAlertDialog(
-              context,
-              'Selected Relation Wrong Or Relation Count Reached',
-              () => Navigator.of(context, rootNavigator: true).pop(),
-            );
-            c.clearDependentSelection();
-          } else if (dependentStatusError != null) {
-            ToastManager.showAlertDialog(
-              context,
-              dependentStatusError,
-              () => Navigator.of(context, rootNavigator: true).pop(),
-            );
-            c.clearDependentSelection();
-          }
-        },
-        height: 350.h,
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
-        showRadio: true,
-      ),
+      builder:
+          (_) => SelectionBottomSheet<DependentOutput, String?>(
+            title: 'Select Dependent',
+            items: c.dependentList,
+            selectedValue: c.selectedDependent.value?.relId,
+            valueFor: (item) => item.relId,
+            labelFor: (item) => item.displayName,
+            onItemTap: (item) async {
+              Navigator.pop(context);
+              c.onDependentSelected(item);
+              ToastManager.showLoader();
+              final results = await Future.wait([
+                c.checkRelationWiseCount(item),
+                c.checkDependentRegistrationStatus(item),
+              ]);
+              ToastManager.hideLoader();
+              if (!context.mounted) return;
+              final relationAllowed = results[0] as bool;
+              final dependentStatusError = results[1] as String?;
+              if (!relationAllowed) {
+                ToastManager.showAlertDialog(
+                  context,
+                  'Selected Relation Wrong Or Relation Count Reached',
+                  () => Navigator.of(context, rootNavigator: true).pop(),
+                );
+                c.clearDependentSelection();
+              } else if (dependentStatusError != null) {
+                ToastManager.showAlertDialog(
+                  context,
+                  dependentStatusError,
+                  () => Navigator.of(context, rootNavigator: true).pop(),
+                );
+                c.clearDependentSelection();
+              }
+            },
+            height: 350.h,
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+            showRadio: true,
+          ),
     );
   }
 
@@ -2375,7 +2346,6 @@ class _D2DPatientRegistrationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   'Your Current Location Approx.',
                   style: TextStyle(
@@ -2390,8 +2360,8 @@ class _D2DPatientRegistrationScreenState
                       ? 'Fetching location...'
                       : captured
                       ? c.currentAddress.value.isNotEmpty
-                            ? c.currentAddress.value
-                            : '${c.currentLat.value}, ${c.currentLong.value}'
+                          ? c.currentAddress.value
+                          : '${c.currentLat.value}, ${c.currentLong.value}'
                       : 'Not captured — tap refresh',
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
@@ -2406,20 +2376,21 @@ class _D2DPatientRegistrationScreenState
             onTap: c.isCapturingLocation.value ? null : c.refreshLocation,
             child: Opacity(
               opacity: c.isCapturingLocation.value ? 0.4 : 1.0,
-              child: c.isCapturingLocation.value
-                  ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: kPrimaryColor,
-                    ),
-                  )
-                  : const Icon(
-                    Icons.refresh_rounded,
-                    color: kPrimaryColor,
-                    size: 22,
-                  ),
+              child:
+                  c.isCapturingLocation.value
+                      ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: kPrimaryColor,
+                        ),
+                      )
+                      : const Icon(
+                        Icons.refresh_rounded,
+                        color: kPrimaryColor,
+                        size: 22,
+                      ),
             ),
           ),
         ],
@@ -2446,18 +2417,17 @@ class _D2DPatientRegistrationScreenState
             onTap: () => _showGpPicker(),
             child: AbsorbPointer(
               child: AppTextField(
-                controller: TextEditingController(
-                  text: c.selectedGpName.value,
-                ),
+                controller: TextEditingController(text: c.selectedGpName.value),
                 label: _label('Gram Panchayat *'),
                 readOnly: true,
-                suffixIcon: c.isLoadingGp.value
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ).paddingOnly(right: 8.w)
-                    : const Icon(Icons.arrow_drop_down),
+                suffixIcon:
+                    c.isLoadingGp.value
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ).paddingOnly(right: 8.w)
+                        : const Icon(Icons.arrow_drop_down),
               ),
             ),
           ),
@@ -2478,18 +2448,19 @@ class _D2DPatientRegistrationScreenState
               shape: BoxShape.circle,
               border: Border.all(color: kPrimaryColor, width: 2),
             ),
-            child: selected
-                ? Center(
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: kPrimaryColor,
+            child:
+                selected
+                    ? Center(
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: kPrimaryColor,
+                        ),
                       ),
-                    ),
-                  )
-                : null,
+                    )
+                    : null,
           ),
           SizedBox(width: 6.w),
           Text(
@@ -2515,23 +2486,21 @@ class _D2DPatientRegistrationScreenState
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          builder: (_) => SelectionBottomSheet<GpItem, String>(
-            title: 'Select Gram Panchayat',
-            items: items,
-            selectedValue: c.selectedGpCode.value,
-            valueFor: (item) => item.gpLgdCode,
-            labelFor: (item) => item.gpName,
-            showSearch: true,
-            height: 460.h,
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 20.h,
-            ),
-            onItemTap: (item) {
-              Navigator.pop(context);
-              c.selectGp(item);
-            },
-          ),
+          builder:
+              (_) => SelectionBottomSheet<GpItem, String>(
+                title: 'Select Gram Panchayat',
+                items: items,
+                selectedValue: c.selectedGpCode.value,
+                valueFor: (item) => item.gpLgdCode,
+                labelFor: (item) => item.gpName,
+                showSearch: true,
+                height: 460.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                onItemTap: (item) {
+                  Navigator.pop(context);
+                  c.selectGp(item);
+                },
+              ),
         );
       },
     );
@@ -2616,6 +2585,19 @@ class _D2DPatientRegistrationScreenState
     );
   }
 }
+
+/// Forces every character to uppercase as the user types.
+class _UpperCaseFormatter extends TextInputFormatter {
+  const _UpperCaseFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) => newValue.copyWith(text: newValue.text.toUpperCase());
+}
+
+const _kUpper = [_UpperCaseFormatter()];
 
 // ── Photo Tile ──────────────────────────────────────────────────────────────
 

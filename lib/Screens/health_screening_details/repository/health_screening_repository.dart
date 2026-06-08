@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -72,6 +73,48 @@ class HealthScreeningRepository {
     } catch (e) {
       debugPrint('getCampCloseDetails error: $e');
       return null;
+    }
+  }
+
+  Future<bool> insertCampClose({
+    required int campId,
+    required int userId,
+    required String consumablesJson,
+    required String totalBenificiary,
+    required String sampleCollectionCount,
+    String sampleSendToHubLabCount = '0',
+    String sampleSendToHomeLabCount = '0',
+    String otherRemark = '',
+    String otherRemarkSummary = '',
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kInsertCampCloseActivitywithUrineChanges}';
+      final body = {
+        'CampID':                  campId.toString(),
+        'CampCloseUserid':         userId.toString(),
+        'JsonConsumableDetails':   consumablesJson,
+        'OtherRemark':             otherRemark,
+        'TotalBenificiary':        totalBenificiary,
+        'SampleCollectionCount':   sampleCollectionCount,
+        'SampleSendToHubLabCount': sampleSendToHubLabCount,
+        'SampleSendToHomeLabCount': sampleSendToHomeLabCount,
+        'OtherRemarkSummary':      otherRemarkSummary,
+      };
+      debugPrint('[insertCampClose] URL: $uri');
+      body.forEach((k, v) => debugPrint('[insertCampClose] Param: $k = $v'));
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('[insertCampClose] Response: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final status = (decoded['status'] ?? '').toString().toLowerCase();
+      return status != 'fail';
+    } catch (e) {
+      debugPrint('[insertCampClose] error: $e');
+      return false;
     }
   }
 
@@ -327,11 +370,11 @@ class HealthScreeningRepository {
       };
     } else if (testId == 16 || testId == 13) {
       urlString =
-          "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDNewD2DV1}";
+          "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDAnti}";
       params = {
-        "TestId": testId.toString(),
         "EmpCode": campId.toString(),
         "DistrictId": "0",
+        "TestId": testId.toString(),
         "UserId": userId.toString(),
         "TeamId": teamNumber,
       };
@@ -449,6 +492,9 @@ class HealthScreeningRepository {
     required String specTypeId,
     required String versionNo,
     required String isScannedBy,
+    String labcode = '0',
+    String latitude = '0.0',
+    String longitude = '0.0',
   }) async {
     try {
       final uri =
@@ -465,21 +511,49 @@ class HealthScreeningRepository {
         'sampledate': sampleDate,
         'sampletime': sampleTime,
         'SPECTYPEID': specTypeId,
+        'Labcode': labcode,
         'VersionNo': versionNo,
         'IsScannedBy': isScannedBy,
+        'Latitude': latitude,
+        'Longitude': longitude,
       };
-      debugPrint('submitSampleCollection URL: $uri body: $body');
+      debugPrint('submitSampleCollection URL: $uri');
+      body.forEach((k, v) => debugPrint('[SampleCollection] Param: $k = $v'));
       final response = await Repository.postResponse(
         uri,
         body,
         {'Content-Type': 'application/x-www-form-urlencoded'},
       );
-      debugPrint('submitSampleCollection raw: ${response.body}');
+      debugPrint('submitSampleCollection response: ${response.body}');
       return json.decode(response.body) as Map<String, dynamic>;
     } catch (e) {
       debugPrint('submitSampleCollection error: $e');
       return null;
     }
+  }
+
+  Future<bool> getIs24By7Flag({required int userId}) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetIs24By7IsAccountCreatedFlag}';
+      debugPrint('[SampleCollection] getIs24By7Flag URL: $uri body={UserID: $userId}');
+      final response = await Repository.postResponse(
+        uri,
+        {'UserID': userId.toString()},
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('[SampleCollection] getIs24By7Flag response: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      if ((decoded['status'] as String? ?? '').toLowerCase() == 'success') {
+        final output = decoded['output'] as List?;
+        if (output != null && output.isNotEmpty) {
+          return (output[0] as Map<String, dynamic>)['is24By7IsAccountCreated'] == 1;
+        }
+      }
+    } catch (e) {
+      debugPrint('[SampleCollection] getIs24By7Flag error: $e');
+    }
+    return false;
   }
 
   // ─── Urine Sample Collection ───────────────────────────────────────────────
@@ -579,15 +653,52 @@ class HealthScreeningRepository {
 
   // ─── Audio Screening ───────────────────────────────────────────────────────
 
+  /// Mirrors native InsertAudioImages AsyncTask — multipart POST to
+  /// InsertAudioImages_NEW_VersionNo.ashx with RegId, CreatedBy, JsonString,
+  /// PDF chart file, and VersionNo.
   Future<bool> saveAudioScreeningData({
+    required String regdId,
     required String createdBy,
     required String jsonString,
+    required String versionNo,
+    Uint8List? chartPdfBytes,
   }) async {
-    return _apiManager.insertMachineHearingTestAPI(
-      regdId: '',
-      createdBy: createdBy,
-      jsonString: jsonString,
-    );
+    try {
+      final url =
+          '${APIManager.kWebservicesBaseURL}${APIConstants.kInsertAudioImagesVersionNo}';
+      debugPrint('saveAudioScreeningData url=$url');
+      debugPrint(
+        'saveAudioScreeningData RegId=$regdId CreatedBy=$createdBy VersionNo=$versionNo JsonString=$jsonString',
+      );
+
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+      request.fields['RegId'] = regdId;
+      request.fields['CreatedBy'] = createdBy;
+      request.fields['JsonString'] = jsonString;
+      request.fields['VersionNo'] = versionNo;
+
+      if (chartPdfBytes != null) {
+        // field name is empty string to match native addFilePart("", file)
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            '',
+            chartPdfBytes,
+            filename: '${createdBy}_$regdId.pdf',
+          ),
+        );
+      }
+
+      final ioClient = _apiManager.getInstanceOfIoClient();
+      final streamed = await ioClient.send(request);
+      final body = await streamed.stream.bytesToString();
+      debugPrint('saveAudioScreeningData response=$body');
+
+      final decoded = json.decode(body) as Map<String, dynamic>;
+      return (decoded['status'] ?? '').toString().toLowerCase() == 'success';
+    } catch (e) {
+      debugPrint('saveAudioScreeningData error=$e');
+      return false;
+    }
   }
 
   // ─── Lung Function Test ────────────────────────────────────────────────────
@@ -618,13 +729,14 @@ class HealthScreeningRepository {
         'CreatedBy': createdBy,
         'VersionNo': versionNo,
       };
-      debugPrint('submitLFTDetails URL: $uri body: $body');
+      debugPrint('[InsertLFTDetails] URL: $uri');
+      body.forEach((k, v) => debugPrint('[InsertLFTDetails] Param: $k = $v'));
       final response = await Repository.postResponse(
         uri,
         body,
         {'Content-Type': 'application/x-www-form-urlencoded'},
       );
-      debugPrint('submitLFTDetails raw: ${response.body}');
+      debugPrint('[InsertLFTDetails] Response: ${response.body}');
       return json.decode(response.body) as Map<String, dynamic>;
     } catch (e) {
       debugPrint('submitLFTDetails error: $e');

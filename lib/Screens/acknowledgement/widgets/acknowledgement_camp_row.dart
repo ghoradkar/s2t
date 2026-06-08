@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/Json_Class/ResourceReMappingCampResponse/ResourceReMappingCampResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 
@@ -19,6 +18,11 @@ class AcknowledgementNewCampRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Camp name: D2D has campName, Regular Camp has campNo/campLocation
+    final displayName = camp.campName?.isNotEmpty == true
+        ? camp.campName!
+        : (camp.campNo?.isNotEmpty == true ? camp.campNo! : (camp.campLocation ?? '-'));
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: InkWell(
@@ -40,44 +44,24 @@ class AcknowledgementNewCampRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _InfoRow(
-                icon: icHashIcon,
-                label: 'Camp ID',
-                value: camp.campId?.toString() ?? '-',
-              ),
+              _InfoRow(label: 'Camp ID', value: camp.campId?.toString() ?? '-'),
               const SizedBox(height: 6),
-              _InfoRow(
-                icon: icCalendarMonth,
-                label: 'Camp Date',
-                value: camp.campDate ?? '-',
-              ),
+              _InfoRow(label: 'District', value: camp.dISTNAME ?? '-'),
               const SizedBox(height: 6),
-              _InfoRow(
-                icon: icMapPin,
-                label: 'Location',
-                value: camp.campLocation ?? camp.dISTNAME ?? '-',
-              ),
+              _InfoRow(label: 'Camp Type', value: camp.campTypeDescription ?? '-'),
               const SizedBox(height: 6),
-              Row(
-                children: [
-                  SizedBox(
-                    width: responsiveHeight(24),
-                    height: responsiveHeight(24),
-                    child: Image.asset(icnTent),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: CommonText(
-                      text: camp.campTypeDescription ?? '-',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w400,
-                      textColor: dropDownTitleHeader,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  Image.asset(icViewIcon, width: 24, height: 24),
-                ],
-              ),
+              _InfoRow(label: 'Camp Name', value: displayName),
+              const SizedBox(height: 6),
+              _InfoRow(label: 'Initiated By', value: camp.initiatedBy1 ?? '-'),
+              if ((camp.campCreatedBy?.isNotEmpty == true) || camp.createdBy != null) ...[
+                const SizedBox(height: 6),
+                _InfoRow(
+                  label: 'Created By',
+                  value: camp.campCreatedBy?.isNotEmpty == true
+                      ? camp.campCreatedBy!
+                      : camp.createdBy?.toString() ?? '-',
+                ),
+              ],
             ],
           ),
         ),
@@ -87,43 +71,44 @@ class AcknowledgementNewCampRow extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  final String icon;
   final String label;
   final String value;
 
-  const _InfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: responsiveHeight(24),
-          height: responsiveHeight(24),
-          child: Image.asset(icon),
+          width: 90.w,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontWeight: FontWeight.w600,
+              fontSize: responsiveFont(13),
+              color: Colors.black87,
+            ),
+          ),
         ),
-        const SizedBox(width: 8),
         Text(
-          '$label: ',
+          ': ',
           style: TextStyle(
-            color: Colors.black,
             fontFamily: FontConstants.interFonts,
-            fontWeight: FontWeight.w600,
             fontSize: responsiveFont(13),
+            color: Colors.black87,
           ),
         ),
         Expanded(
           child: Text(
             value,
             style: TextStyle(
-              color: dropDownTitleHeader,
               fontFamily: FontConstants.interFonts,
               fontWeight: FontWeight.w400,
               fontSize: responsiveFont(13),
+              color: dropDownTitleHeader,
             ),
           ),
         ),

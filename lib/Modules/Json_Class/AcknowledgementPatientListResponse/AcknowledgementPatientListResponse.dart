@@ -59,6 +59,11 @@ class AcknowledgementPatientOutput {
   String? campType;
   int? campTypeID;
   dynamic? screeningPatientID;
+  int? isDependent;
+  int? bocwIdDepend;
+  int? releationID;
+  String? relName;
+  String? rationCardNo;
 
   AcknowledgementPatientOutput({
     this.createdDate,
@@ -90,6 +95,11 @@ class AcknowledgementPatientOutput {
     this.campType,
     this.campTypeID,
     this.screeningPatientID,
+    this.isDependent,
+    this.bocwIdDepend,
+    this.releationID,
+    this.relName,
+    this.rationCardNo,
   });
 
   AcknowledgementPatientOutput.fromJson(Map<String, dynamic> json) {
@@ -122,6 +132,11 @@ class AcknowledgementPatientOutput {
     campType = json['CampType'];
     campTypeID = json['CampTypeID'];
     screeningPatientID = json['ScreeningPatientID'];
+    isDependent = json['IsDependent'] ?? json['isDependent'];
+    bocwIdDepend = json['Bocw_idDepend'];
+    releationID = json['ReleationID'];
+    relName = json['RelName'];
+    rationCardNo = json['RationCardNo'];
   }
 
   Map<String, dynamic> toJson() {

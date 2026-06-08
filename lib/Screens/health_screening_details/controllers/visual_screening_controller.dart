@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
@@ -211,6 +212,12 @@ class VisualScreeningController extends GetxController {
     final empCode = (userData?.empCode ?? 0).toString();
     final userName = userData?.name ?? '';
 
+    debugPrint('[VisualScreening] RegdId=${patient.regdId} CampId=$campId CreatedBy=$empCode');
+    debugPrint('[VisualScreening] blindnessId=${_data.blindnessId} injuryRight=${_data.injuryRightId}/${_data.injuryRightName} injuryLeft=${_data.injuryLeftId}/${_data.injuryLeftName}');
+    debugPrint('[VisualScreening] snellenRight=${_data.snellenRight} snellenLeft=${_data.snellenLeft} jaegarRight=${_data.jaegarRight} jaegarLeft=${_data.jaegarLeft}');
+    debugPrint('[VisualScreening] rightRemark=${_data.rightRemark} leftRemark=${_data.leftRemark} nearRemark=${_data.nearRemark}');
+    debugPrint('[VisualScreening] glasses=${_data.wearsGlasses} snellenRightRemark=${_data.snellenRightRemark} snellenLeftRemark=${_data.snellenLeftRemark}');
+
     isSaving.value = true;
     ToastManager.showLoader();
 
@@ -238,6 +245,7 @@ class VisualScreeningController extends GetxController {
 
     ToastManager.hideLoader();
     isSaving.value = false;
+    debugPrint('[VisualScreening] response=$result');
 
     if (!context.mounted) return;
 

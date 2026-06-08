@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
@@ -10,7 +11,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/assigned_patient_list_controller.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/screens/CallToDoctorScreen/CallToDoctorScreen.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/screens/PhysicalExaminationFormScreen/PhysicalExaminationFormScreen.dart';
 import 'AssignedD2DPhysicalExaminationPatientRow/AssignedD2DPhysicalExaminationPatientRow.dart';
 
 class AssignedD2DPhysicalExaminationPatientListScreen extends StatelessWidget {
@@ -91,13 +92,19 @@ class AssignedD2DPhysicalExaminationPatientListScreen extends StatelessWidget {
                                     return GestureDetector(
                                       onTap: () {
                                         final isCall = obj.isCall ?? "0";
-                                        if (isCall == "0" || isCall == "1") {
+                                        if (isCall  == "0") {
+                                          ToastManager.showAlertDialog(
+                                            context,
+                                            "Call to Beneficiary to open PHY. Examination form",
+                                            () => Navigator.pop(context),
+                                          );
+                                        } else {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (_) => CallToDoctorScreen(
+                                              builder: (_) => PhysicalExaminationFormScreen(
                                                 regdId: obj.regdId ?? 0,
-                                                campId: ctrl.campId,
+                                                campTypeID: obj.campTypeID ?? 0,
                                                 healthScreentype: ctrl.healthScreentype,
                                               ),
                                             ),

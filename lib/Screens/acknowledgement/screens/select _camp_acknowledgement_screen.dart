@@ -12,13 +12,15 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/acknowledgement/controllers/acknowledgement_camp_list_controller.dart';
 import 'package:s2toperational/Screens/acknowledgement/screens/acknowledgement_patient_list_screen.dart';
 import 'package:s2toperational/Screens/acknowledgement/widgets/acknowledgement_camp_row.dart';
+import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 
 class AcknowledgementCampListScreenNew extends StatelessWidget {
-  const AcknowledgementCampListScreenNew({super.key});
+  final bool isD2D;
+  const AcknowledgementCampListScreenNew({super.key, this.isD2D = false});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AcknowledgementCampListController());
+    final controller = Get.put(AcknowledgementCampListController(isD2D: isD2D));
 
     return KeyboardDismissOnTap(
       child: Scaffold(
@@ -60,6 +62,10 @@ class AcknowledgementCampListScreenNew extends StatelessWidget {
                 ),
               ),
             ),
+            if (isD2D) ...[
+              const SizedBox(height: 8),
+              _DistrictDropdown(controller: controller),
+            ],
             const SizedBox(height: 8),
             AppTextField(
               controller: controller.searchController,
@@ -151,5 +157,66 @@ class AcknowledgementCampListScreenNew extends StatelessWidget {
       lastDate: DateTime(2101),
     );
     if (picked != null) controller.onDateChanged(picked);
+  }
+}
+
+class _DistrictDropdown extends StatelessWidget {
+  final AcknowledgementCampListController controller;
+  const _DistrictDropdown({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isLoadingDist.value) {
+        return Container(
+          height: 56.h,
+          decoration: BoxDecoration(
+            border: Border.all(color: kTextFieldBorder),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: CommonText(
+            text: 'Loading districts...',
+            fontSize: 13.sp,
+            fontWeight: FontWeight.normal,
+            textColor: kLabelTextColor,
+            textAlign: TextAlign.start,
+          ),
+        );
+      }
+
+      if (controller.districtList.isEmpty) return const SizedBox.shrink();
+
+      return DropdownButtonHideUnderline(
+        child: Container(
+          height: 56.h,
+          decoration: BoxDecoration(
+            border: Border.all(color: kTextFieldBorder),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: DropdownButton<DistrictOutput>(
+            value: controller.selectedDistrict.value,
+            isExpanded: true,
+            icon: Icon(Icons.arrow_drop_down, color: kPrimaryColor),
+            style: TextStyle(
+              fontFamily: FontConstants.interFonts,
+              fontSize: 14.sp,
+              color: kTextColor,
+            ),
+            items: controller.districtList.map((d) {
+              return DropdownMenuItem<DistrictOutput>(
+                value: d,
+                child: Text(d.distName ?? d.distLgdCode ?? ''),
+              );
+            }).toList(),
+            onChanged: (d) {
+              if (d != null) controller.onDistrictSelected(d);
+            },
+          ),
+        ),
+      );
+    });
   }
 }

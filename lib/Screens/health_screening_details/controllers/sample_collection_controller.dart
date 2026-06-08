@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:s2toperational/Modules/Json_Class/DishaResponse/DishaResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 
@@ -29,6 +31,10 @@ class SampleCollectionController extends GetxController {
 
   late final DateTime _today;
 
+  String _latitude = '0.0';
+  String _longitude = '0.0';
+  bool _is24By7AccountCreated = false;
+
   String? _dishaToken;
   String? _dishaCustomerId;
   List<DishaTestDetail> _dishaTests = [];
@@ -46,6 +52,8 @@ class SampleCollectionController extends GetxController {
     timeCtrl.text = DateFormat('HH:mm').format(_today);
 
     _initDishaData();
+    _fetchLocation();
+    _fetchIs24By7Flag();
   }
 
   Future<void> _initDishaData() async {
@@ -62,6 +70,44 @@ class SampleCollectionController extends GetxController {
       _dishaCustomerId = testsResponse.customerId;
       _dishaTests = testsResponse.tests;
     }
+  }
+
+  Future<void> _fetchLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return;
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) return;
+      }
+      if (permission == LocationPermission.deniedForever) return;
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null) {
+        _latitude = lastKnown.latitude.toStringAsFixed(7);
+        _longitude = lastKnown.longitude.toStringAsFixed(7);
+      }
+      try {
+        final fresh = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        ).timeout(const Duration(seconds: 15));
+        _latitude = fresh.latitude.toStringAsFixed(7);
+        _longitude = fresh.longitude.toStringAsFixed(7);
+      } catch (_) {}
+      // ignore: avoid_print
+      print('[SampleCollection] location: lat=$_latitude long=$_longitude');
+    } catch (e) {
+      // ignore: avoid_print
+      print('[SampleCollection] _fetchLocation error: $e');
+    }
+  }
+
+  Future<void> _fetchIs24By7Flag() async {
+    final userId =
+        DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
+    _is24By7AccountCreated = await _repo.getIs24By7Flag(userId: userId);
+    // ignore: avoid_print
+    print('[SampleCollection] is24By7AccountCreated=$_is24By7AccountCreated');
   }
 
   bool get barcode1Locked => (patientItem.antiBarcode ?? '').isNotEmpty;
@@ -172,8 +218,11 @@ class SampleCollectionController extends GetxController {
       sampleDate: formattedDate,
       sampleTime: time,
       specTypeId: '',
-      versionNo: '1.0',
+      labcode: '0',
+      versionNo: APIConstants.kNativeVersion,
       isScannedBy: isScannedByScanner.value ? '2' : '1',
+      latitude: _latitude,
+      longitude: _longitude,
     );
 
     ToastManager.hideLoader();

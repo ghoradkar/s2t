@@ -1,3 +1,4 @@
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -106,6 +107,7 @@ class AudioScreeningFormScreen extends StatefulWidget {
 class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   late final AudioScreeningController controller;
 
+  final GlobalKey _chartKey = GlobalKey();
   final TextEditingController _deafnessCtrl = TextEditingController();
   final TextEditingController _frequencyCtrl = TextEditingController();
   final TextEditingController _volumeCtrl = TextEditingController();
@@ -182,7 +184,7 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
                 return AppActiveButton(
                   buttontitle: saving ? 'Saving…' : 'Save',
                   onTap: () {
-                    if (!saving) controller.save(context);
+                    if (!saving) controller.save(context, _chartKey);
                   },
                 );
               }),
@@ -681,7 +683,12 @@ class _AudioScreeningFormScreenState extends State<AudioScreeningFormScreen> {
   Widget _audiogramChart() {
     return Column(
       children: [
-        Obx(() => SizedBox(height: 240.h, child: LineChart(_buildChartData()))),
+        Obx(
+          () => RepaintBoundary(
+            key: _chartKey,
+            child: SizedBox(height: 240.h, child: LineChart(_buildChartData())),
+          ),
+        ),
         SizedBox(height: 10.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

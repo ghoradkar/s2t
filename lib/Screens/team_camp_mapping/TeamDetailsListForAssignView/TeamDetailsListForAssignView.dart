@@ -311,34 +311,37 @@ class _TeamDetailsListForAssignViewState
                 ),
         ),
 
-        // Bottom buttons
-        Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
-          child: Row(
-            children: [
-              Expanded(
-                child: AppActiveButton(
-                  buttontitle: 'Back',
-                  isCancel: true,
-                  onTap: () => Navigator.pop(context),
+        // Bottom buttons — SafeArea handles gesture nav bar on tall phones
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: AppActiveButton(
+                    buttontitle: 'Back',
+                    isCancel: true,
+                    onTap: () => Navigator.pop(context),
+                  ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: AppActiveButton(
-                  buttontitle: _selectedCount > 0
-                      ? 'Confirm ($_selectedCount)'
-                      : 'Confirm',
-                  onTap: () {
-                    final selectedList = widget.list
-                        .where((obj) => obj.selected)
-                        .toList();
-                    Navigator.pop(context);
-                    widget.onTapTeam(selectedList);
-                  },
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: AppActiveButton(
+                    buttontitle: _selectedCount > 0
+                        ? 'Confirm ($_selectedCount)'
+                        : 'Confirm',
+                    onTap: () {
+                      final selectedList = widget.list
+                          .where((obj) => obj.selected)
+                          .toList();
+                      Navigator.pop(context);
+                      widget.onTapTeam(selectedList);
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

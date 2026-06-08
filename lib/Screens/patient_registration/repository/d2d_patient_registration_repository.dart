@@ -210,6 +210,32 @@ class D2DPatientRegistrationRepository {
     return completer.future;
   }
 
+  /// Mirrors native getWorkerInfoForFlag() — checks MAHABOCW board if the
+  /// worker is currently active. Returns true = active, false = inactive.
+  /// On network failure returns true (do not block — matches native onFailure).
+  Future<bool> checkWorkerActiveStatus(String regNo) async {
+    final url = Uri.parse(
+      '${APIManager.kMahabocwBaseURL}${APIConstants.kMahabocwBeneficiaryDetailsApi}MH$regNo',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.get(url);
+      // ignore: avoid_print
+      _printLong('[checkWorkerActiveStatus] url=$url status=${response.statusCode} body=${response.body}');
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        if (decoded is List) return decoded.isNotEmpty;
+      }
+      return true;
+    } catch (e) {
+      // ignore: avoid_print
+      print('[checkWorkerActiveStatus] error=$e');
+      return true;
+    } finally {
+      ioClient.close();
+    }
+  }
+
   Future<BeneficiaryDetailsResponse?> getBeneficiaryFromBocw({
     required String workerRegNo,
   }) async {
@@ -492,7 +518,7 @@ class D2DPatientRegistrationRepository {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       // ignore: avoid_print
-      print('[sendOtp] status=${response.statusCode} body=${response.body}');
+      _printLong('[sendOtp] status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       if (decoded['status']?.toString().toLowerCase() == 'success') {
         return null;
@@ -523,7 +549,7 @@ class D2DPatientRegistrationRepository {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       // ignore: avoid_print
-      print('[verifyOtp] status=${response.statusCode} body=${response.body}');
+      _printLong('[verifyOtp] status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       return decoded['status']?.toString().toLowerCase() == 'success';
     } catch (e) {
@@ -765,7 +791,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[createAbhaSession] status=${response.statusCode}  body=${response.body}');
+      _printLong('[createAbhaSession] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         final j = jsonDecode(response.body);
         return j['accessToken'] as String?;
@@ -795,7 +821,7 @@ class D2DPatientRegistrationRepository {
         },
       );
       // ignore: avoid_print
-      print('[getAbhaPublicCertificate] status=${response.statusCode}  body=${response.body}');
+      _printLong('[getAbhaPublicCertificate] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         final j = jsonDecode(response.body);
         return j['publicKey'] as String?;
@@ -1010,7 +1036,7 @@ class D2DPatientRegistrationRepository {
         body: jsonEncode(payload),
       );
       // ignore: avoid_print
-      print('[saveDemographicAbhaDetails] status=${response.statusCode}  body=${response.body}');
+      _printLong('[saveDemographicAbhaDetails] status=${response.statusCode}  body=${response.body}');
       final decoded = jsonDecode(response.body);
       return decoded['status']?.toString().toLowerCase() == 'success';
     } catch (e) {
@@ -1075,7 +1101,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[enrolByDemographic] status=${response.statusCode}  body=${response.body}');
+      _printLong('[enrolByDemographic] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1231,7 +1257,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[findAbhaByMobile] status=${response.statusCode}  body=${response.body}');
+      _printLong('[findAbhaByMobile] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
         // ABDM returns a JSON array — extract first element
@@ -1282,7 +1308,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[sendAbhaMobileOtpByIndex] status=${response.statusCode}  body=${response.body}');
+      _printLong('[sendAbhaMobileOtpByIndex] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1327,7 +1353,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[sendAbhaAadhaarLoginOtp] status=${response.statusCode}  body=${response.body}');
+      _printLong('[sendAbhaAadhaarLoginOtp] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1376,7 +1402,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[verifyAbhaAadhaarLoginOtp] status=${response.statusCode}  body=${response.body}');
+      _printLong('[verifyAbhaAadhaarLoginOtp] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1429,7 +1455,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[sendAbhaVerifyMobileOtp] status=${response.statusCode}  body=${response.body}');
+      _printLong('[sendAbhaVerifyMobileOtp] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1482,7 +1508,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[sendAbhaVerifyAadhaarOtp] status=${response.statusCode}  body=${response.body}');
+      _printLong('[sendAbhaVerifyAadhaarOtp] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1531,7 +1557,7 @@ class D2DPatientRegistrationRepository {
         }),
       );
       // ignore: avoid_print
-      print('[verifyAbhaMobileLoginOtp] status=${response.statusCode}  body=${response.body}');
+      _printLong('[verifyAbhaMobileLoginOtp] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1566,7 +1592,7 @@ class D2DPatientRegistrationRepository {
         },
       );
       // ignore: avoid_print
-      print('[getAbhaAccountProfile] status=${response.statusCode}  body=${response.body}');
+      _printLong('[getAbhaAccountProfile] status=${response.statusCode}  body=${response.body}');
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
@@ -1577,6 +1603,26 @@ class D2DPatientRegistrationRepository {
       return {'error': e.toString()};
     } finally {
       ioClient.close();
+    }
+  }
+
+  // Logcat silently truncates lines longer than ~4096 chars.
+  // This helper splits the message into chunks so nothing is lost.
+  // ignore: avoid_print
+  static void _printLong(String message) {
+    const chunkSize = 3800;
+    if (message.length <= chunkSize) {
+      // ignore: avoid_print
+      print(message);
+      return;
+    }
+    final total = (message.length / chunkSize).ceil();
+    var offset = 0;
+    for (var part = 1; part <= total; part++) {
+      final end = (offset + chunkSize).clamp(0, message.length);
+      // ignore: avoid_print
+      print('[$part/$total] ${message.substring(offset, end)}');
+      offset = end;
     }
   }
 
@@ -1612,7 +1658,9 @@ class D2DPatientRegistrationRepository {
     // ignore: avoid_print
     print('[saveD2DRegistration] isFaceDetectionEnabled=$isFaceDetectionEnabled');
     // ignore: avoid_print
-    print('[saveD2DRegistration] FIELDS: ${fields.entries.map((e) => "${e.key}=${e.value}").join(", ")}');
+    print('[saveD2DRegistration] ===== ${fields.length} PARAMS =====');
+    // ignore: avoid_print
+    fields.forEach((k, v) => print('[saveD2DRegistration] Param: $k = $v'));
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final request = http.MultipartRequest('POST', url);
@@ -1648,6 +1696,8 @@ class D2DPatientRegistrationRepository {
         print('[saveD2DRegistration] file2=null (no health card photo)');
       }
       if (renewalSlipPhoto != null) {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file3=renewalSlipPhoto path=${renewalSlipPhoto.path} filename=${regdNo}_RS.jpg');
         request.files.add(
           await http.MultipartFile.fromPath(
             'file3',
@@ -1655,8 +1705,13 @@ class D2DPatientRegistrationRepository {
             filename: '${regdNo}_RS.jpg',
           ),
         );
+      } else {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file3=null (no renewal slip)');
       }
       if (hivLetterPhoto != null) {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file4=hivLetterPhoto path=${hivLetterPhoto.path} filename=${regdNo}_HIV.jpg');
         request.files.add(
           await http.MultipartFile.fromPath(
             'file4',
@@ -1664,12 +1719,15 @@ class D2DPatientRegistrationRepository {
             filename: '${regdNo}_HIV.jpg',
           ),
         );
+      } else {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file4=null (no HIV letter)');
       }
 
       final streamed = await ioClient.send(request);
       final response = await http.Response.fromStream(streamed);
       // ignore: avoid_print
-      print('[saveD2DRegistration] response status=${response.statusCode} body=${response.body}');
+      _printLong('[saveD2DRegistration] response status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       final result = D2DRegistrationResponse.fromJson(decoded);
       return (result.status?.toLowerCase() == 'success') ? result : result;
@@ -1788,7 +1846,7 @@ class D2DPatientRegistrationRepository {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       // ignore: avoid_print
-      print('[getPatientQueue] status=${response.statusCode} body=${response.body}');
+      _printLong('[getPatientQueue] status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body);
       return GetQueueResponseModel.fromJson(decoded as Map<String, dynamic>);
     } catch (e) {

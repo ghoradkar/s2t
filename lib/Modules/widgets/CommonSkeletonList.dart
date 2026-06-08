@@ -1095,6 +1095,7 @@ class CommonSkeletonCalender extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Skeletonizer(
       enabled: true,
       child: Container(

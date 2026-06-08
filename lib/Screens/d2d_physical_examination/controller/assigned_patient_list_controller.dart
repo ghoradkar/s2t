@@ -54,6 +54,8 @@ class AssignedPatientListController extends GetxController
   int oganizationId = 0;
   String mobileNo = "";
   String bMobile = "";
+  int _pendingCallRegdId = 0;
+  final Set<int> _calledRegdIds = <int>{};
   String virtualNumber = "";
   bool isLoading = false;
 
@@ -279,14 +281,14 @@ class AssignedPatientListController extends GetxController
             "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDUrineChange}";
       } else if (healthScreentype == "16") {
         jsonObject = {
-          "SiteDetailId": campId.toString(),
+          "EmpCode": campId.toString(),
           "DistrictId": "0",
           "TestId": "16",
           "UserId": empCode.toString(),
           "TeamId": teamId,
         };
         urlString =
-            "${APIManager.kD2DBaseURL}${APIConstants.kGetuserAttendanceForSitedetailsIDPhysicalExam}";
+            "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDAnti}";
       } else {
         jsonObject = {
           "EmpCode": campId.toString(),
@@ -349,6 +351,7 @@ class AssignedPatientListController extends GetxController
       patientList = [];
       ToastManager.toast(errorMessage);
     }
+    _applyCalledState(patientList);
     searchPatientList = patientList;
     isLoading = false;
     update();
@@ -366,6 +369,7 @@ class AssignedPatientListController extends GetxController
   // ── Call flow ────────────────────────────────────────────────────────────
 
   Future<void> insertCallDetails(int regdId) async {
+    _pendingCallRegdId = regdId;
     ToastManager.showLoader();
     await _api.insertCallDetailsAPI(
       {"RegdId": regdId.toString(), "TestID": "16", "CreatedBy": empCode.toString()},
@@ -380,6 +384,7 @@ class AssignedPatientListController extends GetxController
   ) {
     ToastManager.hideLoader();
     if (success) {
+      _markPatientAsCalled(_pendingCallRegdId);
       launchPhoneDialer(mobileNo);
     } else {
       ToastManager.toast(errorMessage);
@@ -388,11 +393,35 @@ class AssignedPatientListController extends GetxController
   }
 
   Future<void> getCallingStatusNew(int regdId) async {
+    _pendingCallRegdId = regdId;
     ToastManager.showLoader();
     await _api.insertBeneficiaryCallingLogV2API(
       {"RegdId": regdId.toString(), "TestID": "16", "CreatedBy": empCode.toString()},
       _onCallingStatus,
     );
+  }
+
+  void _markPatientAsCalled(int regdId) {
+    if (regdId == 0) return;
+    _calledRegdIds.add(regdId);
+    _applyCalledState(patientList);
+    searchPatientList = List.from(
+      patientList.where((p) {
+        final name = (p.englishName ?? "").toLowerCase();
+        return name.contains(searchController.text.toLowerCase());
+      }),
+    );
+  }
+
+  // Re-applies isCall="1" for every patient that was called this session.
+  // Called after every list refresh so the green state survives API overwrites.
+  void _applyCalledState(List<AttendancesListUsingSiteDetailsIDOutput> list) {
+    if (_calledRegdIds.isEmpty) return;
+    for (final p in list) {
+      if (_calledRegdIds.contains(p.regdId)) {
+        p.isCall = "1";
+      }
+    }
   }
 
   void _onCallingStatus(
@@ -402,6 +431,7 @@ class AssignedPatientListController extends GetxController
   ) async {
     ToastManager.hideLoader();
     if (success) {
+      _markPatientAsCalled(_pendingCallRegdId);
       referenceId = response?.iD ?? 0;
       if (isUserCreatedBy == 1) {
         if (agentID == "0") {

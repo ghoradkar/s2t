@@ -13,7 +13,7 @@ import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppIconTextfield.dart';
 import 'package:s2toperational/Screens/HomeScreen/HomeScreen.dart';
-import 'package:s2toperational/Screens/LoginScreen/LoginScreen.dart';
+import 'package:s2toperational/Screens/LoginScreen/screens/login_screen.dart';
 import '../../Modules/FormatterManager/FormatterManager.dart';
 import '../../Modules/ToastManager/ToastManager.dart';
 import '../../Modules/utilities/SizeConfig.dart';

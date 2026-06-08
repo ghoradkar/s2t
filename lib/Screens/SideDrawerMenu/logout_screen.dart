@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/LoginScreen/LoginScreen.dart';
+import 'package:s2toperational/Screens/LoginScreen/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';

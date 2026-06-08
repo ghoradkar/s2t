@@ -201,6 +201,8 @@ class BasicHealthInfoFormController extends GetxController {
       final url = Uri.parse(
         '${APIManager.kD2DBaseURL}${APIConstants.kGetMachineAvailabilityFlagV1}',
       );
+      // ignore: avoid_print
+      print('[BHI] getMachineAvailabilityFlag URL: $url body={USERID: $_empCode}');
       final ioClient = _api.getInstanceOfIoClient();
       final response = await ioClient.post(
         url,
@@ -208,6 +210,8 @@ class BasicHealthInfoFormController extends GetxController {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       ioClient.close();
+      // ignore: avoid_print
+      print('[BHI] getMachineAvailabilityFlag response: ${response.body}');
       final decoded = jsonDecode(response.body) as Map<String, dynamic>;
       if (decoded['status']?.toString().toLowerCase() == 'success') {
         final output = (decoded['output'] as List?)?.first as Map<String, dynamic>?;
@@ -218,9 +222,14 @@ class BasicHealthInfoFormController extends GetxController {
               output['IsBPMachineAvailable']?.toString() == '1';
           isSugarDeviceAvailable.value =
               output['IsSugarDeviceAvailable']?.toString() == '1';
+          // ignore: avoid_print
+          print('[BHI] machineFlags: isWeight=${isWeightMachineAvailable.value} isBP=${isBPMachineAvailable.value} isSugar=${isSugarDeviceAvailable.value}');
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      // ignore: avoid_print
+      print('[BHI] getMachineAvailabilityFlag error: $e');
+    }
   }
 
   void _prefill() {
@@ -463,6 +472,8 @@ class BasicHealthInfoFormController extends GetxController {
   void _applyBpReading(Map<String, int> reading) {
     systolicCtrl.text  = reading['systolic'].toString();
     diastolicCtrl.text = reading['diastolic'].toString();
+    // ignore: avoid_print
+    print('[BHI] BpDevice APPLIED: sys=${reading['systolic']} dia=${reading['diastolic']} mac=${bpController.savedDeviceMac.value}');
     ToastManager.toast('Blood pressure reading applied.');
     update();
   }
@@ -540,55 +551,76 @@ class BasicHealthInfoFormController extends GetxController {
         ? (fastingHrsInputCtrl.text.trim().isEmpty ? '0' : fastingHrsInputCtrl.text.trim())
         : '12';
 
-    _api.insertBasicHealthInfoNewAPI(
-      {
-        'RegdId': regdId.toString(),
-        'CampId': campId.toString(),
-        'Height_CMs': heightCtrl.text.trim(),
-        'Weight_KGs': weightCtrl.text.trim(),
-        'BloodPressure': '0',
-        'BloodSugar_F': '',
-        'BloodSugar_PP': '',
-        'BloodSugar_R': bloodSugarRCtrl.text.trim(),
-        'BMI': bmiCtrl.text.trim(),
-        'BMIStatus': bmiStatus,
-        'BloodGroup': selectedBloodGroup ?? '',
-        'MaritalStatus': maritalStatus,
-        'NoOfChildren': maritalStatusIndex == 0 ? childrenCtrl.text.trim() : '0',
-        'FamilyPlanOperation': familyPlanningIndex == 1 ? '1' : '0',
-        'Alcohol': alcoholIndex == 1 ? '1' : '0',
-        'Smokin': smokingIndex == 1 ? '1' : '0',
-        'Tobaco': tobaccoIndex == 1 ? '1' : '0',
-        'Age': age.toString(),
-        'Gender': gender,
-        'Systolic': systolicCtrl.text.trim(),
-        'Diastolic': diastolicCtrl.text.trim(),
-        'CreatedBy': _empCode.toString(),
-        'Tests_Details': '[]',
-        'PulseRate': '0',
-        'Drugs': drugsIndex == 1 ? '1' : '0',
-        'AlcoholSinceMonth': alcoholIndex == 1 ? alcoholMonthCtrl.text.trim() : '0',
-        'AlcoholSinceYear': alcoholIndex == 1 ? alcoholYearCtrl.text.trim() : '0',
-        'SmokingSinceMonth': smokingIndex == 1 ? smokingMonthCtrl.text.trim() : '0',
-        'SmokingSinceYear': smokingIndex == 1 ? smokingYearCtrl.text.trim() : '0',
-        'TobacoSinceMonth': tobaccoIndex == 1 ? tobaccoMonthCtrl.text.trim() : '0',
-        'TobacoSinceYear': tobaccoIndex == 1 ? tobaccoYearCtrl.text.trim() : '0',
-        'DrugSinceMonth': drugsIndex == 1 ? drugsMonthCtrl.text.trim() : '0',
-        'DrugSinceYear': drugsIndex == 1 ? drugsYearCtrl.text.trim() : '0',
-        'Temperature': '0',
-        'SPO2': '0',
-        'AppVersion': '9.79',
-        'isBPManual': bpController.getLastReading() != null ? '0' : '1',
-        'IsFromWeightMachine': isWeightDataReceived.value ? '1' : '0',
-        'IsFromSugarDevice': isSugarDataReceived.value ? '1' : '0',
-        'IsFromBloodPressureDevice': bpController.getLastReading() != null ? '0' : '1',
-        'NameOfWeightMachine': _weightDeviceName,
-        'NameOfSugarDevice': _sugarDeviceName,
-        'NameOfBloodPressureDevice': bpController.savedDeviceMac.value,
-        'FastingHrs': fastingHrs,
-      },
-      _onSaveResult,
-    );
+    final bpReading = bpController.getLastReading();
+
+    // ── Device state log ────────────────────────────────────────────────
+    // ignore: avoid_print
+    print('[BHI] ===== DEVICE STATE =====');
+    // ignore: avoid_print
+    print('[BHI] isWeightDataReceived=${isWeightDataReceived.value} weightDeviceName=$_weightDeviceName');
+    // ignore: avoid_print
+    print('[BHI] isSugarDataReceived=${isSugarDataReceived.value} sugarDeviceName=$_sugarDeviceName');
+    // ignore: avoid_print
+    print('[BHI] bpLastReading=$bpReading bpDeviceMac=${bpController.savedDeviceMac.value}');
+    // ignore: avoid_print
+    print('[BHI] isBPManual=${bpReading != null ? "0 (from device)" : "1 (manual)"}');
+    // ignore: avoid_print
+    print('[BHI] IsFromBloodPressureDevice=${bpReading != null ? "0" : "1"}');
+
+    final body = <String, String>{
+      'RegdId': regdId.toString(),
+      'CampId': campId.toString(),
+      'Height_CMs': heightCtrl.text.trim(),
+      'Weight_KGs': weightCtrl.text.trim(),
+      'BloodPressure': '0',
+      'BloodSugar_F': '',
+      'BloodSugar_PP': '',
+      'BloodSugar_R': bloodSugarRCtrl.text.trim(),
+      'BMI': bmiCtrl.text.trim(),
+      'BMIStatus': bmiStatus,
+      'BloodGroup': selectedBloodGroup ?? '',
+      'MaritalStatus': maritalStatus,
+      'NoOfChildren': maritalStatusIndex == 0 ? childrenCtrl.text.trim() : '0',
+      'FamilyPlanOperation': familyPlanningIndex == 1 ? '1' : '0',
+      'Alcohol': alcoholIndex == 1 ? '1' : '0',
+      'Smokin': smokingIndex == 1 ? '1' : '0',
+      'Tobaco': tobaccoIndex == 1 ? '1' : '0',
+      'Age': age.toString(),
+      'Gender': gender,
+      'Systolic': systolicCtrl.text.trim(),
+      'Diastolic': diastolicCtrl.text.trim(),
+      'CreatedBy': _empCode.toString(),
+      'Tests_Details': '[]',
+      'PulseRate': '0',
+      'Drugs': drugsIndex == 1 ? '1' : '0',
+      'AlcoholSinceMonth': alcoholIndex == 1 ? alcoholMonthCtrl.text.trim() : '0',
+      'AlcoholSinceYear': alcoholIndex == 1 ? alcoholYearCtrl.text.trim() : '0',
+      'SmokingSinceMonth': smokingIndex == 1 ? smokingMonthCtrl.text.trim() : '0',
+      'SmokingSinceYear': smokingIndex == 1 ? smokingYearCtrl.text.trim() : '0',
+      'TobacoSinceMonth': tobaccoIndex == 1 ? tobaccoMonthCtrl.text.trim() : '0',
+      'TobacoSinceYear': tobaccoIndex == 1 ? tobaccoYearCtrl.text.trim() : '0',
+      'DrugSinceMonth': drugsIndex == 1 ? drugsMonthCtrl.text.trim() : '0',
+      'DrugSinceYear': drugsIndex == 1 ? drugsYearCtrl.text.trim() : '0',
+      'Temperature': '0',
+      'SPO2': '0',
+      'AppVersion': APIConstants.kNativeVersion,
+      'isBPManual': bpReading != null ? '0' : '1',
+      'IsFromWeightMachine': isWeightDataReceived.value ? '1' : '0',
+      'IsFromSugarDevice': isSugarDataReceived.value ? '1' : '0',
+      'IsFromBloodPressureDevice': bpReading != null ? '0' : '1',
+      'NameOfWeightMachine': _weightDeviceName,
+      'NameOfSugarDevice': _sugarDeviceName,
+      'NameOfBloodPressureDevice': bpController.savedDeviceMac.value,
+      'FastingHrs': fastingHrs,
+    };
+
+    // ── Per-field log (matches native Params style, avoids logcat truncation) ─
+    // ignore: avoid_print
+    print('[BHI] ===== SUBMIT ${body.length} FIELDS =====');
+    // ignore: avoid_print
+    body.forEach((k, v) => print('[BHI] $k = $v'));
+
+    _api.insertBasicHealthInfoNewAPI(body, _onSaveResult);
   }
 
   void _onSaveResult(
@@ -636,6 +668,8 @@ class BasicHealthInfoFormController extends GetxController {
       }
     }
     isWeightDataReceived.value = true;
+    // ignore: avoid_print
+    print('[BHI] WeightDevice APPLIED: weight=$weight bmi=$bmi device=$deviceNameStr');
     update();
   }
 
@@ -649,6 +683,8 @@ class BasicHealthInfoFormController extends GetxController {
     bloodSugarRCtrl.text = numericValue;
     _sugarDeviceName = deviceNameStr;
     isSugarDataReceived.value = true;
+    // ignore: avoid_print
+    print('[BHI] SugarDevice APPLIED: glucose=$glucose numeric=$numericValue device=$deviceNameStr');
     update();
   }
 

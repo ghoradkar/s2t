@@ -44,9 +44,11 @@ class AcknowledgementPatientListController extends GetxController {
 
   Future<void> fetchPatients() async {
     isLoading.value = true;
+    final teamId = await _repo.getTeamId(campId: campId, userId: empCode);
     final response = await _repo.getPatientList(
       campId: campId,
       userId: empCode,
+      teamId: teamId,
     );
     if (response != null && response.status?.toLowerCase() == 'success') {
       patientList.assignAll(response.output ?? []);

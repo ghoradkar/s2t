@@ -8,7 +8,7 @@ import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/CampDetailsScreen/BeneficiaryCampDetailsScreen/BeneficiaryVerificationScreen/FullScreenImageScreen/FullScreenImageScreen.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../../Modules/Json_Class/BeneficiaryWorkerResponse/BeneficiaryWorkerResponse.dart';
-import '../../../../../Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
+import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
 import '../../../../../Modules/Json_Class/PatientCheckupAnalysisReportResponse/PatientCheckupAnalysisReportResponse.dart';
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';

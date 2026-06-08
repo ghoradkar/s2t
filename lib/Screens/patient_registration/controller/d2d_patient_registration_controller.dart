@@ -14,6 +14,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
@@ -61,6 +62,16 @@ class D2DPatientRegistrationController extends GetxController {
   String benefBoardName = '';
   String benefBoardGender = '';
 
+  // Hardcoded marital status list — IDs match the GetMaritalMaster API response
+  // (native fetches dynamically; Flutter hardcodes these verified values)
+  // API returns: 1=Married, 2=Unmarried, 3=Divorced, 4=Widowed
+  var kMaritalStatus = [
+    ('1', 'Married'),
+    ('2', 'Unmarried'),
+    ('3', 'Divorced'),
+    ('4', 'Widowed'),
+  ];
+
   final tecWorkerRegNo = TextEditingController();
   final tecFullName = TextEditingController();
   final tecFirstName = TextEditingController();
@@ -101,6 +112,10 @@ class D2DPatientRegistrationController extends GetxController {
   /// true = show "Skip Face Detection" toggle (server returns IsFaceDetetctionEnabled == "0")
   /// false = toggle hidden — face detection is mandatory, cannot skip
   final showFaceDetectionToggle = false.obs;
+
+  /// Mirrors native isBoardDataCompalsory — set from ActiveRegFlag in GetFaceDetectionFlag.
+  /// true = must validate worker active status via MAHABOCW API on reg-no entry.
+  bool _isBoardDataCompulsory = false;
   final selectedRelation = Rxn<RelationOutput>();
   final relationList = <RelationOutput>[].obs;
 
@@ -341,7 +356,7 @@ class D2DPatientRegistrationController extends GetxController {
     ToastManager.showAlertDialog(
       context,
       "You cannot register new patients until registered beneficiaries screening is completed",
-      (){
+      () {
         Get.back();
         Get.back();
       },
@@ -389,11 +404,39 @@ class D2DPatientRegistrationController extends GetxController {
               output.first['IsFaceDetetctionEnabled']?.toString() ?? '1';
           // Show toggle only when server says it is NOT compulsory ("0")
           showFaceDetectionToggle.value = compulsory == '0';
+
+          // Mirrors native isBoardDataCompalsory = o.getActiveRegFlag()
+          final activeRegFlag =
+              output.first['ActiveRegFlag']?.toString() ?? '0';
+          _isBoardDataCompulsory = activeRegFlag == '1';
         }
       }
-      // On failure: keep showFaceDetectionToggle = false (toggle hidden,
-      // face detection stays required — same as native on failure)
+      // On failure: keep defaults — face detection required, board check off.
+      // Matches native behaviour on API failure.
     });
+  }
+
+  /// Mirrors native getWorkerInfoForFlag() — called after reg-no is entered and
+  /// after a dependent is selected, when ActiveRegFlag == 1.
+  /// If worker is inactive (empty array from MAHABOCW), clears the form and
+  /// shows the same Marathi alert as native.
+  Future<void> _checkWorkerActiveStatus() async {
+    if (!_isBoardDataCompulsory) return;
+    final regNo = tecWorkerRegNo.text.trim();
+    if (regNo.isEmpty) return;
+
+    final isActive = await _repo.checkWorkerActiveStatus(regNo);
+    if (!isActive) {
+      _clearForm();
+      final ctx = Get.context;
+      if (ctx != null) {
+        ToastManager.showAlertDialog(
+          ctx,
+          'लाभार्थी सध्या निष्क्रिय आहे किंवा उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा.',
+          () => Get.back(),
+        );
+      }
+    }
   }
 
   /// Starts on init and repeats every 5 s — mirrors native locationRequest interval.
@@ -1013,6 +1056,7 @@ class D2DPatientRegistrationController extends GetxController {
       }
 
       _applyWorkerInfo(data);
+      await _checkWorkerActiveStatus();
     } finally {
       isLoadingBeneficiary.value = false;
     }
@@ -1048,7 +1092,7 @@ class D2DPatientRegistrationController extends GetxController {
     }
   }
 
-  void onDependentSelected(DependentOutput dep) {
+  Future<void> onDependentSelected(DependentOutput dep) async {
     selectedDependent.value = dep;
     bocwIdDepend = dep.bocwIdDepend ?? '';
 
@@ -1114,6 +1158,10 @@ class D2DPatientRegistrationController extends GetxController {
         }
       } catch (_) {}
     }
+
+    // Mirrors native: after dependent gender is set, validate worker active
+    // status if ActiveRegFlag == 1.
+    await _checkWorkerActiveStatus();
   }
 
   /// Calls CheckDependentRegistrationStatus. Returns null on success, error message on failure.
@@ -2876,7 +2924,7 @@ class D2DPatientRegistrationController extends GetxController {
         'IsSelfMobNo': isNumberNotBelongsToBeneficiary.value ? '0' : '1',
         'MobNoOf': altMobileBelongsTo.value,
         'OptionMode': '2',
-        'VersionNo': '9.79',
+        'VersionNo': APIConstants.kNativeVersion,
         'Isrecollection': navType == '5' ? '1' : '0',
         'Rej_Regdid': '0',
         'Rej_CampID': '0',
@@ -2918,8 +2966,10 @@ class D2DPatientRegistrationController extends GetxController {
                 ? 'NA'
                 : tecRationCardNo.text.trim(),
       };
-      print("===== REQUEST FIELDS =====");
-      print(jsonEncode(fields));
+      // ignore: avoid_print
+      print('[Reg Params] ===== SUBMIT ${fields.length} FIELDS =====');
+      // ignore: avoid_print
+      fields.forEach((k, v) => print('[Reg Params] $k = $v'));
       final result = await _repo.saveD2DRegistration(
         fields: fields,
         isFaceDetectionEnabled: !skipFaceDetection.value,

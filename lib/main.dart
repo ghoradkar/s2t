@@ -10,7 +10,8 @@ import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_re
 import 'Modules/utilities/DataProvider.dart';
 import 'Modules/utilities/SizeConfig.dart';
 import 'Screens/calling_modules/routes/app_routes.dart';
-import 'Screens/SplashScreen/SplashScreen.dart';
+import 'Screens/SplashScreen/controllers/splash_controller.dart';
+import 'Screens/SplashScreen/screens/splash_screen.dart';
 import 'Modules/utilities/route_observer.dart';
 
 /// Bypasses SSL certificate validation globally — required because the server
@@ -52,7 +53,12 @@ class MyApp extends StatelessWidget {
           onGenerateRoute: AppRoutes.onGenerateRoute,
           navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
-          home: const SplashScreen(),
+          home: Builder(
+            builder: (_) {
+              Get.lazyPut(() => SplashController());
+              return const SplashScreen();
+            },
+          ),
           builder: EasyLoading.init(),
         );
       },

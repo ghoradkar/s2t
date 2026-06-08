@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/CampDetailsScreen/CampCalenderCampDetails/CampCalenderCampDetails.dart';
 import 'package:s2toperational/Screens/CampDetailsScreen/ScreeningDetailsView/ScreeningDetailsView.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
@@ -17,6 +21,7 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/widgets/AppDropdownTextfield.dart';
 import '../../../Modules/widgets/CommonSkeletonList.dart';
+
 // import '../../../Views/CampCalenderCampDetails/CampCalenderCampDetails.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 // import '../../../Views/ScreeningDetailsView/ScreeningDetailsView.dart';
@@ -63,7 +68,6 @@ class _ScreeningTestCampDetailsScreenState
 
   @override
   void initState() {
-
     dESGID = DataProvider().getParsedUserData()?.output?.first.dESGID ?? 0;
     empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
     if (DataProvider().getRegularCamp()) {
@@ -125,7 +129,6 @@ class _ScreeningTestCampDetailsScreenState
       }
     }
     super.initState();
-
   }
 
   @override
@@ -136,20 +139,68 @@ class _ScreeningTestCampDetailsScreenState
           child: Column(
             children: [
               // const SizedBox(height: 10),
+              // isShowTeamDropDown == true
+              //     ? AppDropdownTextfield(
+              //       icon: icTeamIconn,
+              //       titleHeaderString: "Team",
+              //       valueString: teamNumber,
+              //       isDisabled: false,
+              //       onTap: () {
+              //         ToastManager.showLoader();
+              //         getCampWiseTeam();
+              //       },
+              //     )
+              //     : Container(),
+              SizedBox(height: 10),
               isShowTeamDropDown == true
-                  ? AppDropdownTextfield(
-                    icon: icTeamIconn,
-                    titleHeaderString: "Team",
-                    valueString: teamNumber,
-                    isDisabled: false,
+                  ? AppTextField(
+                    controller: TextEditingController(text: teamNumber),
+                    readOnly: true,
                     onTap: () {
                       ToastManager.showLoader();
                       getCampWiseTeam();
                     },
+                    inputStyle: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontSize: 14,
+                    ),
+                    label: RichText(
+                      text: TextSpan(
+                        text: 'Team',
+                        style: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          color: kLabelTextColor,
+                          fontSize: responsiveFont(14),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: ' *',
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
+                              color: Colors.red,
+                              fontSize: responsiveFont(14),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontWeight: FontWeight.w400,
+                      fontSize: responsiveFont(14),
+                    ),
+                    prefixIcon: SizedBox(
+                      width: 22,
+                      height: 22,
+                        child: Image.asset(icTeamIconn),
+                    ),
+                    suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
                   )
                   : Container(),
               isShowTeamDropDown == true
-                  ? const SizedBox(height: 10)
+                  ? const SizedBox(height: 4)
                   : Container(),
               widget.isHealthScreeing == true
                   ? Container()

@@ -1,10 +1,15 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 
@@ -55,27 +60,25 @@ class AudioScreeningController extends GetxController {
   int get currentFrequency => frequencies[selectedFrequencyIndex.value];
 
   bool get leftEarEnabled {
-    if (selectedDeafness.value.isEmpty) return false;
     switch (selectedDeafness.value) {
       case 'Right Ear':
         return true;
       case 'Left Ear':
       case 'Both Ears':
         return false;
-      default:
+      default: // '' (not yet selected) or 'No Deafness'
         return true;
     }
   }
 
   bool get rightEarEnabled {
-    if (selectedDeafness.value.isEmpty) return false;
     switch (selectedDeafness.value) {
       case 'Left Ear':
         return true;
       case 'Right Ear':
       case 'Both Ears':
         return false;
-      default:
+      default: // '' (not yet selected) or 'No Deafness'
         return true;
     }
   }
@@ -262,7 +265,7 @@ class AudioScreeningController extends GetxController {
     return null;
   }
 
-  Future<void> save(BuildContext context) async {
+  Future<void> save(BuildContext context, GlobalKey chartKey) async {
     final error = validate();
     if (error != null) {
       ToastManager.toast(error);
@@ -270,17 +273,37 @@ class AudioScreeningController extends GetxController {
     }
     final regdId = (patient.regdId ?? 0).toString();
     final campIdStr = campId.toString();
-    final empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
+    final empCode =
+        DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
+    final versionNo = await _getAppVersion();
 
     final jsonString = json.encode(
       hearingRecords.map((r) => r.toJson(regdId, campIdStr)).toList(),
     );
+    debugPrint('[AudioScreening] Audio JSON: $jsonString | RegId=$regdId | CreatedBy=$empCode');
+    debugPrint('[AudioScreening] VersionNo=$versionNo');
+
+    // Capture audiogram chart → PNG → PDF (mirrors native getBitmapFromView + createPdf)
+    final pngBytes = await _captureChart(chartKey);
+    if (pngBytes != null) {
+      debugPrint('[AudioScreening] Chart captured: ${pngBytes.length} bytes');
+    } else {
+      debugPrint('[AudioScreening] Chart capture returned null — PDF will be skipped');
+    }
+
+    final pdfBytes = pngBytes != null ? await _buildPdf(pngBytes) : null;
+    if (pdfBytes != null) {
+      debugPrint('[AudioScreening] PDF created: ${pdfBytes.length} bytes');
+    }
 
     isSaving.value = true;
     ToastManager.showLoader();
     final success = await _repo.saveAudioScreeningData(
+      regdId: regdId,
       createdBy: empCode.toString(),
       jsonString: jsonString,
+      versionNo: versionNo,
+      chartPdfBytes: pdfBytes,
     );
     ToastManager.hideLoader();
     isSaving.value = false;
@@ -291,6 +314,39 @@ class AudioScreeningController extends GetxController {
     } else {
       ToastManager.toast('Please try again!');
     }
+  }
+
+  Future<String> _getAppVersion() async {
+    return APIConstants.kNativeVersion;
+  }
+
+  /// Captures the RepaintBoundary widget identified by [key] as PNG bytes.
+  Future<Uint8List?> _captureChart(GlobalKey key) async {
+    try {
+      final boundary =
+          key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return null;
+      final image = await boundary.toImage(pixelRatio: 2.0);
+      final byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      return byteData?.buffer.asUint8List();
+    } catch (e) {
+      debugPrint('Chart capture error: $e');
+      return null;
+    }
+  }
+
+  /// Wraps PNG bytes in a single-page PDF — mirrors native createPdf(bitmap).
+  Future<Uint8List> _buildPdf(Uint8List pngBytes) async {
+    final doc = pw.Document();
+    final image = pw.MemoryImage(pngBytes);
+    doc.addPage(
+      pw.Page(
+        build: (pw.Context ctx) =>
+            pw.Center(child: pw.Image(image, fit: pw.BoxFit.contain)),
+      ),
+    );
+    return doc.save();
   }
 }
 
@@ -309,13 +365,19 @@ class HearingRecord {
     this.rightRemark = '',
   });
 
+  // Native sends 1-based index of remarkOptions, not the text string.
+  static String _remarkToId(String remark) {
+    final idx = AudioScreeningController.remarkOptions.indexOf(remark);
+    return idx >= 0 ? (idx + 1).toString() : '';
+  }
+
   Map<String, dynamic> toJson(String regdId, String campId) => {
+    'RightRemark': _remarkToId(rightRemark),
+    'campId': campId,
     'frequency': frequency,
     'lefttVolume': leftDb,
-    'rightVolume': rightDb,
-    'observation': leftRemark,
-    'RightRemark': rightRemark,
+    'observation': _remarkToId(leftRemark),
     'patientRegId': regdId,
-    'campId': campId,
+    'rightVolume': rightDb,
   };
 }

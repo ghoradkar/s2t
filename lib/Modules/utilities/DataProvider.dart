@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../Screens/LoginScreen/LoginScreen.dart';
-import '../Json_Class/LoginResponseModel/LoginResponseModel.dart';
+import '../../Screens/LoginScreen/screens/login_screen.dart';
+import '../../Screens/LoginScreen/models/login_response_model.dart';
 
 class DataProvider {
   static late SharedPreferences _prefs;

@@ -162,7 +162,7 @@ class DashboardMenuOptions extends StatelessWidget {
       //   title = "Camp Awareness Activity";
       //   break;
       case DashboardMenu.Acknowledgement:
-        title = "acknowledgement";
+        title = "Acknowledgement";
         break;
       case DashboardMenu.ELearning:
         title = "ELearning";
@@ -471,7 +471,7 @@ class AdminDashboardMenuOptions extends StatelessWidget {
         title = "S2T Patient App";
         break;
       case DashboardMenu.Acknowledgement:
-        title = "acknowledgement";
+        title = "Acknowledgement";
         break;
       case DashboardMenu.ELearning:
         title = "ELearning";

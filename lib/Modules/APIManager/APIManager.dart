@@ -8,7 +8,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 
 // import 'package:s2toperational/Modules/Json_Class/Is24By7IsAccountCreatedResponse/GetMyOpratorResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
+import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_beneficiary_model.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_update_response.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_confirmatory_list_model.dart';
@@ -4543,8 +4543,12 @@ class APIManager {
     final url = Uri.parse(
       '$kD2DBaseURL${APIConstants.kInsertBasicHealthInfoNewWithVersionFastingHrs}',
     );
-    print('insertBasicHealthInfoNewAPI URL: $url');
-    print('insertBasicHealthInfoNewAPI body: $data');
+    // ignore: avoid_print
+    print('[insertBasicHealthInfo] URL: $url');
+    // ignore: avoid_print
+    print('[insertBasicHealthInfo] ===== ${data.length} PARAMS =====');
+    // ignore: avoid_print
+    data.forEach((k, v) => print('[insertBasicHealthInfo] Param: $k = $v'));
     final IOClient ioClient = getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -4552,7 +4556,8 @@ class APIManager {
         body: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
-      print('insertBasicHealthInfoNewAPI response: ${response.body}');
+      // ignore: avoid_print
+      print('[insertBasicHealthInfo] response status=${response.statusCode} body=${response.body}');
       final decoded = json.decode(response.body) as Map<String, dynamic>;
       final status = decoded['status'] as String? ?? '';
       final message = decoded['message'] as String? ?? '';
@@ -4562,7 +4567,8 @@ class APIManager {
         callback(null, message, false);
       }
     } catch (e) {
-      print('insertBasicHealthInfoNewAPI error: $e');
+      // ignore: avoid_print
+      print('[insertBasicHealthInfo] error: $e');
       callback(null, 'Exception: $e', false);
     }
   }

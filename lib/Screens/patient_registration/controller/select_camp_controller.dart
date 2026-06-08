@@ -13,7 +13,8 @@ import 'package:s2toperational/Screens/patient_registration/screen/d2d_patient_r
 
 class SelectCampController extends GetxController {
   final _repo = RegularPatientRegistrationRepository();
-
+  final dateCtrl = TextEditingController();
+  final searchCtrl = TextEditingController();
   String navCampType = '1';
 
   int empCode = 0;

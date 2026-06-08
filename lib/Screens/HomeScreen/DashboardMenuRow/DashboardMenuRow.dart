@@ -164,7 +164,7 @@ class DashboardMenuRow extends StatelessWidget {
       //   title = "Camp Awareness Activity";
       //   break;
       case DashboardMenu.Acknowledgement:
-        title = "acknowledgement";
+        title = "Acknowledgement";
         break;
       case DashboardMenu.ELearning:
         title = "ELearning";

@@ -42,8 +42,7 @@ class CallToDoctorScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _colorInfoRow(color: const Color(0xffC8E6C9), label: "Physical Exam Done"),
-            _colorInfoRow(color: const Color(0xffFFF9C4), label: "Doctor Assigned"),
+            _colorInfoRow(color: const Color(0xffC8E6C9), label: "Doctor Assigned / Physical Exam Done"),
             _colorInfoRow(color: Colors.white, label: "Pending / Not Assigned"),
           ],
         ),
@@ -88,9 +87,8 @@ class CallToDoctorScreen extends StatelessWidget {
   // ── Row background ────────────────────────────────────────────────────────
 
   Color _rowColor(String? peStatus, String? doctorMappedStatus) {
-    if (peStatus == "1") return const Color(0xffC8E6C9);           // green  : PE done
-    if (doctorMappedStatus == "1") return const Color(0xffFFF9C4); // yellow : doctor assigned
-    return Colors.white;                                            // white  : not yet assigned
+    if (peStatus == "1" || doctorMappedStatus == "1") return const Color(0xffC8E6C9); // green : assigned / PE done
+    return Colors.white;                                                                // white : not yet assigned
   }
 
   // ── Doctor bottom sheet ───────────────────────────────────────────────────
@@ -298,7 +296,7 @@ class CallToDoctorScreen extends StatelessWidget {
                             itemCount: ctrl.beneficiaryList.length,
                             itemBuilder: (context, index) {
                               final obj = ctrl.beneficiaryList[index];
-                              final isGreen = obj.peStatus == "1";
+                              final isGreen = obj.peStatus == "1" || obj.doctorMappedStatus == "1";
                               return _BeneficiaryRow(
                                 index: index,
                                 name: obj.englishName ?? "",

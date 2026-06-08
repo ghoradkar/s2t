@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AdminDashboard/ConductedCampsTotals.dart';
 import 'package:s2toperational/Modules/Json_Class/AdminDashboard/TodaysPatientsResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LoginResponseModel/LoginResponseModel.dart';
+import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
@@ -19,7 +19,8 @@ import 'package:s2toperational/Screens/calling_modules/controllers/expected_bene
 import 'package:s2toperational/Screens/calling_modules/repository/calling_dashboard_repository.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/calling_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
-import 'package:s2toperational/Screens/D2DAvailability/D2DAvailabilityScreen.dart';
+import 'package:s2toperational/Screens/D2DAvailability/controllers/d2d_availability_controller.dart';
+import 'package:s2toperational/Screens/D2DAvailability/screens/d2d_availability_screen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
 import 'package:s2toperational/Screens/camp_calendar/screen/camp_calendar_screen.dart';
 import 'package:s2toperational/Screens/d2d_teams/screen/D2DTeamsScreen.dart';
@@ -552,7 +553,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void pushToNextScreen(DashboardMenu dashboardMenu) {
     switch (dashboardMenu) {
-      
+
       case DashboardMenu.CampCalendar:
         Navigator.push(
           context,
@@ -663,7 +664,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => const AcknowledgementCampListScreenNew(),
+            builder: (_) => AcknowledgementCampListScreenNew(isD2D: doorToDoorCamp),
           ),
         );
         break;
@@ -785,9 +786,9 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case DashboardMenu.D2DAvailabilityScreening:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => D2DAvailabilityScreen()),
+        Get.to(
+          () => const D2DAvailabilityScreen(),
+          binding: BindingsBuilder.put(() => D2DAvailabilityController()),
         );
         break;
       case DashboardMenu.MedicineReturn:

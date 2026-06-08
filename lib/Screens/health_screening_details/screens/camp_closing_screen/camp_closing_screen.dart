@@ -13,6 +13,7 @@ import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/AppButtonWithIcon.dart';
 import '../../../../Modules/widgets/AppIconTextfield.dart';
 import '../../../../Modules/widgets/S2TAppBar.dart';
+
 // import '../../../../Views/CampClosingColorInfoView/CampClosingColorInfoView.dart';
 // import '../../../../Views/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
 // import '../../../../Views/CampClosingSummaryView/CampClosingSummaryView.dart';
@@ -94,8 +95,7 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                     () => Column(
                       children: [
                         CampClosingScreeningDetailsView(
-                          facilitedWorkers:
-                              controller.facilitedWorkers.value,
+                          facilitedWorkers: controller.facilitedWorkers.value,
                           approvedBeneficiaries:
                               controller.approvedBeneficiaries.value,
                           rejectedBeneficiaries:
@@ -105,16 +105,13 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                           basicDetails: controller.basicDetails.value,
                           physicalExamination:
                               controller.physicalExamination.value,
-                          lungFunctioinTest:
-                              controller.lungFunctioinTest.value,
+                          lungFunctioinTest: controller.lungFunctioinTest.value,
                           audioScreeningTest:
                               controller.audioScreeningTest.value,
                           visionScreening: controller.visionScreening.value,
-                          sampleCollection:
-                              controller.sampleCollection.value,
+                          sampleCollection: controller.sampleCollection.value,
                           ackowledgement: controller.ackowledgement.value,
-                          totalPhysicalExam:
-                              controller.totalPhysicalExam.value,
+                          totalPhysicalExam: controller.totalPhysicalExam.value,
                           totalLungTest: controller.totalLungTest.value,
                           totalAudioTest: controller.totalAudioTest.value,
                           totalVisionTest: controller.totalVisionTest.value,
@@ -133,14 +130,14 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                           consumableCampList:
                               controller.consumableCampList.value.toList(),
                         ),
-                        if (controller.isShowRemark.value) ...[
-                          SizedBox(height: responsiveHeight(20)),
-                          AppIconTextfield(
-                            icon: icScreeningTests,
-                            titleHeaderString: 'Remark',
-                            controller: controller.remarkTextField,
-                          ),
-                        ],
+                        // if (controller.isShowRemark.value) ...[
+                        //   SizedBox(height: responsiveHeight(20)),
+                        //   AppIconTextfield(
+                        //     icon: icScreeningTests,
+                        //     titleHeaderString: 'Remark',
+                        //     controller: controller.remarkTextField,
+                        //   ),
+                        // ],
                         SizedBox(height: responsiveHeight(26)),
                         Center(
                           child: SizedBox(
@@ -165,7 +162,7 @@ class _CampClosingScreenState extends State<CampClosingScreen> {
                               ),
                               onTap: () {
                                 if (controller.isUserInteractionEnabled.value) {
-                                  controller.validate();
+                                  controller.closeCamp();
                                 }
                               },
                             ),

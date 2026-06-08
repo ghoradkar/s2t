@@ -1,6 +1,9 @@
 // ignore_for_file: file_names
 
 class APIConstants {
+  // Server-side version number — must match the native app version accepted by APIs.
+  // Update this when the server requires a new minimum version.
+  static const String kNativeVersion = '9.79';
   static String kAPKDownloader = "APKDownloader";
   static String kUserLogin = "UserLoginApp";
   static String kGetAssignedExpectedBefForCallingMobileNew =
@@ -126,6 +129,12 @@ class APIConstants {
   static String kGetUserAttendancesUsingSitedetailsIDNew =
       "GetUserAttendancesUsingSitedetailsID_New";
 
+  static String kGetUserAttendancesUsingSitedetailsIDRationCard =
+      "GetUserAttendancesUsingSitedetailsID_RationCard";
+
+  static String kGetUserAttendancesUsingSitedetailsIDAntiRationCard =
+      "GetUserAttendancesUsingSitedetailsID_Anti_RationCard";
+
   static String kGetUserAttendancesUsingSitedetailsIDAnti =
       "GetUserAttendancesUsingSitedetailsID_Anti";
 
@@ -158,6 +167,8 @@ class APIConstants {
   static String kGetConsumableListDetails = "GetConsumableListDetails";
 
   static String kGetCampCloseDetails = "GetCampCloseDetails";
+  static String kInsertCampCloseActivitywithUrineChanges =
+      "InsertCampCloseActivitywithUrineChanges";
 
   static String kGetAppointmentStatusList = "GetAppointmentStatusList";
 
@@ -310,6 +321,10 @@ class APIConstants {
   static String kInsertOTPForCTSampleCollection = "InsertOTPForCTSampleCollection_Option";
   static String kVerifyCTOTP = "VerifyCTOTP";
   static String kGetFaceDetectionFlag = "GetFaceDetectionFlag";
+  static String kInsertAudioImagesVersionNo =
+      "handler/InsertAudioImages_NEW_VersionNo.ashx";
+  static String kMahabocwBeneficiaryDetailsApi =
+      "beneficiary-details-api/beneficiary-details/";
 
   static String kGetDistrictByUserID = "GetDistrictByUserID";
   static String kGetBeneficiaryRegistrationDetailsWithMaritalStatus =
@@ -324,6 +339,8 @@ class APIConstants {
   static String kGetWorkerInfroFromWorkerRegid = "GetWorkerInfroFromWorkerRegid";
   static String kInsertSignatureandThumbDetails =
       "handler/InsertSignatureandThumbDetails.ashx";
+  static String kInsertSignatureandThumbDetailsV1RC =
+      "handler/InsertSignatureandThumbDetails_V1_RC.ashx";
   static String kInsertRationCardDetails =
       "handler/CW_Registration_RationCard.ashx";
   static String kGetT2TCTAssignmentRemarks = "Get_T2T_CT_AssignmentRemarks";
@@ -448,7 +465,7 @@ class APIConstants {
   // Sample Collection
   static String kGetSpecimenType = "GetSpecimenType";
   static String kInsertCWPatientBarcodeDetails =
-      "InsertCW_PatientBarcodeDetails_WithUrineTest_VersionNo_ScanningFlag";
+      "InsertCW_PatientBarcodeDetails_New_D2D_VersionNo_ScanningFlag_LatLong";
 
   // Urine Sample Collection
   static String kInsertUrineSampleReceived = "InsertCW_UrineSampleRecived";

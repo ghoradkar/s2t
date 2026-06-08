@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../models/camp_closing_model.dart';
 import '../repository/health_screening_repository.dart';
 
@@ -9,7 +12,7 @@ class CampClosingController extends GetxController {
 
   // ─── Observable state ─────────────────────────────────────────────────────
   final RxBool isLoading = false.obs;
-  final RxBool isShowRemark = false.obs;
+  // final RxBool isShowRemark = false.obs;
   final RxBool isUserInteractionEnabled = true.obs;
   final RxList<ConsumableOutput> consumableCampList =
       <ConsumableOutput>[].obs;
@@ -32,6 +35,10 @@ class CampClosingController extends GetxController {
   final RxInt totalVisionTest = 0.obs;
   final RxInt totalUrineCount = 0.obs;
   final RxInt totalBene = 0.obs;
+
+  // Stored for submit
+  int _campId = 0;
+  int _empCode = 0;
 
   // Summary input values
   int totalBenificiaryTextField = 0;
@@ -63,6 +70,8 @@ class CampClosingController extends GetxController {
     required int distLgdCode,
     required String campDate,
   }) async {
+    _campId = campId;
+    _empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
     isLoading.value = true;
     ToastManager.showLoader();
 
@@ -130,6 +139,8 @@ class CampClosingController extends GetxController {
       totalApprovedBeneTextField.text = '$totalBenificiaryTextField';
       sampleCollectionTF = out.sampleCollectionCount ?? 0;
       sampleCollectionTextField.text = '$sampleCollectionTF';
+      // Camp already closed — disable the button permanently
+      isUserInteractionEnabled.value = false;
     }
   }
 
@@ -221,18 +232,19 @@ class CampClosingController extends GetxController {
     if (sampleCollectionTextField == 0) {
       _alert('Please enter Sample Collection');
       return false;
-    } else {
-      if (sampleCollectionTextField != totalBenificiaryTextField) {
-        isShowRemark.value = true;
-        if (remarkTextField.text.trim().isEmpty) {
-          _alert('Please enter remark');
-          return false;
-        }
-      } else {
-        remarkTextField.text = '';
-        isShowRemark.value = false;
-      }
     }
+    // else {
+    //   if (sampleCollectionTextField != totalBenificiaryTextField) {
+    //     isShowRemark.value = true;
+    //     if (remarkTextField.text.trim().isEmpty) {
+    //       _alert('Please enter remark');
+    //       return false;
+    //     }
+    //   } else {
+    //     remarkTextField.text = '';
+    //     isShowRemark.value = false;
+    //   }
+    // }
 
     if (consumableCampList.isEmpty) {
       _alert('Please enter consumable details');
@@ -262,5 +274,58 @@ class CampClosingController extends GetxController {
 
   void _alert(String message) {
     ToastManager.showAlertDialog(Get.context!, message, () => Get.back());
+  }
+
+  // ─── Close Camp ────────────────────────────────────────────────────────────
+
+  Future<void> closeCamp() async {
+    if (!validate()) return;
+
+    ToastManager.showAlertDialog(
+      Get.context!,
+      'Are you sure, do you want to close the camp?',
+      () async {
+        Get.back(); // close confirm dialog
+        ToastManager.showLoader();
+
+        final consumablesJson = _buildConsumablesJson();
+        final success = await _repo.insertCampClose(
+          campId: _campId,
+          userId: _empCode,
+          consumablesJson: consumablesJson,
+          totalBenificiary: totalApprovedBeneTextField.text.trim(),
+          sampleCollectionCount: sampleCollectionTextField.text.trim(),
+          sampleSendToHubLabCount: '0',
+          sampleSendToHomeLabCount: '0',
+        );
+
+        ToastManager.hideLoader();
+
+        if (success) {
+          isUserInteractionEnabled.value = false;
+          ToastManager.showAlertDialog(
+            Get.context!,
+            'Camp closing details submitted successfully',
+            () => Get.back(),
+            title: 'Success',
+          );
+        } else {
+          _alert('Failed to close camp. Please try again.');
+        }
+      },
+      title: 'Confirm!',
+      onNoTap: () => Get.back(),
+    );
+  }
+
+  String _buildConsumablesJson() {
+    final list = consumableCampList.map((c) {
+      return {
+        'ConsumableId': c.consumableID,
+        'TotalCount': int.tryParse(c.textEditingController.text.trim()) ?? (c.totalCount ?? 0),
+        'CreatedBy': c.createdBy ?? 1,
+      };
+    }).toList();
+    return jsonEncode(list);
   }
 }

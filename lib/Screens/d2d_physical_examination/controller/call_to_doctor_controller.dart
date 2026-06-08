@@ -175,11 +175,18 @@ class CallToDoctorController extends GetxController {
       payload,
       (bool success, String message) {
         isSubmitting = false;
-        update();
         if (success) {
+          // Mark assigned rows green locally before closing
+          for (final i in selectedIndices) {
+            if (i < beneficiaryList.length) {
+              beneficiaryList[i].doctorMappedStatus = "1";
+            }
+          }
+          update();
           ToastManager.toast("Call Request Submitted Successfully");
           Navigator.pop(context);
         } else {
+          update();
           ToastManager.toast(message.isNotEmpty ? message : "Submission failed");
         }
       },
