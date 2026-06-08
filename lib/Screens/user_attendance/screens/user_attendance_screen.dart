@@ -17,6 +17,7 @@ import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wr
 import 'package:s2toperational/Screens/user_attendance/screens/MonthlyScreen/MonthlyScreen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/LocationManager/LocationManager.dart';
 import 'package:s2toperational/Screens/user_attendance/controller/user_attendance_controller.dart';
 import 'package:s2toperational/Screens/user_attendance/repository/user_attendance_repository.dart';
 // import 'package:s2toperational/Views/MonthlyScreen/MonthlyScreen.dart';
@@ -189,6 +190,103 @@ class _MapSection extends StatelessWidget {
 
   const _MapSection({required this.c});
 
+  static const _defaultLat = 20.5937;
+  static const _defaultLng = 78.9629;
+
+  void _showLocationInstructions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Enable Location'),
+        content: const Text(
+          'To enable location for this app on iPhone:\n\n'
+          '1. Open Settings\n'
+          '2. Tap Privacy & Security\n'
+          '3. Tap Location Services\n'
+          '4. Find "S2T Operational"\n'
+          '5. Select "While Using the App"',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              LocationManager.openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMap(BuildContext context, UserAttendanceController c) {
+    final hasLocation = c.currentLat != 0 || c.currentLng != 0;
+    final hasCampCoords = c.campLat != 0 || c.campLng != 0;
+
+    final centerLat = hasLocation
+        ? c.currentLat
+        : hasCampCoords
+            ? c.campLat
+            : _defaultLat;
+    final centerLng = hasLocation
+        ? c.currentLng
+        : hasCampCoords
+            ? c.campLng
+            : _defaultLng;
+
+    return Stack(
+      children: [
+        FlutterMap(
+          options: MapOptions(
+            initialCenter: LatLng(centerLat, centerLng),
+            initialZoom: hasCampCoords || hasLocation ? 14 : 5,
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.s2t.operational',
+            ),
+            MarkerLayer(markers: _buildMarkers()),
+          ],
+        ).paddingSymmetric(horizontal: 10),
+        if (c.isLocationPermissionDenied)
+          Positioned(
+            bottom: 12,
+            left: 20,
+            right: 20,
+            child: GestureDetector(
+              onTap: () => _showLocationInstructions(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade700,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.location_off, color: Colors.white, size: 16),
+                    SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        'Location permission denied. Tap to enable.',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   List<Marker> _buildMarkers() {
     final markers = <Marker>[];
 
@@ -228,8 +326,9 @@ class _MapSection extends StatelessWidget {
                 child: _locationCard(
                   iconColor: Colors.orange,
                   label: 'Current Location',
-                  value:
-                      '${c.currentLat.toStringAsFixed(7)}, ${c.currentLng.toStringAsFixed(7)}',
+                  value: (c.currentLat != 0 || c.currentLng != 0)
+                      ? '${c.currentLat.toStringAsFixed(7)}, ${c.currentLng.toStringAsFixed(7)}'
+                      : 'N/A',
                 ),
               ),
               const SizedBox(width: 8),
@@ -263,21 +362,8 @@ class _MapSection extends StatelessWidget {
             textAlign: TextAlign.start,
           ),
         ).paddingSymmetric(horizontal: 10),
-        // OpenStreetMap — no API key needed
         Expanded(
-          child: FlutterMap(
-            options: MapOptions(
-              initialCenter: LatLng(c.currentLat, c.currentLng),
-              initialZoom: 14,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.s2t.operational',
-              ),
-              MarkerLayer(markers: _buildMarkers()),
-            ],
-          ).paddingSymmetric(horizontal: 10),
+          child: _buildMap(context, c),
         ),
       ],
     );

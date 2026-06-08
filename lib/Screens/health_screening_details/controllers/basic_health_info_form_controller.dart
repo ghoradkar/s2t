@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -398,7 +399,13 @@ class BasicHealthInfoFormController extends GetxController {
 
   Future<bool> isBluetoothOn() async {
     final state = await FlutterBluePlus.adapterState.first;
-    return state == BluetoothAdapterState.on;
+    print('[BT] adapterState=$state');
+    if (state == BluetoothAdapterState.on) return true;
+    // On iOS, CoreBluetooth starts as unknown/unauthorized before the permission
+    // dialog appears. Allow navigation so the scan screen triggers the dialog.
+    if (Platform.isIOS && (state == BluetoothAdapterState.unknown ||
+        state == BluetoothAdapterState.unauthorized)) return true;
+    return false;
   }
 
   // ── Connect devices ─────────────────────────────────────────────────────

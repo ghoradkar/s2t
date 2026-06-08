@@ -18,25 +18,24 @@ class LocationManager {
         return LocationPermissionResult.serviceDisabled;
       }
 
-      final status = await ph.Permission.location.status;
+      // Use Geolocator's permission API — more reliable on iOS than permission_handler
+      LocationPermission permission = await Geolocator.checkPermission();
 
-      if (status.isGranted) {
-        return LocationPermissionResult.granted;
+      if (permission == LocationPermission.denied) {
+        // Not yet asked or denied once — show the native iOS dialog
+        permission = await Geolocator.requestPermission();
       }
 
-      if (status.isPermanentlyDenied) {
+      if (permission == LocationPermission.deniedForever) {
         return LocationPermissionResult.permanentlyDenied;
       }
 
-      final result = await ph.Permission.location.request();
-
-      if (result.isGranted) {
+      if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
         return LocationPermissionResult.granted;
-      } else if (result.isPermanentlyDenied) {
-        return LocationPermissionResult.permanentlyDenied;
-      } else {
-        return LocationPermissionResult.denied;
       }
+
+      return LocationPermissionResult.denied;
     } catch (e) {
       print('[LocationManager] error: $e');
       return LocationPermissionResult.denied;

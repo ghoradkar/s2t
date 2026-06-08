@@ -68,7 +68,11 @@
       "Bash(grep -v \"^$\")",
       "Bash(git rm *)",
       "Bash(git reset *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(flutter *)",
+      "Bash(mkdir -p /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks)",
+      "Bash(cp -R \"/Users/ganeshshirole/Documents/kiran_projects/s2t_operational/OmeronDeviceSwift/OmeronDeviceSwift/StaticLibrary/OmronConnectivityLibrary.xcframework\" /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks/)",
+      "Bash(cp -R \"/Users/ganeshshirole/Documents/kiran_projects/s2t_operational/OmeronDeviceSwift/OmeronDeviceSwift/StaticLibrary/OmronConnectivityLibraryAssets.bundle\" /Users/ganeshshirole/Documents/kiran_projects/s2t_operational/ios/Frameworks/)"
     ]
   }
 }

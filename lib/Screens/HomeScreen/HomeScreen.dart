@@ -236,10 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onConnectivityChanged(ConnectivityResult result) {
-    final connected =
-        result == ConnectivityResult.mobile ||
-        result == ConnectivityResult.wifi ||
-        result == ConnectivityResult.ethernet;
+    final connected = result != ConnectivityResult.none;
 
     if (!connected) {
       if (mounted) setState(() => _isOnline = false);

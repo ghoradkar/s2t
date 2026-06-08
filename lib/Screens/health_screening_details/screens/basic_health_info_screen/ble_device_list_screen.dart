@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -47,6 +48,23 @@ class _BleDeviceListScreenState extends State<BleDeviceListScreen> {
     });
     _scanSub?.cancel();
     try {
+      // On iOS, CoreBluetooth starts as `unknown` and takes a moment to initialize.
+      // Wait until the state transitions to a known state before scanning.
+      if (Platform.isIOS) {
+        final state = await FlutterBluePlus.adapterState
+            .firstWhere((s) => s != BluetoothAdapterState.unknown)
+            .timeout(const Duration(seconds: 5),
+                onTimeout: () => BluetoothAdapterState.unknown);
+        if (state != BluetoothAdapterState.on) {
+          if (mounted) {
+            setState(() {
+              _error = 'Bluetooth is not available (state: $state).\nPlease enable Bluetooth and try again.';
+              _isScanning = false;
+            });
+          }
+          return;
+        }
+      }
       await FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
       _scanSub = FlutterBluePlus.scanResults.listen((results) {
         if (mounted) {

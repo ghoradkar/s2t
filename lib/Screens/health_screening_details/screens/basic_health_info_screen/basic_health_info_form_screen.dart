@@ -650,6 +650,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
               _btSearchButton(
                 label: 'Search Weight Machine',
                 onPressed: () async {
+                  print("Search Weight Machine Tapped");
                   if (c.heightCtrl.text.trim().isEmpty) {
                     ToastManager.toast('Please enter height');
                     return;

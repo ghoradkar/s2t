@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +14,7 @@ import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/user_attendance/model/user_attandance_response.dart';
 import 'package:s2toperational/Screens/user_attendance/repository/user_attendance_repository.dart';
 
-class UserAttendanceController extends GetxController {
+class UserAttendanceController extends GetxController with WidgetsBindingObserver {
   final UserAttendanceRepository repository;
 
   UserAttendanceController({required this.repository});
@@ -42,6 +43,7 @@ class UserAttendanceController extends GetxController {
   double campLat = 0.0;
   double campLng = 0.0;
   bool isMapReady = false;
+  bool isLocationPermissionDenied = false;
 
   static const Color _colorCheckIn = Color.fromRGBO(100, 167, 90, 1.0);
   static const Color _colorCheckOut = Color.fromRGBO(33, 150, 243, 1.0);
@@ -49,6 +51,8 @@ class UserAttendanceController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addObserver(this);
+
     final DateTime now = DateTime.now();
     year = now.year;
     month = now.month;
@@ -64,6 +68,22 @@ class UserAttendanceController extends GetxController {
     _loadInitialData();
   }
 
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && isLocationPermissionDenied) {
+      // User returned from Settings — re-check location permission
+      isMapReady = false;
+      update();
+      _fetchMapData();
+    }
+  }
+
   Future<void> _loadInitialData() async {
     await Future.wait([
       fetchUserAttendance(),
@@ -74,24 +94,32 @@ class UserAttendanceController extends GetxController {
 
   Future<void> _fetchMapData() async {
     try {
+      print('[MAP] _fetchMapData started');
+
+      final camp = await repository.getCampLocation(userId: empCode);
+      campLat = camp?.latitude ?? 0.0;
+      campLng = camp?.longitude ?? 0.0;
+      print('[MAP] campLat=$campLat campLng=$campLng');
+
+      print('[MAP] calling checkAndRequestLocation...');
       final result = await LocationManager.checkAndRequestLocation();
+      print('[MAP] checkAndRequestLocation result=$result');
+
+      isLocationPermissionDenied = result == LocationPermissionResult.permanentlyDenied;
 
       if (result == LocationPermissionResult.granted) {
+        print('[MAP] getting current location...');
         final Position? pos = await LocationManager.getCurrentLocation();
+        print('[MAP] currentLat=${pos?.latitude} currentLng=${pos?.longitude}');
         if (pos != null) {
           currentLat = pos.latitude;
           currentLng = pos.longitude;
         }
-
-        final camp = await repository.getCampLocation(userId: empCode);
-        campLat = camp?.latitude ?? 0.0;
-        campLng = camp?.longitude ?? 0.0;
-      } else if (result == LocationPermissionResult.permanentlyDenied) {
-        _showLocationSettingsDialog();
       }
-    } catch (_) {
-      // Location unavailable — map will show with zeroed coordinates
+    } catch (e) {
+      print('[MAP] error: $e');
     } finally {
+      print('[MAP] isMapReady=true, calling update()');
       isMapReady = true;
       update();
     }
