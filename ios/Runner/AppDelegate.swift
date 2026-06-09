@@ -13,5 +13,6 @@ import UIKit
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     OmronBpPlugin.register(with: engineBridge.pluginRegistry.registrar(forPlugin: "OmronBpPlugin")!)
+    SafeySpirometerPlugin.register(with: engineBridge.pluginRegistry.registrar(forPlugin: "SafeySpirometerPlugin")!)
   }
 }

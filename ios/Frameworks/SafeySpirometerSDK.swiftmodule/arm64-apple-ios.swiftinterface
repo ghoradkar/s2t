@@ -1,0 +1,219 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.9 (swiftlang-5.9.0.128.108 clang-1500.0.40.1)
+// swift-module-flags: -target arm64-apple-ios16.1 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name SafeySpirometerSDK
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import CoreBluetooth
+import Foundation
+import Swift
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public struct SafeySpirometerDevice {
+  public var peripheral: CoreBluetooth.CBPeripheral?
+  public var deviceName: Swift.String
+  public var deviceType: SafeySpirometerSDK.DeviceType
+  public init(peripheral: CoreBluetooth.CBPeripheral, deviceName: Swift.String, deviceType: SafeySpirometerSDK.DeviceType)
+}
+@objc public class SafeyLungManager : ObjectiveC.NSObject {
+  public init(person: SafeySpirometerSDK.SafeyPerson)
+  public var scannerCallback: (any SafeySpirometerSDK.SafeyScannerCallback)?
+  public var errorCallback: (any SafeySpirometerSDK.SafeyErrorCallback)?
+  public var testCallback: (any SafeySpirometerSDK.SafeyTestCallback)?
+  public var connectionCallback: (any SafeySpirometerSDK.SafeyConnectionCallback)?
+  public var deviceCallback: (any SafeySpirometerSDK.SafeyDeviceCallback)?
+  public var testTypeCallback: (any SafeySpirometerSDK.SafeyTestTypeCallback)?
+  public func scanDevice() throws
+  public func connectToDevice(Device safeySpirometerDevice: SafeySpirometerSDK.SafeySpirometerDevice)
+  public func disconnectDevice()
+  public func getAvailableTestTypes()
+  public func getBatteryPercentage()
+  public func startTestSession(withPreTestData data: SafeySpirometerSDK.TestResultsModel? = nil)
+  public func startTrial()
+  public func stopTrial()
+  public func validate(person: SafeySpirometerSDK.SafeyPerson) -> Swift.Bool
+  public func deleteLastTrial()
+  public func getPersonObject() -> SafeySpirometerSDK.SafeyPerson
+  @objc deinit
+}
+public struct SafeyPerson {
+  public var firstName: Swift.String
+  public var lastName: Swift.String
+  public var gender: SafeySpirometerSDK.Gender
+  public var library: SafeySpirometerSDK.PredictionLibraries
+  public var ethnicity: SafeySpirometerSDK.Ethnicity
+  public var dateOfBirth: Foundation.Date
+  public var heightInCentimeters: Swift.Int
+  public var weightInKg: Swift.Double
+  public init(firstName: Swift.String, lastName: Swift.String, gender: SafeySpirometerSDK.Gender, library: SafeySpirometerSDK.PredictionLibraries, ethnicity: SafeySpirometerSDK.Ethnicity, dateOfBirth: Foundation.Date, heightInCentimeters: Swift.Int, weightInKg: Swift.Double)
+  public var ageInYears: Swift.Int {
+    get
+  }
+}
+public struct TestResultsModel : Swift.Codable {
+  public var preTestSessionResults: SafeySpirometerSDK.TestSessionModel?
+  public var postTestSessionResults: SafeySpirometerSDK.TestSessionModel?
+  public var notes: Swift.String?
+  public var deviceType: SafeySpirometerSDK.DeviceType?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct TestSessionModel : Swift.Codable {
+  public var bestTrialNumber: Swift.Int?
+  public var bestTrialSuggestedDiagnosis: Swift.String
+  public var sessionScore: Swift.String
+  public var FEV1Variance: Swift.String
+  public var FVCVariance: Swift.String
+  public var trialsList: [Swift.Int : SafeySpirometerSDK.TrialResultModel]
+  public var testDate: Foundation.TimeInterval
+  public var testType: SafeySpirometerSDK.TestType
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct TrialResultModel : Swift.Codable {
+  public var trialNumber: Swift.Int!
+  public var flowArray: [Swift.Double]
+  public var volumeArray: [Swift.Double]
+  public var timeArray: [Swift.Double]
+  public var parameters: [SafeySpirometerSDK.ParametersModel]
+  public var suggestedDiagnosis: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct ParametersModel : Swift.Codable {
+  public var name: Swift.String
+  public var value: Swift.String
+  public var unit: Swift.String
+  public var predicted: Swift.String
+  public var predictedPercentage: Swift.String
+  public var lln: Swift.String
+  public var uln: Swift.String
+  public var zScore: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public protocol SafeyScannerCallback {
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, didDiscoverSafeyDevice device: SafeySpirometerSDK.SafeySpirometerDevice)
+}
+public protocol SafeyConnectionCallback {
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, device: SafeySpirometerSDK.SafeySpirometerDevice, isConnected status: Swift.Bool)
+}
+public protocol SafeyDeviceCallback {
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, safeyDevice device: SafeySpirometerSDK.SafeySpirometerDevice, batteryStatus battery: Swift.String)
+}
+public protocol SafeyTestTypeCallback {
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, forSafeyDevice device: SafeySpirometerSDK.SafeySpirometerDevice, availableTestType: [SafeySpirometerSDK.TestType])
+  func selectTestType(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, forSafeyDevice device: SafeySpirometerSDK.SafeySpirometerDevice) -> SafeySpirometerSDK.TestType?
+}
+public protocol SafeyTestCallback {
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, onProgressChange progress: Swift.Double, flow: [Swift.Double], volume: [Swift.Double], time: [Swift.Double])
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, testResults testResult: SafeySpirometerSDK.TestResultsModel)
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, invalidManeuver message: Swift.String)
+}
+public protocol SafeyErrorCallback {
+  func safeyLungManager(_ safeyLungManager: SafeySpirometerSDK.SafeyLungManager, infostate state: SafeySpirometerSDK.SafeyDeviceManagerInfoState, detailMessage message: Swift.String)
+}
+public enum SafeyDeviceManagerInfoState : Swift.Int {
+  case INF_01
+  case INF_02
+  case INF_03
+  case INF_101
+  case INF_102
+  case INF_103
+  case INF_104
+  case INF_105
+  case INF_106
+  case INF_201
+  case INF_202
+  case INF_203
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum PredictionLibraries : Swift.String {
+  case GLI
+  case NHANES3
+  case ERS
+  case CHHABRA
+  case Zapletal_2003
+  case Rosenthal
+  case JRS_2014
+  case Gore_Crockett
+  case Hibbert
+  case Chile_Gutierrez
+  case Perez_Padilla_PLATINO
+  public static func getListOfLibraries() -> [SafeySpirometerSDK.PredictionLibraries]
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum Ethnicity : Swift.String {
+  case African_American
+  case Caucasian
+  case North_East_Asian
+  case South_East_Asian
+  case Others
+  case Indian
+  case European
+  case Mexican_American
+  case Japanese
+  case Chilean
+  case Latin_American
+  public static func getEthnicityListFor(library: SafeySpirometerSDK.PredictionLibraries) -> Swift.Array<SafeySpirometerSDK.Ethnicity>
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum Gender : Swift.String {
+  case Male
+  case Female
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum TestType : Swift.Codable {
+  case FEVC
+  case FVL
+  public static func == (a: SafeySpirometerSDK.TestType, b: SafeySpirometerSDK.TestType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum DeviceType : Swift.Codable {
+  case PeakFlowMeter
+  case SpiroMeter
+  case ClinicSpiroMeter
+  public static func == (a: SafeySpirometerSDK.DeviceType, b: SafeySpirometerSDK.DeviceType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension SafeySpirometerSDK.SafeyDeviceManagerInfoState : Swift.Equatable {}
+extension SafeySpirometerSDK.SafeyDeviceManagerInfoState : Swift.Hashable {}
+extension SafeySpirometerSDK.SafeyDeviceManagerInfoState : Swift.RawRepresentable {}
+extension SafeySpirometerSDK.PredictionLibraries : Swift.Equatable {}
+extension SafeySpirometerSDK.PredictionLibraries : Swift.Hashable {}
+extension SafeySpirometerSDK.PredictionLibraries : Swift.RawRepresentable {}
+extension SafeySpirometerSDK.Ethnicity : Swift.Equatable {}
+extension SafeySpirometerSDK.Ethnicity : Swift.Hashable {}
+extension SafeySpirometerSDK.Ethnicity : Swift.RawRepresentable {}
+extension SafeySpirometerSDK.Gender : Swift.Equatable {}
+extension SafeySpirometerSDK.Gender : Swift.Hashable {}
+extension SafeySpirometerSDK.Gender : Swift.RawRepresentable {}
+extension SafeySpirometerSDK.TestType : Swift.Equatable {}
+extension SafeySpirometerSDK.TestType : Swift.Hashable {}
+extension SafeySpirometerSDK.DeviceType : Swift.Equatable {}
+extension SafeySpirometerSDK.DeviceType : Swift.Hashable {}

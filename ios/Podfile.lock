@@ -62,6 +62,7 @@ PODS:
   - permission_handler_apple (9.3.0):
     - Flutter
   - PromisesObjC (2.4.0)
+  - SafeySpirometerSDK (1.0.0)
   - simple_barcode_scanner (0.1.7):
     - Flutter
 
@@ -74,6 +75,7 @@ DEPENDENCIES:
   - OmronConnectivityLibrary (from `.`)
   - open_file_ios (from `.symlinks/plugins/open_file_ios/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - SafeySpirometerSDK (from `.`)
   - simple_barcode_scanner (from `.symlinks/plugins/simple_barcode_scanner/ios`)
 
 SPEC REPOS:
@@ -107,6 +109,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/open_file_ios/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  SafeySpirometerSDK:
+    :path: "."
   simple_barcode_scanner:
     :path: ".symlinks/plugins/simple_barcode_scanner/ios"
 
@@ -130,8 +134,9 @@ SPEC CHECKSUMS:
   open_file_ios: 46184d802ee7959203f6392abcfa0dd49fdb5be0
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  SafeySpirometerSDK: c29bb7098ad9458a03830511cb124d469129c3e9
   simple_barcode_scanner: f1217b91fbad5848d37fa6d794f443416fd3e44d
 
-PODFILE CHECKSUM: e52808d43a5f0e5ca6a12347c535c4e39de74669
+PODFILE CHECKSUM: e5af4b822d603348f063a6f0f0f78537915bb2c0
 
 COCOAPODS: 1.16.2

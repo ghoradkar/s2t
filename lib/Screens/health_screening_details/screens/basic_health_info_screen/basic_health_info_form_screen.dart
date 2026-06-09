@@ -622,8 +622,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
                   Expanded(
                     child: Obx(() => AppTextField(
                       controller: c.weightCtrl,
-                      readOnly: c.isWeightMachineAvailable.value,
-                      // readOnly: !editable || c.isWeightMachineAvailable.value,
+                      readOnly: c.isWeightMachineAvailable.value && c.isLive,
                       onTap: () {},
                       onChange: (_) => c.recalculateBMI(),
                       textInputType: const TextInputType.numberWithOptions(
@@ -1073,8 +1072,7 @@ class _BloodSugarSection extends StatelessWidget {
         children: [
           Obx(() => AppTextField(
             controller: ctrl.bloodSugarRCtrl,
-            readOnly:  ctrl.isSugarDeviceAvailable.value,
-            // readOnly: !editable || ctrl.isSugarDeviceAvailable.value,
+            readOnly: ctrl.isSugarDeviceAvailable.value && ctrl.isLive,
             onTap: () {},
             textInputType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [
@@ -1139,8 +1137,7 @@ class _BloodPressureSection extends StatelessWidget {
               Expanded(
                 child: Obx(() => AppTextField(
                   controller: ctrl.systolicCtrl,
-                  readOnly: ctrl.isBPMachineAvailable.value,
-                  // readOnly: !editable || ctrl.isBPMachineAvailable.value,
+                  readOnly: ctrl.isBPMachineAvailable.value && ctrl.isLive,
                   onTap: () {},
                   textInputType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -1157,8 +1154,7 @@ class _BloodPressureSection extends StatelessWidget {
               Expanded(
                 child: Obx(() => AppTextField(
                   controller: ctrl.diastolicCtrl,
-                  readOnly: ctrl.isBPMachineAvailable.value,
-                  // readOnly: !editable || ctrl.isBPMachineAvailable.value,
+                  readOnly: ctrl.isBPMachineAvailable.value && ctrl.isLive,
                   onTap: () {},
                   textInputType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],

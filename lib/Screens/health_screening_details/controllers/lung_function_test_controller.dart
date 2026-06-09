@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -256,17 +257,19 @@ class LungFunctionTestController extends GetxController {
   // ── Device actions ─────────────────────────────────────────────────────────
 
   Future<void> scan() async {
-    // Android 12+ requires BLUETOOTH_SCAN + BLUETOOTH_CONNECT at runtime
-    final statuses =
-        await [Permission.bluetoothScan, Permission.bluetoothConnect].request();
-
-    final allGranted = statuses.values.every((s) => s.isGranted);
-    if (!allGranted) {
-      ToastManager.toast(
-        'Bluetooth permissions are required to scan for devices.',
-      );
-      deviceStatus.value = LftDeviceStatus.idle;
-      return;
+    // Android 12+ requires BLUETOOTH_SCAN + BLUETOOTH_CONNECT at runtime.
+    // On iOS CoreBluetooth handles the permission dialog itself when scanning starts.
+    if (Platform.isAndroid) {
+      final statuses =
+          await [Permission.bluetoothScan, Permission.bluetoothConnect].request();
+      final allGranted = statuses.values.every((s) => s.isGranted);
+      if (!allGranted) {
+        ToastManager.toast(
+          'Bluetooth permissions are required to scan for devices.',
+        );
+        deviceStatus.value = LftDeviceStatus.idle;
+        return;
+      }
     }
 
     scannedDevices.clear();
@@ -274,8 +277,21 @@ class LungFunctionTestController extends GetxController {
     deviceStatus.value = LftDeviceStatus.scanning;
     infoMessage.value = 'Scanning for Safey spirometer…';
     ToastManager.showLoader();
+
+    // Demographics are needed at scan time on iOS (SafeyLungManager requires person at init).
+    // Android ignores these extra arguments — they use the same values at startTest() only.
+    final gender = (patient.gender ?? '').toUpperCase().startsWith('M') ? 1 : 2;
+    final weight = (patient.weightKGs as num?)?.toInt() ?? 60;
+    final age    = (patient.age as num?)?.toDouble() ?? 30.0;
+    final height = (patient.heightCMs as num?)?.toInt() ?? 165;
+
     try {
-      await _method.invokeMethod<void>('scan');
+      await _method.invokeMethod<void>('scan', {
+        'gender': gender,
+        'weight': weight,
+        'age':    age,
+        'height': height,
+      });
     } catch (e) {
       ToastManager.hideLoader();
       deviceStatus.value = LftDeviceStatus.idle;
