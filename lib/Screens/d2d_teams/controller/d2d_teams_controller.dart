@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';
-// import 'package:s2toperational/screen/d2d_teams/model/BindDistrictResponse.dart';
+// import 'package:s2toperational/screen/d2d_teams/model/bind_district_response.dart';
 // import 'package:s2toperational/screen/d2d_teams/model/camp_type_list_model.dart';
 // import 'package:s2toperational/screen/d2d_teams/model/d2d_non_working_teams.dart';
 // import 'package:s2toperational/screen/d2d_teams/model/d2d_teams_calling_details.dart';

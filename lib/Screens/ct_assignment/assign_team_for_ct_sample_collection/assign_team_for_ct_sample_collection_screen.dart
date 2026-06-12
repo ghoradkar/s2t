@@ -28,7 +28,7 @@ import '../../../Modules/widgets/AppTextField.dart';
 import '../../../Modules/widgets/CommonText.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery/view/FaceDetectionScreen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/screens/face_detection_screen.dart';
 import 'patient_sample_collection_header_view/patient_sample_collection_header_widget.dart';
 import 'test_details_view/test_details_widget.dart';
 import 'tube_details_view/tube_details_widget.dart';

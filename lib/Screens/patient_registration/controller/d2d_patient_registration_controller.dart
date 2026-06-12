@@ -43,6 +43,12 @@ class D2DPatientRegistrationController extends GetxController {
   String navType = '6';
   String navCampType = '3'; // '1' = Regular Camp, '3' = D2D Camp
   String navBeneficiaryNo = '';
+  String navRelation = '';
+  String navRegId = '0';
+  String navRejCampId = '0';
+  String navBeneficiaryName = '';
+
+  final reRegistrationLocked = false.obs;
 
   int empCode = 0;
   int subOrgId = 0;
@@ -77,7 +83,7 @@ class D2DPatientRegistrationController extends GetxController {
   final tecFirstName = TextEditingController();
   final tecMiddleName = TextEditingController();
   final tecLastName = TextEditingController();
-  final tecMobileNo = TextEditingController(text: '8830378568');
+  final tecMobileNo = TextEditingController(text: '9371023232');
   final tecAltMobileNo = TextEditingController();
   final tecAadhaarNo = TextEditingController();
   final tecDob = TextEditingController();
@@ -312,7 +318,7 @@ class D2DPatientRegistrationController extends GetxController {
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
     final rawMsId = user?.maritialstatusId?.toString() ?? '';
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
-    tecMobileNo.text = '8830378568';
+    tecMobileNo.text = '9371023232';
     _startAutoLocationUpdates();
     _loadAppVersion();
     _fetchFaceDetectionFlag();
@@ -979,6 +985,23 @@ class D2DPatientRegistrationController extends GetxController {
     }
   }
 
+  /// Called by D2DSelectCampController after setting all navType="5" params.
+  void initForReRegistration() {
+    reRegistrationLocked.value = true;
+    registrationType.value = 'without_abha';
+    if (navRelation == 'Self') {
+      isDependent.value = false;
+      tecWorkerRegNo.text = navBeneficiaryNo;
+      onWorkerRegNoChanged(navBeneficiaryNo);
+    } else {
+      isDependent.value = true;
+      tecWorkerRegNo.text = navBeneficiaryNo;
+      tecFullName.text = navBeneficiaryName;
+      fetchRelationList(selectedWorkerMaritalStatusId.value, selectedGender.value);
+      onWorkerRegNoChanged(navBeneficiaryNo);
+    }
+  }
+
   void onWorkerMaritalStatusChanged(String id, String name) {
     selectedWorkerMaritalStatusId.value = id;
     selectedWorkerMaritalStatusName.value = name;
@@ -1018,6 +1041,8 @@ class D2DPatientRegistrationController extends GetxController {
               ? workerInfo!.output!.first
               : null;
       if (data == null) {
+        tecWorkerRegNo.clear();
+        _clearForm();
         ToastManager.showAlertDialog(
           Get.context!,
           'बांधकाम कामगार मंडळाकडून लाभार्थ्याची अद्ययावत माहिती प्राप्त झालेली नाही. \nत्यामुळे सध्या या लाभार्थ्याची नोंदणी करता येणार नाही याची नोंद घ्यावी',
@@ -1038,9 +1063,6 @@ class D2DPatientRegistrationController extends GetxController {
               DateTime.now().difference(parsed).inDays < 365) {
             tecWorkerRegNo.clear();
             _clearForm();
-            // Re-enable ABHA section so the user can still perform ABHA
-            // operations even though re-registration is blocked.
-            hasApiData.value = true;
             final ctx = Get.context;
             if (ctx != null) {
               ToastManager.showAlertDialog(
@@ -1284,7 +1306,7 @@ class D2DPatientRegistrationController extends GetxController {
     tecLastName.clear();
 
     // Contact
-    tecMobileNo.text = '8830378568'; // TEST OVERRIDE
+    tecMobileNo.text = '9371023232'; // TEST OVERRIDE
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
     originalAadhaar = '';
@@ -1457,7 +1479,7 @@ class D2DPatientRegistrationController extends GetxController {
     // Mobile
     final apiMobile = (data.mobile ?? '').trim();
     if (apiMobile.isNotEmpty) tecMobileNo.text = apiMobile;
-    tecMobileNo.text = '8830378568'; // TEST OVERRIDE
+    tecMobileNo.text = '9371023232'; // TEST OVERRIDE
 
     // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
     // (isDependent=No). When registering a dependent the phlebo enters these
@@ -2806,10 +2828,9 @@ class D2DPatientRegistrationController extends GetxController {
       }
     }
 
-    // Ration card — required when visible (worker without_abha, or any dependent)
-    final _showRationCard =
-        isDependent.value || registrationType.value == 'without_abha';
-    if (_showRationCard) {
+    // Ration card — only validated when registering a dependent (matches native).
+    // For non-dependent, field is hidden and payload auto-sends "NA".
+    if (isDependent.value) {
       final rc = tecRationCardNo.text.trim();
       if (rc.isEmpty) {
         ToastManager.showAlertDialog(
@@ -2856,42 +2877,112 @@ class D2DPatientRegistrationController extends GetxController {
     return true;
   }
 
-  void showConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirm'),
-          content: const Text(
-            "Please confirm the beneficiary's details before submitting",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                submitRegistration(context);
-              },
-              child: const Text('Confirm'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void showConfirmationDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: const Text('Confirm'),
+  //         content: const Text(
+  //           "Please confirm the beneficiary's details before submitting",
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.pop(context),
+  //             child: const Text('Cancel'),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //               submitRegistration(context);
+  //             },
+  //             child: const Text('Confirm'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
+  /// Step 1: validate → call VerifyDependentDetails_V2.
+  /// On success → show confirmation dialog → Step 2 (_doSaveRegistration).
+  /// Mirrors native verifyBeneficiaryDetails() gating UploadPatientDetails.
   Future<void> submitRegistration(BuildContext context) async {
     if (!_validateForm()) return;
+    isSubmitting.value = true;
+    ToastManager.showLoader();
+    try {
+      final regdNo = 'MH${tecWorkerRegNo.text.trim()}';
+      final aadhaar = isAadhaarMode ? originalAadhaar : tecAadhaarNo.text.trim();
+      final relationId = selectedRelation.value?.relId?.toString() ?? '20';
+      final rationCard = tecRationCardNo.text.trim().isEmpty
+          ? 'NA'
+          : tecRationCardNo.text.trim();
+
+      final verify = await _repo.verifyBeneficiaryDetails(
+        regdNo: regdNo,
+        aadhaarNo: aadhaar,
+        dependentName: tecFullName.text.trim(),
+        relationId: relationId,
+        pincode: tecPincode.text.trim(),
+        dob: tecDob.text.trim(),
+        rationCardNo: rationCard,
+      );
+
+      ToastManager.hideLoader();
+      isSubmitting.value = false;
+
+      if (verify == null) {
+        ToastManager.showAlertDialog(
+          context,
+          'Server not responding. Please try again.',
+          () => Get.back(),
+        );
+        return;
+      }
+
+      if (verify.status?.toLowerCase() != 'success') {
+        final msg = verify.message ?? 'Verification failed';
+        // messageId=="2" + dependent → Aadhaar mismatch; only flag field error.
+        if (isDependent.value && verify.messageId == '2') {
+          aadhaarError.value = 'Please re-enter Aadhaar number';
+        } else {
+          clearDependentSelection();
+        }
+        ToastManager.showAlertDialog(context, msg, () => Get.back());
+        return;
+      }
+
+      // Verified — show confirmation then proceed to save.
+      ToastManager().showConfirmationDialog(
+        context: context,
+        message: "Please confirm the beneficiary's details before submitting",
+        didSelectYes: (bool confirmed) {
+          Navigator.pop(context);
+          if (confirmed) _doSaveRegistration(context);
+        },
+      );
+    } catch (e) {
+      isSubmitting.value = false;
+      ToastManager.hideLoader();
+      ToastManager.showAlertDialog(
+        context,
+        'Unexpected error: $e',
+        () => Get.back(),
+      );
+    }
+  }
+
+  /// Step 2: build params and call saveD2DRegistration.
+  Future<void> _doSaveRegistration(BuildContext context) async {
     isSubmitting.value = true;
     ToastManager.showLoader();
     try {
       final fields = <String, String>{
         'SiteId': navSiteId,
         'CampId': navCampId,
-        'RegdNo': '${tecWorkerRegNo.text.trim()}$_beneficiaryCount',
+        'RegdNo': tecWorkerRegNo.text.trim(),
+        // 'RegdNo': '${tecWorkerRegNo.text.trim()}$_beneficiaryCount',
         'Title': selectedTitle.value,
         'EnglishName': tecFullName.text.trim(),
         'MobileNo': tecMobileNo.text.trim(),
@@ -2926,8 +3017,8 @@ class D2DPatientRegistrationController extends GetxController {
         'OptionMode': '2',
         'VersionNo': APIConstants.kNativeVersion,
         'Isrecollection': navType == '5' ? '1' : '0',
-        'Rej_Regdid': '0',
-        'Rej_CampID': '0',
+        'Rej_Regdid': navType == '5' ? navRegId : '0',
+        'Rej_CampID': navType == '5' ? navRejCampId : '0',
         'MaritalStatusID': maritalStatusId,
         'IsFaceDetectionEnabled': skipFaceDetection.value ? '0' : '1',
         'TALLGDCODE': talLgd,

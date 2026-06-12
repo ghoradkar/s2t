@@ -9,7 +9,6 @@ import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
@@ -101,7 +100,12 @@ class _D2DPatientRegistrationScreenState
           ],
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          padding: EdgeInsets.only(
+            left: 14.w,
+            right: 14.w,
+            top: 14.h,
+            bottom: 14.h + MediaQuery.of(context).viewPadding.bottom,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -124,6 +128,7 @@ class _D2DPatientRegistrationScreenState
                       label: 'With ABHA',
                       selected: c.registrationType.value == 'with_abha',
                       onTap: () => c.onRegistrationTypeChanged('with_abha'),
+                      enabled: !c.reRegistrationLocked.value,
                     ),
                   ],
                 ),
@@ -140,12 +145,14 @@ class _D2DPatientRegistrationScreenState
                       label: 'Yes',
                       selected: c.isDependent.value,
                       onTap: () => c.onDependentToggled(true),
+                      enabled: !c.reRegistrationLocked.value,
                     ),
                     SizedBox(width: 10.w),
                     _radioChip(
                       label: 'No',
                       selected: !c.isDependent.value,
                       onTap: () => c.onDependentToggled(false),
+                      enabled: !c.reRegistrationLocked.value,
                     ),
                   ],
                 ),
@@ -185,10 +192,10 @@ class _D2DPatientRegistrationScreenState
                 hint: '12-digit number',
                 textInputType: TextInputType.number,
                 maxLength: 12,
-                // Disabled after API data returned
-                readOnly: _hasData,
+                // Disabled after API data returned or during re-registration
+                readOnly: _hasData || c.reRegistrationLocked.value,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChange: _hasData ? null : c.onWorkerRegNoChanged,
+                onChange: (_hasData || c.reRegistrationLocked.value) ? null : c.onWorkerRegNoChanged,
                 errorText:
                     c.workerRegNoError.value.isEmpty
                         ? null
@@ -339,7 +346,7 @@ class _D2DPatientRegistrationScreenState
                                                 district: c.navCampLocation,
                                                 campType: c.navCampType,
                                                 empCode: c.empCode,
-                                                initialMobile: '',
+                                                initialMobile: c.tecMobileNo.text.trim(),
                                               ),
                                         ),
                                       );
@@ -1248,55 +1255,14 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 14.h),
         ],
 
-        // ── 11. DOB + Age ────────────────────────────────────────────────
-        _sectionLabel('Date of Birth'),
-        SizedBox(height: 6.h),
-        Row(
-          children: [
-            Expanded(
-              child: AppTextField(
-                controller: c.tecDob,
-                label: _label('DOB (YYYY/MM/DD) *'),
-                hint: 'yyyy/mm/dd',
-                // isDependent=No → always locked (pre-filled from API)
-                // isDependent=Yes → editable via date picker (relation required first)
-                // abhaFormLocked → locked after ABHA-creation fill
-                readOnly: _isNo || _isLocked,
-                onTap:
-                    (_isNo || _isLocked)
-                        ? null
-                        : () {
-                          if (_isYes && c.selectedRelation.value == null) {
-                            ToastManager.showAlertDialog(
-                              context,
-                              'Please select relation first',
-                              () =>
-                                  Navigator.of(
-                                    context,
-                                    rootNavigator: true,
-                                  ).pop(),
-                            );
-                            return;
-                          }
-                          _pickDate(context, c.tecDob, c.onDobChanged);
-                        },
-                prefixIcon: const Icon(
-                  Icons.cake_rounded,
-                  color: kPrimaryColor,
-                  size: 18,
-                ).paddingOnly(left: 6.w),
-              ),
-            ),
-            SizedBox(width: 10.w),
-            SizedBox(
-              width: 80.w,
-              child: AppTextField(
-                controller: c.tecAge,
-                label: _label('Age'),
-                readOnly: true, // always auto-calculated
-              ),
-            ),
-          ],
+        // ── 11. Age (DOB hidden — auto-populated, never user-editable; matches native) ──
+        SizedBox(
+          width: 80.w,
+          child: AppTextField(
+            controller: c.tecAge,
+            label: _label('Age'),
+            readOnly: true,
+          ),
         ),
         SizedBox(height: 14.h),
 
@@ -1504,11 +1470,8 @@ class _D2DPatientRegistrationScreenState
         SizedBox(height: 14.h),
 
         // ── 20. Ration Card No ───────────────────────────────────────────
-        // Visible for worker (without_abha) and all dependents.
-        // Hidden for with_abha non-dependent (native sets value to "NA").
-        if (_hasData &&
-            (c.isDependent.value ||
-                c.registrationType.value == 'without_abha')) ...[
+        // Visible only when registering a dependent (native behaviour).
+        if (_hasData && c.isDependent.value) ...[
           _sectionLabel('Ration Card No'),
           SizedBox(height: 8.h),
           AppTextField(
@@ -1528,7 +1491,7 @@ class _D2DPatientRegistrationScreenState
           _sectionLabel('Skip Face Detection'),
           SizedBox(height: 6.h),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             decoration: BoxDecoration(
               color: kWhiteColor,
               borderRadius: BorderRadius.circular(8),
@@ -1588,7 +1551,7 @@ class _D2DPatientRegistrationScreenState
             Expanded(
               child: _PhotoTile(
                 // isDependent=Yes → "Identity Card"; No → "Beneficiary Card"
-                label: _isYes ? 'Identity Card' : 'Beneficiary Card',
+                label: _isYes ? 'Identity Card' : 'Aadhaar Card',
                 icon: Icons.credit_card,
                 localPath: c.healthCardPhotoPath.value,
                 onTap: c.pickHealthCardPhoto,
@@ -1630,50 +1593,12 @@ class _D2DPatientRegistrationScreenState
             mWidth: double.infinity,
             mHeight: 52,
             icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
-            onTap: () {
-              ToastManager().showConfirmationDialog(
-                context: Get.context!,
-                message:
-                    "Please confirm the beneficiary's details before submitting",
-                didSelectYes: (bool p1) {
-                  if (p1 == true) {
-                    Navigator.pop(context);
-                    c.submitRegistration(context);
-                  } else if (p1 == false) {
-                    Navigator.pop(context);
-                  }
-                },
-              );
-            },
-            // onTap: () => c.showConfirmationDialog(context),
+            onTap: () => c.submitRegistration(context),
           ),
           SizedBox(height: 20.h),
         ],
       ],
     );
-  }
-
-  // ── Date picker helper ────────────────────────────────────────────────────
-
-  Future<void> _pickDate(
-    BuildContext context,
-    TextEditingController tec,
-    void Function(String) onPicked, {
-    bool readOnly = false,
-  }) async {
-    if (readOnly) return;
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: DateTime(1900),
-      lastDate: now,
-    );
-    if (picked != null) {
-      final formatted = FormatterManager.formatDateToString(picked);
-      tec.text = formatted;
-      onPicked(formatted);
-    }
   }
 
   void _onViewQueueTapped() {

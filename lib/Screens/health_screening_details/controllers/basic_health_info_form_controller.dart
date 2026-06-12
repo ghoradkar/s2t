@@ -123,6 +123,7 @@ class BasicHealthInfoFormController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    bpController.onInit();
     final userData = DataProvider().getParsedUserData()?.output?.first;
     _empCode = userData?.empCode ?? 0;
     _prefillFromListItem();

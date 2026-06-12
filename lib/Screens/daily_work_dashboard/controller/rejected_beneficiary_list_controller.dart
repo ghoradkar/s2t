@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/RecollectionAssignmentRemarksResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/recollection_assignment_remarks_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/recollection_beneficiary_status_and_details_count_v1_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/daily_work_dashboard/repository/daily_work_dashboard_repository.dart';
 
-import '../model/RecollectionAssignmentRemarksResponse.dart';
-import '../model/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
+import '../model/recollection_assignment_remarks_response.dart';
+import '../model/recollection_beneficiary_status_and_details_count_v1_response.dart';
 
 class RejectedBeneficiaryListController extends GetxController {
   final DailyWorkDashboardRepository _repository = DailyWorkDashboardRepository();
@@ -34,6 +34,8 @@ class RejectedBeneficiaryListController extends GetxController {
   int tALLGDCODEUser = 0;
 
   // ─── State ───────────────────────────────────────────────────────────────────
+
+  bool isLoading = false;
 
   List<RecollectionBeneficiaryStatusandDetailsCountV1Output> rejectedBeneficaryList = [];
   List<RecollectionBeneficiaryStatusandDetailsCountV1Output> searchRejectedBeneficaryList = [];
@@ -104,7 +106,8 @@ class RejectedBeneficiaryListController extends GetxController {
   // ─── API call ─────────────────────────────────────────────────────────────────
 
   Future<void> callAPICall() async {
-    ToastManager.showLoader();
+    isLoading = true;
+    update();
     try {
       RecollectionBeneficiaryStatusandDetailsCountV1Response? response;
       if (isGroup1) {
@@ -121,6 +124,7 @@ class RejectedBeneficiaryListController extends GetxController {
             "BeneficiaryNumber": "0",
             "UserId": empCode.toString(),
             "Type": "2",
+            "CampType": campType,
           });
         } else {
           response = await _repository.getCountForTeam({
@@ -182,7 +186,7 @@ class RejectedBeneficiaryListController extends GetxController {
         ToastManager.toast('Something went wrong');
       }
     } finally {
-      ToastManager.hideLoader();
+      isLoading = false;
     }
     update();
   }

@@ -5,18 +5,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-// import 'package:s2toperational/Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/BeneficiaryStatusAndDetailsResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/RecollectionAssignmentRemarksResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
-// import 'package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/SelectedTeamsDataListResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/beneficiary_status_and_details_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/recollection_assignment_remarks_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/recollection_beneficiary_status_and_details_count_v1_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/selected_teams_data_list_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/daily_work_dashboard/repository/daily_work_dashboard_repository.dart';
+import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/d2d_select_camp_screen.dart';
 
-import '../model/BeneficiaryStatusAndDetailsResponse.dart';
-import '../model/RecollectionAssignmentRemarksResponse.dart';
-import '../model/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
-import '../model/SelectedTeamsDataListResponse.dart';
+import '../model/beneficiary_status_and_details_response.dart';
+import '../model/recollection_assignment_remarks_response.dart';
+import '../model/recollection_beneficiary_status_and_details_count_v1_response.dart';
+import '../model/selected_teams_data_list_response.dart';
 
 class RejectedBeneficiaryInfoController extends GetxController {
   final DailyWorkDashboardRepository _repository = DailyWorkDashboardRepository();
@@ -170,7 +172,6 @@ class RejectedBeneficiaryInfoController extends GetxController {
         : "${beneficiaryObj!.teamName ?? 'NA'} (InActive)";
 
     if (beneficiaryObj!.isAppointmentConfirm == 1) {
-      showAssignButton = false;
       showAppoointmentDate = true;
       showReRegisterButton = true;
     } else {
@@ -196,6 +197,20 @@ class RejectedBeneficiaryInfoController extends GetxController {
 
     if (remarkId != null) {
       showAppoointmentDate = remarkId == 3;
+    }
+
+    // Pre-fill remark from API response
+    if (beneficiaryObj!.arid != null && beneficiaryObj!.remarks != null) {
+      selectedRemark = RecollectionAssignmentRemarksOutput(
+        arId: beneficiaryObj!.arid,
+        assignmentRemarks: beneficiaryObj!.remarks,
+      );
+      remark = beneficiaryObj!.remarks ?? '';
+    }
+
+    // Pre-fill appointment date when already confirmed
+    if (beneficiaryObj!.isAppointmentConfirm == 1) {
+      appoointmentDate = beneficiaryObj!.appointmentDate ?? '';
     }
   }
 
@@ -387,5 +402,20 @@ class RejectedBeneficiaryInfoController extends GetxController {
     } catch (_) {
       return "";
     }
+  }
+
+  void onReRegisterTapped(BuildContext context) {
+    Get.delete<D2DSelectCampController>(force: true);
+    final sc = Get.put(D2DSelectCampController());
+    sc.navBeneficiaryNo = beneficiaryObj?.regdNo ?? '';
+    sc.navRelation = beneficiaryObj?.relationWithWorker ?? '';
+    sc.navRegId = beneficiaryObj?.rejRegdid?.toString() ?? '0';
+    sc.navRejCampId = beneficiaryObj?.rejCampID?.toString() ?? '0';
+    sc.navBeneficiaryName = beneficiaryObj?.beneficiaryName ?? '';
+    sc.navType = '5';
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const D2DSelectCampScreen()),
+    );
   }
 }

@@ -10,7 +10,7 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
-// import '../../Modules/Json_Class/SelectedTeamsDataListResponse/SelectedTeamsDataListResponse.dart';
+// import '../../Modules/Json_Class/SelectedTeamsDataListResponse/selected_teams_data_list_response.dart';
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/images.dart';
 // import '../../Modules/utilities/SizeConfig.dart';

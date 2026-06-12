@@ -6,7 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
+import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import 'package:s2toperational/Modules/LocationManager/LocationManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/images.dart';

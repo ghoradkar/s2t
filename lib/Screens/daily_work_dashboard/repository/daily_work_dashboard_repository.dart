@@ -3,29 +3,29 @@
 import 'dart:async';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-// import 'package:s2toperational/Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/BeneficiaryStatusAndDetailsResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/RecollectionAssignmentRemarksResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryDashboardForMobResponse/RecollectionBeneficiaryDashboardForMobResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/RecollectionBeneficiaryToTeamResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/SelectedTeamsDataListResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/beneficiary_status_and_details_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/bind_district_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/bind_division_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/LabDataResponse/lab_data_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/landing_lab_camp_creation_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/recollection_assignment_remarks_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryDashboardForMobResponse/recollection_beneficiary_dashboard_for_mob_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/recollection_beneficiary_status_and_details_count_v1_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/recollection_beneficiary_to_team_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/selected_teams_data_list_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/sub_organization_response.dart';
 
-import '../model/BeneficiaryStatusAndDetailsResponse.dart';
-import '../model/BindDistrictResponse.dart';
-import '../model/BindDivisionResponse.dart';
-import '../model/LabDataResponse.dart';
-import '../model/LandingLabCampCreationResponse.dart';
-import '../model/RecollectionAssignmentRemarksResponse.dart';
-import '../model/RecollectionBeneficiaryDashboardForMobResponse.dart';
-import '../model/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
-import '../model/RecollectionBeneficiaryToTeamResponse.dart';
-import '../model/SelectedTeamsDataListResponse.dart';
-import '../model/SubOrganizationResponse.dart';
+import '../model/beneficiary_status_and_details_response.dart';
+import '../model/bind_district_response.dart';
+import '../model/bind_division_response.dart';
+import '../model/lab_data_response.dart';
+import '../model/landing_lab_camp_creation_response.dart';
+import '../model/recollection_assignment_remarks_response.dart';
+import '../model/recollection_beneficiary_dashboard_for_mob_response.dart';
+import '../model/recollection_beneficiary_status_and_details_count_v1_response.dart';
+import '../model/recollection_beneficiary_to_team_response.dart';
+import '../model/selected_teams_data_list_response.dart';
+import '../model/sub_organization_response.dart';
 
 class DailyWorkDashboardRepository {
   final APIManager _api = APIManager();

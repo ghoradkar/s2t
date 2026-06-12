@@ -111,7 +111,6 @@ class AbhaCreationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (initialMobile.isNotEmpty) mobileCtrl.text = initialMobile;
     initSession();
   }
 
@@ -221,7 +220,14 @@ class AbhaCreationController extends GetxController {
       creationResponse = Map<String, dynamic>.from(result);
       final profile = result['ABHAProfile'] as Map<String, dynamic>?;
       final profileMobile = profile?['mobile'] as String?;
-      if (profileMobile == null ||
+      // Always require mobile OTP when the user typed a different number from
+      // the beneficiary's pre-registered mobile (sandbox ABDM echoes the
+      // entered mobile in ABHAProfile.mobile, making profileMobile == mobile
+      // even when the mobile is not Aadhaar-linked).
+      final mobileChangedFromInitial =
+          initialMobile.isNotEmpty && mobile != initialMobile;
+      if (mobileChangedFromInitial ||
+          profileMobile == null ||
           profileMobile.isEmpty ||
           profileMobile != mobile) {
         _timer?.cancel();

@@ -44,6 +44,7 @@ class APIConstants {
       "GetHomeAndHubLabNamesOfLandingLab";
   static String kTestList = "getTestList";
   static String kInsertCampCreationV3 = "InsertCampCreation_V3";
+  static String kInsertCampCreationLatLong = "InsertCampCreation_LatLong";
   static String kGetCampListV3 = "GetCampList_V3";
   static String kGetDeviceListForCamp = "GetDeviceListForCamp";
   static String kGetSUBDeviceListNew = "GetSUBDeviceListNew";
@@ -257,7 +258,7 @@ class APIConstants {
   static String kGetUserCampMappingAndAttendanceStatusReadinessCampClose =
       "GetUserCampMappingAndAttendanceStatus_Readiness_CampClose";
   static String kGetUserCampMappingRegularCampClose =
-      "GetUserCampMappingAndAttendanceStatusForRegularCamp_Readiness_CampClose";
+      "GetUserCampMappingAndAttendanceStatusForRegularCamp_Readiness_CampClose_V1";
   static String kGetUserCampMappingD2DClose =
       "GetUserCampMappingAndAttendanceStatus_Readiness_CampClose";
 
@@ -335,6 +336,7 @@ class APIConstants {
   static String kGetDocumenttype = "GetDocumenttype";
   static String kGetOTPforRegistrationOrg = "GetOTPforRegistration_Org";
   static String kVerifyRegistrationOTP = "VerifyRegistrationOTP";
+  static String kVerifyDependentDetailsV2 = "VerifyDependentDetails_V2";
   static String kGetWorkerInfroReRegistration = "GetWorkerInfroRe_Registration";
   static String kGetWorkerInfroFromWorkerRegid = "GetWorkerInfroFromWorkerRegid";
   static String kInsertSignatureandThumbDetails =

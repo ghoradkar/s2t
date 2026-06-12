@@ -14,7 +14,7 @@ import 'package:s2toperational/Screens/ResourceReMapping/ResourceReMappingCampLi
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/Json_Class/CampDetailsntApprovalResponse/CampDetailsntApprovalResponse.dart';
 import '../../../Modules/Json_Class/CampResourceAllocationResponse/CampResourceAllocationResponse.dart';
-import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
+import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import '../../../Modules/Json_Class/ResourceReMappingCampResponse/ResourceReMappingCampResponse.dart';
 import '../../../Modules/Json_Class/UpdateSubResourceListResponse/UpdateSubResourceListResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';

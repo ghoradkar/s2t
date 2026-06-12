@@ -13,8 +13,8 @@ import 'package:s2toperational/Screens/calling_modules/screens/expected_benefici
 import 'package:s2toperational/Screens/forgot_password/ui/forgot_password.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/forgot_password_otp.dart';
 import 'package:s2toperational/Screens/forgot_password/ui/reset_password.dart';
-import '../../LoginScreen/controllers/login_controller.dart';
-import '../../LoginScreen/screens/login_screen.dart';
+import '../../login/controllers/login_controller.dart';
+import '../../login/screens/login_screen.dart';
 import '../../SplashScreen/controllers/splash_controller.dart';
 import '../../SplashScreen/screens/splash_screen.dart';
 import '../custom_widgets/logout_widget.dart';

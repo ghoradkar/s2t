@@ -72,6 +72,7 @@ class UserAttendancesUsingSitedetailsIDOutput {
   String? localAddress;
   String? permanentAddress;
   int? isDependent;
+  int? isAckAndRCPending;
   String? isCall;
   String? relName;
   String? antiBarcode;
@@ -159,6 +160,12 @@ class UserAttendancesUsingSitedetailsIDOutput {
       } else {
         isDependent = int.tryParse(s);
       }
+    }
+    final ackRaw = json['IsAckAndRCPending'];
+    if (ackRaw is int) {
+      isAckAndRCPending = ackRaw;
+    } else if (ackRaw != null) {
+      isAckAndRCPending = int.tryParse(ackRaw.toString());
     }
     isCall = json['IsCall']?.toString();
     relName = json['RelName']?.toString();

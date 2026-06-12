@@ -58,8 +58,8 @@ class _AbhaCreationScreenState extends State<AbhaCreationScreen> {
 
   @override
   void dispose() {
-    Get.delete<AbhaCreationController>(force: true);
     super.dispose();
+    Get.delete<AbhaCreationController>(force: true);
   }
 
   @override
@@ -237,6 +237,7 @@ class _AbhaCreationScreenState extends State<AbhaCreationScreen> {
               appContext: context,
               length: 6,
               controller: ctrl.otpCtrl,
+              autoDisposeControllers: false,
               keyboardType: TextInputType.number,
               onChanged: (_) {},
               pinTheme: PinTheme(

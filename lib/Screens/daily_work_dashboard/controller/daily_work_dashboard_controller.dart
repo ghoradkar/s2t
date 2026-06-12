@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 
-// import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/LabDataResponse/LabDataResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/RecollectionBeneficiaryToTeamResponse.dart';
-// import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/bind_district_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/bind_division_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/LabDataResponse/lab_data_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/landing_lab_camp_creation_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/recollection_beneficiary_to_team_response.dart';
+// import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/sub_organization_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/daily_work_dashboard/repository/daily_work_dashboard_repository.dart';
 
-import '../model/BindDistrictResponse.dart';
-import '../model/BindDivisionResponse.dart';
-import '../model/LabDataResponse.dart';
-import '../model/LandingLabCampCreationResponse.dart';
-import '../model/RecollectionBeneficiaryToTeamResponse.dart';
-import '../model/SubOrganizationResponse.dart';
+import '../model/bind_district_response.dart';
+import '../model/bind_division_response.dart';
+import '../model/lab_data_response.dart';
+import '../model/landing_lab_camp_creation_response.dart';
+import '../model/recollection_beneficiary_to_team_response.dart';
+import '../model/sub_organization_response.dart';
 
 class DailyWorkDashboardController extends GetxController {
   final DailyWorkDashboardRepository _repository =

@@ -22,6 +22,11 @@ class D2DSelectCampController extends GetxController {
   String userDistLgdCode = '0';
   String divisionId = '0';
   String navBeneficiaryNo = '';
+  String navRelation = '';
+  String navRegId = '0';
+  String navRejCampId = '0';
+  String navBeneficiaryName = '';
+  String navType = '6';
 
   final selectedDate = ''.obs;
   final districtList = <DistrictOutput>[].obs;
@@ -136,6 +141,7 @@ class D2DSelectCampController extends GetxController {
 
   Future<void> onCampTapped(D2DCampOutput camp, BuildContext context) async {
     if (isCheckingAttendance.value) return;
+
     isCheckingAttendance.value = true;
     checkingCampId.value = camp.campId ?? '';
     try {
@@ -153,11 +159,10 @@ class D2DSelectCampController extends GetxController {
       }
       final msg = _getBlockMessage(output);
       if (msg.isNotEmpty) {
-        // ToastManager.toast(msg);
         ToastManager.showAlertDialog(
           Get.context!,
           msg,
-              () {
+          () {
             Get.back();
           },
         );
@@ -170,18 +175,27 @@ class D2DSelectCampController extends GetxController {
       rc.navSiteId = camp.siteDetailId ?? '';
       rc.navDistLgd = camp.distLgdCode ?? '';
       rc.navCampLocation = camp.campLocation ?? '';
-      rc.navType = '6';
-      rc.navBeneficiaryNo = navBeneficiaryNo;
-      if (navBeneficiaryNo.isNotEmpty) {
-        rc.tecWorkerRegNo.text = navBeneficiaryNo;
-        rc.onWorkerRegNoChanged(navBeneficiaryNo);
+
+      if (navType == '5') {
+        rc.navType = '5';
+        rc.navBeneficiaryNo = navBeneficiaryNo;
+        rc.navRelation = navRelation;
+        rc.navRegId = navRegId;
+        rc.navRejCampId = navRejCampId;
+        rc.navBeneficiaryName = navBeneficiaryName;
+        rc.initForReRegistration();
+      } else {
+        rc.navType = '6';
+        rc.navBeneficiaryNo = navBeneficiaryNo;
+        if (navBeneficiaryNo.isNotEmpty) {
+          rc.tecWorkerRegNo.text = navBeneficiaryNo;
+          rc.onWorkerRegNoChanged(navBeneficiaryNo);
+        }
       }
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => const D2DPatientRegistrationScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const D2DPatientRegistrationScreen()),
       );
     } finally {
       isCheckingAttendance.value = false;

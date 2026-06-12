@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
+import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';

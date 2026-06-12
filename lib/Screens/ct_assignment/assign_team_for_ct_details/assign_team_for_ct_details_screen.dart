@@ -23,7 +23,7 @@ import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
-// import '../../../Views/RejectedBeneficiaryTeamView/RejectedBeneficiaryTeamView.dart';
+// import '../../../Views/RejectedBeneficiaryTeamView/rejected_beneficiary_team_view.dart';
 import '../assign_team_for_ct_sample_collection/assign_team_for_ct_sample_collection_screen.dart';
 
 class AssignTeamForCTDetailsScreen extends StatefulWidget {

@@ -7,12 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AdminDashboard/ConductedCampsTotals.dart';
 import 'package:s2toperational/Modules/Json_Class/AdminDashboard/TodaysPatientsResponse.dart';
-import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
+import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Screens/admin_dashboard/screen/admin_dashboard_widget.dart';
-import 'package:s2toperational/Screens/daily_work_dashboard/screen/DailyWorkDashboardScreen/DailyWorkDashboardScreen.dart';
+import 'package:s2toperational/Screens/daily_work_dashboard/screen/daily_work_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/calling_dashboard_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
@@ -25,10 +25,10 @@ import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenu
 import 'package:s2toperational/Screens/camp_calendar/screen/camp_calendar_screen.dart';
 import 'package:s2toperational/Screens/d2d_teams/screen/D2DTeamsScreen.dart';
 import 'package:s2toperational/Screens/liver_scanning/screen/LiverScanningScreen.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/PacketAllocation/view/PacketAllocationScreen.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/PacketCollection/view/PacketCollectionScreen.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/PacketReceive/view/PacketReceiveScreen.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/medicine_delivery_dash.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/screens/packet_allocation_screen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/screens/packet_collection_screen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/screens/packet_receive_screen.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/screens/medicine_delivery_dash.dart';
 import 'package:s2toperational/Screens/s2t_patient_app/screen/S2TPatientAppScreen.dart';
 import 'package:s2toperational/Screens/super_admin/controller/super_admin_controller.dart';
 import 'package:s2toperational/Screens/super_admin/screens/super_admin_dashboard.dart';
@@ -46,7 +46,8 @@ import '../../Modules/utilities/DeviceInfoUtil.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
 import '../AppointmentsConfirmedList/AppointmentsConfirmedListScreen/AppointmentsConfirmedListScreen.dart';
 import '../ct_assignment/ct_assignment_screen/ct_assignment_screen.dart';
-import '../CampCreationScreen/CampCreationScreen.dart';
+import '../camp_creation/controllers/camp_creation_controller.dart';
+import '../camp_creation/screens/camp_creation_screen.dart';
 import '../CampReadinessForm/CampReadinessFormScreen.dart';
 import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
 import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
@@ -694,10 +695,9 @@ class _HomeScreenState extends State<HomeScreen> {
       case DashboardMenu.CampApproval:
         break;
       case DashboardMenu.CampCreation:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CampCreationScreen()),
-        );
+        Get.delete<CampCreationController>(force: true);
+        Get.put(CampCreationController());
+        Get.to(() => const CampCreationScreen());
         break;
       case DashboardMenu.ExpenseClaim:
         Navigator.push(

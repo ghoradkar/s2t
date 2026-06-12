@@ -18,7 +18,7 @@ import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../../../Modules/Json_Class/AdvadetailsNewVersionV2Response/AdvadetailsNewVersionV2Response.dart';
 import '../../../Modules/Json_Class/BillSubmissionResponse/BillSubmissionResponse.dart';
 import '../../../Modules/Json_Class/ExpenseHeadResponse/ExpenseHeadResponse.dart';
-import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
+import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import '../../../Modules/Json_Class/SubExpenseHeadsResponse/SubExpenseHeadsResponse.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/constants.dart';

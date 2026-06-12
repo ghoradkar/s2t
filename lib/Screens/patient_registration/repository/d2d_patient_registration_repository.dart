@@ -15,6 +15,7 @@ import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserM
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/attendance_status_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/beneficiary_details_response.dart';
+import 'package:s2toperational/Screens/patient_registration/model/beneficiary_status_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_camp_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_registration_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
@@ -1640,6 +1641,51 @@ class D2DPatientRegistrationRepository {
   }
 
   // ────────────────────────────────────────────────────────
+
+  /// Mirrors native verifyBeneficiaryDetailsNew → VerifyDependentDetails_V2.
+  /// Called before saveD2DRegistration; server cross-checks eligibility.
+  Future<BeneficiaryStatusResponse?> verifyBeneficiaryDetails({
+    required String regdNo,
+    required String aadhaarNo,
+    required String dependentName,
+    required String relationId,
+    required String pincode,
+    required String dob,
+    required String rationCardNo,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kVerifyDependentDetailsV2}',
+    );
+    final body = {
+      'RegdNo': regdNo,
+      'AdharNo': aadhaarNo,
+      'DependentName': dependentName,
+      'RelationID': relationId,
+      'Pincode': pincode,
+      'DOB': dob,
+      'RationCardNo': rationCardNo,
+    };
+    // ignore: avoid_print
+    print('[verifyBeneficiary] url=$url body=$body');
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: body,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      // ignore: avoid_print
+      print('[verifyBeneficiary] status=${response.statusCode} body=${response.body}');
+      final decoded = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return BeneficiaryStatusResponse.fromJson(decoded);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[verifyBeneficiary] error=$e');
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
 
   Future<D2DRegistrationResponse?> saveD2DRegistration({
     required Map<String, String> fields,

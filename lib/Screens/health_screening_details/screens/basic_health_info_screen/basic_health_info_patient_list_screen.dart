@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
+import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
@@ -110,6 +111,38 @@ class _BasicHealthInfoPatientListScreenState
     UserAttendancesUsingSitedetailsIDOutput item,
     BasicHealthInfoPatientListController controller,
   ) {
+    // IsAckAndRCPending is returned by production server only.
+    // When null (test server), fall back to IsSignature:
+    //   null/0 = acknowledgement + fingerprint not done → treat as pending=3
+    //   1      = done → treat as pending=1 (allow)
+    int pending;
+    if (item.isAckAndRCPending != null) {
+      pending = item.isAckAndRCPending!;
+    } else {
+      final sig = item.isSignature ?? 0;
+      pending = (sig == 1) ? 1 : 3;
+    }
+    debugPrint('[BHI] isAckAndRCPending=${item.isAckAndRCPending} isSignature=${item.isSignature} pending=$pending patient=${item.englishName}');
+    String? alertMsg;
+    if (pending == 2) {
+      alertMsg =
+          'या लाभार्थ्याची रेशन कार्ड प्राप्त झालेले नसल्यामुळे बेसिक स्क्रीनिंग करता येणार नाही.\n कृपया प्रथम मागील प्रक्रिया पूर्ण करा.';
+    } else if (pending == 3) {
+      alertMsg =
+          'या लाभार्थ्याची Acknowledgment, Finger Print  प्राप्त झालेले नसल्यामुळे बेसिक स्क्रीनिंग करता येणार नाही.\n कृपया प्रथम मागील प्रक्रिया पूर्ण करा.';
+    } else if (pending == 4) {
+      alertMsg =
+          'या लाभार्थ्याची Acknowledgment, Finger Print, रेशन कार्ड प्राप्त झालेले नसल्यामुळे बेसिक स्क्रीनिंग करता येणार नाही.\n कृपया प्रथम मागील प्रक्रिया पूर्ण करा.';
+    }
+    if (alertMsg != null) {
+      ToastManager.showAlertDialog(
+        context,
+        alertMsg,
+        () => Navigator.pop(context),
+        title: 'Alert',
+      );
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(

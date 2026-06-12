@@ -8,7 +8,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 
 // import 'package:s2toperational/Modules/Json_Class/Is24By7IsAccountCreatedResponse/GetMyOpratorResponse.dart';
-import 'package:s2toperational/Screens/LoginScreen/models/login_response_model.dart';
+import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_beneficiary_model.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_update_response.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_confirmatory_list_model.dart';

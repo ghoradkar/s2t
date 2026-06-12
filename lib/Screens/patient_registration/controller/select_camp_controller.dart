@@ -114,13 +114,17 @@ class SelectCampController extends GetxController {
 
       final output = result?.output;
       if (output == null) {
-        ToastManager.toast('Unable to check attendance status');
+        ToastManager.showAlertDialog(
+          context,
+          'Unable to check attendance status',
+          () { Get.back(); },
+        );
         return;
       }
 
       final msg = _getBlockMessage(output);
       if (msg.isNotEmpty) {
-        ToastManager.toast(msg);
+        ToastManager.showAlertDialog(context, msg, () { Get.back(); });
         return;
       }
 
@@ -145,15 +149,18 @@ class SelectCampController extends GetxController {
 
   String _getBlockMessage(AttendanceStatusOutput output) {
     if (output.blockOldCamp) {
-      return "मागील दिवसाचा कॅम्प अजूनही सुरू आहे. त्यामुळे नवीन patient registration करता येणार नाही.";
+      return "मागील दिवसाचा कॅम्प अजूनही  सुरू आहे. त्यामुळे नवीन patient registration करता येणार नाही.";
     }
     if (output.blockCampClosed) return 'This camp is closed';
-    if (output.blockNotMapped) return 'Camp not mapped to you';
-    if (output.blockReadiness) return 'Fill camp readiness form first';
-    if (output.blockAttendance) return 'Please mark your attendance first';
-    if (output.blockTest) return 'You are not mapped for patient registration';
-    if ((output.teamMemberAttendance ?? '') == '1') {
-      return "कॅम्प सुरू करण्यासाठी सर्व टीम सदस्यांनी उपस्थिती नोंदवणे आवश्यक आहे. मात्र काही टीम सदस्यांनी उपस्थिती नोंदवलेली नाही किंवा टीमचा फोटो अपलोड केलेला नाही.";
+    if (output.blockNotMapped) return 'This camp not mapped to you';
+    if (output.blockReadiness) return 'Readiness form is not filled. Please contact camp coordinator';
+    if (output.blockAttendance) return 'Please mark attendance first';
+    if (output.blockTest) return 'You are not mapped to do registration';
+    if (output.blockTeamMember) {
+      return "हा कॅम्प तुम्ही सुरू करू शकत नाही कारण \n"
+          "1. सर्व टीम सदस्यांची उपस्थिती नोंदवलेली नाही, किंवा \n"
+          "2. टीमचा फोटो अपलोड केलेला नाही, किंवा \n"
+          "3. टीम फोटो मॅनेजरने Approve केलेला नाही.";
     }
     return '';
   }

@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+// export 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/bind_district_response.dart';
 class BindDistrictResponse {
   String? status;
   String? message;
