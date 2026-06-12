@@ -501,6 +501,11 @@ class BpDeviceController extends GetxController {
     isWaitingForReading.value = true;
     _stopProactiveScan();
 
+    // Reset so SharedPreferences-restored values cannot leak into getLastReading().
+    // Only a fresh SDK or GATT delivery (via _applyReading) can set these.
+    _lastSystolic = null;
+    _lastDiastolic = null;
+
     // ── 1. Omron SDK via native MethodChannel ────────────────────────────
     // Uses the same authenticated protocol as the native Omron app, so it can
     // read records that raw BLE cannot (device only delivers data to registered clients).

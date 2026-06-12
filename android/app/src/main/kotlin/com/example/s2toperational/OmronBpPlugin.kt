@@ -246,8 +246,16 @@ class OmronBpPlugin : FlutterPlugin, MethodCallHandler {
                     "Device returned 0 blood pressure records — take a measurement on the device first")
                 return
             }
-            val reading = bpList.last()
-            Log.d(TAG, "BP record: $reading")
+            Log.d(TAG, "Total BP records received: ${bpList.size}")
+            bpList.forEachIndexed { i, r -> Log.d(TAG, "BP record[$i]: $r") }
+
+            // Pick the record with the highest sequence number (latest measurement).
+            // bpList order is not guaranteed — using last() risks returning an older record
+            // when multiple records are present (e.g. isHistoricDataRead=true).
+            val reading = bpList.maxByOrNull { record ->
+                (record["OMRONVitalDataSequenceKey"] as? Number)?.toInt() ?: 0
+            } ?: bpList.last()
+            Log.d(TAG, "Selected BP record: $reading")
 
             val sys = reading[OmronConstants.OMRONVitalData.SystolicKey]?.let { (it as Number).toInt() }
             val dia = reading[OmronConstants.OMRONVitalData.DiastolicKey]?.let { (it as Number).toInt() }
