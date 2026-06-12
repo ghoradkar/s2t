@@ -200,13 +200,25 @@ import UIKit
         }
 
         guard let bpList = vitalData[OMRONVitalDataBloodPressureKey] as? [[AnyHashable: Any]],
-              let reading = bpList.last else {
+              !bpList.isEmpty else {
             deliverError(code: "NO_BP_RECORDS",
                          message: "Device returned 0 BP records — take a measurement on the device first")
             return
         }
 
-        NSLog("[OmronBP] BP record: \(reading)")
+        NSLog("[OmronBP] Total BP records received: \(bpList.count)")
+        for (i, r) in bpList.enumerated() { NSLog("[OmronBP] BP record[\(i)]: \(r)") }
+
+        // Pick the record with the highest sequence number (most recent measurement).
+        // bpList order is not guaranteed — using last risks returning an older record
+        // when multiple records are present (enableAllDataRead = true returns all).
+        let reading = bpList.max(by: {
+            let s1 = ($0[OMRONVitalDataSequenceKey] as? NSNumber)?.intValue ?? 0
+            let s2 = ($1[OMRONVitalDataSequenceKey] as? NSNumber)?.intValue ?? 0
+            return s1 < s2
+        }) ?? bpList.last!
+
+        NSLog("[OmronBP] Selected BP record: \(reading)")
 
         guard let sys = (reading[OMRONVitalDataSystolicKey]  as? NSNumber)?.intValue,
               let dia = (reading[OMRONVitalDataDiastolicKey] as? NSNumber)?.intValue else {
