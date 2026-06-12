@@ -42,7 +42,6 @@ class BpDeviceController extends GetxController {
   bool _recordsRequested = false;
   int _currentUserSlot = 0;
   bool _triedSlot1 = false;
-
   int? _lastSystolic;
   int? _lastDiastolic;
 
@@ -501,13 +500,6 @@ class BpDeviceController extends GetxController {
   Future<void> requestData() async {
     isWaitingForReading.value = true;
     _stopProactiveScan();
-
-    // Return immediately if proactive scan already caught a reading this session
-    if (_lastSystolic != null && _lastDiastolic != null) {
-      statusStr.value = 'Reading ready — tap TRANSFER to apply.';
-      isWaitingForReading.value = false;
-      return;
-    }
 
     // ── 1. Omron SDK via native MethodChannel ────────────────────────────
     // Uses the same authenticated protocol as the native Omron app, so it can
