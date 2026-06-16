@@ -9,12 +9,14 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/model/d2d_camp_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class D2DSelectCampScreen extends StatefulWidget {
   const D2DSelectCampScreen({super.key});
@@ -161,7 +163,15 @@ class _D2DSelectCampScreenState extends State<D2DSelectCampScreen> {
               Expanded(
                 child: Obx(() {
                   if (c.isLoadingCamps.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Skeletonizer(
+                      enabled: true,
+                      child: ListView.separated(
+                        padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
+                        itemCount: 5,
+                        separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                        itemBuilder: (_, __) => const CommonSkeletonList(),
+                      ),
+                    );
                   }
                   if (c.campList.isEmpty) {
                     return Center(
@@ -393,6 +403,8 @@ class _D2DCampCard extends StatelessWidget {
     );
   }
 }
+
+
 
 class _SectionCard extends StatelessWidget {
   final Widget child;

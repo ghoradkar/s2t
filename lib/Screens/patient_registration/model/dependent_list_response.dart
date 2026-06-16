@@ -41,6 +41,12 @@ class DependentOutput {
   /// Relation ID — drives gender lock (RelId)
   String? relId;
 
+  /// Relation name from GetDependentDetailsForRescreening (RelName)
+  String? relName;
+
+  /// English name from GetDependentDetailsForRescreening (EnglishName)
+  String? englishName;
+
   /// Gram Panchayat LGD code (GPLGDCODE)
   String? gpLgdCode;
 
@@ -64,6 +70,8 @@ class DependentOutput {
     familyId     = _s(json['family_id']);
     fullName     = _s(json['full_name']);
     relId        = _s(json['RelId']);
+    relName      = _s(json['RelName']);
+    englishName  = _s(json['EnglishName']);
     gpLgdCode    = _s(json['GPLGDCODE']);
     gpName       = _s(json['GPNAME']);
     isUrban      = _s(json['IsUrban']);

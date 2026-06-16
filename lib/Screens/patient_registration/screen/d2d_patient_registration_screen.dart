@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_creation_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_demographic_creation_screen.dart';
+import 'package:s2toperational/Screens/patient_registration/screen/patient_queue_list_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/registered_patient_list_screen.dart';
 
 class D2DPatientRegistrationScreen extends StatefulWidget {
@@ -53,6 +55,9 @@ class _D2DPatientRegistrationScreenState
 
   /// True after a successful ABHA-creation fill — locks most form fields.
   bool get _isLocked => c.abhaFormLocked.value;
+
+  // ABHA section interactive once create-mode radio tapped OR reg no loaded
+  bool get _abhaEnabled => c.abhaFormEnabled.value || c.hasApiData.value;
 
   // Show local/current/landmark/district/taluka section when: isDependent OR hasApiData
   bool get _showExtAddr => _isYes || _hasData;
@@ -276,84 +281,77 @@ class _D2DPatientRegistrationScreenState
                   ),
                 ),
                 SizedBox(height: 8.h),
-                // Controls disabled until Beneficiary Reg No API returns data
+                // Create-mode radios always tappable when With ABHA selected
+                Row(
+                  children: [
+                    _radioChip(
+                      label: 'Using Demographic',
+                      selected: c.abhaCreateMode.value == 'demographic',
+                      onTap: () => c.onAbhaCreateModeSelected('demographic'),
+                    ),
+                    SizedBox(width: 8.w),
+                    _radioChip(
+                      label: 'Using Aadhaar OTP',
+                      selected: c.abhaCreateMode.value == 'aadhaar_otp',
+                      onTap: () => c.onAbhaCreateModeSelected('aadhaar_otp'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                // Create ABHA button enabled only after create-mode radio tapped
+                // or reg no loaded (mirrors native enableABHAFormAfterFill)
                 AbsorbPointer(
-                  absorbing: !_hasData,
+                  absorbing: !_abhaEnabled,
                   child: Opacity(
-                    opacity: _hasData ? 1.0 : 0.5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            _radioChip(
-                              label: 'Using Demographic',
-                              selected: c.abhaCreateMode.value == 'demographic',
-                              onTap:
-                                  () => c.abhaCreateMode.value = 'demographic',
-                            ),
-                            SizedBox(width: 8.w),
-                            _radioChip(
-                              label: 'Using Aadhaar OTP',
-                              selected: c.abhaCreateMode.value == 'aadhaar_otp',
-                              onTap:
-                                  () => c.abhaCreateMode.value = 'aadhaar_otp',
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        AppButtonWithIcon(
-                          title: 'Create ABHA',
-                          mHeight: 40,
-                          mWidth: double.infinity,
-                          onTap:
-                              _isLocked
-                                  ? null
-                                  : () {
-                                    if (_isYes &&
-                                        c.selectedRelation.value == null) {
-                                      ToastManager.toast(
-                                        'Please select relation',
-                                      );
-                                      return;
-                                    }
-                                    if (c.abhaCreateMode.value ==
-                                        'demographic') {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) =>
-                                                  AbhaDemographicCreationScreen(
-                                                    campId: c.navCampId,
-                                                    siteId: c.navSiteId,
-                                                    distLgdCode: c.navDistLgd,
-                                                    district: c.navCampLocation,
-                                                    campType: c.navCampType,
-                                                    empCode: c.empCode,
-                                                  ),
-                                        ),
-                                      );
-                                    } else {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) => AbhaCreationScreen(
-                                                campId: c.navCampId,
-                                                siteId: c.navSiteId,
-                                                distLgdCode: c.navDistLgd,
-                                                district: c.navCampLocation,
-                                                campType: c.navCampType,
-                                                empCode: c.empCode,
-                                                initialMobile: c.tecMobileNo.text.trim(),
-                                              ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                        ),
-                      ],
+                    opacity: _abhaEnabled ? 1.0 : 0.5,
+                    child: AppButtonWithIcon(
+                      title: 'Create ABHA',
+                      mHeight: 40,
+                      mWidth: double.infinity,
+                      onTap:
+                          _isLocked
+                              ? null
+                              : () {
+                                if (_isYes &&
+                                    c.selectedRelation.value == null) {
+                                  ToastManager.toast(
+                                    'Please select relation',
+                                  );
+                                  return;
+                                }
+                                if (c.abhaCreateMode.value == 'demographic') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => AbhaDemographicCreationScreen(
+                                            campId: c.navCampId,
+                                            siteId: c.navSiteId,
+                                            distLgdCode: c.navDistLgd,
+                                            district: c.navCampLocation,
+                                            campType: c.navCampType,
+                                            empCode: c.empCode,
+                                          ),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => AbhaCreationScreen(
+                                            campId: c.navCampId,
+                                            siteId: c.navSiteId,
+                                            distLgdCode: c.navDistLgd,
+                                            district: c.navCampLocation,
+                                            campType: c.navCampType,
+                                            empCode: c.empCode,
+                                            initialMobile: c.tecMobileNo.text.trim(),
+                                          ),
+                                    ),
+                                  );
+                                }
+                              },
                     ),
                   ),
                 ),
@@ -388,13 +386,47 @@ class _D2DPatientRegistrationScreenState
                 ),
                 SizedBox(height: 8.h),
 
-                // Disabled until API data loads, OR after ABHA-creation fill
+                // Disabled until create-mode radio tapped or reg no loaded
                 AbsorbPointer(
-                  absorbing: !_hasData || _isLocked,
+                  absorbing: !_abhaEnabled || _isLocked,
                   child: Opacity(
-                    opacity: (_hasData && !_isLocked) ? 1.0 : 0.5,
+                    opacity: (_abhaEnabled && !_isLocked) ? 1.0 : 0.5,
                     child: Column(
                       children: [
+                        // ── See Queue ───────────────────────────────────────────────────
+                        SizedBox(
+                          width: double.infinity,
+                          height: 40.h,
+                          child: OutlinedButton(
+                            onPressed:
+                                () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => PatientQueueListScreen(
+                                          campId: c.navCampId,
+                                          onGoToRegistration:
+                                              c.fillFromQueueSelection,
+                                        ),
+                                  ),
+                                ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: kPrimaryColor,
+                              side: const BorderSide(color: kPrimaryColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                            ),
+                            child: CommonText(
+                              text: 'See Queue',
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              textColor: kPrimaryColor,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
                         // ── Find ABHA / Verify ABHA toggle ─────────────────────────────
                         Container(
                           decoration: BoxDecoration(
@@ -847,32 +879,34 @@ class _D2DPatientRegistrationScreenState
           ),
           SizedBox(height: 12.h),
 
-          // ── 4b. Select Dependent (always visible when isDependent=Yes) ──
-          _sectionLabel('Select Dependent'),
-          SizedBox(height: 6.h),
-          GestureDetector(
-            onTap: () {
-              _showDependentPicker(context);
-            },
-            child: AbsorbPointer(
-              child: AppTextField(
-                controller: TextEditingController(
-                  text: c.selectedDependent.value?.displayName ?? '',
+          // ── 4b. Select Dependent (hidden during re-registration — data comes from API) ──
+          if (!c.reRegistrationLocked.value) ...[
+            _sectionLabel('Select Dependent'),
+            SizedBox(height: 6.h),
+            GestureDetector(
+              onTap: () {
+                _showDependentPicker(context);
+              },
+              child: AbsorbPointer(
+                child: AppTextField(
+                  controller: TextEditingController(
+                    text: c.selectedDependent.value?.displayName ?? '',
+                  ),
+                  label: _label('Select Dependent *'),
+                  readOnly: true,
+                  suffixIcon:
+                      c.isLoadingDependents.value
+                          ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ).paddingOnly(right: 8.w)
+                          : const Icon(Icons.arrow_drop_down),
                 ),
-                label: _label('Select Dependent *'),
-                readOnly: true,
-                suffixIcon:
-                    c.isLoadingDependents.value
-                        ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ).paddingOnly(right: 8.w)
-                        : const Icon(Icons.arrow_drop_down),
               ),
             ),
-          ),
-          SizedBox(height: 12.h),
+            SizedBox(height: 12.h),
+          ],
         ],
         SizedBox(height: 12.h),
 
@@ -887,9 +921,9 @@ class _D2DPatientRegistrationScreenState
             readOnly: true,
           )
         else
-          // isDependent=Yes → picker
+          // isDependent=Yes → picker (locked after worker data loads)
           GestureDetector(
-            onTap: () => _showRelationPicker(context),
+            onTap: (_hasData || _isLocked) ? null : () => _showRelationPicker(context),
             child: AbsorbPointer(
               child: AppTextField(
                 controller: TextEditingController(
@@ -913,7 +947,7 @@ class _D2DPatientRegistrationScreenState
               child: AppTextField(
                 controller: c.tecFirstName,
                 label: _label('First Name *'),
-                readOnly: (_isNo && _hasData) || _isLocked,
+                readOnly: _hasData || _isLocked,
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: _kUpper,
                 onChange: (_) => c.onNamePartsChanged(),
@@ -924,7 +958,7 @@ class _D2DPatientRegistrationScreenState
               child: AppTextField(
                 controller: c.tecMiddleName,
                 label: _label('Middle Name *'),
-                readOnly: (_isNo && _hasData) || _isLocked,
+                readOnly: _hasData || _isLocked,
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: _kUpper,
                 onChange: (_) => c.onNamePartsChanged(),
@@ -972,37 +1006,18 @@ class _D2DPatientRegistrationScreenState
           ).paddingOnly(left: 6.w),
         ),
         SizedBox(height: 8.h),
-        // Show Verify Contact Number only when checkbox NOT checked (native behaviour)
-        if (!c.isNumberNotBelongsToBeneficiary.value) ...[
-          if (c.mobileOtpVerified.value)
-            _verifiedBanner('Contact number verified')
-          else ...[
-            AppButtonWithIcon(
-              title: 'Verify Contact Number',
-              mHeight: 40,
-              mWidth: double.infinity,
-              onTap: () => _showWhatsAppDialog(context, isAlternate: false),
-            ),
-            if (c.mobileOtpSent.value) ...[
-              SizedBox(height: 8.h),
-              AppTextField(
-                controller: c.tecMobileOtp,
-                label: _label('Enter OTP *'),
-                hint: '5-digit OTP',
-                textInputType: TextInputType.number,
-                maxLength: 5,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              SizedBox(height: 8.h),
-              AppButtonWithIcon(
-                title: 'Verify OTP',
-                mHeight: 40,
-                mWidth: double.infinity,
-                onTap: () => c.verifyMobileOtp(c.tecMobileOtp.text.trim()),
-              ),
-            ],
-          ],
+        // Show Verify Contact Number button only when checkbox NOT checked and not yet verified
+        if (!c.isNumberNotBelongsToBeneficiary.value &&
+            !c.mobileOtpVerified.value) ...[
+          AppButtonWithIcon(
+            title: 'Verify Contact Number',
+            mHeight: 40,
+            mWidth: double.infinity,
+            onTap: () => _showWhatsAppDialog(context, isAlternate: false),
+          ),
         ],
+        // Contact number verified banner — always visible once verified
+        if (c.mobileOtpVerified.value) _verifiedBanner('Contact number verified'),
         if (c.mobileOtpVerified.value) ...[
           SizedBox(height: 10.h),
 
@@ -1064,8 +1079,7 @@ class _D2DPatientRegistrationScreenState
               label: _label('Alternate Mobile Number *'),
               maxLength: 10,
               textInputType: TextInputType.phone,
-              readOnly:
-                  c.mobileOtpVerified.value || c.altMobileOtpVerified.value,
+              readOnly: c.altMobileOtpVerified.value,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               onChange: (v) => c.onAltMobileChanged(v),
               prefixIcon: const Icon(
@@ -1084,24 +1098,6 @@ class _D2DPatientRegistrationScreenState
                 mWidth: double.infinity,
                 onTap: () => _showWhatsAppDialog(context, isAlternate: true),
               ),
-              if (c.altMobileOtpSent.value) ...[
-                SizedBox(height: 8.h),
-                AppTextField(
-                  controller: c.tecAltMobileOtp,
-                  label: _label('Enter OTP *'),
-                  hint: '5-digit OTP',
-                  textInputType: TextInputType.number,
-                  maxLength: 5,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                SizedBox(height: 8.h),
-                AppButtonWithIcon(
-                  title: 'Verify OTP',
-                  mHeight: 40,
-                  mWidth: double.infinity,
-                  onTap: () => c.verifyAltMobileOtp(),
-                ),
-              ],
             ],
             SizedBox(height: 10.h),
             // "Alternate mobile belongs to" radios
@@ -1185,10 +1181,19 @@ class _D2DPatientRegistrationScreenState
             final isWithAbha = c.registrationType.value == 'with_abha';
             final isDependent = c.isDependent.value;
             final isAadhaar = isWithAbha || c.isAadhaarMode;
+            // Self + without_abha → "Identity Number" (matches native hint)
+            // Dependent or with_abha → "Aadhaar Number" (auto-filled / entered)
+            final isSelfWithoutAbha = !isDependent && !isWithAbha;
             final sectionTitle =
-                isAadhaar ? 'Aadhaar' : c.selectedIdentityName.value;
+                isSelfWithoutAbha
+                    ? 'Identity'
+                    : isAadhaar
+                    ? 'Aadhaar'
+                    : c.selectedIdentityName.value;
             final fieldLabel =
-                isAadhaar
+                isSelfWithoutAbha
+                    ? 'Identity Number *'
+                    : isAadhaar
                     ? 'Aadhaar Number *'
                     : '${c.selectedIdentityName.value} Number *';
             return Column(
@@ -1456,6 +1461,7 @@ class _D2DPatientRegistrationScreenState
           label: _label('Pin Code *'),
           textInputType: TextInputType.number,
           maxLength: 6,
+          readOnly: c.isPincodeLocked.value,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           prefixIcon: const Icon(
             Icons.pin_drop_rounded,
@@ -1878,18 +1884,23 @@ class _D2DPatientRegistrationScreenState
                           ),
                           padding: EdgeInsets.symmetric(vertical: 12.h),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           if (selectedMode == '0') {
                             ToastManager.toast('Please select an option');
                             return;
                           }
                           Navigator.of(dialogContext).pop();
-                          // Save WhatsApp mode and send OTP
                           c.whatsAppMode.value = selectedMode;
                           if (isAlternate) {
-                            c.sendAltMobileOtp();
+                            await c.sendAltMobileOtp();
+                            if (c.altMobileOtpSent.value && context.mounted) {
+                              _showOtpDialog(context, isAlternate: true);
+                            }
                           } else {
-                            c.sendMobileOtp();
+                            await c.sendMobileOtp();
+                            if (c.mobileOtpSent.value && context.mounted) {
+                              _showOtpDialog(context, isAlternate: false);
+                            }
                           }
                         },
                         child: Text(
@@ -1911,6 +1922,191 @@ class _D2DPatientRegistrationScreenState
         );
       },
     );
+  }
+
+  void _showOtpDialog(BuildContext context, {required bool isAlternate}) {
+    final otpController = TextEditingController();
+    int secondsLeft = 120;
+    bool resendVisible = false;
+    Timer? countdownTimer;
+
+    Future<void> onVerify(StateSetter setDialogState, BuildContext dialogCtx) async {
+      final otp = otpController.text.trim();
+      if (otp.isEmpty) {
+        ToastManager.toast('Please enter OTP');
+        return;
+      }
+      if (isAlternate) {
+        c.tecAltMobileOtp.text = otp;
+        await c.verifyAltMobileOtp();
+        if (c.altMobileOtpVerified.value) {
+          countdownTimer?.cancel();
+          if (dialogCtx.mounted) Navigator.of(dialogCtx).pop();
+        }
+      } else {
+        await c.verifyMobileOtp(otp);
+        if (c.mobileOtpVerified.value) {
+          countdownTimer?.cancel();
+          if (dialogCtx.mounted) Navigator.of(dialogCtx).pop();
+        }
+      }
+    }
+
+    Future<void> onResend(StateSetter setDialogState) async {
+      otpController.clear();
+      countdownTimer?.cancel();
+      countdownTimer = null;
+      setDialogState(() {
+        secondsLeft = 120;
+        resendVisible = false;
+      });
+      if (isAlternate) {
+        await c.sendAltMobileOtp();
+      } else {
+        await c.sendMobileOtp();
+      }
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            countdownTimer ??= Timer.periodic(const Duration(seconds: 1), (t) {
+              if (secondsLeft > 0) {
+                setDialogState(() => secondsLeft--);
+              } else {
+                t.cancel();
+                setDialogState(() => resendVisible = true);
+              }
+            });
+
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 24.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Title row ──────────────────────────────────────────
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CommonText(
+                            text: 'Verify OTP',
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
+                            textColor: kTextColor,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            countdownTimer?.cancel();
+                            Navigator.of(dialogCtx).pop();
+                          },
+                          child: const Icon(Icons.close, size: 20),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6.h),
+                    CommonText(
+                      text: isAlternate
+                          ? 'OTP sent to alternate number: ${c.tecAltMobileNo.text.trim()}'
+                          : 'OTP sent to: ${c.tecMobileNo.text.trim()}',
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w400,
+                      textColor: kLabelTextColor,
+                      textAlign: TextAlign.start,
+                    ),
+                    SizedBox(height: 16.h),
+
+                    // ── OTP field ──────────────────────────────────────────
+                    AppTextField(
+                      controller: otpController,
+                      label: _label('Enter OTP *'),
+                      hint: '5-digit OTP',
+                      textInputType: TextInputType.number,
+                      maxLength: 5,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                    SizedBox(height: 12.h),
+
+                    // ── Timer / Resend ─────────────────────────────────────
+                    if (!resendVisible)
+                      Center(
+                        child: CommonText(
+                          text: 'Resend OTP in : $secondsLeft sec',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                          textColor: kLabelTextColor,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    if (resendVisible)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: kPrimaryColor),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                          ),
+                          onPressed: () => onResend(setDialogState),
+                          child: Text(
+                            'Resend OTP',
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    SizedBox(height: 16.h),
+
+                    // ── Verify button ──────────────────────────────────────
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                        ),
+                        onPressed: () => onVerify(setDialogState, dialogCtx),
+                        child: Text(
+                          'Verify OTP',
+                          style: TextStyle(
+                            fontFamily: FontConstants.interFonts,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).then((_) {
+      countdownTimer?.cancel();
+      // Not disposing otpController here — the dialog exit animation may still
+      // be running frames that reference it, causing "used after disposed" crash.
+    });
   }
 
   Widget _dialogRadioRow({
@@ -2179,10 +2375,14 @@ class _D2DPatientRegistrationScreenState
                 c.checkDependentRegistrationStatus(item),
               ]);
               ToastManager.hideLoader();
+              // ignore: avoid_print
+              print('[onDependentTap] context.mounted=${context.mounted} relationAllowed=${results[0]} dependentStatusError=${results[1]}');
               if (!context.mounted) return;
               final relationAllowed = results[0] as bool;
               final dependentStatusError = results[1] as String?;
               if (!relationAllowed) {
+                // ignore: avoid_print
+                print('[onDependentTap] showing relation-blocked alert');
                 ToastManager.showAlertDialog(
                   context,
                   'Selected Relation Wrong Or Relation Count Reached',
@@ -2190,12 +2390,17 @@ class _D2DPatientRegistrationScreenState
                 );
                 c.clearDependentSelection();
               } else if (dependentStatusError != null) {
+                // ignore: avoid_print
+                print('[onDependentTap] showing dependentStatus alert: $dependentStatusError');
                 ToastManager.showAlertDialog(
                   context,
                   dependentStatusError,
                   () => Navigator.of(context, rootNavigator: true).pop(),
                 );
                 c.clearDependentSelection();
+              } else {
+                // ignore: avoid_print
+                print('[onDependentTap] both checks passed — no alert shown');
               }
             },
             height: 350.h,

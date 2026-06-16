@@ -335,19 +335,29 @@ class D2DPatientRegistrationRepository {
 
   /// Fetches the dependent list from the board data.
   /// [regdNo] must include the "MH" prefix (e.g. "MH123456789012").
+  /// Uses _V1 endpoint (matches native) which accepts WorkerAge/WorkerGender/WorkerMaritalStatus
+  /// and returns dependents sorted by RelId ascending.
   /// Returns the full response (including failure) so the controller can
   /// display the API error message (e.g. worker-screening-pending alert).
   Future<DependentListResponse?> getDependentList({
     required String regdNo,
+    required String workerAge,
+    required String workerGender,
+    required String workerMaritalStatus,
   }) async {
     final url = Uri.parse(
-      '${APIManager.kD2DBaseURL}${APIConstants.kGetDependentDetailsFromBoardData}',
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetDependentDetailsFromBoardData_V1}',
     );
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
         url,
-        body: {'RegdNo': regdNo},
+        body: {
+          'RegdNo': regdNo,
+          'WorkerAge': workerAge,
+          'WorkerGender': workerGender,
+          'WorkerMaritalStatus': workerMaritalStatus,
+        },
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       // ignore: avoid_print
@@ -364,6 +374,33 @@ class D2DPatientRegistrationRepository {
     }
   }
 
+  Future<DependentListResponse?> getDependentRescreeningData({
+    required String regdId,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetDependentDetailsForRescreening}',
+    );
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {'RegdId': regdId},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      final bodyString = utf8.decode(response.bodyBytes);
+      // ignore: avoid_print
+      print('[getDependentRescreeningData] status=${response.statusCode} body=${bodyString.substring(0, bodyString.length.clamp(0, 500))}');
+      final decoded = json.decode(bodyString);
+      return DependentListResponse.fromJson(decoded);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getDependentRescreeningData] error=$e');
+      return null;
+    } finally {
+      ioClient.close();
+    }
+  }
+
   /// Returns null on success (status == "Success"), or the error message string on failure.
   Future<String?> checkDependentRegistrationStatus({
     required String regdNo,
@@ -372,6 +409,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kCheckDependentRegistrationStatus}',
     );
+    // ignore: avoid_print
+    print('[checkDependentRegistrationStatus] --> POST RegdNo=$regdNo DependentName=$dependentName');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -380,11 +419,20 @@ class D2DPatientRegistrationRepository {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       final bodyString = utf8.decode(response.bodyBytes);
+      // ignore: avoid_print
+      print('[checkDependentRegistrationStatus] <-- status=${response.statusCode} body=${bodyString.substring(0, bodyString.length.clamp(0, 300))}');
       final decoded = json.decode(bodyString) as Map<String, dynamic>;
       final status = decoded['status']?.toString() ?? '';
-      if (status.toLowerCase() == 'success') return null;
+      if (status.toLowerCase() == 'success') {
+        // ignore: avoid_print
+        print('[checkDependentRegistrationStatus] result=null (success)');
+        return null;
+      }
       final message = decoded['message']?.toString() ?? '';
-      return message.isNotEmpty ? message : 'Dependent already registered';
+      final result = message.isNotEmpty ? message : 'Dependent already registered';
+      // ignore: avoid_print
+      print('[checkDependentRegistrationStatus] result=FAIL message=$result');
+      return result;
     } catch (e) {
       // ignore: avoid_print
       print('[checkDependentRegistrationStatus] error=$e');
@@ -405,6 +453,8 @@ class D2DPatientRegistrationRepository {
     final url = Uri.parse(
       '${APIManager.kD2DBaseURL}${APIConstants.kGetRelationWiseDependantCountwithMaritalStatus}',
     );
+    // ignore: avoid_print
+    print('[checkRelationWiseCount] --> POST RegdNo=$regdNo ReleationID=$relId Gender=$gender MARITALSTATUSID=$maritalStatusId');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -418,14 +468,29 @@ class D2DPatientRegistrationRepository {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
       final bodyString = utf8.decode(response.bodyBytes);
+      // ignore: avoid_print
+      print('[checkRelationWiseCount] <-- body=$bodyString');
       final decoded = json.decode(bodyString) as Map<String, dynamic>;
       final status = decoded['status']?.toString() ?? '';
-      if (status.toLowerCase() != 'success') return true;
+      if (status.toLowerCase() != 'success') {
+        // ignore: avoid_print
+        print('[checkRelationWiseCount] result=true (non-success status)');
+        return true;
+      }
       final output = decoded['output'] as List?;
-      if (output == null || output.isEmpty) return true;
+      if (output == null || output.isEmpty) {
+        // ignore: avoid_print
+        print('[checkRelationWiseCount] result=true (empty output)');
+        return true;
+      }
       final column1 = (output[0] as Map<String, dynamic>)['Column1'];
-      return column1 != 0;
-    } catch (_) {
+      final allowed = column1 != 0;
+      // ignore: avoid_print
+      print('[checkRelationWiseCount] Column1=$column1 result=$allowed');
+      return allowed;
+    } catch (e) {
+      // ignore: avoid_print
+      print('[checkRelationWiseCount] error=$e result=true');
       return true;
     } finally {
       ioClient.close();

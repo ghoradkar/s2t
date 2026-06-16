@@ -152,6 +152,11 @@ class D2DPatientRegistrationController extends GetxController {
   /// 'demographic' or 'aadhaar_otp'
   final abhaCreateMode = 'aadhaar_otp'.obs;
 
+  /// True once the user taps either create-mode radio (equivalent of native
+  /// clearABHA() → enableABHAFormAfterFill()). Unlocks the full ABHA section
+  /// even before the beneficiary reg no is entered.
+  final abhaFormEnabled = false.obs;
+
   /// 'find' or 'verify'
   final abhaSearchMode = 'find'.obs;
 
@@ -223,6 +228,7 @@ class D2DPatientRegistrationController extends GetxController {
   /// true when API returned a non-empty value → field stays readonly
   final isDistrictLocked = false.obs;
   final isTalukaLocked = false.obs;
+  final isPincodeLocked = false.obs;
 
   /// District LGD code used when fetching talukas
   String _regDistLgdCode = '';
@@ -561,6 +567,10 @@ class D2DPatientRegistrationController extends GetxController {
     if (!rural) {
       selectedGpName.value = '';
       selectedGpCode.value = '0';
+    } else {
+      // mirrors native radioRural click: edtGp.setText("") + gpCode = ""
+      selectedGpName.value = '';
+      selectedGpCode.value = '';
     }
   }
 
@@ -702,6 +712,7 @@ class D2DPatientRegistrationController extends GetxController {
       tecAbhaAadhaar.clear();
       abhaAadhaarError.value = '';
       abhaCardAvailable.value = false;
+      abhaFormEnabled.value = false;
       _findAbhaTxnId = '';
       _findAbhaSelectedIndex = '';
       _findAbhaAccessToken = '';
@@ -710,6 +721,14 @@ class D2DPatientRegistrationController extends GetxController {
       _findAbhaHealthCard = {};
       _findAbhaAddress = '';
     }
+  }
+
+  /// Mirrors native rgCreateABHAOption.onCheckedChanged → clearABHA() →
+  /// enableABHAFormAfterFill(): selecting a create mode unlocks the full ABHA
+  /// section even before the beneficiary reg no is entered.
+  void onAbhaCreateModeSelected(String mode) {
+    abhaCreateMode.value = mode;
+    abhaFormEnabled.value = true;
   }
 
   /// Called from AbhaSuccessScreen "Go-To Registration" to pre-fill the form.
@@ -870,7 +889,10 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // ── Pincode ───────────────────────────────────────────────────────
-    if (pin.isNotEmpty) tecPincode.text = pin;
+    if (pin.isNotEmpty) {
+      tecPincode.text = pin;
+      isPincodeLocked.value = true;
+    }
 
     // ── District (native: set from districtName, then disabled) ───────
     final district = ((profile['districtName'] as String?) ?? '').trim();
@@ -926,6 +948,79 @@ class D2DPatientRegistrationController extends GetxController {
     aadhaarSetForAbha.value = false;
   }
 
+  /// Mirrors native abhaTokenReceiver: pre-fills the D2D registration form from
+  /// a patient queue selection. Called when "Go To Registration" is tapped in
+  /// ViewQueuePatientScreen after selecting a patient from the queue.
+  ///
+  /// [responseJson] — the full response string from QueueOutput.response.
+  /// [authToken]    — the authtoken from the selected queue item.
+  void fillFromQueueSelection(String responseJson, String authToken) {
+    try {
+      final responseObj = jsonDecode(responseJson) as Map<String, dynamic>;
+      final profileObj = responseObj['profile'] as Map<String, dynamic>;
+      final patientObj = profileObj['patient'] as Map<String, dynamic>;
+
+      // ABHA number + address (mirrors edtABHANumber1 / edtABHAAddress1)
+      final abhaNum = patientObj['abhaNumber']?.toString() ?? '';
+      final abhaAddr = patientObj['abhaAddress']?.toString() ?? '';
+      tecAbhaNumber.text = abhaNum;
+      tecAbhaAddress.text = abhaAddr;
+
+      // Full name (mirrors edtFname)
+      final name = patientObj['name']?.toString() ?? '';
+      if (name.isNotEmpty) tecFullName.text = name;
+
+      // DOB + Age
+      final year = patientObj['yearOfBirth']?.toString() ?? '';
+      final month = patientObj['monthOfBirth']?.toString() ?? '';
+      final day = patientObj['dayOfBirth']?.toString() ?? '';
+      if (year.isNotEmpty && month.isNotEmpty && day.isNotEmpty) {
+        tecDob.text = _normalizeDate('$year/$month/$day');
+        try {
+          final yInt = int.parse(year);
+          final mInt = int.parse(month);
+          final dInt = int.parse(day);
+          final now = DateTime.now();
+          int age = now.year - yInt;
+          if (now.month < mInt || (now.month == mInt && now.day < dInt)) age--;
+          tecAge.text = age.toString();
+        } catch (_) {}
+      }
+
+      // Gender — lock after setting (mirrors rgGender.setEnabled(false))
+      final gender = (patientObj['gender']?.toString() ?? '').toUpperCase();
+      if (gender == 'M') {
+        selectedGender.value = 'M';
+        isGenderLockedByRelation.value = true;
+      } else if (gender == 'F') {
+        selectedGender.value = 'F';
+        isGenderLockedByRelation.value = true;
+      }
+
+      // Mobile
+      final phone = patientObj['phoneNumber']?.toString() ?? '';
+      if (phone.isNotEmpty) tecMobileNo.text = phone;
+
+      // Address + pincode
+      final addressObj =
+          (patientObj['address'] as Map<String, dynamic>?) ?? {};
+      final line = addressObj['line']?.toString() ?? '';
+      if (line.isNotEmpty) tecPermAddr.text = line;
+      final pincode = addressObj['pincode']?.toString() ?? '';
+      if (pincode.isNotEmpty && pincode != 'null') {
+        tecPincode.text = pincode;
+        isPincodeLocked.value = true;
+      }
+
+      // Mark ABHA verified → locks ABHA number/address fields + shows banner
+      abhaVerified.value = true;
+      abhaFormEnabled.value = true;
+    } catch (e) {
+      // ignore: avoid_print
+      print('[fillFromQueueSelection] error=$e');
+    }
+  }
+
   /// Called by the Clear button shown in the verified banner after ABHA-creation
   /// fill. Mirrors native: clearABHA() + clearPatientDetails(3) + enableABHAForm.
   ///
@@ -934,6 +1029,7 @@ class D2DPatientRegistrationController extends GetxController {
     // ── Reset ABHA section (mirrors clearABHA + enableABHAFormAfterFill) ──
     clearAbhaSearch(); // resets abhaFormLocked, abhaVerified, ABHA fields
     abhaCreateMode.value = 'aadhaar_otp';
+    abhaFormEnabled.value = false;
 
     // ── Clear patient details — mirrors clearPatientDetails(3) ────────
     // Name fields (first/middle/last/full) are intentionally NOT cleared
@@ -996,8 +1092,6 @@ class D2DPatientRegistrationController extends GetxController {
     } else {
       isDependent.value = true;
       tecWorkerRegNo.text = navBeneficiaryNo;
-      tecFullName.text = navBeneficiaryName;
-      fetchRelationList(selectedWorkerMaritalStatusId.value, selectedGender.value);
       onWorkerRegNoChanged(navBeneficiaryNo);
     }
   }
@@ -1078,6 +1172,13 @@ class D2DPatientRegistrationController extends GetxController {
       }
 
       _applyWorkerInfo(data);
+      if (reRegistrationLocked.value && isDependent.value) {
+        await fetchRelationList(
+          selectedWorkerMaritalStatusId.value,
+          workerGenderByPhlebo.value,
+        );
+        await _fetchDependentRescreeningData();
+      }
       await _checkWorkerActiveStatus();
     } finally {
       isLoadingBeneficiary.value = false;
@@ -1094,7 +1195,12 @@ class D2DPatientRegistrationController extends GetxController {
     dependentListErrorMessage = '';
     try {
       final regNo = tecWorkerRegNo.text.trim();
-      final result = await _repo.getDependentList(regdNo: 'MH$regNo');
+      final result = await _repo.getDependentList(
+        regdNo: 'MH$regNo',
+        workerAge: workerAgeDisplay.value,
+        workerGender: workerGenderByPhlebo.value,
+        workerMaritalStatus: maritalStatusId,
+      );
       if (result == null) {
         dependentListErrorMessage = 'Server not responding';
         return;
@@ -1112,6 +1218,74 @@ class D2DPatientRegistrationController extends GetxController {
     } finally {
       isLoadingDependents.value = false;
     }
+  }
+
+  /// Mirrors native getDependentRescreeningData() — called for navType="5" dependent
+  /// re-registration after worker info loads. Populates name, relation, gender, DOB.
+  Future<void> _fetchDependentRescreeningData() async {
+    final result = await _repo.getDependentRescreeningData(regdId: navRegId);
+    final data =
+        result?.output?.isNotEmpty == true ? result!.output!.first : null;
+    if (data == null) {
+      // ignore: avoid_print
+      print('[_fetchDependentRescreeningData] no data returned');
+      return;
+    }
+
+    // Name: split EnglishName into first / middle / last (mirrors native)
+    final englishName = (data.englishName ?? '').trim();
+    final parts = englishName.split(RegExp(r'\s+'));
+    tecFirstName.text = parts.isNotEmpty ? parts[0] : '';
+    tecMiddleName.text = parts.length > 2 ? parts[1] : '';
+    tecLastName.text =
+        parts.length > 1 ? parts.sublist(parts.length > 2 ? 2 : 1).join(' ') : '';
+    onNamePartsChanged();
+
+    // BOCW ID
+    bocwIdDepend = data.bocwIdDepend ?? '';
+
+    // Relation: match RelId in loaded relation list
+    final relIdStr = data.relId ?? '';
+    final relIdInt = int.tryParse(relIdStr);
+    final matched =
+        relIdInt != null
+            ? relationList.firstWhereOrNull((r) => r.relId == relIdInt)
+            : null;
+    if (matched != null) {
+      selectedRelation.value = matched;
+    } else if (relIdInt != null) {
+      selectedRelation.value = RelationOutput(
+        relId: relIdInt,
+        relName: data.relName?.isNotEmpty == true ? data.relName : data.relation,
+      );
+    }
+
+    // Gender: derived from RelId (mirrors native switch, DOB NOT cleared here)
+    const _maleRelIds = {'1', '5', '7', '9', '17', '22'};
+    const _femaleRelIds = {'2', '6', '8', '10', '18', '21'};
+    if (_maleRelIds.contains(relIdStr)) {
+      selectedGender.value = 'M';
+      isGenderLockedByRelation.value = true;
+    } else if (_femaleRelIds.contains(relIdStr)) {
+      selectedGender.value = 'F';
+      isGenderLockedByRelation.value = true;
+    }
+
+    // DOB: "dd/MM/yyyy" → "yyyy/MM/dd" then calculate age
+    final rawDob = (data.dob ?? '').trim();
+    if (rawDob.isNotEmpty) {
+      try {
+        final dobParts = rawDob.split('/');
+        if (dobParts.length == 3) {
+          // dd/MM/yyyy → yyyy/MM/dd
+          tecDob.text = '${dobParts[2]}/${dobParts[1]}/${dobParts[0]}';
+          onDobChanged(tecDob.text);
+        }
+      } catch (_) {}
+    }
+
+    // ignore: avoid_print
+    print('[_fetchDependentRescreeningData] relId=$relIdStr name=${tecFirstName.text} ${tecMiddleName.text} ${tecLastName.text} gender=${selectedGender.value} dob=${tecDob.text}');
   }
 
   Future<void> onDependentSelected(DependentOutput dep) async {
@@ -1363,6 +1537,7 @@ class D2DPatientRegistrationController extends GetxController {
     tecAbhaLinkedMobile.clear();
     tecAbhaAadhaar.clear();
     abhaCardAvailable.value = false;
+    abhaFormEnabled.value = false;
     _findAbhaTxnId = '';
     _findAbhaSelectedIndex = '';
     _findAbhaAccessToken = '';
@@ -1390,9 +1565,10 @@ class D2DPatientRegistrationController extends GetxController {
     dependentListErrorMessage = '';
     bocwIdDepend = '';
 
-    // District / Taluka state
+    // District / Taluka / Pincode state
     isDistrictLocked.value = false;
     isTalukaLocked.value = false;
+    isPincodeLocked.value = false;
     regDistrictList.clear();
     regTalukaList.clear();
     _regDistLgdCode = '';
@@ -1466,14 +1642,14 @@ class D2DPatientRegistrationController extends GetxController {
               : dGStr.startsWith('m')
               ? 'Male'
               : '';
-      // Last name from API (disabled), first+middle editable
-      tecLastName.text = lastName;
-      // Native: for male → first-name field shows firstName; for female → empty
-      final genderLower = (data.gender ?? '').toLowerCase();
-      tecMiddleName.text = genderLower.startsWith('f') ? '' : firstName;
-      tecFirstName.clear();
-      // Compose full name from available parts
-      onNamePartsChanged();
+      // Skip name fields in re-registration mode — rescreening API will populate them
+      if (!reRegistrationLocked.value) {
+        tecLastName.text = lastName;
+        final genderLower = (data.gender ?? '').toLowerCase();
+        tecMiddleName.text = genderLower.startsWith('f') ? '' : firstName;
+        tecFirstName.clear();
+        onNamePartsChanged();
+      }
     }
 
     // Mobile
@@ -1514,14 +1690,20 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // Marital status (drives relation list for isDependent=Yes)
-    final msId =
-        (int.tryParse(data.maritalStatusID ?? '') != null)
-            ? data.maritalStatusID!
-            : '1';
-    final msName = data.maritalStatus ?? 'Married';
-    maritalStatusId = msId;
-    selectedWorkerMaritalStatusId.value = msId;
-    selectedWorkerMaritalStatusName.value = msName;
+    // Only pre-select when API returns a real numeric ID (matches native behavior:
+    // native sets empty string when API returns "null", leaving field unselected).
+    final rawMsId = data.maritalStatusID ?? '';
+    final rawMsName = data.maritalStatus ?? '';
+    if (int.tryParse(rawMsId) != null) {
+      maritalStatusId = rawMsId;
+      selectedWorkerMaritalStatusId.value = rawMsId;
+      selectedWorkerMaritalStatusName.value =
+          rawMsName.isNotEmpty ? rawMsName : 'Married';
+    } else {
+      // API returned null/empty → leave field unselected
+      selectedWorkerMaritalStatusId.value = '0';
+      selectedWorkerMaritalStatusName.value = '';
+    }
 
     // LGD codes
     if (data.talLgdCode?.isNotEmpty == true) talLgd = data.talLgdCode!;
@@ -1551,6 +1733,8 @@ class D2DPatientRegistrationController extends GetxController {
     // Pincode = residential pincode
     final pin = data.residentialPincode ?? '';
     tecPincode.text = (pin == '0') ? '' : pin;
+    // Lock when API returned a real value — mirrors native setEnabled(false)
+    isPincodeLocked.value = pin.isNotEmpty && pin != '0';
 
     // Renewal date / card expiry — do NOT auto-trigger showRenewal here;
     // renewal section is user-controlled via the switch in the form.
@@ -2661,7 +2845,8 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // GP guard — mirrors native radioRural check before submit
-    if (isRural.value && selectedGpCode.value.isEmpty) {
+    // '0' is the sentinel for "no GP selected" (same as native gpCode = "0")
+    if (isRural.value && (selectedGpCode.value.isEmpty || selectedGpCode.value == '0')) {
       ToastManager.showAlertDialog(
         Get.context!,
         'Please select Gram Panchayat',
@@ -2684,7 +2869,7 @@ class D2DPatientRegistrationController extends GetxController {
 
     // Mirrors native submitData() lines 6890-6896: dependent list field must be
     // filled for BOTH with_abha and without_abha when isDependent==1.
-    if (isDependent.value && selectedDependent.value == null) {
+    if (isDependent.value && selectedDependent.value == null && !reRegistrationLocked.value) {
       ToastManager.showAlertDialog(
         Get.context!,
         'Please select dependent first',
@@ -2708,7 +2893,7 @@ class D2DPatientRegistrationController extends GetxController {
         return false;
       }
     } else if (tecFullName.text.trim().isEmpty) {
-      ToastManager.toast('English name is required');
+      ToastManager.toast('Full name is required');
       return false;
     }
     if (selectedGender.value.isEmpty) {

@@ -186,6 +186,8 @@ class APIConstants {
   static String kGetScreenedDependentCount = "GetScreenedDependentCount";
   static String kGetDependentListFromRegdId = "GetDependentListFromRegdId";
   static String kGetDependentDetailsFromBoardData = "GetDependentDetailsFromBoardData";
+  static String kGetDependentDetailsFromBoardData_V1 = "GetDependentDetailsFromBoardData_V1";
+  static String kGetDependentDetailsForRescreening = "GetDependentDetailsForRescreening";
   static String kCheckDependentRegistrationStatus = "CheckDependentRegistrationStatus";
   static String kGetRelationWiseDependantCountwithMaritalStatus =
       "GetRelationWiseDependantCountwithMaritalStatus";
