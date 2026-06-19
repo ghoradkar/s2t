@@ -19,8 +19,8 @@ import 'package:s2toperational/Screens/calling_modules/controllers/expected_bene
 import 'package:s2toperational/Screens/calling_modules/repository/calling_dashboard_repository.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/calling_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
-import 'package:s2toperational/Screens/D2DAvailability/controllers/d2d_availability_controller.dart';
-import 'package:s2toperational/Screens/D2DAvailability/screens/d2d_availability_screen.dart';
+import 'package:s2toperational/Screens/d2d_availability/controllers/d2d_availability_controller.dart';
+import 'package:s2toperational/Screens/d2d_availability/screens/d2d_availability_screen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
 import 'package:s2toperational/Screens/camp_calendar/screen/camp_calendar_screen.dart';
 import 'package:s2toperational/Screens/d2d_teams/screen/D2DTeamsScreen.dart';
@@ -48,11 +48,11 @@ import '../AppointmentsConfirmedList/AppointmentsConfirmedListScreen/Appointment
 import '../ct_assignment/ct_assignment_screen/ct_assignment_screen.dart';
 import '../camp_creation/controllers/camp_creation_controller.dart';
 import '../camp_creation/screens/camp_creation_screen.dart';
-import '../CampReadinessForm/CampReadinessFormScreen.dart';
+import '../camp_readiness_form/screens/camp_readiness_form_screen.dart';
 import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
-import '../DeviceAndResourceMapping/DeviceAllocationScreen.dart';
+import '../device_and_resource_mapping/screens/device_allocation_screen.dart';
 import '../ExpenseClaimScreen/ExpenseClaimDashboardScreen.dart';
-import '../ResourceReMapping/ResourceReMappingCampListScreen/ResourceReMappingCampListScreen.dart';
+import '../resource_re_mapping/screens/resource_re_mapping_camp_list_screen.dart';
 import '../SideDrawerMenu/SideDrawerMenu.dart';
 import '../appointment_sample_collection_ct/screens/ct_appointment_list_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_d2d_screen/camp_for_health_screening_d2d_screen.dart';
