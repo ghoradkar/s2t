@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/tool_bar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_cname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <Spinner
+                    android:id="@+id/spi_centername"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:drawableRight="@drawable/icon_spinnerarrow"
+                    android:gravity="center"
+                    android:textSize="@dimen/fontsize_16" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"></View>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_ftype"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:gravity="center_vertical"
+                    android:text="Facility *"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <Spinner
+                    android:id="@+id/spi_facilityname"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:drawableRight="@drawable/icon_spinnerarrow"
+                    android:gravity="center"
+                    android:text="@string/txt_facilityname"
+                    android:textSize="@dimen/fontsize_16" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <Spinner
+                    android:id="@+id/spi_title"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:drawableRight="@drawable/icon_spinnerarrow"
+                    android:gravity="center"
+                    android:text="title"
+                    android:textSize="@dimen/fontsize_16" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/trTokenNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tvTokenNo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="Token Number"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edtTokenNo"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Token Number"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_mname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tvFullname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="Full Name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edtFullName"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Full Name"
+                    android:inputType="textPersonName|textCapSentences"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_mname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_fname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_firstname"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_fname"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/txt_firstname"
+                    android:inputType="textPersonName|textCapSentences"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_mname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"
+                android:visibility="gone" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_middlename"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_mname"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/txt_middlename"
+                    android:inputType="textPersonName|textCapSentences"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_lname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"
+                android:visibility="gone" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_lastname"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_lname"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/txt_lastname"
+                    android:inputType="textPersonName|textCapSentences"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_mobno"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"
+                android:visibility="gone" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_aadharno"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_adharno"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/txt_aadharno"
+                    android:inputType="number"
+                    android:longClickable="false"
+                    android:maxLength="12"
+                    android:nextFocusDown="@id/edt_fname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"
+                android:visibility="gone" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="ABHA Address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edtABHAAddress"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="ABHA Address"
+                    android:inputType="textEmailAddress"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_fname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="ABHA Number"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edtABHANumber"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="ABHA Number"
+                    android:inputType="text"
+                    android:longClickable="false"
+                    android:nextFocusDown="@id/edt_fname"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_mobno"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_mobno"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/mobile_hint"
+                    android:inputType="number"
+                    android:longClickable="false"
+                    android:maxLength="10"
+                    android:nextFocusDown="@id/edt_age"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"></View>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_pdob"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_dob"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Date of birth"
+                    android:inputType="date"
+                    android:longClickable="false"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"></View>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_age"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_age"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_age"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/age"
+                    android:inputType="number"
+                    android:longClickable="false"
+                    android:maxLength="3"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"></View>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="@string/txt_gender"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edtGender"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Gender"
+                    android:inputType="number"
+                    android:longClickable="false"
+                    android:maxLength="10"
+                    android:nextFocusDown="@id/edt_age"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight"></View>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="Address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edt_address"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/txt_address"
+                    android:inputType="textPostalAddress"
+                    android:longClickable="false"
+                    android:nextFocusDown="@+id/edt_pincode"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/greylight" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:id="@+id/trPermanentAddress"
+                android:padding="10dp">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:text="Address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_16" />
+
+                <EditText
+                    android:id="@+id/edtPermAddress"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.60"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/txt_address"
+                    android:inputType="textPostalAddress"
+                    android:longClickable="false"
+                    android:nextFocusDown="@+id/edt_pincode"
+                    android:singleLine="true" />
+            </TableRow>
+
+
+            <Button
+                android:id="@+id/btnGotoReg"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Goto Registration" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

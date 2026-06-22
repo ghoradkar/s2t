@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
@@ -356,7 +357,7 @@ class LungFunctionTestController extends GetxController {
       regId: (patient.regdId ?? 0).toString(),
       campId: campId.toString(),
       createdBy: empCode.toString(),
-      versionNo: '9.63',
+      versionNo: APIConstants.kNativeVersion,
       deviceId: r.deviceId,
       result: r,
     );

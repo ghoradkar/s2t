@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.DashboardAvailabilityReportDistrict_Activty">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+            <ImageView
+                android:id="@+id/img_logout"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="end"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/icon_calendar"
+                android:tint="@color/white" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/sv_graphicalview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txt_filterdate"
+                style="@style/TextView"
+                android:background="@color/grey"
+                android:drawableRight="@drawable/icon_create_white"
+                android:gravity="center"
+                android:text="Date"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_pietext"
+                style="@style/TextView"
+                android:textStyle="bold" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pie_chart"
+                android:layout_width="match_parent"
+                android:layout_height="280dp" />
+
+            <TextView
+                android:id="@+id/tv_stackedtext"
+                style="@style/TextView"
+                android:textStyle="bold" />
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/stacked_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_staticview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_filterdate1"
+            style="@style/TextView"
+            android:layout_margin="5dp"
+            android:background="@color/grey"
+            android:drawableRight="@drawable/icon_create_white"
+            android:gravity="center"
+            android:text="Date"
+            android:textColor="@color/white" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/devider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey"
+            android:weightSum="5.01">
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/txt_locationname"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:drawableLeft="@drawable/icon_place"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/txt_row1"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/txt_row2"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.1"
+                android:inputType="textMultiLine"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/txt_row3"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/devider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/lightgrey"
+            android:weightSum="5.01">
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/txt_total_cnt_tv"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:gravity="center"
+                android:text="Total Count" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/tv_row1"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.1"
+                android:gravity="center"
+                android:text="" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/tv_row2"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.1"
+                android:gravity="center"
+                android:text="" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+
+            <TextView
+                android:id="@+id/tv_row3"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_weight="1.1"
+                android:gravity="center"
+                android:text="" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/devider" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lightgrey" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>

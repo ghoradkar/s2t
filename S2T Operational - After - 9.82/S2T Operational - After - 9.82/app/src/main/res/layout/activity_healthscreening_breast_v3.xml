@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.HealthScreeningUrineSampleCollection_Activity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <Button
+                android:id="@+id/btn_machine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary"
+                android:text="Set Machine"
+                android:textColor="@color/white"
+                android:visibility="gone" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradent_lighttodark"
+                        android:padding="5dp"
+                        android:text="Patient Details"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_beneficiaryname"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Name of the Beneficiary"
+                        android:longClickable="false"
+                        android:textSize="14sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_gender"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Gender"
+                            android:longClickable="false"
+                            android:textSize="14sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_age"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Age"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:maxLength="3"
+                            android:textSize="14sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_height"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Height"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_weight"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Weight"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradent_lighttodark"
+                        android:drawablePadding="10dp"
+                        android:padding="5dp"
+                        android:text="Breast Screening"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_machine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Machine *"
+                        android:longClickable="false"
+                        android:textSize="14sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_family_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Family History *"
+                        android:longClickable="false"
+                        android:textSize="14sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="Symptoms *"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <RadioGroup
+                            android:id="@+id/rg_observation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="0.6">
+
+                            <RadioButton
+                                android:id="@+id/rb_observation_yes"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="Yes"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_observation_no"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="No"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_comment"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Comment *"
+                        android:longClickable="false"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="Survivor *"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <RadioGroup
+                            android:id="@+id/rg_lumb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="0.6">
+
+                            <RadioButton
+                                android:id="@+id/rb_lumb_yes"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="Yes"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_lumb_no"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="No"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_final_remark"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Follow-up Recommendation *"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_examiner_note"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:drawableRight="@drawable/icon_downarrowbk"
+                        android:focusable="false"
+                        android:hint="Examiner's Note *"
+                        android:longClickable="false"
+                        android:textSize="14sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_quadrant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_left_quadrant"
+                            style="@style/CustomEdittext"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:drawableRight="@drawable/icon_downarrowbk"
+                            android:focusable="false"
+                            android:hint="Left Breast Quadrant"
+                            android:longClickable="false"
+                            android:textSize="14sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_right_quadrant"
+                            style="@style/CustomEdittext"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:drawableRight="@drawable/icon_downarrowbk"
+                            android:focusable="false"
+                            android:hint="Right Breast Quadrant"
+                            android:longClickable="false"
+                            android:textSize="14sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_choose_file"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:text="Choose Files"
+                        android:textAllCaps="false" />
+
+                    <TextView
+                        android:id="@+id/tv_files"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="20dp"
+                android:background="@drawable/button_gradent"
+                android:padding="10dp"
+                android:text="SUBMIT"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

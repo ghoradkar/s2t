@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/tool_bar2" />
+
+    <LinearLayout
+        android:id="@+id/ll_sender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"         
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.15"
+            android:background="@drawable/courier_sender" />
+
+        <TextView
+            android:id="@+id/tv_sender"
+            style="@style/TextView"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.85"
+            android:text="Send Courier" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
+    <LinearLayout
+        android:id="@+id/ll_receiver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.15"
+            android:background="@drawable/courier_receiver" />
+
+        <TextView
+            android:id="@+id/tv_receiver"
+            style="@style/TextView"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.85"
+            android:text="Receive Courier" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
+    <LinearLayout
+        android:id="@+id/ll_forward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.15"
+            android:background="@drawable/icon_forward" />
+
+        <TextView
+            android:id="@+id/tv_forward"
+            style="@style/TextView"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.85"
+            android:text="Forward Courier" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        android:visibility="gone" />
+
+</LinearLayout>

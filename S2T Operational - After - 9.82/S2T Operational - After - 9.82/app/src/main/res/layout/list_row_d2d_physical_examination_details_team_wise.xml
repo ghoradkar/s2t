@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardElevation="2dp"
+    card_view:cardUseCompatPadding="true">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--        <View-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:background="@color/grey" />-->
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            .
+
+            <TextView
+                android:id="@+id/tvDistrictNew"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="District"
+                android:textColor="@color/blue"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/tvCampCoordinatorName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Camp Id"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/tvNotWTeamNew"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Assigned"
+                android:textColor="@color/blue"
+                android:textSize="10sp"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:gravity="center_vertical" />
+
+
+            <TextView
+                android:id="@+id/tvWorkingTeamNew"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Call Pending"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:gravity="center_vertical" />
+
+
+            <TextView
+                android:id="@+id/tvPhysicalPending"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="phy"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:gravity="center_vertical" />
+
+
+            <ImageView
+                android:id="@+id/imvCall"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1"
+                android:padding="2dp"
+                android:src="@android:drawable/sym_call_outgoing"
+                android:visibility="visible" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.cardview.widget.CardView>

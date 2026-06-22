@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                card_view:cardBackgroundColor="@android:color/white"
+                card_view:cardElevation="5dp"
+                card_view:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_workerregno"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Beneficiary Reg. No"
+                        android:inputType="number"
+                        android:longClickable="false"
+                        android:maxLength="12"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_dateofreg"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/icon_date"
+                        android:focusable="false"
+                        android:hint="Date of Registration *"
+                        android:inputType="textNoSuggestions"
+                        android:longClickable="false"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_fname"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Beneficiary Name"
+                            android:inputType="textNoSuggestions|textCapWords"
+                            android:longClickable="false"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_moblieno"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Contact Number"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:maxLength="10"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_gender"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Gender"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:maxLength="10"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_dob"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Date of Birth"
+                            android:inputType="textNoSuggestions|textCapWords"
+                            android:longClickable="false"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_age"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Age"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:maxLength="3"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:weightSum="3">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_weight"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="1"
+                            android:hint="Weight (kg)"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_height"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="1"
+                            android:hint="Height (cm)"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_bmi"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="BMI"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_address"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:gravity="top"
+                        android:hint="Permanent Address"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:longClickable="false"
+                        android:maxLength="192"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_city"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+                            android:focusable="false"
+                            android:hint="City"
+                            android:inputType="textCapWords"
+                            android:longClickable="false"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_pincode"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Pin Code"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:maxLength="6"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_outline"
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.3"
+                            android:gravity="center_vertical"
+                            android:text="Marital Status"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <RadioGroup
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.7"
+                            android:orientation="horizontal"
+                            android:weightSum="0.6">
+
+                            <RadioButton
+                                android:id="@+id/rb_married"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:checked="true"
+                                android:text="Married"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_unmarried"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="Unmarried"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_nameofspouse"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name of the Spouse *"
+                        android:inputType="textCapSentences"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_noofchildren"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="No. of Child if any"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_gradent"
+                android:text="REGISTER"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <stroke
+        android:width="0.2dp"
+        android:color="@color/divider" />
+    <solid android:color="@color/white" />
+</shape>
+
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--android:id="@+id/text_visitor"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--tools:context=".Fragment.VisitorDashboardFragment">-->
+
+
+
+<!--<ScrollView-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="fill_parent"-->
+<!--    android:layout_marginStart="8dp"-->
+<!--    android:layout_marginEnd="8dp"-->
+<!--    android:layout_marginBottom="8dp"-->
+<!--    android:fillViewport="true"-->
+<!--    android:paddingBottom="@dimen/larger_text_size"-->
+<!--    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--    app:layout_constraintEnd_toEndOf="parent"-->
+<!--    app:layout_constraintStart_toStartOf="parent"-->
+<!--    app:layout_constraintTop_toBottomOf="parent">-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/constraintLayout2"-->
+<!--        android:layout_width="fill_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:paddingBottom="@dimen/larger_text_size">-->
+
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            tools:ignore="MissingConstraints">-->
+
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Start Date"/>-->
+
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_search"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="32dp"-->
+<!--            android:background="@drawable/common_button"-->
+<!--            android:gravity="center_vertical|center_horizontal"-->
+<!--            android:text="@string/visitorSearch"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="15sp"-->
+<!--            app:layout_constraintDimensionRatio="w,"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/visitorEndDate"-->
+<!--            app:layout_constraintHorizontal_bias="1.0"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_visitorStart"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/text_SatrtDate"-->
+<!--            android:visibility="gone"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/visitorEndDate"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:text="@string/visitorEndDate"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="@dimen/small_text_size"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/text_visitorStart"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/text_EndDate"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/text_visitorStart"-->
+<!--            android:visibility="gone"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_SatrtDate"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/medium_text_size"-->
+<!--            android:background="@drawable/general_edt_box"-->
+<!--            android:ems="10"-->
+<!--            android:padding="@dimen/smaller_text_size"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/text_EndDate"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/text_visitorStart"-->
+<!--            android:visibility="gone"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_EndDate"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/general_edt_box"-->
+<!--            android:ems="10"-->
+<!--            android:padding="@dimen/smaller_text_size"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/text_SatrtDate"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_SatrtDate"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/text_SatrtDate"-->
+<!--            android:visibility="gone"/>-->
+
+<!--        &lt;!&ndash;Chart code Start Here&ndash;&gt;-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_visitorStart"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:text="@string/visitorStart"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="@dimen/small_text_size"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/text_SatrtDate"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:visibility="gone"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/textVisitor"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:text="@string/text_Visitor"-->
+<!--            android:textColor="@color/balck1"-->
+<!--            android:textSize="@dimen/medium_text_size"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/button_search"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_date"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/text_date0"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/Visitor_barChart"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/Visitor_barChart" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_date0"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            android:textSize="9dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/text_date"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/text_Date2"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_date"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/text_date" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_Date2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/text_date0"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/text_DefvisitorCount"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_date0"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/text_date0" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_DefvisitorCount"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/text_Date2"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/text_date4"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_Date2"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/text_Date2" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_date4"-->
+<!--            android:layout_width="8dp"-->
+<!--            android:layout_height="16dp"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/text_DefvisitorCount"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_DefvisitorCount"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/text_DefvisitorCount" />-->
+
+<!--        <com.github.mikephil.charting.charts.BarChart-->
+<!--            android:id="@+id/Visitor_barChart"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            android:background="@drawable/general_edt_box"-->
+<!--            app:layout_constraintDimensionRatio="w,1:1"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/textVisitor">-->
+
+<!--        </com.github.mikephil.charting.charts.BarChart>-->
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_TypeVisitor"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            android:text="@string/text_TypeVisitor"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="@dimen/medium_text_size"-->
+<!--            android:textColor="@color/balck1"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/text_date" />-->
+<!--        <com.github.mikephil.charting.charts.BarChart-->
+<!--            android:id="@+id/TypeVisitor_barChart"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            android:background="@drawable/general_edt_box"-->
+<!--            app:layout_constraintDimensionRatio="w,1:1"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/text_TypeVisitor" />-->
+<!--        <TextView-->
+<!--            android:id="@+id/text_DefaultVisitor"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/TypeVisitor_barChart" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_DeliveryVisitor"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/text_TypeVisitor"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/text_DefaultVisitor"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/TypeVisitor_barChart" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_InternalVisitor"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            android:textSize="9dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_deep"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/text_DeliveryVisitor"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/text_TypeVisitor"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/TypeVisitor_barChart" />-->
+
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--</ScrollView>-->
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

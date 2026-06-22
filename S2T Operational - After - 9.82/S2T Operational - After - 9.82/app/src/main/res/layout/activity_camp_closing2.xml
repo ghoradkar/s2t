@@ -1,0 +1,1599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="30dp"
+                tools:context=".CampClosing">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_campstatuscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:cardCornerRadius="4dp"
+                    app:cardUseCompatPadding="true">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/gradent_lighttodark"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="Screening Details"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="5dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/background3"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Facilitated Beneficiary"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_facilitatedWorkers"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_do"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/lightGray"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Pending for DO Approval"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/tv_do"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_approve"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Approved Beneficiaries"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_approvedBene"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/green"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_reject"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Rejected Beneficiaries"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_rejectedBene"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/red"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+
+
+
+                            <LinearLayout
+                                android:id="@+id/ll_reverification"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="visible"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Beneficiaries Verified"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_reverification_bene"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/light_blue"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_nodal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Basic Details"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_basicDetails"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_pending"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/background3"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Physical Examination"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_physicalExam"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_completed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Lung Function Test"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_lungTest"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/background3"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Audio Screening Test"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_audioTest"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Vision Screening Test"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_visionTest"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/background3"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Sample Collection"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_barcode"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Urine Sample Collection"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_urineSampleCollection"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Blood Sugar R"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_ppSample"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/background3"
+                                android:orientation="horizontal"
+
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Breast Screening Test"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_breast_screening"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Acknowledgement"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_acknowlege"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Antigen Test"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_antigen"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="RTPCR Test"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_rtpcr"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/background3"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:clickable="false"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:text="Total Tests"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="0.5dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/lightGray" />
+
+                                <TextView
+                                    android:id="@+id/tv_totalTest"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:inputType="textMultiLine|textNoSuggestions"
+                                    android:longClickable="false"
+                                    android:padding="5dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/lightGray" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/lightGray" />
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="Notes"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end">
+
+
+                                <View
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="@color/red" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:padding="4dp"
+                                    android:text="Rejected Beneficiary"
+                                    android:textColor="@color/black" />
+
+
+                                <View
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="@color/chartyellow" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:padding="4dp"
+                                    android:text="Incomplete Test's"
+                                    android:textColor="@color/black" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_campstatuscount2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:cardCornerRadius="4dp"
+                    app:cardUseCompatPadding="true">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/gradent_lighttodark"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="Camp Closing Summary "
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Total Approved Beneficiaries"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtTotalBeneficiary"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:clickable="false"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="5"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Sample Collection"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtSampleCollection"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="5"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Rejected Beneficiary"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtRejectedBene"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="5"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:visibility="gone"
+                            android:paddingEnd="5dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Re-verification Beneficiary "
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtReverification"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Sample Send To Hub Lab"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtSampleToHublab"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:visibility="gone"
+
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Sample Send To Home Lab"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtSampleToHomelab"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Urine Sample Collection"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtUrineSampleCollection"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llRemark"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/background3"
+                            android:orientation="vertical"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Remark"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+
+                            <EditText
+                                android:id="@+id/edtRemark"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="textCapWords"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_campstatuscount1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:cardCornerRadius="4dp"
+                    app:cardUseCompatPadding="true">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/gradent_lighttodark"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="Comsumable Consumption For Camp"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Plain Tube"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtPlainTube"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Gel Tube"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtGelTube"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Floride"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtFloride"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/background3"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="0.8"
+                                android:clickable="false"
+                                android:inputType="textMultiLine|textNoSuggestions"
+                                android:longClickable="false"
+                                android:padding="5dp"
+                                android:text="Urine Container"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/lightGray" />
+
+                            <EditText
+                                android:id="@+id/edtUrinContainer"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.2"
+                                android:background="@drawable/edittext_border"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvConsumable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="true" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.cardview.widget.CardView>
+
+                <Button
+                    android:id="@+id/btnCampClose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:text="Close Camp" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

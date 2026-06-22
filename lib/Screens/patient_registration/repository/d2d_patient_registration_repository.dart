@@ -557,18 +557,22 @@ class D2DPatientRegistrationRepository {
   }
 
   /// Returns `null` on success, or the API error message string on failure.
+  /// Uses SendRegistrationOTPWithDPDPConsent so the SMS includes the web-consent link.
   Future<String?> sendOtp({
     required String mobileNo,
     required String otp,
     required String regdId,
     required String createdBy,
     required String subOrgId,
+    required String bocwRegNo,
+    required String beneficiaryName,
+    required String relationId,
   }) async {
     final url = Uri.parse(
-      '${APIManager.kD2DBaseURL}${APIConstants.kGetOTPforRegistrationOrg}',
+      '${APIManager.kD2DBaseURL}${APIConstants.kSendRegistrationOTPWithDPDPConsent}',
     );
     // ignore: avoid_print
-    print('[sendOtp] url=$url body={MOBNO:$mobileNo, OTP:$otp, RegdId:$regdId, CreatedBy:$createdBy, SubOrgID:$subOrgId}');
+    print('[sendOtp] url=$url body={MOBNO:$mobileNo, OTP:$otp, RegdId:$regdId, CreatedBy:$createdBy, BOCWRegNO:$bocwRegNo, BeneficiaryName:$beneficiaryName, ReleationID:$relationId, SubOrgID:$subOrgId}');
     final ioClient = _api.getInstanceOfIoClient();
     try {
       final response = await ioClient.post(
@@ -579,6 +583,9 @@ class D2DPatientRegistrationRepository {
           'RegdId': regdId,
           'CreatedBy': createdBy,
           'MsgID': '0',
+          'BOCWRegNO': bocwRegNo,
+          'BeneficiaryName': beneficiaryName,
+          'ReleationID': relationId,
           'SubOrgID': subOrgId,
         },
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -596,6 +603,50 @@ class D2DPatientRegistrationRepository {
       // ignore: avoid_print
       print('[sendOtp] error=$e');
       return 'Failed to send OTP';
+    } finally {
+      ioClient.close();
+    }
+  }
+
+  /// Checks beneficiary consent status before registration.
+  /// Returns 0 = not given, 1 = given, 2 = revoked, null = network/parse error.
+  Future<int?> getConsent({
+    required String bocwRegNo,
+    required String beneficiaryName,
+    required String relationId,
+  }) async {
+    final url = Uri.parse(
+      '${APIManager.kD2DBaseURL}${APIConstants.kGetBeneficiaryConsentDetails}',
+    );
+    // ignore: avoid_print
+    print('[getConsent] url=$url body={BOCWRegNO:$bocwRegNo, BeneficiaryName:$beneficiaryName, ReleationID:$relationId}');
+    final ioClient = _api.getInstanceOfIoClient();
+    try {
+      final response = await ioClient.post(
+        url,
+        body: {
+          'BOCWRegNO': bocwRegNo,
+          'BeneficiaryName': beneficiaryName,
+          'ReleationID': relationId,
+        },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      // ignore: avoid_print
+      _printLong('[getConsent] status=${response.statusCode} body=${response.body}');
+      final decoded = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      final status = decoded['status']?.toString().toLowerCase();
+      if (status == 'success') {
+        final outputList = decoded['output'] as List?;
+        if (outputList != null && outputList.isNotEmpty) {
+          final isConsent = outputList[0]['IsConsent'];
+          return int.tryParse(isConsent.toString()) ?? 0;
+        }
+      }
+      return null;
+    } catch (e) {
+      // ignore: avoid_print
+      print('[getConsent] error=$e');
+      return null;
     } finally {
       ioClient.close();
     }
@@ -1759,6 +1810,7 @@ class D2DPatientRegistrationRepository {
     File? healthCardPhoto,
     File? renewalSlipPhoto,
     File? hivLetterPhoto,
+    File? consentPhoto,
   }) async {
     final endpoint = isFaceDetectionEnabled
         ? 'handler/DtoDBeneficiaryRegistration_Gender_FaceMatch_V1_Dependent.ashx'
@@ -1833,6 +1885,20 @@ class D2DPatientRegistrationRepository {
       } else {
         // ignore: avoid_print
         print('[saveD2DRegistration] file4=null (no HIV letter)');
+      }
+      if (consentPhoto != null) {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file5=consentPhoto path=${consentPhoto.path} filename=${regdNo}_CF.jpg');
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file5',
+            consentPhoto.path,
+            filename: '${regdNo}_CF.jpg',
+          ),
+        );
+      } else {
+        // ignore: avoid_print
+        print('[saveD2DRegistration] file5=null (no consent photo)');
       }
 
       final streamed = await ioClient.send(request);

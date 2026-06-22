@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ohq_b2blib_library_name">OmronConnectivityLibrary</string>
+    <string name="ohq_b2blib_msg0000001">United States</string>
+    <string name="ohq_b2blib_msg0000002">United Arab Emirates</string>
+    <string name="ohq_b2blib_msg0000003">United Kingdom</string>
+    <string name="ohq_b2blib_msg0000004">Italy</string>
+    <string name="ohq_b2blib_msg0000005">India</string>
+    <string name="ohq_b2blib_msg0000006">Indonesia</string>
+    <string name="ohq_b2blib_msg0000007">Australia</string>
+    <string name="ohq_b2blib_msg0000008">Canada</string>
+    <string name="ohq_b2blib_msg0000009">South Korea</string>
+    <string name="ohq_b2blib_msg0000010">Singapore</string>
+    <string name="ohq_b2blib_msg0000011">Thailand</string>
+    <string name="ohq_b2blib_msg0000012">Taiwan</string>
+    <string name="ohq_b2blib_msg0000013">China</string>
+    <string name="ohq_b2blib_msg0000014">Germany</string>
+    <string name="ohq_b2blib_msg0000015">France</string>
+    <string name="ohq_b2blib_msg0000016">Vietnam</string>
+    <string name="ohq_b2blib_msg0000017">Japan</string>
+    <string name="ohq_b2blib_msg4097">The process could not be executed</string>
+    <string name="ohq_b2blib_msg4099">The application do not have Microphone permission</string>
+    <string name="ohq_b2blib_msg6000">No valid partner key was set</string>
+    <string name="ohq_b2blib_msg6002">A parameter error has occurred</string>
+    <string name="ohq_b2blib_msg6015">Doesn\'t support Bluetooth on smartphones</string>
+    <string name="ohq_b2blib_msg6016">The smartphone\'s Bluetooth function is not enabled</string>
+    <string name="ohq_b2blib_msg6019">Device unexpectedly disconnected</string>
+    <string name="ohq_b2blib_msg6020">Connection request was not accepted</string>
+    <string name="ohq_b2blib_msg6021">Pairing failed</string>
+    <string name="ohq_b2blib_msg6026">Scan has stopped</string>
+    <string name="ohq_b2blib_msg6029">Scan timed out</string>
+    <string name="ohq_b2blib_msg6030">Connection timed out</string>
+    <string name="ohq_b2blib_msg6100">Your processing request was not accepted</string>
+    <string name="ohq_b2blib_msg6999">An unexpected error has occurred</string>
+    <string name="ohq_b2blib_msg8002">User hash ID was not set</string>
+    <string name="ohq_b2blib_msg8003">Target device is not supported</string>
+</resources>

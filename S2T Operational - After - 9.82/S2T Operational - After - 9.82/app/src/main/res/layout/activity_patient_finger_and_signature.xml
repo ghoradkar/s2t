@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradent_lighttodark"
+                        android:padding="5dp"
+                        android:text="Patient Details"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_mcobcwwbno"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:hint="Beneficiary Reg. No"
+                            android:inputType="number"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <ImageView
+                            android:id="@+id/imv_search"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="0.1"
+                            android:src="@drawable/icon_search"
+                            android:visibility="gone"
+                            app:tint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/bg_outline"
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.2"
+                            android:gravity="center_vertical"
+                            android:text="Title"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <RadioGroup
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.8"
+                            android:orientation="horizontal"
+                            android:weightSum="0.9">
+
+                            <RadioButton
+                                android:id="@+id/rb_mr"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:checked="true"
+                                android:text="Mr."
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_mrs"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="Mrs."
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_ms"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="Ms."
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_name"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Name of the Beneficiary"
+                        android:longClickable="false"
+                        android:textSize="18sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_gender"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Gender"
+                            android:longClickable="false"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_age"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Age"
+                            android:inputType="number"
+                            android:longClickable="false"
+                            android:maxLength="3"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_aadhaarno"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Aadhaar Number"
+                            android:inputType="number"
+                            android:maxLength="12"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_moblieno"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Contact Number"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_dob"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Date of Birth"
+                            android:inputType="textNoSuggestions|textCapWords"
+                            android:longClickable="false"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:visibility="gone"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_address"
+                        style="@style/CustomEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:gravity="top"
+                        android:hint="Permanent Address"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLength="192"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:weightSum="1">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_city"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="City"
+                            android:inputType="textCapWords"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_pincode"
+                            style="@style/CustomEdittext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:layout_weight="0.5"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Pin Code"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradent_lighttodark"
+                        android:padding="5dp"
+                        android:text="Finger Print"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_biomatric"
+                        android:layout_width="100dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/image_border"
+                        android:padding="5dp"
+                        android:paddingTop="15dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/vector_fingerprint" />
+
+                    <CheckBox
+                        android:id="@+id/cb_finger_issue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Finger print device not available" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/llMain_RationCard_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradent_lighttodark"
+                        android:padding="5dp"
+                        android:text="Ration Card Photo"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="3"
+                        android:gravity="left"
+                        android:inputType="textMultiLine|textNoSuggestions"
+                        android:padding="2dp"
+                        android:text=" Note : Manual ration card - 2 photos required \n Digital ration card - 1 photo required"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Select Ration Card type"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioManual"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="32dp"
+                            android:buttonTint="#3F5FBF"
+                            android:text="Manual"
+                            android:textColor="#000000"
+                            android:textStyle="bold" />
+
+                        <RadioButton
+                            android:id="@+id/radioDigital"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#3F5FBF"
+                            android:text="Digital"
+                            android:textColor="#000000"
+                            android:textStyle="bold" />
+
+                    </RadioGroup>
+
+
+                    <ImageView
+                        android:id="@+id/imv_self_declaration"
+                        android:layout_width="80dp"
+                        android:layout_height="88dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_colorcamera" />
+
+                    <TextView
+                        android:id="@+id/tvSelfDeclaration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Ration Card"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerPhotos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/btn_UploadRationCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:background="@drawable/button_gradent"
+                        android:enabled="true"
+                        android:text="Upload Photos"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <TextView-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:background="@drawable/gradent_lighttodark"-->
+                <!--                        android:padding="5dp"-->
+                <!--                        android:text="Signature"-->
+                <!--                        android:textColor="@color/white"-->
+                <!--                        android:textSize="16sp"-->
+                <!--                        android:textStyle="bold" />-->
+
+                <!--                    <LinearLayout-->
+                <!--                        android:id="@+id/ll_signature"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:orientation="vertical">-->
+
+                <!--                        <com.github.gcacace.signaturepad.views.SignaturePad-->
+                <!--                            android:id="@+id/signature_pad"-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="250dp"-->
+                <!--                            android:layout_marginTop="5dp"-->
+                <!--                            android:background="@drawable/bg_outline"-->
+                <!--                            app:penColor="#0000FF" />-->
+
+                <!--                        <TextView-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:gravity="center"-->
+                <!--                            android:text="(* Please do the signature inside above box)"-->
+                <!--                            android:textColor="@color/red"-->
+                <!--                            android:textSize="16sp"-->
+                <!--                            android:textStyle="bold" />-->
+
+                <!--                        <LinearLayout-->
+                <!--                            android:id="@+id/buttons_container"-->
+                <!--                            android:layout_width="fill_parent"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:orientation="horizontal"-->
+                <!--                            android:paddingTop="16dp">-->
+
+                <!--                            <Button-->
+                <!--                                android:id="@+id/btn_clearpad"-->
+                <!--                                android:layout_width="0dp"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_weight="1"-->
+                <!--                                android:enabled="false"-->
+                <!--                                android:text="Clear Pad" />-->
+
+                <!--                            <Button-->
+                <!--                                android:id="@+id/btn_savesignature"-->
+                <!--                                style="@style/Widget.AppCompat.Button.Borderless.Colored"-->
+                <!--                                android:layout_width="0dp"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_weight="1"-->
+                <!--                                android:enabled="false"-->
+                <!--                                android:text="Save Signature"-->
+                <!--                                android:visibility="gone" />-->
+
+                <!--                        </LinearLayout>-->
+
+                <!--                    </LinearLayout>-->
+
+                <!--                    <CheckBox-->
+                <!--                        android:id="@+id/cb_signature_applicable"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:visibility="gone"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:text="Signature not applicable" />-->
+
+                <!--                </LinearLayout>-->
+
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btn_markattendance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/button_gradent"
+                android:enabled="true"
+                android:text="Continue"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

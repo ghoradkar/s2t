@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:layout_marginVertical="2dp">
+
+            <TextView
+                android:id="@+id/tv_sr_No"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:gravity="center"
+                android:text="1" />
+
+            <TextView
+
+                android:id="@+id/tv_district"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:gravity="start"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="3" />
+
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/black"
+            android:visibility="visible" />
+
+
+
+
+
+    </LinearLayout>
+</LinearLayout>

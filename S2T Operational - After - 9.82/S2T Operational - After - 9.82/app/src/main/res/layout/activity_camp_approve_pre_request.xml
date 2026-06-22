@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.CampApprovePreRequest_Activity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/edt_camp_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select Camp Location"
+                android:longClickable="false"
+                android:textColorHint="@color/darkGray"
+                android:textSize="14sp" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_other"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="Other"
+                android:inputType="textNoSuggestions"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_lab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:drawableRight="@drawable/icon_arrowdown"
+                android:focusable="false"
+                android:hint="Select Lab"
+                android:inputType="textNoSuggestions"
+                android:longClickable="false"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:drawableRight="@drawable/icon_calendar"
+                android:focusable="false"
+                android:hint="Expected Camp Date"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_postdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:drawableRight="@drawable/icon_calendar"
+                android:focusable="false"
+                android:hint="Post Camp Date"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_name"
+                style="@style/CustomEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz"
+                android:hint="Name of Aarogya Mitra"
+                android:inputType="textNoSuggestions"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_mobieNo"
+                style="@style/CustomEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="Contact of Aarogya Mitra"
+                android:inputType="number"
+                android:maxLength="10"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_hospital"
+                style="@style/CustomEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:drawableRight="@drawable/icon_arrowdown"
+                android:focusable="false"
+                android:hint="Select Affiliated Hospital"
+                android:inputType="textNoSuggestions"
+                android:longClickable="false"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_campName"
+                style="@style/CustomEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="Camp Name"
+                android:inputType="textNoSuggestions"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_camp_type"
+                style="@style/CustomEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:drawableRight="@drawable/icon_arrowdown"
+                android:focusable="false"
+                android:hint="Select Camp Type"
+                android:inputType="textNoSuggestions"
+                android:longClickable="false"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_remark"
+                style="@style/CustomEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="Remark"
+                android:inputType="textNoSuggestions"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_textColorHint="@color/darkGray" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/button_gradent"
+                android:text="save"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

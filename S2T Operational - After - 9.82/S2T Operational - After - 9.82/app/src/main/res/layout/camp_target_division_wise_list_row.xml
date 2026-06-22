@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDivisionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="3dp"
+        android:textAlignment="center"
+        android:text="Amaravati"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/btnExport">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/mediumGray" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/distName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Dist Name"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Total Workers"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+
+            <TextView
+                android:id="@+id/targetToAchieve"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Monthly Target To Be Achieved"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+  <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+
+            <TextView
+                android:id="@+id/tvMonthlyTargetAchieved"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Monthly Target Achieved"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:visibility="gone"
+                android:padding="2dp"
+                android:text="Quarterly Target"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+
+            <TextView
+                android:id="@+id/perDayTarget"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="2dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Per Day Target\n(Beneficiary)"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/targetRemain"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/colorPrimaryDark"
+                android:padding="2dp"
+                android:text="Target \nAchieved"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+
+            <TextView
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/mediumGray"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="2dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Daily Percentage(%)"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/mediumGray" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDistrict"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/mediumGray" />
+
+    <!--    Total-->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1.5"
+            android:padding="2dp"
+            android:text="Total"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tvTotalTotalWorkers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="856669"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tvTotalMonthlyTargetToAchieved"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="2548"
+            android:textColor="@color/black"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tvTotalMonthlyTargetAchieved"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="2548"
+            android:textColor="@color/black"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+
+        <TextView
+            android:id="@+id/tvTotalMonthlyCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="45987"
+            android:visibility="gone"
+            android:textColor="@color/black"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tvTotalPerDayTarget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="36589"
+            android:textColor="@color/black"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tvTotalPerDayTargetAchieved"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="36589"
+            android:textColor="@color/black"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tvTotalPercentage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="36589"
+
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/mediumGray" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

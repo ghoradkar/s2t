@@ -1490,6 +1490,131 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 14.h),
         ],
 
+
+
+        // ── Beneficiary Consent ──────────────────────────────────────────
+        _sectionLabel('Beneficiary Consent'),
+        SizedBox(height: 8.h),
+        Container(
+          decoration: BoxDecoration(
+            color: kWhiteColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: kTextFieldBorder),
+          ),
+          child: Column(
+            children: [
+              // ── Checkbox row ──────────────────────────────────────────
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap:
+                    () =>
+                        c.isCellularPhone.value = !c.isCellularPhone.value,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 10.h,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: kPrimaryColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.phone_android_rounded,
+                          color: kPrimaryColor,
+                          size: 18,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Beneficiary has a cellular phone',
+                              style: TextStyle(
+                                fontFamily: FontConstants.interFonts,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color: kTextColor,
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
+                            Text(
+                              'Beneficiary will receive OTP with consent link via SMS',
+                              style: TextStyle(
+                                fontFamily: FontConstants.interFonts,
+                                fontSize: 11.sp,
+                                color: kLabelTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Transform.scale(
+                        scale: 0.9,
+                        child: Checkbox(
+                          value: c.isCellularPhone.value,
+                          activeColor: kPrimaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          onChanged:
+                              (v) => c.isCellularPhone.value = v ?? false,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // ── Consent photo (visible when checkbox is checked) ──────
+              if (c.isCellularPhone.value) ...[
+                Divider(height: 1, color: kTextFieldBorder),
+                Padding(
+                  padding: EdgeInsets.all(12.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 14,
+                            color: kPrimaryColor,
+                          ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            'Capture consent form photo',
+                            style: TextStyle(
+                              fontFamily: FontConstants.interFonts,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      _PhotoTile(
+                        label: 'Consent Photo *',
+                        icon: Icons.how_to_reg_rounded,
+                        localPath: c.consentPhotoPath.value,
+                        required: true,
+                        onTap: c.pickConsentPhoto,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        SizedBox(height: 14.h),
         // ── 21. Skip Face Detection switch ──────────────────────────────
         // Visible only when server says face detection is NOT compulsory
         // (IsFaceDetetctionEnabled == "0" → showFaceDetectionToggle = true)
@@ -1538,7 +1663,6 @@ class _D2DPatientRegistrationScreenState
           ),
           SizedBox(height: 14.h),
         ],
-
         // ── 22. Photo Upload ─────────────────────────────────────────────
         _sectionLabel('Photo Upload'),
         SizedBox(height: 8.h),

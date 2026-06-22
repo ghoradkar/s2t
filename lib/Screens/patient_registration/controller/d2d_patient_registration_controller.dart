@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:geolocator/geolocator.dart';
@@ -57,8 +56,6 @@ class D2DPatientRegistrationController extends GetxController {
   String _workerRegdId = '0';
   String _beneficiaryCount =
       '0'; // Count from GetBenificiaryRegisterOrNot — appended to RegdNo
-  String _appVersion = '';
-
   final registrationType = 'without_abha'.obs;
   final isDependent = false.obs;
   final workerMode = 'board'.obs;
@@ -239,6 +236,8 @@ class D2DPatientRegistrationController extends GetxController {
 
   final patientPhotoPath = ''.obs;
   final healthCardPhotoPath = ''.obs;
+  final isCellularPhone = false.obs;
+  final consentPhotoPath = ''.obs;
   final hivLetterPath = ''.obs;
   final renewalFormPath = ''.obs;
 
@@ -326,7 +325,6 @@ class D2DPatientRegistrationController extends GetxController {
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
     tecMobileNo.text = '9371023232';
     _startAutoLocationUpdates();
-    _loadAppVersion();
     _fetchFaceDetectionFlag();
   }
 
@@ -393,11 +391,6 @@ class D2DPatientRegistrationController extends GetxController {
     //         ],
     //       ),
     // );
-  }
-
-  Future<void> _loadAppVersion() async {
-    final info = await PackageInfo.fromPlatform();
-    _appVersion = info.version;
   }
 
   /// Mirrors native getFaceDetectionFlag() — calls GetFaceDetectionFlag API.
@@ -1438,6 +1431,9 @@ class D2DPatientRegistrationController extends GetxController {
       regdId: '0',
       createdBy: empCode.toString(),
       subOrgId: subOrgId.toString(),
+      bocwRegNo: 'MH${tecWorkerRegNo.text.trim()}',
+      beneficiaryName: tecFullName.text.trim(),
+      relationId: selectedRelation.value?.relId?.toString() ?? '20',
     );
     if (error == null) {
       altMobileOtpSent.value = true;
@@ -1584,6 +1580,8 @@ class D2DPatientRegistrationController extends GetxController {
     healthCardPhotoPath.value = '';
     renewalFormPath.value = '';
     hivLetterPath.value = '';
+    isCellularPhone.value = false;
+    consentPhotoPath.value = '';
 
     // Ration card
     tecRationCardNo.clear();
@@ -1996,6 +1994,9 @@ class D2DPatientRegistrationController extends GetxController {
       regdId: '0',
       createdBy: empCode.toString(),
       subOrgId: subOrgId.toString(),
+      bocwRegNo: 'MH${tecWorkerRegNo.text.trim()}',
+      beneficiaryName: tecFullName.text.trim(),
+      relationId: selectedRelation.value?.relId?.toString() ?? '20',
     );
     if (error == null) {
       mobileOtpSent.value = true;
@@ -2751,7 +2752,43 @@ class D2DPatientRegistrationController extends GetxController {
         }, title: 'Board and ABHA Details Mismatch');
       });
     } else {
-      ToastManager.toast('ABHA verified successfully');
+      // Match: show confirmation alert (mirrors native D2DPatientRegistration_Activity.java line 10901)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = Get.context;
+        if (ctx == null) return;
+        ToastManager.showAlertDialog(
+          ctx,
+          'ABHA and Board details match. The consent link has been shared to the registered mobile number. Kindly provide your consent to proceed further.',
+          () => Get.back(),
+          title: 'Success',
+        );
+      });
+
+      // Send DPDP consent SMS via SendRegistrationOTPWithDPDPConsent
+      ToastManager.showLoader();
+      final consentError = await _repo.sendOtp(
+        mobileNo: tecMobileNo.text.trim(),
+        otp: FormatterManager.generateRandomDigits(5),
+        regdId: '0',
+        createdBy: empCode.toString(),
+        subOrgId: subOrgId.toString(),
+        bocwRegNo: 'MH${tecWorkerRegNo.text.trim()}',
+        beneficiaryName: tecFullName.text.trim(),
+        relationId: selectedRelation.value?.relId?.toString() ?? '20',
+      );
+      ToastManager.hideLoader();
+      if (consentError != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final ctx = Get.context;
+          if (ctx == null) return;
+          ToastManager.showAlertDialog(
+            ctx,
+            'You Are Not Able To Use This Number Multiple Times.',
+            () => Get.back(),
+            title: 'Alert',
+          );
+        });
+      }
     }
   }
 
@@ -2815,6 +2852,14 @@ class D2DPatientRegistrationController extends GetxController {
       imageQuality: 80,
     );
     if (picked != null) healthCardPhotoPath.value = picked.path;
+  }
+
+  Future<void> pickConsentPhoto() async {
+    final picked = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+    if (picked != null) consentPhotoPath.value = picked.path;
   }
 
   Future<void> pickHivLetterPhoto() async {
@@ -3045,6 +3090,11 @@ class D2DPatientRegistrationController extends GetxController {
       }
     }
 
+    if (isCellularPhone.value && consentPhotoPath.value.isEmpty) {
+      ToastManager.toast('Please capture consent photo');
+      return false;
+    }
+
     // Patient photo is required when face detection is NOT skipped
     if (!skipFaceDetection.value && patientPhotoPath.value.isEmpty) {
       ToastManager.toast(
@@ -3103,6 +3153,52 @@ class D2DPatientRegistrationController extends GetxController {
       final rationCard = tecRationCardNo.text.trim().isEmpty
           ? 'NA'
           : tecRationCardNo.text.trim();
+
+      // ── Consent check (new in 9.82) ───────────────────────────────────────
+      // isCellularPhone=true → beneficiary clicked web-consent link themselves
+      //   → consent photo is mandatory, then skip getConsent() and go to verify.
+      // isCellularPhone=false → no phone → getConsent() API checks offline consent.
+      if (!isCellularPhone.value) {
+        final consentStatus = await _repo.getConsent(
+          bocwRegNo: regdNo,
+          beneficiaryName: tecFullName.text.trim(),
+          relationId: relationId,
+        );
+
+        ToastManager.hideLoader();
+        isSubmitting.value = false;
+
+        if (consentStatus == null) {
+          ToastManager.showAlertDialog(
+            context,
+            'Server not responding while checking consent. Please try again.',
+            () => Get.back(),
+          );
+          return;
+        }
+
+        if (consentStatus == 0) {
+          ToastManager.showAlertDialog(
+            context,
+            'या लाभार्थ्याकडून संमती (Consent) अदयाप प्राप्त झालेला नाही त्यामळे स्क्रीनिंग प्रक्रिया पुढे सुरू करण्यासाठी लाभार्थ्याला संमती सादर करण्यास सांगावे',
+            () => Get.back(),
+          );
+          return;
+        }
+
+        if (consentStatus == 2) {
+          ToastManager.showAlertDialog(
+            context,
+            'या लाभार्थ्याकडून संमती (Consent) मागे घेण्यात आली आहे त्यामळे स्क्रीनिंग प्रक्रिया पुढे सुरू करण्यासाठी लाभार्थ्याला संमती सादर करण्यास सांगावे',
+            () => Get.back(),
+          );
+          return;
+        }
+        // consentStatus == 1 → consent given, proceed
+        isSubmitting.value = true;
+        ToastManager.showLoader();
+      }
+      // ─────────────────────────────────────────────────────────────────────
 
       final verify = await _repo.verifyBeneficiaryDetails(
         regdNo: regdNo,
@@ -3241,6 +3337,7 @@ class D2DPatientRegistrationController extends GetxController {
             tecRationCardNo.text.trim().isEmpty
                 ? 'NA'
                 : tecRationCardNo.text.trim(),
+        'IsCellularPhone': isCellularPhone.value ? '1' : '0',
       };
       // ignore: avoid_print
       print('[Reg Params] ===== SUBMIT ${fields.length} FIELDS =====');
@@ -3263,6 +3360,10 @@ class D2DPatientRegistrationController extends GetxController {
                 : null,
         hivLetterPhoto:
             hivLetterPath.value.isNotEmpty ? File(hivLetterPath.value) : null,
+        consentPhoto:
+            consentPhotoPath.value.isNotEmpty
+                ? File(consentPhotoPath.value)
+                : null,
       );
 
       if (result?.status?.toLowerCase() == 'success') {

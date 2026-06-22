@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardElevation="2dp"
+    card_view:cardUseCompatPadding="true"
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray" />
+
+        <ImageButton
+            android:id="@+id/tv_patientname"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.1"
+            android:background="@color/light_yellow"
+            android:paddingLeft="5dp"
+            android:textSize="14sp" />
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray" />
+
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.9"
+            android:paddingLeft="5dp"
+            android:text="Doctor Assigned For Physical Exam"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+
+
+
+        <!--        <ImageView-->
+        <!--            android:layout_width="20dp"-->
+        <!--            android:layout_height="20dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            android:id="@+id/imvCall"-->
+        <!--            android:src="@android:drawable/sym_call_outgoing"-->
+        <!--            android:padding="5dp"/>-->
+
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:weightSum="1">
+
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray" />
+
+        <ImageButton
+            android:id="@+id/tv_patientname1"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.1"
+            android:background="@color/dark_green"
+            android:paddingLeft="5dp"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/mediumGray" />
+
+        <TextView
+            android:id="@+id/tv_type1"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.9"
+            android:paddingLeft="5dp"
+            android:gravity="center_vertical"
+            android:text="Physical Exam Done"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+
+
+
+        <!--        <ImageView-->
+        <!--            android:layout_width="20dp"-->
+        <!--            android:layout_height="20dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            android:id="@+id/imvCall"-->
+        <!--            android:src="@android:drawable/sym_call_outgoing"-->
+        <!--            android:padding="5dp"/>-->
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

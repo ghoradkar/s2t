@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/bg_border_grey_bold"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llecgtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="ECG"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvECGinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnBtCtr"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp" />
+
+    <com.myhindlab.abkat.view.WaveformView
+        android:id="@+id/wfECG"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:backgroundColor="@color/graph"
+        app:maxValue="250"
+        android:visibility="gone"
+        app:pointStep="0.5dp" />
+
+</LinearLayout>

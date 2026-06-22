@@ -1,0 +1,28 @@
+CampName:test1023
+CampDate:2023/03/10
+PostCampDate:2023/03/17
+LABCODE:30
+AffilatedHospitalId:22
+ArogyaMitra:test1023
+Distlgdcode:490
+UserId:1557
+CampLocation:pune
+ArogyaMitraMOB:9121212121
+CampTestMapping:[{"CampID":"0","TestID":"1","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"2","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"3","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"4","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"5","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"6","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"7","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"8","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"9","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"13","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"14","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"15","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"}]
+CampLabMapping:[{"Labcode":"30","Groupid":"4","IsActive":"1"},{"Labcode":"30","Groupid":"13","IsActive":"1"},{"Labcode":"30","Groupid":"11","IsActive":"1"},{"Labcode":"30","Groupid":"14","IsActive":"1"},{"Labcode":"30","Groupid":"12","IsActive":"1"},{"Labcode":"69","Groupid":"1","IsActive":"1"},{"Labcode":"69","Groupid":"10","IsActive":"1"},{"Labcode":"69","Groupid":"3","IsActive":"1"},{"Labcode":"69","Groupid":"5","IsActive":"1"},{"Labcode":"69","Groupid":"17","IsActive":"1"}]
+FileName:
+CampType:3
+InitiatedBy:3
+Taluka:4190
+LandingLab:3
+
+
+
+
+10 = "[{"CampID":"0","TestID":"1","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"2","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"3","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"4","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"5","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"6","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"7","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"8","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"9","IsTestProcess":"1","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"13","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"14","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"},{"CampID":"0","TestID":"15","IsTestProcess":"0","IsActive":"1","CreatedBy":"1557"}]"
+11 = "[{"Labcode":"30","Groupid":"4","IsActive":"1"},{"Labcode":"30","Groupid":"13","IsActive":"1"},{"Labcode":"30","Groupid":"11","IsActive":"1"},{"Labcode":"30","Groupid":"14","IsActive":"1"},{"Labcode":"30","Groupid":"12","IsActive":"1"},{"Labcode":"69","Groupid":"1","IsActive":"1"},{"Labcode":"69","Groupid":"10","IsActive":"1"},{"Labcode":"69","Groupid":"3","IsActive":"1"},{"Labcode":"69","Groupid":"5","IsActive":"1"},{"Labcode":"69","Groupid":"17","IsActive":"1"}]"
+12 = "/storage/emulated/0/Android/data/com.myhindlab.abkat.beta/cache/15474.png"
+13 = "3"
+14 = "3"
+15 = "4190"
+16 = "3"

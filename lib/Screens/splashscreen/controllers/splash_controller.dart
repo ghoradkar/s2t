@@ -8,6 +8,7 @@ import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
+import '../../../Modules/constants/APIConstants.dart';
 import '../../../Modules/utilities/DeviceInfoUtil.dart';
 import '../../../Screens/HomeScreen/HomeScreen.dart';
 import '../../../Screens/login/screens/login_screen.dart';
@@ -29,6 +30,10 @@ class SplashController extends GetxController {
   Future<void> _initialize() async {
     final deviceInfo = await DeviceInfoUtil().getPackageInfo();
     appVersion.value = deviceInfo.version;
+    // Extract major.minor from pubspec version (e.g. "9.79.0" → "9.79")
+    final parts = deviceInfo.version.split('.');
+    APIConstants.kNativeVersion =
+        parts.length >= 2 ? '${parts[0]}.${parts[1]}' : deviceInfo.version;
     await _checkVersionAndNavigate(deviceInfo.version);
   }
 

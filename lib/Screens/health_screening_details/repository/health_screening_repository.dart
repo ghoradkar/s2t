@@ -799,7 +799,7 @@ class HealthScreeningRepository {
         'snellenrightremark':          snellenRightRemark,
         'snellenleftremark':           snellenLeftRemark,
         'GagerChartReportleft':        jaegarLeft,
-        'VersionNo':                   '9.63',
+        'VersionNo':                   APIConstants.kNativeVersion,
       };
       debugPrint('submitVisualScreening URL: $uri body: $body');
       final response = await Repository.postResponse(

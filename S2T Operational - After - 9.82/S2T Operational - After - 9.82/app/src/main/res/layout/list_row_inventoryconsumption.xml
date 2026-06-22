@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="6.01">
+
+        <TextView
+            android:id="@+id/tv_inventory"
+            style="@style/TextView"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:padding="3dp"
+            android:text="Facility"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/lightgrey" />
+
+        <TextView
+            android:id="@+id/tv_quantity"
+            style="@style/TextView"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:padding="3dp"
+            android:text="Quantity"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/lightgrey" />
+
+        <EditText
+            android:id="@+id/et_consumedquantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="2"
+            android:background="@drawable/border_grey_roundedcorner"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="3"
+            android:padding="3dp"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightgrey" />
+
+</LinearLayout>

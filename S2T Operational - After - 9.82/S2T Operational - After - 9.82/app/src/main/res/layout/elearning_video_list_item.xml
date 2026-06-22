@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_darkblue"
+    android:orientation="vertical"
+    android:layout_margin="20dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:src="@drawable/icon_videoplay"
+            android:padding="1dp"
+            android:layout_height="200dp" />
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            style="@android:style/Widget.Holo.Light.RatingBar.Indicator"
+            android:layout_width="169dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/image_view"
+            android:layout_alignRight="@id/image_view"
+            android:gravity="center"
+            android:numStars="5"
+            android:rating="5.0"
+            android:isIndicator="true"
+            android:scaleX="0.59"
+            android:scaleY="0.55"
+            android:theme="@style/RatingBar" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextView"
+        android:drawableRight="@drawable/icon_rightarroebk"
+        android:layout_marginTop="5dp" />
+</LinearLayout>

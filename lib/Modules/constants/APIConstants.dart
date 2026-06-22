@@ -3,7 +3,7 @@
 class APIConstants {
   // Server-side version number — must match the native app version accepted by APIs.
   // Update this when the server requires a new minimum version.
-  static const String kNativeVersion = '9.79';
+  static String kNativeVersion = '';
   static String kAPKDownloader = "APKDownloader";
   static String kUserLogin = "UserLoginApp";
   static String kGetAssignedExpectedBefForCallingMobileNew =
@@ -337,8 +337,10 @@ class APIConstants {
   static String kGetBenificiaryRegisterOrNot = "GetBenificiaryRegisterOrNot";
   static String kGetDocumenttype = "GetDocumenttype";
   static String kGetOTPforRegistrationOrg = "GetOTPforRegistration_Org";
+  static String kSendRegistrationOTPWithDPDPConsent = "SendRegistrationOTPWithDPDPConsent";
   static String kVerifyRegistrationOTP = "VerifyRegistrationOTP";
   static String kVerifyDependentDetailsV2 = "VerifyDependentDetails_V2";
+  static String kGetBeneficiaryConsentDetails = "GetBeneficiaryConsentDetails";
   static String kGetWorkerInfroReRegistration = "GetWorkerInfroRe_Registration";
   static String kGetWorkerInfroFromWorkerRegid = "GetWorkerInfroFromWorkerRegid";
   static String kInsertSignatureandThumbDetails =

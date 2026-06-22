@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/HomeScreen/HomeScreen.dart';
@@ -30,13 +30,11 @@ class VerifyOtpController extends GetxController {
   final RxBool isButtonEnabled = false.obs;
   final RxInt timerSeconds = 120.obs;
 
-  String _appVersion = '1.0';
   Timer? _timer;
 
   @override
   void onInit() {
     super.onInit();
-    PackageInfo.fromPlatform().then((info) => _appVersion = info.version);
     startTimer();
   }
 
@@ -173,7 +171,7 @@ class VerifyOtpController extends GetxController {
     final response = await _repository.saveAndroidId({
       'UserId': '$empCode',
       'AndroidID': uuidString,
-      'VersionNo': _appVersion,
+      'VersionNo': APIConstants.kNativeVersion,
     });
 
     ToastManager.hideLoader();
