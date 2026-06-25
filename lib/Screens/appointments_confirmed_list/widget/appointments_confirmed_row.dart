@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../Modules/Json_Class/AppoinmentExpectedBeneficiariesResponse/AppoinmentExpectedBeneficiariesResponse.dart';
+import '../model/appoinment_expected_beneficiaries_response.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/constants/images.dart';

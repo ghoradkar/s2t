@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Json_Class/TeamCCResponse/TeamCCResponse.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/team_cc_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';

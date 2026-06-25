@@ -44,7 +44,7 @@ import '../../Modules/constants/images.dart';
 import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/utilities/DeviceInfoUtil.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
-import '../AppointmentsConfirmedList/AppointmentsConfirmedListScreen/AppointmentsConfirmedListScreen.dart';
+import '../appointments_confirmed_list/screen/appointments_confirmed_list_screen.dart';
 import '../ct_assignment/ct_assignment_screen/ct_assignment_screen.dart';
 import '../camp_creation/controllers/camp_creation_controller.dart';
 import '../camp_creation/screens/camp_creation_screen.dart';
@@ -599,14 +599,9 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(builder: (_) => const SelectCampScreen()),
           );
         } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (_) => AppointmentsConfirmedListScreen(
-                    dashboardType: DashboardMenu.PatientRegistration,
-                  ),
-            ),
+          Get.to(
+            () => const AppointmentsConfirmedListScreen(),
+            arguments: DashboardMenu.PatientRegistration,
           );
         }
         break;
@@ -761,14 +756,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case DashboardMenu.AppointmentConfirmedList:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    AppointmentsConfirmedListScreen(dashboardType: null),
-          ),
-        );
+        Get.to(() => const AppointmentsConfirmedListScreen());
         break;
       case DashboardMenu.CommonBeneficiaryList:
         break;
