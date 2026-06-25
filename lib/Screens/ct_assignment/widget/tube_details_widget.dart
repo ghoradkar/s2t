@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import '../../../../Modules/Json_Class/ConfirmatoryTestsScreeningTubeResponse/ConfirmatoryTestsScreeningTubeResponse.dart';
+import '../model/confirmatory_tests_screening_tube_response.dart';
 import '../../../../Modules/constants/constants.dart';
 
 class TubeDetailsWidget extends StatefulWidget {

@@ -8,16 +8,16 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import '../../../../../Modules/constants/fonts.dart';
-import '../../../../Modules/Enums/Enums.dart';
-import '../../../../Modules/FormatterManager/FormatterManager.dart';
-import '../../../../Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
-import '../../../../Modules/Json_Class/DepartmentTypeResponse/DepartmentTypeResponse.dart';
-import '../../../../Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
-import '../../../../Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
-import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Modules/Enums/Enums.dart';
+import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/DepartmentTypeResponse/DepartmentTypeResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
 class CTAssignmentFilterWidget extends StatefulWidget {

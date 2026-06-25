@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/SelectedTeamsDataListResponse.dart';
+import '../model/selected_teams_data_list_response.dart';
 // import 'package:s2toperational/Modules/constants/constants.dart;
 
 import 'package:s2toperational/Modules/constants/constants.dart';

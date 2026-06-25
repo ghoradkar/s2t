@@ -13,7 +13,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Modules/Json_Class/BeneficiaryDetailsforAssignTeamidDetailsResponse/BeneficiaryDetailsforAssignTeamidDetailsResponse.dart';
-import 'package:s2toperational/Screens/ct_assignment/assign_team_for_ct_sample_collection/assign_team_for_ct_sample_collection_screen.dart';
+import 'package:s2toperational/Screens/ct_assignment/screen/ct_sample_collection_screen.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/controllers/ct_appointment_confirmation_controller.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_beneficiary_model.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
@@ -299,7 +299,7 @@ class _CTAppointmentConfirmationScreenState
       context,
       MaterialPageRoute(
         builder:
-            (_) => AssignTeamForCTSampleCollection(
+            (_) => CTSampleCollectionScreen(
               beneficiaryDetails: details,
               isAppointmentFlow: true,
             ),

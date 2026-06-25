@@ -1,11 +1,11 @@
 // ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
-import '../../../../../Modules/constants/fonts.dart';
-import '../../../../Modules/Json_Class/T2TCTBeneficiaryDetailsResponse/T2TCTBeneficiaryDetailsResponse.dart';
-import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
+import '../model/t2t_ct_beneficiary_details_response.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
+import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 
 class CTAssignmentRowWidget extends StatelessWidget {
   CTAssignmentRowWidget({

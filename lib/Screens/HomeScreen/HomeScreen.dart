@@ -19,7 +19,7 @@ import 'package:s2toperational/Screens/calling_modules/controllers/expected_bene
 import 'package:s2toperational/Screens/calling_modules/repository/calling_dashboard_repository.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/calling_dashboard_screen.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/expected_beneficiary_list.dart';
-import 'package:s2toperational/Screens/d2d_availability/controllers/d2d_availability_controller.dart';
+import 'package:s2toperational/Screens/d2d_availability/controller/d2d_availability_controller.dart';
 import 'package:s2toperational/Screens/d2d_availability/screens/d2d_availability_screen.dart';
 import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
 import 'package:s2toperational/Screens/camp_calendar/screen/camp_calendar_screen.dart';
@@ -45,7 +45,7 @@ import '../../Modules/utilities/DataProvider.dart';
 import '../../Modules/utilities/DeviceInfoUtil.dart';
 import '../../Modules/widgets/S2TAppBar.dart';
 import '../appointments_confirmed_list/screen/appointments_confirmed_list_screen.dart';
-import '../ct_assignment/ct_assignment_screen/ct_assignment_screen.dart';
+import '../ct_assignment/screen/ct_assignment_screen.dart';
 import '../camp_creation/controllers/camp_creation_controller.dart';
 import '../camp_creation/screens/camp_creation_screen.dart';
 import '../camp_readiness_form/screens/camp_readiness_form_screen.dart';
@@ -730,10 +730,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // );
         break;
       case DashboardMenu.CTAssignment:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CTAssignmentScreen()),
-        );
+        Get.to(() => const CTAssignmentScreen());
         break;
       // case DashboardMenu.PacketReceive:
       //   Navigator.push(
