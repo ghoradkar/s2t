@@ -15,7 +15,7 @@ import '../../../../../Modules/constants/fonts.dart';
 import '../../../Modules/ChooseDocumentManager/ChooseDocumentManager.dart';
 import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/FormatterManager/FormatterManager.dart';
-import '../../../Modules/Json_Class/AdvadetailsNewVersionV2Response/AdvadetailsNewVersionV2Response.dart';
+import '../../expense_claim/model/advadetails_new_version_v2_response.dart';
 import '../../../Modules/Json_Class/BillSubmissionResponse/BillSubmissionResponse.dart';
 import '../../../Modules/Json_Class/ExpenseHeadResponse/ExpenseHeadResponse.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';

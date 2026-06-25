@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import '../../../Modules/Json_Class/AdvancesRequestDetailsShowResponse/AdvancesRequestDetailsShowResponse.dart';
+import '../../expense_claim/model/advances_request_details_show_response.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';

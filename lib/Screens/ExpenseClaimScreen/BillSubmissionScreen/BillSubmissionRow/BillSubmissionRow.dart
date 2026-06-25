@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../Modules/Json_Class/AdvadetailsNewVersionV2Response/AdvadetailsNewVersionV2Response.dart';
+import '../../../expense_claim/model/advadetails_new_version_v2_response.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
