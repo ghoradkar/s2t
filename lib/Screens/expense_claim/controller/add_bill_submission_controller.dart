@@ -185,7 +185,7 @@ class AddBillSubmissionController extends GetxController {
 
     advanceApprovedAmount = 'Rs. $approvedAmt';
     registeredWorkers = d.registeredbeneficiarycount?.toString() ?? '';
-    showPhotoUpload = (selectedSubExpenseHead?.isBillRequired ?? '') == 'Yes';
+    showPhotoUpload = selectedSubExpenseHead?.isbillrequired ?? false;
     update();
   }
 
