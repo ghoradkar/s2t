@@ -12,7 +12,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Modules/Json_Class/BeneficiaryDetailsforAssignTeamidDetailsResponse/BeneficiaryDetailsforAssignTeamidDetailsResponse.dart';
+import 'package:s2toperational/Screens/ct_assignment/model/beneficiary_details_for_assign_teamid_details_response.dart';
 import 'package:s2toperational/Screens/ct_assignment/screen/ct_sample_collection_screen.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/controllers/ct_appointment_confirmation_controller.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_beneficiary_model.dart';
