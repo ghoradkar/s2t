@@ -49,7 +49,7 @@ import '../ct_assignment/ct_assignment_screen/ct_assignment_screen.dart';
 import '../camp_creation/controllers/camp_creation_controller.dart';
 import '../camp_creation/screens/camp_creation_screen.dart';
 import '../camp_readiness_form/screens/camp_readiness_form_screen.dart';
-import '../D2DTeam/D2DTeamsScreen/D2DTeamsScreen.dart';
+import '../d2d_team/screen/d2d_team_screen.dart';
 import '../device_and_resource_mapping/screens/device_allocation_screen.dart';
 import '../ExpenseClaimScreen/ExpenseClaimDashboardScreen.dart';
 import '../resource_re_mapping/screens/resource_re_mapping_camp_list_screen.dart';

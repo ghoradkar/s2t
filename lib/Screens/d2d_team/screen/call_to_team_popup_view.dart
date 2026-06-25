@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../Modules/Json_Class/D2DTeamMemberDetailsResponse/D2DTeamMemberDetailsResponse.dart';
-import 'CallToTeamRow/CallToTeamRow.dart';
+import '../model/d2d_team_member_details_response.dart';
+import 'call_to_team_row.dart';
 
 class CallToTeamPopupView extends StatelessWidget {
   CallToTeamPopupView({super.key, required this.callingList});
 
-  List<D2DTeamMemberDetailsOutput> callingList = [];
+  List<D2DTeamMemberDetailsOutput> callingList;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +26,7 @@ class CallToTeamPopupView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
+                const Expanded(
                   child: Text(
                     "Call To Team",
                     style: TextStyle(
@@ -38,9 +39,7 @@ class CallToTeamPopupView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: Container(
                       width: 60,
                       height: 30,
@@ -48,7 +47,7 @@ class CallToTeamPopupView extends StatelessWidget {
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           "Close",
                           style: TextStyle(
@@ -68,9 +67,9 @@ class CallToTeamPopupView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: ListView.builder(
-                itemCount: 1,
+                itemCount: callingList.length,
                 itemBuilder: (context, index) {
-                  D2DTeamMemberDetailsOutput item = callingList[index];
+                  final item = callingList[index];
                   return CallToTeamRow(
                     item: item,
                     onCallingTap: () {

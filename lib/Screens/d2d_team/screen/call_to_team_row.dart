@@ -1,22 +1,24 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import '../../../../../Modules/constants/fonts.dart';
-import '../../../../Modules/Json_Class/D2DTeamMemberDetailsResponse/D2DTeamMemberDetailsResponse.dart';
-import '../../../../Modules/constants/constants.dart';
-import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
+import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+
+import '../model/d2d_team_member_details_response.dart';
 
 class CallToTeamRow extends StatelessWidget {
   CallToTeamRow({super.key, required this.item, required this.onCallingTap});
 
   D2DTeamMemberDetailsOutput item;
   Function() onCallingTap;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             offset: Offset(0, 1),
             color: Colors.grey,
@@ -24,7 +26,7 @@ class CallToTeamRow extends StatelessWidget {
             blurRadius: 4,
           ),
         ],
-        color: Color(0XFFFFFFFF),
+        color: const Color(0XFFFFFFFF),
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(12),
