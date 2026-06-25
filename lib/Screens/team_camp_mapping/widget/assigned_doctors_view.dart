@@ -1,26 +1,26 @@
 // ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
-import '../../../Modules/Json_Class/TeamsMMUDoctorListResponse/TeamsMMUDoctorListResponse.dart';
+import '../model/assigned_external_resource_details_response.dart';
 import '../../../Modules/constants/constants.dart';
-import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/constants/fonts.dart';
 
-class MMUDoctorView extends StatefulWidget {
-  MMUDoctorView({
+class AssignedDoctorsView extends StatefulWidget {
+  AssignedDoctorsView({
     super.key,
     required this.list,
     required this.deleteDidPressed,
   });
-  List<TeamsMMUDoctorListOutput> list = [];
-  Function(TeamsMMUDoctorListOutput) deleteDidPressed;
 
+  List<AssignedExternalResourceDetailsOutput> list = [];
+  Function(AssignedExternalResourceDetailsOutput) deleteDidPressed;
   @override
-  State<MMUDoctorView> createState() => _MMUDoctorViewState();
+  State<AssignedDoctorsView> createState() => _AssignedDoctorsViewState();
 }
 
-class _MMUDoctorViewState extends State<MMUDoctorView> {
+class _AssignedDoctorsViewState extends State<AssignedDoctorsView> {
   bool isExpaneded = false;
 
   @override
@@ -57,7 +57,7 @@ class _MMUDoctorViewState extends State<MMUDoctorView> {
                 children: [
                   Expanded(
                     child: Text(
-                      "MMU Doctor",
+                      "Assigned Doctor",
                       style: TextStyle(
                         color: kWhiteColor,
                         fontFamily: FontConstants.interFonts,
@@ -87,7 +87,7 @@ class _MMUDoctorViewState extends State<MMUDoctorView> {
               shrinkWrap: true,
               itemCount: widget.list.length,
               itemBuilder: (context, index) {
-                TeamsMMUDoctorListOutput teamCampDetailsOutput =
+                AssignedExternalResourceDetailsOutput teamCampDetailsOutput =
                     widget.list[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),

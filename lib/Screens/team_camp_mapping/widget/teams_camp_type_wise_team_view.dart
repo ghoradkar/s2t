@@ -1,37 +1,37 @@
 // ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Json_Class/TeamDetailsListForAssignResponse/TeamDetailsListForAssignResponse.dart';
+import '../model/teams_camp_type_wise_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-//
-// import '../../Modules/Json_Class/TeamDetailsListForAssignResponse/TeamDetailsListForAssignResponse.dart';
+
+// import '../../Modules/Json_Class/TeamsCampTypeWiseResponse/TeamsCampTypeWiseResponse.dart';
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/fonts.dart';
 // import '../../Modules/constants/images.dart';
 // import '../../Modules/utilities/SizeConfig.dart';
 // import '../../Modules/widgets/AppActiveButton.dart';
 
-class TeamsDetailsListForAssignView extends StatefulWidget {
-  TeamsDetailsListForAssignView({
+class TeamsCampTypeWiseTeamView extends StatefulWidget {
+  TeamsCampTypeWiseTeamView({
     super.key,
     required this.list,
     required this.onTapTeam,
   });
 
-  List<TeamDetailsListForAssignOutput> list;
-  Function(TeamDetailsListForAssignOutput) onTapTeam;
+  List<TeamsCampTypeWiseOutput> list;
+  Function(TeamsCampTypeWiseOutput) onTapTeam;
+
   @override
-  State<TeamsDetailsListForAssignView> createState() =>
-      _TeamsDetailsListForAssignViewState();
+  State<TeamsCampTypeWiseTeamView> createState() =>
+      _TeamsCampTypeWiseTeamViewState();
 }
 
-class _TeamsDetailsListForAssignViewState
-    extends State<TeamsDetailsListForAssignView> {
-  TeamDetailsListForAssignOutput? selectedTeam;
+class _TeamsCampTypeWiseTeamViewState extends State<TeamsCampTypeWiseTeamView> {
+  TeamsCampTypeWiseOutput? selectedTeam;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -53,7 +53,7 @@ class _TeamsDetailsListForAssignViewState
               child: ListView.builder(
                 itemCount: widget.list.length,
                 itemBuilder: (context, index) {
-                  TeamDetailsListForAssignOutput obj = widget.list[index];
+                  TeamsCampTypeWiseOutput obj = widget.list[index];
 
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 26),
@@ -81,7 +81,7 @@ class _TeamsDetailsListForAssignViewState
                             children: [
                               Expanded(
                                 child: Text(
-                                  obj.teamName ?? "",
+                                  obj.teamname ?? "",
                                   style: TextStyle(
                                     color: kBlackColor,
                                     fontFamily: FontConstants.interFonts,
@@ -93,7 +93,7 @@ class _TeamsDetailsListForAssignViewState
                               const SizedBox(width: 8),
                               GestureDetector(
                                 onTap: () {
-                                  for (TeamDetailsListForAssignOutput obj1
+                                  for (TeamsCampTypeWiseOutput obj1
                                       in widget.list) {
                                     obj1.selected = false;
                                   }

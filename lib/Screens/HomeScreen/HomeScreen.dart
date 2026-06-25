@@ -33,7 +33,7 @@ import 'package:s2toperational/Screens/s2t_patient_app/screen/S2TPatientAppScree
 import 'package:s2toperational/Screens/super_admin/controller/super_admin_controller.dart';
 import 'package:s2toperational/Screens/super_admin/screens/super_admin_dashboard.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/D2DPhysicalExaminationDetailsScreen/D2DPhysicalExaminationDetailsScreen.dart';
-import 'package:s2toperational/Screens/team_camp_mapping/TeamCampMappingScreen/TeamCampMappingScreen.dart';
+import 'package:s2toperational/Screens/team_camp_mapping/screen/team_camp_mapping_screen.dart';
 import 'package:s2toperational/Screens/team_photos/screen/team_photos_screen.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/select_camp_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/select_camp_screen.dart';
@@ -748,12 +748,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case DashboardMenu.TeamCampMapping:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const TeamCampMappingScreen(),
-          ),
-        );
+        Get.to(() => const TeamCampMappingScreen());
         break;
       case DashboardMenu.AppointmentConfirmedList:
         Get.to(() => const AppointmentsConfirmedListScreen());

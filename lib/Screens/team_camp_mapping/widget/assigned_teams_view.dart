@@ -1,26 +1,26 @@
-// ignore_for_file: must_be_immutable, file_names
+// ignore_for_file: must_be_immutable, avoid_print, file_names
 
 import 'package:flutter/material.dart';
-import '../../../Modules/Json_Class/AssignedExternalResourceDetailsResponse/AssignedExternalResourceDetailsResponse.dart';
+import '../model/team_camp_details_list_response.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../../../Modules/constants/fonts.dart';
+import '../../../Modules/constants/fonts.dart';
 
-class AssignedDoctorsView extends StatefulWidget {
-  AssignedDoctorsView({
+class AssignedTeamsView extends StatefulWidget {
+  AssignedTeamsView({
     super.key,
-    required this.list,
+    required this.assignedTeamsList,
     required this.deleteDidPressed,
   });
 
-  List<AssignedExternalResourceDetailsOutput> list = [];
-  Function(AssignedExternalResourceDetailsOutput) deleteDidPressed;
+  List<TeamCampDetailsOutput> assignedTeamsList = [];
+  Function(TeamCampDetailsOutput) deleteDidPressed;
   @override
-  State<AssignedDoctorsView> createState() => _AssignedDoctorsViewState();
+  State<AssignedTeamsView> createState() => _AssignedTeamsViewState();
 }
 
-class _AssignedDoctorsViewState extends State<AssignedDoctorsView> {
+class _AssignedTeamsViewState extends State<AssignedTeamsView> {
   bool isExpaneded = false;
 
   @override
@@ -57,7 +57,7 @@ class _AssignedDoctorsViewState extends State<AssignedDoctorsView> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Assigned Doctor",
+                      "Assigned Teams",
                       style: TextStyle(
                         color: kWhiteColor,
                         fontFamily: FontConstants.interFonts,
@@ -85,10 +85,10 @@ class _AssignedDoctorsViewState extends State<AssignedDoctorsView> {
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: widget.list.length,
+              itemCount: widget.assignedTeamsList.length,
               itemBuilder: (context, index) {
-                AssignedExternalResourceDetailsOutput teamCampDetailsOutput =
-                    widget.list[index];
+                TeamCampDetailsOutput teamCampDetailsOutput =
+                    widget.assignedTeamsList[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
@@ -124,7 +124,17 @@ class _AssignedDoctorsViewState extends State<AssignedDoctorsView> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                teamCampDetailsOutput.memberName ?? "NA",
+                                teamCampDetailsOutput.member1 ?? "NA",
+                                style: TextStyle(
+                                  color: kLabelTextColor,
+                                  fontFamily: FontConstants.interFonts,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: responsiveFont(14),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                teamCampDetailsOutput.member2 ?? "NA",
                                 style: TextStyle(
                                   color: kLabelTextColor,
                                   fontFamily: FontConstants.interFonts,

@@ -1,27 +1,26 @@
 // ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
-
-import '../../../Modules/Json_Class/AssignedExternalResourceDetailsResponse/AssignedExternalResourceDetailsResponse.dart';
+import '../model/teams_mmu_doctor_list_response.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 
-class AssignedFlexiDoctorsView extends StatefulWidget {
-  AssignedFlexiDoctorsView({
+class MMUDoctorView extends StatefulWidget {
+  MMUDoctorView({
     super.key,
     required this.list,
     required this.deleteDidPressed,
   });
-  List<AssignedExternalResourceDetailsOutput> list = [];
-  Function(AssignedExternalResourceDetailsOutput) deleteDidPressed;
+  List<TeamsMMUDoctorListOutput> list = [];
+  Function(TeamsMMUDoctorListOutput) deleteDidPressed;
+
   @override
-  State<AssignedFlexiDoctorsView> createState() =>
-      _AssignedFlexiDoctorsViewState();
+  State<MMUDoctorView> createState() => _MMUDoctorViewState();
 }
 
-class _AssignedFlexiDoctorsViewState extends State<AssignedFlexiDoctorsView> {
+class _MMUDoctorViewState extends State<MMUDoctorView> {
   bool isExpaneded = false;
 
   @override
@@ -58,7 +57,7 @@ class _AssignedFlexiDoctorsViewState extends State<AssignedFlexiDoctorsView> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Assigned Flexi Doctor",
+                      "MMU Doctor",
                       style: TextStyle(
                         color: kWhiteColor,
                         fontFamily: FontConstants.interFonts,
@@ -88,7 +87,7 @@ class _AssignedFlexiDoctorsViewState extends State<AssignedFlexiDoctorsView> {
               shrinkWrap: true,
               itemCount: widget.list.length,
               itemBuilder: (context, index) {
-                AssignedExternalResourceDetailsOutput teamCampDetailsOutput =
+                TeamsMMUDoctorListOutput teamCampDetailsOutput =
                     widget.list[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
