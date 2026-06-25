@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class SubDevicesListResponse {
   String? status;
   String? message;
@@ -11,17 +13,17 @@ class SubDevicesListResponse {
     if (json['output'] != null) {
       output = <SubDevicesOutput>[];
       json['output'].forEach((v) {
-        output!.add(new SubDevicesOutput.fromJson(v));
+        output!.add(SubDevicesOutput.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.output != null) {
-      data['output'] = this.output!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['message'] = message;
+    if (output != null) {
+      data['output'] = output!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -34,12 +36,14 @@ class SubDevicesOutput {
   String? deviceModel;
   String? deviceSerial;
   bool isSelected = false;
-  SubDevicesOutput(
-      {this.subDevicesId,
-      this.devicesId,
-      this.deviceCompName,
-      this.deviceModel,
-      this.deviceSerial});
+
+  SubDevicesOutput({
+    this.subDevicesId,
+    this.devicesId,
+    this.deviceCompName,
+    this.deviceModel,
+    this.deviceSerial,
+  });
 
   SubDevicesOutput.fromJson(Map<String, dynamic> json) {
     subDevicesId = json['SubDevicesId'];
@@ -50,12 +54,12 @@ class SubDevicesOutput {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['SubDevicesId'] = this.subDevicesId;
-    data['DevicesId'] = this.devicesId;
-    data['DeviceCompName'] = this.deviceCompName;
-    data['DeviceModel'] = this.deviceModel;
-    data['DeviceSerial'] = this.deviceSerial;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['SubDevicesId'] = subDevicesId;
+    data['DevicesId'] = devicesId;
+    data['DeviceCompName'] = deviceCompName;
+    data['DeviceModel'] = deviceModel;
+    data['DeviceSerial'] = deviceSerial;
     return data;
   }
 }

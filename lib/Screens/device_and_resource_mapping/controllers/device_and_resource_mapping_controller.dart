@@ -4,12 +4,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/DeviceMappingManager/DeviceMappingManager.dart';
+import 'package:s2toperational/Screens/device_and_resource_mapping/controllers/DeviceMappingManager.dart';
 import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
 import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DevicesListResponse/DevicesListResponse.dart';
+import '../models/DevicesListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/ResourceListResponse/ResourceListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubDevicesListResponse/SubDevicesListResponse.dart';
+import '../models/SubDevicesListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';

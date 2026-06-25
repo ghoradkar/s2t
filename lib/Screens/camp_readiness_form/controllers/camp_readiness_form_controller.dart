@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/CampIdListResponse/CampIdListResponse.dart';
+import '../models/CampIdListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';

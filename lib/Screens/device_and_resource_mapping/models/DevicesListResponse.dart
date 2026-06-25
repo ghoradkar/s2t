@@ -1,4 +1,6 @@
-import '../SubDevicesListResponse/SubDevicesListResponse.dart';
+// ignore_for_file: file_names
+
+import 'SubDevicesListResponse.dart';
 
 class DevicesListResponse {
   String? status;
@@ -19,7 +21,7 @@ class DevicesListResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;
     data['message'] = message;
     if (output != null) {
@@ -36,11 +38,12 @@ class DevicesOutput {
   int? requiredDevice;
   List<SubDevicesOutput> subDeviceList = [];
 
-  DevicesOutput(
-      {this.devicesId,
-      this.deviceName,
-      this.expectedBeneficary,
-      this.requiredDevice});
+  DevicesOutput({
+    this.devicesId,
+    this.deviceName,
+    this.expectedBeneficary,
+    this.requiredDevice,
+  });
 
   DevicesOutput.fromJson(Map<String, dynamic> json) {
     devicesId = json['DevicesId'];
@@ -50,7 +53,7 @@ class DevicesOutput {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['DevicesId'] = devicesId;
     data['DeviceName'] = deviceName;
     data['ExpectedBeneficary'] = expectedBeneficary;

@@ -7,7 +7,7 @@ import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/Json_Class/ExpenseCampIDListV1Response/ExpenseCampIDListV1Response.dart';
 import 'package:s2toperational/Modules/Json_Class/ScreeningTestCampCreationResponse/ScreeningTestCampCreationResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/UpdateSubResourceListResponse/UpdateSubResourceListResponse.dart';
+import 'package:s2toperational/Screens/resource_re_mapping/models/UpdateSubResourceListResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';

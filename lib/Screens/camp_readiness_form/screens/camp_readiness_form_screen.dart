@@ -5,7 +5,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/Json_Class/CampIdListResponse/CampIdListResponse.dart';
+import '../models/CampIdListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';

@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
 import 'package:s2toperational/Modules/Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DevicesListResponse/DevicesListResponse.dart';
+import '../models/DevicesListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/ResourceListResponse/ResourceListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubDevicesListResponse/SubDevicesListResponse.dart';
+import '../models/SubDevicesListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubmitDeviceMappingResponse/SubmitDeviceMappingResponse.dart';
+import '../models/SubmitDeviceMappingResponse.dart';
 
 class DeviceAndResourceMappingRepository {
   final APIManager _api = APIManager();

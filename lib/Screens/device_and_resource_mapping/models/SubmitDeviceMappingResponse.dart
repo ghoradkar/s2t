@@ -5,7 +5,7 @@ class SubmitDeviceMappingResponse {
   String? exceptionValue;
   String? message;
 
-  SubmitDeviceMappingResponse({this.status, this.exceptionValue});
+  SubmitDeviceMappingResponse({this.status, this.exceptionValue, this.message});
 
   SubmitDeviceMappingResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];

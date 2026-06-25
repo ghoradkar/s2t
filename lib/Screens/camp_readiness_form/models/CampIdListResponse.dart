@@ -45,6 +45,7 @@ class CampIdOutput {
   int? siteDetailId;
 
   bool isSelected = false;
+
   CampIdOutput({
     this.campCreatedBy,
     this.campDate,
