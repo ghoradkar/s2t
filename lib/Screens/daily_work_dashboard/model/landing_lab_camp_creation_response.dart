@@ -1,1 +1,1 @@
-export 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+﻿export 'package:s2toperational/Screens/camp_creation/models/landing_lab_camp_creation_response.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, file_names
+﻿// ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,8 +13,8 @@ import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/DepartmentTypeResponse/DepartmentTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/taluka_camp_creation_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';

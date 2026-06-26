@@ -1,31 +1,31 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import '../models/CampIdListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import '../models/campId_list_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/camp_readiness_form/models/CampReadinessFormListResponse.dart';
-import 'package:s2toperational/Screens/camp_readiness_form/models/CampReadinessFormSubmittResponse.dart';
+import 'package:s2toperational/Screens/camp_readiness_form/models/camp_readiness_form_list_response.dart';
+import 'package:s2toperational/Screens/camp_readiness_form/models/camp_readiness_form_submitt_response.dart';
 import 'package:s2toperational/Screens/camp_readiness_form/repository/camp_readiness_form_repository.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_number_by_campId_and_user_id_list_response.dart';
 
 class CampReadinessFormController extends GetxController {
   final CampReadinessFormRepository _repo = CampReadinessFormRepository();
 
-  // ─── User data ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ User data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String campDate = '';
   int dESGID = 0;
   int empCode = 0;
   int districtId = 0;
 
-  // ─── Selections ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Selections â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   CampTypeOutput? selectedCampType;
   CampIdOutput? selectedCampID;
@@ -33,17 +33,17 @@ class CampReadinessFormController extends GetxController {
   String teamId = '0';
   String teamName = '';
 
-  // ─── Flags ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Flags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   bool showTeam = false;
   bool showSubmitButton = true;
   bool isFormSubmitted = false;
 
-  // ─── Form items list ───────────────────────────────────────────────────────
+  // â”€â”€â”€ Form items list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   List<CampReadinessFormOutput> campReadinessList = [];
 
-  // ─── Lifecycle ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @override
   void onInit() {
@@ -55,7 +55,7 @@ class CampReadinessFormController extends GetxController {
     districtId = user?.dISTLGDCODE ?? 0;
   }
 
-  // ─── District ──────────────────────────────────────────────────────────────
+  // â”€â”€â”€ District â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<DistrictOutput>> fetchDistrict() async {
     ToastManager.showLoader();
@@ -87,7 +87,7 @@ class CampReadinessFormController extends GetxController {
     update();
   }
 
-  // ─── Camp Type ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp Type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<CampTypeOutput>> fetchCampType() async {
     ToastManager.showLoader();
@@ -140,7 +140,7 @@ class CampReadinessFormController extends GetxController {
     update();
   }
 
-  // ─── Camp ID ───────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp ID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<CampIdOutput>> fetchCampList() async {
     if (selectedDistrict == null) {
@@ -195,7 +195,7 @@ class CampReadinessFormController extends GetxController {
     }
   }
 
-  // ─── Team ID ───────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Team ID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> _fetchTeamId() async {
     try {
@@ -228,7 +228,7 @@ class CampReadinessFormController extends GetxController {
     }
   }
 
-  // ─── Form items ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Form items â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> _fetchFormItems() async {
     ToastManager.showLoader();
@@ -266,7 +266,7 @@ class CampReadinessFormController extends GetxController {
     update();
   }
 
-  // ─── Submit ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void validations() {
     bool isSuccess = true;

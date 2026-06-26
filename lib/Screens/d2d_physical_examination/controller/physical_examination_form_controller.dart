@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/controller/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/S2TAlertView.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_examnination_details_response.dart';
 
 class PhysicalExaminationFormController extends GetxController {
   final int regdId;

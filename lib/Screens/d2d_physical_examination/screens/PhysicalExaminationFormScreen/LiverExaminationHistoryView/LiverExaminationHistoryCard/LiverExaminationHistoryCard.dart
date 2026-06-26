@@ -7,7 +7,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 // import 'package:s2toperational/Modules/Json_Class/YearsResponse/years_response.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_examnination_details_response.dart';
 import 'package:s2toperational/Modules/utilities/validators.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
@@ -15,8 +15,8 @@ import 'package:s2toperational/Modules/widgets/AppMultilineTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../../../Modules/constants/constants.dart';
-import '../../../../model/MonthsResponse.dart';
-import '../../../../model/YearsResponse.dart';
+import '../../../../model/months_response.dart';
+import '../../../../model/years_response.dart';
 
 class LiverExaminationHistoryCard extends StatefulWidget {
   const LiverExaminationHistoryCard({

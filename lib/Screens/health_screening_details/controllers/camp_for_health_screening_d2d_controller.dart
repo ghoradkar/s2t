@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
@@ -220,7 +220,7 @@ class CampForHealthScreeningD2DController extends GetxController {
       return;
     }
     if (obj.teamMemberAttendance == 1) {
-      ToastManager.toast('टीम मेंबरची attendance अजूनही pending आहे.');
+      ToastManager.toast('à¤Ÿà¥€à¤® à¤®à¥‡à¤‚à¤¬à¤°à¤šà¥€ attendance à¤…à¤œà¥‚à¤¨à¤¹à¥€ pending à¤†à¤¹à¥‡.');
       return;
     }
 

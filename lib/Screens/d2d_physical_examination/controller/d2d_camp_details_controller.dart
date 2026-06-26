@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DTeamWisePhyExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_team_wise_phy_exam_details_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/repository/d2d_physical_examination_repository.dart';
 
 class D2DCampDetailsController extends GetxController {

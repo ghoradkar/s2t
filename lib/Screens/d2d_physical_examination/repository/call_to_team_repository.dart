@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamWisePhysicalExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_wise_physical_exam_details_response.dart';
 
 class CallToTeamRepository {
   final APIManager _apiManager = APIManager();

@@ -5,7 +5,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Screens/camp_readiness_form/models/CampReadinessFormListResponse.dart';
+import 'package:s2toperational/Screens/camp_readiness_form/models/camp_readiness_form_list_response.dart';
 
 class CampReadinessFormRow extends StatefulWidget {
   CampReadinessFormRow({

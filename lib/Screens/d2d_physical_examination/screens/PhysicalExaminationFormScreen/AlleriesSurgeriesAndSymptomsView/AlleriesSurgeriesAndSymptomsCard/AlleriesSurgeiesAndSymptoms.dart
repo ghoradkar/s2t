@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/controller/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 

@@ -1,12 +1,12 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/DepartmentTypeResponse/DepartmentTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/taluka_camp_creation_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../model/t2t_ct_beneficiary_details_response.dart';

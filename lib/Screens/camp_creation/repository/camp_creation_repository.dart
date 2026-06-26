@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:convert';
 import 'dart:io';
@@ -6,13 +6,13 @@ import 'dart:io';
 import 'package:http/io_client.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
-import '../models/HomeAndHubLabCampCreationResponse.dart';
-import '../models/InitiatedByResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/ScreeningTestCampCreationResponse/ScreeningTestCampCreationResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
+import '../models/home_and_hub_lab_camp_creation_response.dart';
+import '../models/initiated_by_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/screening_test_camp_creation_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/taluka_camp_creation_response.dart';
 
 class CampCreationRepository {
   IOClient _client() => IOClient(
@@ -22,7 +22,7 @@ class CampCreationRepository {
   String get _d2dBase => APIManager.kD2DBaseURL;
   String get _cwBase => APIManager.kConstructionWorkerBaseURL;
 
-  // ─── Camp Type ───────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp Type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<CampTypeResponse?> fetchCampTypeNonD2D() async {
     final url = Uri.parse('$_d2dBase${APIConstants.kCampTypeNonD2D}');
@@ -68,7 +68,7 @@ class CampCreationRepository {
     }
   }
 
-  // ─── Dropdowns ───────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Dropdowns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<InitiatedByResponse?> fetchInitiatedBy() async {
     final url =
@@ -164,7 +164,7 @@ class CampCreationRepository {
     }
   }
 
-  // ─── Create Camp ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Create Camp â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<({bool success, String error, String campId})> createCamp(
       Map<String, String> params) async {
@@ -187,7 +187,7 @@ class CampCreationRepository {
     }
   }
 
-  // ─── Google Maps ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Google Maps â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<Map<String, dynamic>>> autocomplete(String input) async {
     try {

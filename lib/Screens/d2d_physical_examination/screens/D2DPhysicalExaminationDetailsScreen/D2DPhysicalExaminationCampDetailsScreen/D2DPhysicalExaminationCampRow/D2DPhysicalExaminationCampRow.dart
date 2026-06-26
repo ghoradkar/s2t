@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DTeamWisePhyExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_team_wise_phy_exam_details_response.dart';
 
 class D2DPhysicalExaminationCampRow extends StatelessWidget {
   D2DPhysicalExaminationCampRow({

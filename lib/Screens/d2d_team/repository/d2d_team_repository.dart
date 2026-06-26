@@ -1,9 +1,9 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:async';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Modules/Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
 
 import '../model/d2d_non_working_teams_response.dart';

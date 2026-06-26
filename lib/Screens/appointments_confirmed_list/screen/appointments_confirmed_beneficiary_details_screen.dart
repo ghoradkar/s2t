@@ -95,7 +95,7 @@ class AppointmentsConfirmedBeneficiaryDetailsScreen extends StatelessWidget {
                             const SizedBox(width: 5),
                             Text(
                               '${ctrl.selectedBeneficiary?.age ?? ''} Years',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: dropDownTitleHeader,

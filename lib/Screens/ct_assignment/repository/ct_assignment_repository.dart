@@ -1,9 +1,9 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:async';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
 import 'package:s2toperational/Modules/Json_Class/T2TCTUserDetailsResponse/T2TCTUserDetailsResponse.dart';
 import '../model/beneficiary_details_for_assign_teamid_details_response.dart';
 import '../model/confirmatory_tests_screening_response.dart';

@@ -1,1 +1,1 @@
-export 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
+﻿export 'package:s2toperational/Screens/camp_calendar/model/bind_division_response.dart';

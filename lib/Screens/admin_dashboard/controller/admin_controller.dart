@@ -1,10 +1,10 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';

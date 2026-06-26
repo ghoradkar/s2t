@@ -5,7 +5,7 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_examnination_details_response.dart';
 
 class PatientInformationView extends StatefulWidget {
   const PatientInformationView({super.key, required this.patientObj});

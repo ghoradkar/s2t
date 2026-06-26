@@ -1,11 +1,11 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:async';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
 import '../model/assigned_external_resource_details_response.dart';
 import '../model/team_camp_details_list_response.dart';

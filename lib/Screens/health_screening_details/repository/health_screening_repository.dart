@@ -1,11 +1,11 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/DishaResponse/DishaResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/Json_Class/SpecimenTypeResponse/SpecimenTypeResponse.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/constants/Repository.dart';
@@ -19,7 +19,7 @@ import '../models/lung_function_test_model.dart';
 class HealthScreeningRepository {
   final APIManager _apiManager = APIManager();
 
-  // ─── Camp Closing ──────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp Closing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<CampCloseCampDetailsResponse?> getCampDetailsCount({
     required int campId,
@@ -143,7 +143,7 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Camp D2D ──────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp D2D â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<CampDetailsonLabForDoorToDoorResponse?> getCampDetailsForD2D({
     required String campDate,
@@ -215,7 +215,7 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Camp Regular ──────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp Regular â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<ResourceReMappingCampResponse?> getApprovedCampList({
     required String campDate,
@@ -316,7 +316,7 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Patient List ──────────────────────────────────────────────────────────
+  // â”€â”€â”€ Patient List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<String> getTeamNumber({
     required int campId,
@@ -436,7 +436,7 @@ class HealthScreeningRepository {
     return result;
   }
 
-  // ─── District List ─────────────────────────────────────────────────────────
+  // â”€â”€â”€ District List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<DistrictResponse?> getDistrictByUserID({
     required int userId,
@@ -454,7 +454,7 @@ class HealthScreeningRepository {
     return result;
   }
 
-  // ─── Sample Collection ─────────────────────────────────────────────────────
+  // â”€â”€â”€ Sample Collection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<SpecimenTypeOutput>> getSpecimenTypes() async {
     try {
@@ -556,7 +556,7 @@ class HealthScreeningRepository {
     return false;
   }
 
-  // ─── Urine Sample Collection ───────────────────────────────────────────────
+  // â”€â”€â”€ Urine Sample Collection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<Map<String, dynamic>?> submitUrineSampleCollection({
     required int regdId,
@@ -591,7 +591,7 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Disha LIS ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Disha LIS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   static const String _dishaBase = 'http://103.251.94.38:8080/DISHA_API';
 
@@ -651,9 +651,9 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Audio Screening ───────────────────────────────────────────────────────
+  // â”€â”€â”€ Audio Screening â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  /// Mirrors native InsertAudioImages AsyncTask — multipart POST to
+  /// Mirrors native InsertAudioImages AsyncTask â€” multipart POST to
   /// InsertAudioImages_NEW_VersionNo.ashx with RegId, CreatedBy, JsonString,
   /// PDF chart file, and VersionNo.
   Future<bool> saveAudioScreeningData({
@@ -701,7 +701,7 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Lung Function Test ────────────────────────────────────────────────────
+  // â”€â”€â”€ Lung Function Test â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<Map<String, dynamic>?> submitLFTDetails({
     required String regId,
@@ -744,7 +744,7 @@ class HealthScreeningRepository {
     }
   }
 
-  // ─── Visual Screening Test ─────────────────────────────────────────────────
+  // â”€â”€â”€ Visual Screening Test â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<Map<String, dynamic>?> submitVisualScreeningDetails({
     required String userId,

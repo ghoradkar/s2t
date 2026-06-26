@@ -7,7 +7,7 @@ import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/S2TAppBar.dart';
-import '../controllers/d2d_availability_controller.dart';
+import '../controller/d2d_availability_controller.dart';
 
 class D2DAvailabilityScreen extends GetView<D2DAvailabilityController> {
   const D2DAvailabilityScreen({super.key});

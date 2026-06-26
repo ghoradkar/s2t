@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/Json_Class/PostCampBeneficiaryListResponse/PostCampBeneficiaryListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
@@ -91,7 +91,7 @@ class MedicineDeliveryController extends GetxController {
     _fetchDistrict(autoSelect: true);
   }
 
-  // ── Date pickers ─────────────────────────────────────────────────────────────
+  // â”€â”€ Date pickers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> pickFromDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -131,7 +131,7 @@ class MedicineDeliveryController extends GetxController {
     _fetchPatientList();
   }
 
-  // ── District ─────────────────────────────────────────────────────────────────
+  // â”€â”€ District â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _fetchDistrict({
     bool autoSelect = false,
@@ -211,7 +211,7 @@ class MedicineDeliveryController extends GetxController {
     _fetchDistrict(showDropdown: true, context: context);
   }
 
-  // ── Taluka ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Taluka â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _fetchTaluka({
     bool autoSelect = false,
@@ -283,7 +283,7 @@ class MedicineDeliveryController extends GetxController {
     _fetchTaluka(showDropdown: true, context: context);
   }
 
-  // ── Patient list ─────────────────────────────────────────────────────────────
+  // â”€â”€ Patient list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   /// Re-fetches the list using the current filters without resetting any state.
   void refreshList() {
@@ -381,7 +381,7 @@ class MedicineDeliveryController extends GetxController {
     });
   }
 
-  // ── Search ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void onSearchChanged(String query) {
     _applySearch(query);
@@ -408,7 +408,7 @@ class MedicineDeliveryController extends GetxController {
     }
   }
 
-  // ── Barcode ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Barcode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void submitBarcode(BuildContext context, {String? scannedValue}) {
     final dc = (scannedValue ?? barcodeController.text).trim();
@@ -490,7 +490,7 @@ class MedicineDeliveryController extends GetxController {
     submitBarcode(context, scannedValue: res);
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _showDropDownBottomSheet(
     BuildContext context,

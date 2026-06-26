@@ -14,7 +14,7 @@ import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/calling_modules/models/BeneficiaryResponseModel.dart';
+import 'package:s2toperational/Screens/calling_modules/models/beneficiary_response_model.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_card_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 

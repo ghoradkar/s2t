@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
 import 'package:s2toperational/Modules/Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
-import '../models/DevicesListResponse.dart';
+import '../models/devices_list_response.dart';
 import 'package:s2toperational/Modules/Json_Class/ResourceListResponse/ResourceListResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';

@@ -12,7 +12,7 @@ import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_physical_examination_controller.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_exam_details_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/AssignedD2DPhysicalExaminationPatientListScreen/AssignedD2DPhysicalExaminationPatientListScreen.dart';
 import 'D2DPhysicalExaminationCampDetailsScreen/D2DPhysicalExaminationCampDetailsScreen.dart';
 import 'D2DPhysicalExaminationFilterView/D2DPhysicalExaminationFilterView.dart';

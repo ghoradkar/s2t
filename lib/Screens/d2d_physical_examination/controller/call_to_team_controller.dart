@@ -4,7 +4,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamWisePhysicalExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_wise_physical_exam_details_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/repository/call_to_team_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 

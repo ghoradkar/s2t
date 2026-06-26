@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:convert';
 
@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/device_and_resource_mapping/controllers/DeviceMappingManager.dart';
 import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import '../models/DevicesListResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
+import '../models/devices_list_response.dart';
 import 'package:s2toperational/Modules/Json_Class/ResourceListResponse/ResourceListResponse.dart';
-import '../models/SubDevicesListResponse.dart';
+import '../models/sub_devices_list_response.dart';
 import 'package:s2toperational/Modules/Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_examnination_details_response.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/WidgetPaddingX.dart';

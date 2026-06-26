@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
@@ -7,7 +7,7 @@ import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
+import 'package:s2toperational/Screens/user_attendance/model/user_attendances_using_site_details_id_response.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/sample_collection_controller.dart';
 
@@ -70,7 +70,7 @@ class SampleCollectionScreen extends StatelessWidget {
   }
 }
 
-// ── Patient Details Card ──────────────────────────────────────────────────────
+// â”€â”€ Patient Details Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _PatientDetailsCard extends StatelessWidget {
   final UserAttendancesUsingSitedetailsIDOutput patientItem;
@@ -85,19 +85,19 @@ class _PatientDetailsCard extends StatelessWidget {
       child: Column(
         children: [
           _infoRow(Icons.badge_outlined, 'Name',
-              (p.englishName ?? '—').toUpperCase()),
+              (p.englishName ?? 'â€”').toUpperCase()),
           _thinDivider(),
           _infoRow(Icons.wc_outlined, 'Gender', _genderLabel(p.gender)),
           _thinDivider(),
           _infoRow(Icons.cake_outlined, 'Age',
-              p.age != null ? '${p.age} yrs' : '—'),
+              p.age != null ? '${p.age} yrs' : 'â€”'),
         ],
       ),
     );
   }
 
   String _genderLabel(String? g) {
-    if (g == null) return '—';
+    if (g == null) return 'â€”';
     if (g.toUpperCase() == 'M') return 'Male';
     if (g.toUpperCase() == 'F') return 'Female';
     if (g.toUpperCase() == 'O') return 'Other';
@@ -105,7 +105,7 @@ class _PatientDetailsCard extends StatelessWidget {
   }
 }
 
-// ── Test Card ─────────────────────────────────────────────────────────────────
+// â”€â”€ Test Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _TestCard extends StatelessWidget {
   final SampleCollectionController ctrl;
@@ -217,7 +217,7 @@ class _TestCard extends StatelessWidget {
   }
 }
 
-// ── Shared Section Card ───────────────────────────────────────────────────────
+// â”€â”€ Shared Section Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SectionCard extends StatelessWidget {
   final String title;
@@ -278,7 +278,7 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 Widget _infoRow(IconData icon, String label, String value) {
   return Padding(
@@ -299,7 +299,7 @@ Widget _infoRow(IconData icon, String label, String value) {
         ),
         Expanded(
           child: CommonText(
-            text: value.isEmpty ? '—' : value,
+            text: value.isEmpty ? 'â€”' : value,
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             textColor: kTextColor,

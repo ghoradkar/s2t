@@ -788,6 +788,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
         edt_workerregno = findViewById(R.id.edt_workerregno);
         edt_fname = findViewById(R.id.edt_fname);
         edt_moblieno = findViewById(R.id.edt_moblieno);
+        edt_moblieno.setText("9371023232"); // TEST
         edt_aadhaarno = findViewById(R.id.edt_aadhaarno);
         edt_dob = findViewById(R.id.edt_dob);
         edt_age = findViewById(R.id.edt_age);
@@ -2128,6 +2129,8 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
                     clearPatientDetails();
                     clearPatientDetails(0);
                     disableIfFilled();
+                    edt_moblieno.setText("9371023232"); // TEST
+                    edt_moblieno.setEnabled(true);
 //                    llPatientInfo.setVisibility(View.VISIBLE);
 //                    trFirstName.setVisibility(View.VISIBLE);
 //                    trMiddleName.setVisibility(View.VISIBLE);
@@ -2215,6 +2218,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
         btn_VerifyOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "btn_VerifyOtp clicked: alternateMobileNo=" + edt_alternetMoblieno.getText().toString().trim());
                 //api call api success
 
 
@@ -2351,6 +2355,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
         btn_VerifyOtpContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "btn_VerifyOtpContact clicked: mobileNo=" + edt_moblieno.getText().toString().trim());
 
 //                mainCbLL.setVisibility(View.VISIBLE);
                 //api call api success
@@ -4842,8 +4847,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
 //                                mobile = executivemobileNumber;
 //
 
-                                edt_moblieno.setText(mobile);
-
+                                edt_moblieno.setText("9371023232"); // TEST
                                 edt_moblieno.setEnabled(false);
 
                                 edt_pincode.setText(localPincode);
@@ -5004,7 +5008,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
 
 //                                mobile = executivemobileNumber;
 
-                                edt_moblieno.setText(mobile);
+                                edt_moblieno.setText("9371023232"); // TEST
                                 edt_moblieno.setEnabled(false);
 //                                edt_aadhaarno.setText(aadhar);
                                 edt_renewalDate.setVisibility(View.VISIBLE);
@@ -5960,6 +5964,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("MOBNO", params[0]));
             param.add(new ParamsPojo("OTP", params[1]));
+            Log.d(TAG, "VerifyOtp doInBackground: MOBNO=" + params[0] + " OTP=" + params[1]);
             res = WebServiceCall.APICall(ApplicationConstants.VerifyRegistrationOTP, ApplicationConstants.webservice_d2d, param);
             return res;
         }
@@ -5968,6 +5973,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             super.onPostExecute(result);
+            Log.i(TAG, "VerifyOtp onPostExecute: " + result);
 
             pd.dismiss();
             String status = "", message = "";
@@ -6063,6 +6069,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("MOBNO", params[0]));
             param.add(new ParamsPojo("OTP", params[1]));
+            Log.d(TAG, "VerifyOtpContact doInBackground: MOBNO=" + params[0] + " OTP=" + params[1]);
             res = WebServiceCall.APICall(ApplicationConstants.VerifyRegistrationOTP, ApplicationConstants.webservice_d2d, param);
             return res;
         }
@@ -6071,6 +6078,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             super.onPostExecute(result);
+            Log.i(TAG, "VerifyOtpContact onPostExecute: " + result);
 
             pd.dismiss();
             String status = "", message = "";
@@ -8140,6 +8148,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
             param.add(new ParamsPojo("BeneficiaryName", params[6]));
             param.add(new ParamsPojo("ReleationID", params[7]));
             param.add(new ParamsPojo("SubOrgID", organizationId));
+            Log.d(TAG, "GetOtp doInBackground: MOBNO=" + params[0] + " OTP=" + otpnumber + " RegdId=" + params[2] + " BOCWRegNO=" + params[5] + " BeneficiaryName=" + params[6] + " ReleationID=" + params[7]);
 
 //            res = WebServiceCall.APICall(ApplicationConstants.GetOTPforRegistration_Org, ApplicationConstants.webservice_d2d, param);
             res = WebServiceCall.APICall(ApplicationConstants.SendRegistrationOTPWithDPDPConsent, ApplicationConstants.webservice_d2d, param);
@@ -8296,6 +8305,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
             param.add(new ParamsPojo("BeneficiaryName", params[6]));
             param.add(new ParamsPojo("ReleationID", params[7]));
             param.add(new ParamsPojo("SubOrgID", organizationId));
+            Log.d(TAG, "GetOtpForAlternate doInBackground: MOBNO=" + params[0] + " OTP=" + otpnumber + " RegdId=" + params[2] + " BOCWRegNO=" + params[5] + " BeneficiaryName=" + params[6] + " ReleationID=" + params[7]);
 
 //            res = WebServiceCall.APICall(ApplicationConstants.GetOTPforRegistration_Org, ApplicationConstants.webservice_d2d, param);
             res = WebServiceCall.APICall(ApplicationConstants.SendRegistrationOTPWithDPDPConsent, ApplicationConstants.webservice_d2d, param);
@@ -13245,6 +13255,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
                     String status = response.body().getStatus();
                     String message = response.body().getMessage();
                     String messageId = response.body().getMessageId();
+                    Log.d(TAG, "verifyBeneficiaryDetails onResponse: status=" + status + " message=" + message + " messageId=" + messageId);
                     if (status.equalsIgnoreCase("Success")) {
                         List<BeneficiaryStatusModel.Output> campLocationDatalist = response.body().getOutput();
 
@@ -13441,7 +13452,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BeneficiaryStatusModel> call, Throwable t) {
-                t.getLocalizedMessage();
+                Log.e(TAG, "verifyBeneficiaryDetails onFailure: ", t);
                 progressDialog.dismiss();
 
             }
@@ -13466,6 +13477,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
                     String status = response.body().getStatus();
                     String message = response.body().getMessage();
                     String messageId = response.body().getMessageId();
+                    Log.d(TAG, "getConsent onResponse: status=" + status + " message=" + message + " messageId=" + messageId);
                     if (status.equalsIgnoreCase("Success")) {
                         List<BeneficiaryConsentModel.Output> campLocationDatalist = response.body().getOutput();
 
@@ -13527,7 +13539,7 @@ public class D2DPatientRegistration_Activity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BeneficiaryConsentModel> call, Throwable t) {
-                t.getLocalizedMessage();
+                Log.e(TAG, "getConsent onFailure: ", t);
                 progressDialog.dismiss();
 
             }

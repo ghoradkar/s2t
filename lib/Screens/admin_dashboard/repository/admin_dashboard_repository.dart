@@ -1,7 +1,7 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/constants/Repository.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_conducted_response.dart';

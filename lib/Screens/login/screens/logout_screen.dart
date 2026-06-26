@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/login/screens/login_screen.dart';
-import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppButtonWithIcon.dart';
+import '../../../../Modules/constants/images.dart';
+import '../../../../Modules/utilities/SizeConfig.dart';
+import '../../../../Modules/widgets/AppButtonWithIcon.dart';
 
 class LogOutScreen extends StatelessWidget {
   const LogOutScreen({super.key});

@@ -11,7 +11,7 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_camp_details_controller.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_exam_details_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/AssignedD2DPhysicalExaminationPatientListScreen/AssignedD2DPhysicalExaminationPatientListScreen.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/CallTopTeamD2DScreen/CallTopTeamD2DScreen.dart';
 import 'D2DPhysicalExaminationCampRow/D2DPhysicalExaminationCampRow.dart';

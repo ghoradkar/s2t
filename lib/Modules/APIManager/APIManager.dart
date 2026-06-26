@@ -1,11 +1,11 @@
-// ignore_for_file: depend_on_referenced_packages, file_names, avoid_print
+﻿// ignore_for_file: depend_on_referenced_packages, file_names, avoid_print
 
 import 'dart:convert';
 import 'dart:io';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 
 // import 'package:s2toperational/Modules/Json_Class/D2DPhysicalExamDetailsResponse/insert_details_response.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 
 // import 'package:s2toperational/Modules/Json_Class/Is24By7IsAccountCreatedResponse/get_my_oprator_response.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';
@@ -48,14 +48,14 @@ import '../../Screens/camp_details/model/audio_screening_details_response.dart';
 import '../../Screens/appointments_confirmed_list/model/beneficiaries_details_response.dart';
 import '../../Screens/appointments_confirmed_list/model/beneficiary_dependant_details_response.dart';
 import '../../Screens/ct_assignment/model/beneficiary_details_for_assign_teamid_details_response.dart';
-import '../Json_Class/BeneficiaryStatusAndDetailsResponse/BeneficiaryStatusAndDetailsResponse.dart';
+import '../../Screens/daily_work_dashboard/model/beneficiary_status_and_details_response.dart';
 import '../../Screens/camp_details/model/beneficiary_worker_response.dart';
 import '../Json_Class/BillSubmissionResponse/BillSubmissionResponse.dart';
-import '../Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+import '../../Screens/camp_calendar/model/bind_district_response.dart';
 import '../Json_Class/CallStatusListResponse/CallStatusListResponse.dart';
 import '../Json_Class/CampCloseCampDetailsResponse/CampCloseCampDetailsResponse.dart';
 import '../Json_Class/CampCloseDetailsResponse/CampCloseDetailsResponse.dart';
-import '../Json_Class/CampCountWithDayResponse/CampCountWithDayResponse.dart';
+import '../../Screens/camp_calendar/model/camp_count_with_day_response.dart';
 import '../../Screens/camp_details/model/camp_details_response.dart';
 import '../../Screens/resource_re_mapping/models/CampDetailsntApprovalResponse.dart';
 import '../Json_Class/CampDetailsonLabForDoorToDoorResponse/CampDetailsonLabForDoorToDoorResponse.dart';
@@ -64,24 +64,24 @@ import '../Json_Class/CampListV3Response/CampListV3Response.dart';
 import '../../Screens/camp_readiness_form/models/camp_readiness_form_list_response.dart';
 import '../../Screens/camp_readiness_form/models/camp_readiness_form_submitt_response.dart';
 import '../../Screens/resource_re_mapping/models/CampResourceAllocationResponse.dart';
-import '../Json_Class/CampTypeAndCatagoryResponse/CampTypeAndCatagoryResponse.dart';
-import '../Json_Class/CampTypeResponse/CampTypeResponse.dart';
+import '../../Screens/camp_calendar/model/camp_type_and_catagory_response.dart';
+import '../../Screens/camp_creation/models/camp_type_response.dart';
 import '../Json_Class/CampWiseInvoiceDetailsResponse/CampWiseInvoiceDetailsResponse.dart';
 import '../Json_Class/CompanyListResponse/CompanyListResponse.dart';
 import '../../Screens/ct_assignment/model/confirmatory_tests_screening_response.dart';
 import '../../Screens/ct_assignment/model/confirmatory_tests_screening_tube_response.dart';
 import '../Json_Class/ConsumableListDetailsResponse/ConsumableListDetailsResponse.dart';
 import '../Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
-import '../Json_Class/D2DNonWorkingTeamsResponse/D2DNonWorkingTeamsResponse.dart';
+import '../../Screens/d2d_team/model/d2d_non_working_teams_response.dart';
 
 // import '../Json_Class/D2DPhysicalExamDetailsResponse/d2d_physical_exam_details_response.dart';
 import '../../Screens/d2d_physical_examination/model/d2d_physical_examnination_details_response.dart';
-import '../Json_Class/D2DTeamMemberDetailsResponse/D2DTeamMemberDetailsResponse.dart';
+import '../../Screens/d2d_team/model/d2d_team_member_details_response.dart';
 import '../../Screens/d2d_physical_examination/model/d2d_team_wise_phy_exam_details_response.dart';
-import '../Json_Class/D2DTeamsCountResponse/D2DTeamsCountResponse.dart';
+import '../../Screens/d2d_team/model/d2d_teams_count_response.dart';
 import '../Json_Class/DataForPacketReceiveResponse/DataForPacketReceiveResponse.dart';
 import '../../Screens/device_and_resource_mapping/models/devices_list_response.dart';
-import '../Json_Class/BindDivisionResponse/BindDivisionResponse.dart';
+import '../../Screens/camp_calendar/model/bind_division_response.dart';
 import '../Json_Class/ExpenseCampIDListV1Response/ExpenseCampIDListV1Response.dart';
 import '../Json_Class/ExpenseHeadResponse/ExpenseHeadResponse.dart';
 import '../../Screens/resource_re_mapping/models/GetCampAssignUserResponse.dart';
@@ -93,10 +93,10 @@ import '../../Screens/d2d_physical_examination/model/insert_beneficiary_calling_
 // import '../Json_Class/Is24By7IsAccountCreatedResponse/is_24_by7_is_account_created_response.dart';
 import '../Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
 import '../../Screens/daily_work_dashboard/model/lab_data_response.dart';
-import '../Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+import '../../Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
 import '../../Screens/camp_details/model/lung_function_test_details_response.dart';
 import '../Json_Class/MonthWiseInvoiceResponse/MonthWiseInvoiceResponse.dart';
-import '../Json_Class/MonthlySurveySiteResponse/MonthlySurveySiteResponse.dart';
+import '../../Screens/camp_calendar/model/monthly_survey_site_response.dart';
 import '../../Screens/d2d_physical_examination/model/organisation_wise_api_key_response.dart';
 import '../Json_Class/OtherReasonForPatientRejectionResponse/OtherReasonForPatientRejectionResponse.dart';
 import '../Json_Class/PacketAcceptDataResponse/PacketAcceptDataResponse.dart';
@@ -105,20 +105,20 @@ import '../Json_Class/PacketReturnResponse/PacketReturnResponse.dart';
 import '../../Screens/camp_details/model/patient_checkup_analysis_report_response.dart';
 import '../Json_Class/PatientListReAllocationforMedicineDeliveryResponse/PatientListReAllocationforMedicineDeliveryResponse.dart';
 import '../../Screens/camp_details/model/patient_status_details_list_response.dart';
-import '../Json_Class/RecollectionAssignmentRemarksResponse/RecollectionAssignmentRemarksResponse.dart';
-import '../Json_Class/RecollectionBeneficiaryDashboardForMobResponse/RecollectionBeneficiaryDashboardForMobResponse.dart';
-import '../Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/RecollectionBeneficiaryStatusandDetailsCountV1Response.dart';
-import '../Json_Class/RecollectionBeneficiaryToTeamResponse/RecollectionBeneficiaryToTeamResponse.dart';
+import '../../Screens/daily_work_dashboard/model/recollection_assignment_remarks_response.dart';
+import '../../Screens/daily_work_dashboard/model/recollection_beneficiary_dashboard_for_mob_response.dart';
+import '../../Screens/daily_work_dashboard/model/recollection_beneficiary_status_and_details_count_v1_response.dart';
+import '../../Screens/daily_work_dashboard/model/recollection_beneficiary_to_team_response.dart';
 import '../Json_Class/RemarkListResponse/RemarkListResponse.dart';
 import '../Json_Class/ReportDeliveryExecutiveResponse/ReportDeliveryExecutiveResponse.dart';
 import '../Json_Class/ResourceListResponse/ResourceListResponse.dart';
-import '../Json_Class/ResourceReMappingCampResponse/ResourceReMappingCampResponse.dart';
+import '../../Screens/resource_re_mapping/models/ResourceReMappingCampResponse.dart';
 import '../../Screens/appointments_confirmed_list/model/screened_dependent_count_response.dart';
-import '../Json_Class/ScreeningTestCampCreationResponse/ScreeningTestCampCreationResponse.dart';
+import '../../Screens/camp_creation/models/screening_test_camp_creation_response.dart';
 import '../../Screens/ct_assignment/model/selected_teams_data_list_response.dart';
 import '../../Screens/device_and_resource_mapping/models/sub_devices_list_response.dart';
 import '../Json_Class/SubExpenseHeadsResponse/SubExpenseHeadsResponse.dart';
-import '../Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
+import '../../Screens/camp_calendar/model/sub_organization_response.dart';
 import '../Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
 import '../../Screens/device_and_resource_mapping/models/submit_device_mapping_response.dart';
 import '../../Screens/ct_assignment/model/t2t_ct_beneficiary_details_response.dart';
@@ -126,7 +126,7 @@ import '../../Screens/ct_assignment/model/t2t_ct_team_and_beneficiary_response.d
 import '../Json_Class/T2TCTUserDetailsResponse/T2TCTUserDetailsResponse.dart';
 
 // import '../Json_Class/T2TCallingAPIDetailsResponse/t2t_calling_api_details_response.dart';
-import '../Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
+import '../../Screens/camp_creation/models/taluka_camp_creation_response.dart';
 import '../../Screens/appointments_confirmed_list/model/team_cc_response.dart';
 import '../../Screens/team_camp_mapping/model/team_camp_details_list_response.dart';
 import '../Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
@@ -143,10 +143,10 @@ import '../Json_Class/TotalcampAndTotalZeroCampResponse/TotalcampAndTotalZeroCam
 import '../../Screens/resource_re_mapping/models/UpdateSubResourceListResponse.dart';
 import '../../Screens/verify_otp/models/user_android_id_response.dart';
 import '../../Screens/user_attendance/model/user_attandance_response.dart';
-import '../Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
-import '../Json_Class/UserCampMappingAndAttendanceDataResponse/UserCampMappingAndAttendanceDataResponse.dart';
-import '../Json_Class/UserCampMappingAndAttendanceStatusResponse/UserCampMappingAndAttendanceStatusResponse.dart';
-import '../Json_Class/UserCampMappingStatusResponse/UserCampMappingStatusResponse.dart';
+import '../../Screens/user_attendance/model/user_attendances_using_site_details_id_response.dart';
+import '../../Screens/user_attendance/model/user_camp_mapping_and_attendance_data_response.dart';
+import '../../Screens/user_attendance/model/user_camp_mapping_and_attendance_status_response.dart';
+import '../../Screens/resource_re_mapping/models/UserCampMappingStatusResponse.dart';
 import '../Json_Class/UserInvoicePaymentDetailsResponse/UserInvoicePaymentDetailsResponse.dart';
 import '../Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
 import '../../Screens/camp_details/model/vision_screening_details_response.dart';
@@ -1491,10 +1491,10 @@ class APIManager {
     for (var file in files) {
       final response = await uploadFile(file, params);
       if (response.statusCode == 200) {
-        print("✅ Uploaded ${file.path}");
+        print("âœ… Uploaded ${file.path}");
         successCount++;
       } else {
-        print("❌ Failed ${file.path}: ${response.statusCode}");
+        print("âŒ Failed ${file.path}: ${response.statusCode}");
         failCount++;
       }
     }
@@ -7073,7 +7073,7 @@ class APIManager {
     }
   }
 
-  // ── Medicine Delivery acknowledgement APIs ─────────────────────────────────
+  // â”€â”€ Medicine Delivery acknowledgement APIs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> sendOTPForMedicineDeliveryAPI(
     Map<String, dynamic> data,
@@ -7303,7 +7303,7 @@ class APIManager {
     }
   }
 
-  // ─── Team Photos ──────────────────────────────────────────────────────────
+  // â”€â”€â”€ Team Photos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> getUserWiseCampListAPI(
     Map<String, dynamic> data,

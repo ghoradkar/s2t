@@ -17,7 +17,7 @@ import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wr
 import 'package:s2toperational/Screens/user_attendance/screens/MonthlyScreen/MonthlyScreen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Modules/LocationManager/LocationManager.dart';
+import 'package:s2toperational/Screens/user_attendance/controller/LocationManager.dart';
 import 'package:s2toperational/Screens/user_attendance/controller/user_attendance_controller.dart';
 import 'package:s2toperational/Screens/user_attendance/repository/user_attendance_repository.dart';
 // import 'package:s2toperational/Views/MonthlyScreen/MonthlyScreen.dart';

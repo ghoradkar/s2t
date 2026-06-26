@@ -1,11 +1,11 @@
-// ignore_for_file: must_be_immutable, file_names
+﻿// ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/Json_Class/ExpenseCampIDListV1Response/ExpenseCampIDListV1Response.dart';
-import 'package:s2toperational/Modules/Json_Class/ScreeningTestCampCreationResponse/ScreeningTestCampCreationResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/screening_test_camp_creation_response.dart';
 import 'package:s2toperational/Modules/Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
 import 'package:s2toperational/Screens/resource_re_mapping/models/UpdateSubResourceListResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';

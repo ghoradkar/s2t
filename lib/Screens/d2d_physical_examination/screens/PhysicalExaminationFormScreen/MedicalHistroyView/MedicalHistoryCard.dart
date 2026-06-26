@@ -11,12 +11,12 @@ import '../../../../../Modules/constants/fonts.dart';
 import '../../../../../Modules/Enums/Enums.dart';
 // import '../../../../../Modules/Json_Class/MonthsResponse/months_response.dart';
 // import '../../../../../Modules/Json_Class/YearsResponse/years_response.dart';
-import '../../../../../Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
+import '../../../controller/PhysicalExaminationFormDataManager.dart';
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
-import '../../../model/MonthsResponse.dart';
-import '../../../model/YearsResponse.dart';
+import '../../../model/months_response.dart';
+import '../../../model/years_response.dart';
 
 class MedicalHistoryCard extends StatefulWidget {
   const MedicalHistoryCard({

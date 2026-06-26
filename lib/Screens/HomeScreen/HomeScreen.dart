@@ -53,7 +53,7 @@ import '../d2d_team/screen/d2d_team_screen.dart';
 import '../device_and_resource_mapping/screens/device_allocation_screen.dart';
 import '../expense_claim/screen/expense_claim_dashboard_screen.dart';
 import '../resource_re_mapping/screens/resource_re_mapping_camp_list_screen.dart';
-import '../SideDrawerMenu/SideDrawerMenu.dart';
+import 'SideDrawerMenu.dart';
 import '../appointment_sample_collection_ct/screens/ct_appointment_list_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_d2d_screen/camp_for_health_screening_d2d_screen.dart';
 import '../health_screening_details/screens/camp_for_health_screening_screen/camp_for_health_screening_screen.dart';

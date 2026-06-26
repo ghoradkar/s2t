@@ -1,12 +1,12 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-// import 'package:s2toperational/Modules/Json_Class/D2DPhysicalExamDetailsResponse/D2DPhysicalExamDetailsResponse.dart';
+// import 'package:s2toperational/Modules/Json_Class/D2DPhysicalExamDetailsResponse/d2d_physical_exam_details_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import '../../../../../Modules/constants/fonts.dart';
-import '../../../model/D2DPhysicalExamDetailsResponse.dart';
+import '../../../model/d2d_physical_exam_details_response.dart';
 
 class D2DPhysicalExaminationRow extends StatelessWidget {
   D2DPhysicalExaminationRow({

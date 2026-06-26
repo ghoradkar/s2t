@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
@@ -11,15 +11,15 @@ import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_card_repository.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/AttendancesListUsingSiteDetailsIDResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/GetMyOpratorResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/InsertBeneficiaryCallingLogResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/InsertDetailsResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/Is24By7IsAccountCreatedResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/OrganisationWiseAPIKeyResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/SubOrganizationResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/T2TCallingAPIDetailsResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/attendances_list_using_site_details_id_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/get_my_oprator_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/insert_beneficiary_calling_log_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/insert_details_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/is_24_by7_is_account_created_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/organisation_wise_api_key_response.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/sub_organization_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/t2t_calling_api_details_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_number_by_campId_and_user_id_list_response.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -105,7 +105,7 @@ class AssignedPatientListController extends GetxController
     update();
   }
 
-  // ── Team ID ──────────────────────────────────────────────────────────────
+  // â”€â”€ Team ID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void getTeamId() {
     isLoading = true;
@@ -139,7 +139,7 @@ class AssignedPatientListController extends GetxController
     update();
   }
 
-  // ── 24x7 Account Created ─────────────────────────────────────────────────
+  // â”€â”€ 24x7 Account Created â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void getUserCreatedBy24By7() {
     _api.getUserCreatedBy24By7API(
@@ -160,7 +160,7 @@ class AssignedPatientListController extends GetxController
     update();
   }
 
-  // ── Organisation / API keys ──────────────────────────────────────────────
+  // â”€â”€ Organisation / API keys â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void getOrganizationNew() {
     _api.getSubOrganizationAPI(
@@ -259,7 +259,7 @@ class AssignedPatientListController extends GetxController
     update();
   }
 
-  // ── Patient list ─────────────────────────────────────────────────────────
+  // â”€â”€ Patient list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> getD2DGetUserAttendancesUsingSitedetailsID() async {
     isLoading = true;
@@ -366,7 +366,7 @@ class AssignedPatientListController extends GetxController
     }
   }
 
-  // ── Call flow ────────────────────────────────────────────────────────────
+  // â”€â”€ Call flow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> insertCallDetails(int regdId) async {
     _pendingCallRegdId = regdId;

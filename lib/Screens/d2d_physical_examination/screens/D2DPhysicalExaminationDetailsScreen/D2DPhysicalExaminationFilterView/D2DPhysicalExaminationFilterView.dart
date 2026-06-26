@@ -10,7 +10,7 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/d2d_physical_examination_controller.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/AllDistrictListForPhyExamResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/all_district_list_for_phy_exam_response.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../../Modules/constants/fonts.dart';
 

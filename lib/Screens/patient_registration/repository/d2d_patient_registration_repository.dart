@@ -21,7 +21,7 @@ import 'package:s2toperational/Screens/patient_registration/model/d2d_registrati
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/dependent_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/document_type_response.dart';
-import 'package:s2toperational/Modules/Json_Class/UserAttendancesUsingSitedetailsIDResponse/UserAttendancesUsingSitedetailsIDResponse.dart';
+import 'package:s2toperational/Screens/user_attendance/model/user_attendances_using_site_details_id_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/get_queue_response_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
 import 'package:s2toperational/Screens/patient_registration/model/worker_info_response.dart';

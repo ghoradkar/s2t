@@ -11,8 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_controller.dart';
-import 'package:s2toperational/Screens/calling_modules/models/BeneficiaryResponseModel.dart';
-import 'package:s2toperational/Screens/calling_modules/models/CallStatusModel.dart';
+import 'package:s2toperational/Screens/calling_modules/models/beneficiary_response_model.dart';
+import 'package:s2toperational/Screens/calling_modules/models/call_status_model.dart';
 import 'package:s2toperational/Screens/calling_modules/models/team_data_model.dart';
 
 import '../../../Modules/constants/constants.dart';

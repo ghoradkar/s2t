@@ -11,7 +11,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/call_to_doctor_controller.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DCampMappedDoctorListResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_camp_mapped_doctor_list_response.dart';
 
 class CallToDoctorScreen extends StatelessWidget {
   final int regdId;

@@ -1,7 +1,7 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/BindDistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Modules/Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
@@ -14,14 +14,14 @@ import '../repository/d2d_team_repository.dart';
 class D2DTeamController extends GetxController {
   final D2DTeamRepository _repository = D2DTeamRepository();
 
-  // ─── User info ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ User info â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   int empCode = 0;
   int dISTLGDCODE = 0;
   int dESGID = 0;
   int subOrgId = 0;
 
-  // ─── Filter params ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Filter params â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String camptypeId = "0";
   String divisioId = "0";
@@ -30,7 +30,7 @@ class D2DTeamController extends GetxController {
   BindDistrictOutput? selectedDistrict;
   LabByUserIDOutput? selectedLab;
 
-  // ─── UI state ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ UI state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String naviTitleString = "D2D Not Working Team";
   int workingTeamsCount = 0;
@@ -40,7 +40,7 @@ class D2DTeamController extends GetxController {
   List<D2DNonWorkingTeamsOutput> teamList = [];
   List<D2DTeamMemberDetailsOutput> callingList = [];
 
-  // ─── Lifecycle ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @override
   void onInit() {
@@ -53,7 +53,7 @@ class D2DTeamController extends GetxController {
     groupAPICall();
   }
 
-  // ─── Params builder ───────────────────────────────────────────────────────────
+  // â”€â”€â”€ Params builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Map<String, String> get _filterParams => {
     "GLOUSERID": empCode.toString(),
@@ -65,7 +65,7 @@ class D2DTeamController extends GetxController {
     "SubOrgId": subOrgId.toString(),
   };
 
-  // ─── Group API call (count + not-working list in parallel) ───────────────────
+  // â”€â”€â”€ Group API call (count + not-working list in parallel) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> groupAPICall() async {
     ToastManager.showLoader();
@@ -93,7 +93,7 @@ class D2DTeamController extends GetxController {
     update();
   }
 
-  // ─── Working teams ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Working teams â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadWorkingTeams() async {
     ToastManager.showLoader();
@@ -105,7 +105,7 @@ class D2DTeamController extends GetxController {
     update();
   }
 
-  // ─── Calling popup data ───────────────────────────────────────────────────────
+  // â”€â”€â”€ Calling popup data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<bool> loadTeamsCalling(int teamId) async {
     ToastManager.showLoader();
@@ -121,7 +121,7 @@ class D2DTeamController extends GetxController {
     }
   }
 
-  // ─── Filter: fetch district list ──────────────────────────────────────────────
+  // â”€â”€â”€ Filter: fetch district list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<BindDistrictOutput>?> fetchDistrictList() async {
     ToastManager.showLoader();
@@ -140,7 +140,7 @@ class D2DTeamController extends GetxController {
     }
   }
 
-  // ─── Filter: fetch lab list ───────────────────────────────────────────────────
+  // â”€â”€â”€ Filter: fetch lab list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<List<LabByUserIDOutput>?> fetchLabList() async {
     if (selectedDistrict == null) {
@@ -160,7 +160,7 @@ class D2DTeamController extends GetxController {
     }
   }
 
-  // ─── Filter: selection setters ────────────────────────────────────────────────
+  // â”€â”€â”€ Filter: selection setters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void setSelectedDistrict(BindDistrictOutput? val) {
     selectedDistrict = val;

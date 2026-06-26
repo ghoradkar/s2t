@@ -10,7 +10,7 @@ import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/controller/call_to_team_controller.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamWisePhysicalExamDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_wise_physical_exam_details_response.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CallTopTeamD2DScreen extends StatelessWidget {

@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:convert';
 import 'dart:io';
@@ -7,9 +7,9 @@ import 'package:http_parser/http_parser.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/CampDetailsonLabForDoorToDoorResponse/CampDetailsonLabForDoorToDoorResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/ResourceReMappingCampResponse/ResourceReMappingCampResponse.dart';
+import 'package:s2toperational/Screens/resource_re_mapping/models/ResourceReMappingCampResponse.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_number_by_campId_and_user_id_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/district_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 
@@ -112,8 +112,8 @@ class AcknowledgementRepository {
   }) async {
     AcknowledgementPatientListResponse? result;
 
-    // Regular Camp (no team assigned) → _RationCard, no TeamId (matches native)
-    // D2D Camp (team found) → _Anti_RationCard, include TeamId (matches native)
+    // Regular Camp (no team assigned) â†’ _RationCard, no TeamId (matches native)
+    // D2D Camp (team found) â†’ _Anti_RationCard, include TeamId (matches native)
     final isD2D = teamId != '0';
     final url = isD2D
         ? '${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDAntiRationCard}'

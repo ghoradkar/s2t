@@ -1,11 +1,11 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../model/beneficiary_details_for_assign_teamid_details_response.dart';

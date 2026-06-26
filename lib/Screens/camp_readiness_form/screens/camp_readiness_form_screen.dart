@@ -1,13 +1,13 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import '../models/CampIdListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import '../models/campId_list_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
@@ -18,7 +18,7 @@ import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/camp_readiness_form/controllers/camp_readiness_form_controller.dart';
-import 'package:s2toperational/Screens/camp_readiness_form/models/CampReadinessFormListResponse.dart';
+import 'package:s2toperational/Screens/camp_readiness_form/models/camp_readiness_form_list_response.dart';
 import 'package:s2toperational/Screens/camp_readiness_form/widgets/camp_readiness_form_row.dart';
 
 class CampReadinessFormScreen extends StatelessWidget {

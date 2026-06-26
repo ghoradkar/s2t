@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'SubDevicesListResponse.dart';
+import 'sub_devices_list_response.dart';
 
 class DevicesListResponse {
   String? status;

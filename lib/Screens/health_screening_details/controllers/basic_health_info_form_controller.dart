@@ -9,7 +9,7 @@ import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DPhysicalExamninationDetailsResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_examnination_details_response.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/basic_health_info_patient_list_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/bp_device_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';

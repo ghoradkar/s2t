@@ -4,7 +4,7 @@ import 'package:s2toperational/Screens/calling_modules/controllers/add_dependent
 import 'package:s2toperational/Screens/calling_modules/controllers/appointment_confirmation_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/calling_dashboard_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
-import 'package:s2toperational/Screens/calling_modules/models/BeneficiaryResponseModel.dart';
+import 'package:s2toperational/Screens/calling_modules/models/beneficiary_response_model.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/calling_dashboard_repository.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/add_dependent.dart';
 import 'package:s2toperational/Screens/calling_modules/screens/appointment_confirmation.dart';

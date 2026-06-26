@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../Screens/d2d_physical_examination/model/MonthsResponse.dart';
-import '../../Screens/d2d_physical_examination/model/YearsResponse.dart';
+import '../model/months_response.dart';
+import '../model/years_response.dart';
 //
 // import '../Json_Class/MonthsResponse/months_response.dart';
 // import '../Json_Class/YearsResponse/years_response.dart';

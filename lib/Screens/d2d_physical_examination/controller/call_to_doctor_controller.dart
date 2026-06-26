@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/BeneficiaryListByRegIDResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/D2DCampMappedDoctorListResponse.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/model/TeamNumberByCampIdAndUserIdListResponse.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/beneficiary_list_by_reg_id_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_camp_mapped_doctor_list_response.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/model/team_number_by_campId_and_user_id_list_response.dart';
 
 class CallToDoctorController extends GetxController {
   final int regdId;

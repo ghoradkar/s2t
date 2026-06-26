@@ -5,7 +5,7 @@ import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../models/camp_wise_invoice_model.dart';
 import '../models/month_wise_invoice_model.dart';
 import '../models/verification_remark_model.dart';
-import '../../../Screens/d2d_physical_examination/model/YearsResponse.dart';
+import '../../../Screens/d2d_physical_examination/model/years_response.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../repository/invoice_repository.dart';

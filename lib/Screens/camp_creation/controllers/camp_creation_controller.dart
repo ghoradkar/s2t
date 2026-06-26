@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:convert';
 
@@ -18,13 +18,13 @@ import '../../../Modules/utilities/validators.dart';
 import '../../../Modules/widgets/AppActiveButton.dart';
 import '../../../Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../../../Modules/widgets/MultiSelectionDropDownListScreen/MultiSelectionDropDownListScreen.dart';
-import '../../../Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import '../../../Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
-import '../models/HomeAndHubLabCampCreationResponse.dart';
-import '../models/InitiatedByResponse.dart';
-import '../../../Modules/Json_Class/ScreeningTestCampCreationResponse/ScreeningTestCampCreationResponse.dart';
-import '../../../Modules/Json_Class/TalukaCampCreationResponse/TalukaCampCreationResponse.dart';
-import '../../../Modules/Json_Class/LandingLabCampCreationResponse/LandingLabCampCreationResponse.dart';
+import '../../../Screens/camp_creation/models/camp_type_response.dart';
+import '../../../Screens/camp_creation/models/district_response.dart';
+import '../models/home_and_hub_lab_camp_creation_response.dart';
+import '../models/initiated_by_response.dart';
+import '../../../Screens/camp_creation/models/screening_test_camp_creation_response.dart';
+import '../../../Screens/camp_creation/models/taluka_camp_creation_response.dart';
+import '../../../Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
 import '../repository/camp_creation_repository.dart';
 
 class CampCreationController extends GetxController {
@@ -33,18 +33,18 @@ class CampCreationController extends GetxController {
   CampCreationController({CampCreationRepository? repository})
       : _repository = repository ?? CampCreationRepository();
 
-  // ─── Plain fields (loaded once in onInit, never change) ──────────────────────
+  // â”€â”€â”€ Plain fields (loaded once in onInit, never change) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   int empCode = 0;
   int dESGID = 0;
   bool isRegularCamp = false;
 
-  // ─── Text controllers ─────────────────────────────────────────────────────────
+  // â”€â”€â”€ Text controllers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   final TextEditingController campNameController = TextEditingController();
   final TextEditingController campAddressController = TextEditingController();
   final TextEditingController expectedBeneficiaryController =
       TextEditingController();
 
-  // ─── Rx state ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Rx state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   final Rx<CampTypeOutput?> selectedCampType = Rx(null);
   final Rx<InitiatedByOutput?> selectedInitiatedBy = Rx(null);
   final RxInt districtId = 0.obs;
@@ -81,7 +81,7 @@ class CampCreationController extends GetxController {
     super.onClose();
   }
 
-  // ─── Camp Type ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp Type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadCampTypes() async {
     print('[CampCreation] loadCampTypes - isRegularCamp: $isRegularCamp | dESGID: $dESGID');
@@ -108,7 +108,7 @@ class CampCreationController extends GetxController {
     _showDropDown('Camp Type', list, DropDownTypeMenu.CampType);
   }
 
-  // ─── Initiated By ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Initiated By â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadInitiatedBy() async {
     print('[CampCreation] loadInitiatedBy');
@@ -126,7 +126,7 @@ class CampCreationController extends GetxController {
     _showDropDown('Initiated By', list, DropDownTypeMenu.InitiatedBy);
   }
 
-  // ─── District ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ District â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadDistrict() async {
     print('[CampCreation] loadDistrict - empCode: $empCode');
@@ -144,7 +144,7 @@ class CampCreationController extends GetxController {
     _showDropDown('District', list, DropDownTypeMenu.District);
   }
 
-  // ─── Taluka ───────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Taluka â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadTaluka() async {
     print('[CampCreation] loadTaluka - districtId: ${districtId.value}');
@@ -162,7 +162,7 @@ class CampCreationController extends GetxController {
     _showDropDown('Taluka', list, DropDownTypeMenu.TalukaCampList);
   }
 
-  // ─── Landing Lab ──────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Landing Lab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadLandingLab() async {
     print('[CampCreation] loadLandingLab - districtId: ${districtId.value}');
@@ -196,7 +196,7 @@ class CampCreationController extends GetxController {
     }
   }
 
-  // ─── Screening Tests ──────────────────────────────────────────────────────────
+  // â”€â”€â”€ Screening Tests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> loadScreeningTests() async {
     print('[CampCreation] loadScreeningTests');
@@ -215,7 +215,7 @@ class CampCreationController extends GetxController {
         DropDownMultipleTypeMenu.ScreeningTest);
   }
 
-  // ─── Selection handlers ───────────────────────────────────────────────────────
+  // â”€â”€â”€ Selection handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void onCampTypeSelected(CampTypeOutput value) {
     selectedCampType.value = value;
@@ -263,7 +263,7 @@ class CampCreationController extends GetxController {
     print('[CampCreation] selected screeningTests: ${selectedScreeningTest.map((e) => e.testName).join(', ')}');
   }
 
-  // ─── Reset helpers ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Reset helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _resetFromCampType() {
     selectedTaluka.value = null;
@@ -300,7 +300,7 @@ class CampCreationController extends GetxController {
     expectedBeneficiaryController.clear();
   }
 
-  // ─── Camp Date ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Camp Date â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> selectCampDate() async {
     final picked = await showDatePicker(
@@ -318,7 +318,7 @@ class CampCreationController extends GetxController {
     }
   }
 
-  // ─── Screening test mapping ───────────────────────────────────────────────────
+  // â”€â”€â”€ Screening test mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String get screeningTestDisplayString =>
       selectedScreeningTest.map((e) => e.testName ?? '').join(',');
@@ -344,7 +344,7 @@ class CampCreationController extends GetxController {
     }
   }
 
-  // ─── Validation & Save ────────────────────────────────────────────────────────
+  // â”€â”€â”€ Validation & Save â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void saveDidPressed() {
     final campName = campNameController.text.trim();
@@ -428,7 +428,7 @@ class CampCreationController extends GetxController {
     }
   }
 
-  // ─── Location ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Location â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> searchOnMap() async {
     final confirmed = await _showLocationConfirmDialog();
@@ -488,7 +488,7 @@ class CampCreationController extends GetxController {
     }
   }
 
-  // ─── Bottom sheets ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Bottom sheets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _showDropDown(
       String title, List<dynamic> list, DropDownTypeMenu dropDownType) {
@@ -662,7 +662,7 @@ class CampCreationController extends GetxController {
     );
   }
 
-  // ─── Dialogs ──────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Dialogs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<bool> _showLocationConfirmDialog() async {
     final result = await Get.dialog<bool>(
@@ -679,7 +679,7 @@ class CampCreationController extends GetxController {
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+                'à¤•à¥ƒà¤ªà¤¯à¤¾ à¤•à¥…à¤®à¥à¤ªà¤šà¤¾ à¤ªà¤¤à¥à¤¤à¤¾ à¤«à¥à¤²à¥‡à¤¬à¥‹à¤¶à¥€ à¤•à¤¨à¥à¤«à¤°à¥à¤® à¤•à¤°à¥‚à¤¨à¤š à¤Ÿà¤¾à¤•à¤¾.',
               ),
             ),
             SizedBox(
@@ -711,7 +711,7 @@ class CampCreationController extends GetxController {
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
+                'à¤•à¥ƒà¤ªà¤¯à¤¾ à¤•à¥…à¤®à¥à¤ªà¤šà¤¾ à¤ªà¤¤à¥à¤¤à¤¾ à¤«à¥à¤²à¥‡à¤¬à¥‹à¤¶à¥€ à¤•à¤¨à¥à¤«à¤°à¥à¤® à¤•à¤°à¥‚à¤¨à¤š à¤Ÿà¤¾à¤•à¤¾.',
               ),
             ),
             SizedBox(

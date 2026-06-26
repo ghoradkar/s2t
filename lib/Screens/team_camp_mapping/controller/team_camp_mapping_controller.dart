@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, avoid_print
+﻿// ignore_for_file: file_names, avoid_print
 
 import 'dart:convert';
 import 'package:get/get.dart';
@@ -6,8 +6,8 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
 import 'package:s2toperational/Modules/Json_Class/AssignTypeModel/AssignTypeModel.dart';
 import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
-import 'package:s2toperational/Modules/Json_Class/CampTypeResponse/CampTypeResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/DistrictResponse/DistrictResponse.dart';
+import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
+import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Modules/Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';

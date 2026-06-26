@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 // import 'package:s2toperational/Modules/Json_Class/MonthsResponse/months_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/YearsResponse/years_response.dart';
-import 'package:s2toperational/Modules/PhysicalExaminationFormDataManager/PhysicalExaminationFormDataManager.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/controller/PhysicalExaminationFormDataManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
@@ -16,8 +16,8 @@ import 'package:s2toperational/Modules/widgets/AppMultilineTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
 
-import '../../../../model/MonthsResponse.dart';
-import '../../../../model/YearsResponse.dart';
+import '../../../../model/months_response.dart';
+import '../../../../model/years_response.dart';
 
 class AlleriesSurgeriesAndSymptoms extends StatefulWidget {
   const AlleriesSurgeriesAndSymptoms({
