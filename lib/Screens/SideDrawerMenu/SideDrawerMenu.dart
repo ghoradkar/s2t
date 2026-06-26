@@ -2,37 +2,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:s2toperational/Modules/constants/constants.dart';
+import 'package:s2toperational/Modules/constants/fonts.dart';
+import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Screens/SideDrawerMenu/logout_screen.dart';
-import '../../Modules/constants/constants.dart';
-import '../../Modules/constants/images.dart';
-import '../../Modules/utilities/SizeConfig.dart';
-import '../../../../../Modules/constants/fonts.dart';
 
-class SideDrawerMenu extends StatefulWidget {
-  final String appVersion;
-
+class SideDrawerMenu extends StatelessWidget {
   const SideDrawerMenu({super.key, required this.appVersion});
 
-  @override
-  State<SideDrawerMenu> createState() => _SideDrawerMenuState();
-}
-
-class _SideDrawerMenuState extends State<SideDrawerMenu> {
-  String fulNameStirng = "";
-  String designation = "";
-
-  @override
-  void initState() {
-    super.initState();
-    fulNameStirng =
-        DataProvider().getParsedUserData()?.output?.first.name ?? "";
-    designation =
-        DataProvider().getParsedUserData()?.output?.first.designation ?? "";
-  }
+  final String appVersion;
 
   @override
   Widget build(BuildContext context) {
+    final fullName = DataProvider().getParsedUserData()?.output?.first.name ?? '';
+    final designation = DataProvider().getParsedUserData()?.output?.first.designation ?? '';
+
     return SafeArea(
       child: Container(
         height: SizeConfig.screenHeight,
@@ -116,7 +102,7 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                     ),
                     const SizedBox(height: 28),
                     Text(
-                      fulNameStirng,
+                      fullName,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: FontConstants.interFonts,
@@ -138,14 +124,12 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                     ),
                     const SizedBox(height: 50),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
+                      onTap: () => Navigator.of(context).pop(),
                       child: Container(
                         width: SizeConfig.screenWidth,
                         height: 50,
                         color: Colors.transparent,
-                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Row(
                           children: [
                             SizedBox(
@@ -155,7 +139,7 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              "Change Password",
+                              'Change Password',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: FontConstants.interFonts,
@@ -169,14 +153,12 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Get.to(LogOutScreen());
-                      },
+                      onTap: () => Get.to(() => const LogOutScreen()),
                       child: Container(
                         width: SizeConfig.screenWidth,
                         height: 50,
                         color: Colors.transparent,
-                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Row(
                           children: [
                             SizedBox(
@@ -186,7 +168,7 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              "Logout",
+                              'Logout',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: FontConstants.interFonts,
@@ -199,12 +181,12 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Version : ",
+                          'Version : ',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: FontConstants.interFonts,
@@ -214,7 +196,7 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
                           ),
                         ),
                         Text(
-                          widget.appVersion,
+                          appVersion,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: FontConstants.interFonts,
@@ -232,75 +214,6 @@ class _SideDrawerMenuState extends State<SideDrawerMenu> {
           ],
         ),
       ),
-      // Container(
-      //   width: SizeConfig.screenWidth * 0.8,
-      //   decoration: const BoxDecoration(color: kWhiteColor),
-      //   child: Column(
-      //     children: [
-      //       Container(
-      //         width: SizeConfig.screenWidth * 0.8,
-      //         color: kPrimaryColor,
-      //         child: Column(
-      //           mainAxisAlignment: MainAxisAlignment.center,
-      //           crossAxisAlignment: CrossAxisAlignment.center,
-      //           children: [
-      //             const SizedBox(height: 16),
-      //             Container(height: 60, width: 60, color: Colors.red),
-      //             const SizedBox(height: 8),
-
-      //             const SizedBox(height: 16),
-      //           ],
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      //   // ListView(
-      //   //   padding: EdgeInsets.zero,
-      //   //   children: [
-      //   //     Container(
-      //   //       height: responsiveHeight(200),
-      //   //       padding: const EdgeInsets.all(20),
-      //   //       decoration: const BoxDecoration(color: kPrimaryColor),
-      //   //       alignment: Alignment.centerLeft,
-      //   //       child: Column(
-      //   //         mainAxisAlignment: MainAxisAlignment.center,
-      //   //         crossAxisAlignment: CrossAxisAlignment.center,
-      //   //         children: [
-      //   //           const Text(
-      //   //             'Menu',
-      //   //             textAlign: TextAlign.center,
-      //   //             style: TextStyle(
-      //   //               fontFamily: FontConstants.interFonts,
-      //   //               color: Colors.white,
-      //   //               fontSize: 20,
-      //   //               fontWeight: FontWeight.bold,
-      //   //             ),
-      //   //           ),
-      //   //         ],
-      //   //       ),
-      //   //     ),
-      //   //     // ListTile(
-      //   //     //   leading: const Icon(Icons.home),
-      //   //     //   title: const Text('Home'),
-      //   //     //   onTap: () {
-      //   //     //     Navigator.of(context).pop();
-      //   //     //   },
-      //   //     // ),
-      //   //     // ListTile(
-      //   //     //   leading: const Icon(Icons.person),
-      //   //     //   title: const Text('Profile'),
-      //   //     //   onTap: () {
-      //   //     //     Navigator.of(context).pop();
-      //   //     //   },
-      //   //     // ),
-      //   //     ListTile(
-      //   //       leading: const Icon(Icons.logout),
-      //   //       title: const Text('Logout'),
-      //   //       onTap: () {
-
-      //   //   ],
-      //   // ),
-      // ),
     );
   }
 }

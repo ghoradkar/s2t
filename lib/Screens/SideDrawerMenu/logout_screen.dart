@@ -1,9 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/login/screens/login_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/SizeConfig.dart';
 import '../../../Modules/widgets/AppButtonWithIcon.dart';
@@ -102,7 +102,6 @@ class LogOutScreen extends StatelessWidget {
                   children: [
                     AppButtonWithIcon(
                       onTap: () async {
-                        final prefs = await SharedPreferences.getInstance();
                         String? userN = await DataProvider().read(
                           DataProvider().kUserName,
                         );
@@ -130,12 +129,7 @@ class LogOutScreen extends StatelessWidget {
                         await DataProvider().setKeepSignedIn(keepFlag);
 
 
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => LoginScreen(),
-                          ),
-                          (Route route) => false,
-                        );
+                        Get.offAll(() => LoginScreen());
                       },
                       title: "Yes",
                       mWidth: responsiveWidth(110),
