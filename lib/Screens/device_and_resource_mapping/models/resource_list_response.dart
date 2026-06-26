@@ -1,4 +1,4 @@
-import '../SubResourceListResponse/SubResourceListResponse.dart';
+import 'sub_resource_list_response.dart';
 
 class ResourceListResponse {
   String? status;
