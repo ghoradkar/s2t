@@ -26,8 +26,8 @@ class UserAttendanceScreen extends StatelessWidget {
   const UserAttendanceScreen({super.key});
 
   Widget _legendDot(Color color) => Container(
-    width: 14,
-    height: 14,
+    width: 18,
+    height: 18,
     decoration: BoxDecoration(color: color, shape: BoxShape.circle),
   );
 
@@ -60,7 +60,7 @@ class UserAttendanceScreen extends StatelessWidget {
                               children: [
                                 _legendDot(
                                   const Color.fromRGBO(100, 167, 90, 1.0),
-                                ),
+                                ).paddingOnly(bottom: 6,left: 4),
                                 const SizedBox(width: 4),
 
                                 CommonText(
@@ -77,7 +77,7 @@ class UserAttendanceScreen extends StatelessWidget {
                               children: [
                                 _legendDot(
                                   const Color.fromRGBO(33, 150, 243, 1.0),
-                                ),
+                                ).paddingOnly(bottom: 6,left: 4),
                                 const SizedBox(width: 4),
 
                                 CommonText(
@@ -91,7 +91,8 @@ class UserAttendanceScreen extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                _legendDot(Colors.orange),
+                                Icon(Icons.location_on, color: Colors.orange),
+
                                 const SizedBox(width: 4),
 
                                 CommonText(
@@ -105,7 +106,8 @@ class UserAttendanceScreen extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                _legendDot(Colors.blue),
+                                Icon(Icons.location_on, color: Colors.blue),
+
                                 const SizedBox(width: 4),
 
                                 CommonText(
@@ -196,30 +198,31 @@ class _MapSection extends StatelessWidget {
   void _showLocationInstructions(BuildContext context) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Enable Location'),
-        content: const Text(
-          'To enable location for this app on iPhone:\n\n'
-          '1. Open Settings\n'
-          '2. Tap Privacy & Security\n'
-          '3. Tap Location Services\n'
-          '4. Find "S2T Operational"\n'
-          '5. Select "While Using the App"',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Enable Location'),
+            content: const Text(
+              'To enable location for this app on iPhone:\n\n'
+              '1. Open Settings\n'
+              '2. Tap Privacy & Security\n'
+              '3. Tap Location Services\n'
+              '4. Find "S2T Operational"\n'
+              '5. Select "While Using the App"',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  LocationManager.openAppSettings();
+                },
+                child: const Text('Open Settings'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              LocationManager.openAppSettings();
-            },
-            child: const Text('Open Settings'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -227,14 +230,16 @@ class _MapSection extends StatelessWidget {
     final hasLocation = c.currentLat != 0 || c.currentLng != 0;
     final hasCampCoords = c.campLat != 0 || c.campLng != 0;
 
-    final centerLat = hasLocation
-        ? c.currentLat
-        : hasCampCoords
+    final centerLat =
+        hasLocation
+            ? c.currentLat
+            : hasCampCoords
             ? c.campLat
             : _defaultLat;
-    final centerLng = hasLocation
-        ? c.currentLng
-        : hasCampCoords
+    final centerLng =
+        hasLocation
+            ? c.currentLng
+            : hasCampCoords
             ? c.campLng
             : _defaultLng;
 
@@ -261,7 +266,10 @@ class _MapSection extends StatelessWidget {
             child: GestureDetector(
               onTap: () => _showLocationInstructions(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.orange.shade700,
                   borderRadius: BorderRadius.circular(8),
@@ -321,14 +329,14 @@ class _MapSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Row(
             children: [
-
               Expanded(
                 child: _locationCard(
                   iconColor: Colors.orange,
                   label: 'Current Location',
-                  value: (c.currentLat != 0 || c.currentLng != 0)
-                      ? '${c.currentLat.toStringAsFixed(7)}, ${c.currentLng.toStringAsFixed(7)}'
-                      : 'N/A',
+                  value:
+                      (c.currentLat != 0 || c.currentLng != 0)
+                          ? '${c.currentLat.toStringAsFixed(7)}, ${c.currentLng.toStringAsFixed(7)}'
+                          : 'N/A',
                 ),
               ),
               const SizedBox(width: 8),
@@ -362,9 +370,7 @@ class _MapSection extends StatelessWidget {
             textAlign: TextAlign.start,
           ),
         ).paddingSymmetric(horizontal: 10),
-        Expanded(
-          child: _buildMap(context, c),
-        ),
+        Expanded(child: _buildMap(context, c)),
       ],
     );
   }

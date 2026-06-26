@@ -1719,7 +1719,7 @@ class _D2DPatientRegistrationScreenState
             title:
                 c.isDependent.value
                     ? 'VERIFY BENEFICIARY DETAILS'
-                    : 'Register Patient',
+                    : 'REGISTER PATIENT',
             mWidth: double.infinity,
             mHeight: 52,
             icon: const Icon(Icons.check_circle_rounded, color: Colors.white),

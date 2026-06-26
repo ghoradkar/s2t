@@ -42,6 +42,18 @@ class LoginController extends GetxController {
     passwordController.text = password ?? '';
   }
 
+  /// Called on every navigation back to LoginScreen. Clears fields and
+  /// re-runs credential loading so keepFlag=false results in empty fields.
+  void resetAndReload() {
+    usernameController.clear();
+    passwordController.clear();
+    usernameError.value = '';
+    passwordError.value = '';
+    isObscure.value = true;
+    isRememberMe.value = false;
+    _loadSavedCredentials();
+  }
+
   void toggleObscure() => isObscure.value = !isObscure.value;
 
   void toggleRememberMe(bool? value) {

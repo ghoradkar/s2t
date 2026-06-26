@@ -26,7 +26,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    final ctrl = controller;
     return NetworkWrapper(
       onRetry: () async {
         final result = await Connectivity().checkConnectivity();
@@ -128,11 +128,11 @@ class LoginScreen extends StatelessWidget {
                         // Username field — Obx only for error text
                         Obx(
                           () => AppTextField(
-                            controller: controller.usernameController,
-                            errorText: controller.usernameError.value.isEmpty
+                            controller: ctrl.usernameController,
+                            errorText: ctrl.usernameError.value.isEmpty
                                 ? null
-                                : controller.usernameError.value,
-                            onChange: controller.onUsernameChanged,
+                                : ctrl.usernameError.value,
+                            onChange: ctrl.onUsernameChanged,
                             inputStyle: TextStyle(
                               fontFamily: FontConstants.interFonts,
                               fontSize: 16,
@@ -172,12 +172,12 @@ class LoginScreen extends StatelessWidget {
                         // Password field — Obx for error text + obscure toggle
                         Obx(
                           () => AppTextField(
-                            controller: controller.passwordController,
-                            errorText: controller.passwordError.value.isEmpty
+                            controller: ctrl.passwordController,
+                            errorText: ctrl.passwordError.value.isEmpty
                                 ? null
-                                : controller.passwordError.value,
-                            onChange: controller.onPasswordChanged,
-                            obscureText: controller.isObscure.value,
+                                : ctrl.passwordError.value,
+                            onChange: ctrl.onPasswordChanged,
+                            obscureText: ctrl.isObscure.value,
                             inputStyle: TextStyle(
                               fontFamily: FontConstants.interFonts,
                               fontSize: 16,
@@ -207,12 +207,12 @@ class LoginScreen extends StatelessWidget {
                             prefixIcon: Image.asset(iconPass, scale: 3.5),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                controller.isObscure.value
+                                ctrl.isObscure.value
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                                 color: Colors.grey,
                               ),
-                              onPressed: controller.toggleObscure,
+                              onPressed: ctrl.toggleObscure,
                             ),
                           ),
                         ),
@@ -227,9 +227,9 @@ class LoginScreen extends StatelessWidget {
                               controlAffinity: ListTileControlAffinity.leading,
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
-                              value: controller.isRememberMe.value,
+                              value: ctrl.isRememberMe.value,
                               contentPadding: EdgeInsets.zero,
-                              onChanged: controller.toggleRememberMe,
+                              onChanged: ctrl.toggleRememberMe,
                               title: Text(
                                 "Keep Me Sign In?",
                                 style: TextStyle(
@@ -262,7 +262,7 @@ class LoginScreen extends StatelessWidget {
                               fontSize: responsiveFont(16),
                               fontWeight: FontWeight.w700,
                             ),
-                            onTap: controller.login,
+                            onTap: ctrl.login,
                           ),
                         ),
                       ],

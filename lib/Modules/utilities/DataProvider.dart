@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:get/get.dart';
+import '../../Screens/login/controllers/login_controller.dart';
 import '../../Screens/login/screens/login_screen.dart';
 import '../../Screens/login/models/login_response_model.dart';
 
@@ -82,6 +84,11 @@ class DataProvider {
   }
 
   void _navigateToSignIn(BuildContext context) {
+    if (Get.isRegistered<LoginController>()) {
+      Get.find<LoginController>().resetAndReload();
+    } else {
+      Get.put(LoginController());
+    }
     Navigator.pushAndRemoveUntil<void>(
       context,
       MaterialPageRoute<void>(
@@ -167,6 +174,11 @@ class DataProvider {
 
   void navigateToSignIn(BuildContext context) {
     WidgetsFlutterBinding.ensureInitialized();
+    if (Get.isRegistered<LoginController>()) {
+      Get.find<LoginController>().resetAndReload();
+    } else {
+      Get.put(LoginController());
+    }
     Navigator.pushAndRemoveUntil<void>(
       context,
       MaterialPageRoute<void>(

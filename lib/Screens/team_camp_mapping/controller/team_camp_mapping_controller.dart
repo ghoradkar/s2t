@@ -501,6 +501,35 @@ class TeamCampMappingController extends GetxController {
     }
   }
 
+  Future<bool> submitTeamOnly() async {
+    if (selectedCampID == null) {
+      ToastManager.toast('Please Select Camp');
+      return false;
+    }
+    final array = <Map<String, dynamic>>[];
+    for (final obj in teamList) {
+      if (obj.selected) {
+        array.add({'teamId': obj.teamid.toString(), 'campId': selectedCampID?.campId.toString(), 'userId': obj.memberUserID1.toString(), 'IsTeam': '1'});
+        array.add({'teamId': obj.teamid.toString(), 'campId': selectedCampID?.campCreatedBy.toString(), 'userId': obj.memberUserID2.toString(), 'IsTeam': '1'});
+      }
+    }
+    ToastManager.showLoader();
+    try {
+      await _repo.insertTeamCampMapping({
+        'CampID': selectedCampID?.campId.toString() ?? '0',
+        'UserID': empCode.toString(),
+        'TeamNumber': jsonEncode(array),
+        'CreatedBy': empCode.toString(),
+      });
+      return true;
+    } catch (e) {
+      ToastManager.toast(e.toString());
+      return false;
+    } finally {
+      ToastManager.hideLoader();
+    }
+  }
+
   Future<void> reloadAfterAssign({bool isTeamRefresh = false}) async {
     assignedPhleboList = [];
     teamList = [];

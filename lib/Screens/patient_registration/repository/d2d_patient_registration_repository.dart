@@ -1813,8 +1813,8 @@ class D2DPatientRegistrationRepository {
     File? consentPhoto,
   }) async {
     final endpoint = isFaceDetectionEnabled
-        ? 'handler/DtoDBeneficiaryRegistration_Gender_FaceMatch_V1_Dependent.ashx'
-        : 'handler/DtoDBeneficiaryRegistration_Gender_V1_Dependent.ashx';
+        ? 'handler/DtoDBeneficiaryRegistration_Gender_FaceMatch_V1_Dependent_CF.ashx'
+        : 'handler/DtoDBeneficiaryRegistration_Gender_V1_Dependent_CF.ashx';
     final url = Uri.parse('${APIManager.kWebservicesBaseURL}$endpoint');
     // ignore: avoid_print
     print('[saveD2DRegistration] URL: $url');

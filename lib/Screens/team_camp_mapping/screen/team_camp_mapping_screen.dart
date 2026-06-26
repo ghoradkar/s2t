@@ -311,7 +311,11 @@ class TeamCampMappingScreen extends StatelessWidget {
               for (final t in ctrl.teamList) t.selected = false;
               item.selected = true;
               Navigator.pop(ctx);
-              _showSuccessDialog(context, ctrl, isTeamRefresh: true);
+              ctrl.submitTeamOnly().then((success) {
+                if (success && context.mounted) {
+                  _showSuccessDialog(context, ctrl, isTeamRefresh: true);
+                }
+              });
             },
           ),
         );

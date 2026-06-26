@@ -11,6 +11,7 @@ import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/constants/APIConstants.dart';
 import '../../../Modules/utilities/DeviceInfoUtil.dart';
 import '../../../Screens/HomeScreen/HomeScreen.dart';
+import '../../../Screens/login/controllers/login_controller.dart';
 import '../../../Screens/login/screens/login_screen.dart';
 import '../repository/splash_repository.dart';
 
@@ -73,13 +74,22 @@ class SplashController extends GetxController {
     );
   }
 
+  void _goToLogin() {
+    if (Get.isRegistered<LoginController>()) {
+      Get.find<LoginController>().resetAndReload();
+    } else {
+      Get.put(LoginController());
+    }
+    Get.offAll(() => const LoginScreen());
+  }
+
   void _navigateNext() {
     Future.delayed(const Duration(seconds: 3), () {
       final loginData = DataProvider().getParsedUserData();
       final designationId = loginData?.output?.first.dESGID ?? 0;
 
       if (!DataProvider().isLoggedIn()) {
-        Get.offAll(() => const LoginScreen());
+        _goToLogin();
         return;
       }
 
@@ -94,19 +104,19 @@ class SplashController extends GetxController {
       if (savedDate.isEmpty) {
         DataProvider().setAutoLogoutDate(dayString);
         DataProvider().setIsLogin(false);
-        Get.offAll(() => const LoginScreen());
+        _goToLogin();
       } else if (savedDate == dayString) {
         if (DataProvider().isLoggedIn()) {
           Get.offAll(() => HomeScreen());
         } else {
           DataProvider().setAutoLogoutDate(dayString);
           DataProvider().setIsLogin(false);
-          Get.offAll(() => const LoginScreen());
+          _goToLogin();
         }
       } else {
         DataProvider().setAutoLogoutDate(dayString);
         DataProvider().setIsLogin(false);
-        Get.offAll(() => const LoginScreen());
+        _goToLogin();
       }
     });
   }

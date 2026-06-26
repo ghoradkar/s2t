@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/login/screens/login_screen.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/AppButtonWithIcon.dart';
@@ -108,10 +107,7 @@ class LogOutScreen extends StatelessWidget {
                         String? userPsw = await DataProvider().read(
                           DataProvider().kPassword,
                         );
-
                         bool keepFlag = await DataProvider().getKeepSignedIn();
-
-                        DataProvider().clearSession(context);
 
                         if (userN != null) {
                           await DataProvider().save(
@@ -125,11 +121,9 @@ class LogOutScreen extends StatelessWidget {
                             userPsw,
                           );
                         }
-
                         await DataProvider().setKeepSignedIn(keepFlag);
 
-
-                        Get.offAll(() => LoginScreen());
+                        await DataProvider().clearSession(context);
                       },
                       title: "Yes",
                       mWidth: responsiveWidth(110),

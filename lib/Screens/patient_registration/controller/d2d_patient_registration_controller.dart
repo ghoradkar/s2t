@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_build_context_synchronously
+﻿// ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:convert';
@@ -80,7 +80,7 @@ class D2DPatientRegistrationController extends GetxController {
   final tecFirstName = TextEditingController();
   final tecMiddleName = TextEditingController();
   final tecLastName = TextEditingController();
-  final tecMobileNo = TextEditingController(text: '9673974373');
+  final tecMobileNo = TextEditingController(text: '8830378568');
   final tecAltMobileNo = TextEditingController();
   final tecAadhaarNo = TextEditingController();
   final tecDob = TextEditingController();
@@ -323,7 +323,7 @@ class D2DPatientRegistrationController extends GetxController {
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
     final rawMsId = user?.maritialstatusId?.toString() ?? '';
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
-    tecMobileNo.text = '9673974373';
+    tecMobileNo.text = '8830378568';
     _startAutoLocationUpdates();
     _fetchFaceDetectionFlag();
   }
@@ -1476,7 +1476,7 @@ class D2DPatientRegistrationController extends GetxController {
     tecLastName.clear();
 
     // Contact
-    tecMobileNo.text = '9673974373'; // TEST OVERRIDE
+    tecMobileNo.text = '8830378568'; // TEST OVERRIDE
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
     originalAadhaar = '';
@@ -1653,7 +1653,7 @@ class D2DPatientRegistrationController extends GetxController {
     // Mobile
     final apiMobile = (data.mobile ?? '').trim();
     if (apiMobile.isNotEmpty) tecMobileNo.text = apiMobile;
-    tecMobileNo.text = '9673974373'; // TEST OVERRIDE
+    tecMobileNo.text = '8830378568'; // TEST OVERRIDE
 
     // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
     // (isDependent=No). When registering a dependent the phlebo enters these
@@ -3224,12 +3224,7 @@ class D2DPatientRegistrationController extends GetxController {
 
       if (verify.status?.toLowerCase() != 'success') {
         final msg = verify.message ?? 'Verification failed';
-        // messageId=="2" + dependent → Aadhaar mismatch; only flag field error.
-        if (isDependent.value && verify.messageId == '2') {
-          aadhaarError.value = 'Please re-enter Aadhaar number';
-        } else {
-          clearDependentSelection();
-        }
+        _clearForm();
         ToastManager.showAlertDialog(context, msg, () => Get.back());
         return;
       }
