@@ -7,7 +7,7 @@ import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Screens/SideDrawerMenu/logout_screen.dart';
+import 'package:s2toperational/Screens/login/screens/logout_screen.dart';
 
 class SideDrawerMenu extends StatelessWidget {
   const SideDrawerMenu({super.key, required this.appVersion});
