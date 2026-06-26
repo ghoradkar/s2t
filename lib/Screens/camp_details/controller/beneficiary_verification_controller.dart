@@ -1,4 +1,4 @@
-﻿// ignore_for_file: file_names
+// ignore_for_file: file_names
 
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -162,16 +162,16 @@ class BeneficiaryVerificationController extends GetxController {
       lungFunctionTestDetailsOutput = lung.output?.first;
 
       if (rightRemark.toLowerCase() == 'deafness') {
-        alertManager.messagesList.add('à¤²à¤¾à¤­à¤¾à¤°à¥à¤¥à¥€ à¤‰à¤œà¤µà¥à¤¯à¤¾ à¤•à¤¾à¤¨à¤¾à¤¨à¥‡ à¤®à¥‚à¤•à¤¬à¤§à¤¿à¤° à¤†à¤¹à¥‡. à¤¬à¤°à¥‹à¤¬à¤° à¤…à¤¸à¤²à¥à¤¯à¤¾à¤šà¥€ à¤–à¤¾à¤¤à¥à¤°à¥€ à¤•à¤°à¤¾.');
+        alertManager.messagesList.add('लाभार्थी उजव्या कानाने मूकबधिर आहे. बरोबर असल्याची खात्री करा.');
       }
       if (remark.toLowerCase() == 'deafness') {
-        alertManager.messagesList.add('à¤²à¤¾à¤­à¤¾à¤°à¥à¤¥à¥€ à¤¡à¤¾à¤µà¥à¤¯à¤¾ à¤•à¤¾à¤¨à¤¾à¤¨à¥‡ à¤®à¥‚à¤•à¤¬à¤§à¤¿à¤° à¤†à¤¹à¥‡. à¤¬à¤°à¥‹à¤¬à¤° à¤…à¤¸à¤²à¥à¤¯à¤¾à¤šà¥€ à¤–à¤¾à¤¤à¥à¤°à¥€ à¤•à¤°à¤¾.');
+        alertManager.messagesList.add('लाभार्थी डाव्या कानाने मूकबधिर आहे. बरोबर असल्याची खात्री करा.');
       }
       if ((visionScreeningDetailsOutput?.rightRemark ?? '').toLowerCase() == 'right eye blind') {
-        alertManager.messagesList.add('à¤²à¤¾à¤­à¤¾à¤°à¥à¤¥à¥€ à¤‰à¤œà¤µà¥à¤¯à¤¾ à¤¡à¥‹à¤³à¥à¤¯à¤¾à¤¨à¥‡ à¤…à¤‚à¤§ à¤†à¤¹à¥‡. à¤¬à¤°à¥‹à¤¬à¤° à¤…à¤¸à¤²à¥à¤¯à¤¾à¤šà¥€ à¤–à¤¾à¤¤à¥à¤°à¥€ à¤•à¤°à¤¾.');
+        alertManager.messagesList.add('लाभार्थी उजव्या डोळ्याने अंध आहे. बरोबर असल्याची खात्री करा.');
       }
       if ((visionScreeningDetailsOutput?.leftRemark ?? '').toLowerCase() == 'left eye blind') {
-        alertManager.messagesList.add('à¤²à¤¾à¤­à¤¾à¤°à¥à¤¥à¥€ à¤¡à¤¾à¤µà¥à¤¯à¤¾ à¤¡à¥‹à¤³à¥à¤¯à¤¾à¤¨à¥‡ à¤…à¤‚à¤§ à¤†à¤¹à¥‡. à¤¬à¤°à¥‹à¤¬à¤° à¤…à¤¸à¤²à¥à¤¯à¤¾à¤šà¥€ à¤–à¤¾à¤¤à¥à¤°à¥€ à¤•à¤°à¤¾.');
+        alertManager.messagesList.add('लाभार्थी डाव्या डोळ्याने अंध आहे. बरोबर असल्याची खात्री करा.');
       }
       if (alertManager.messagesList.isNotEmpty) shouldShowAlerts = true;
     }

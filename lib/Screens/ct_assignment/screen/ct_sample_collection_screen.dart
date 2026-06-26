@@ -1,4 +1,4 @@
-﻿// ignore_for_file: file_names, use_build_context_synchronously
+// ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -244,7 +244,7 @@ class CTSampleCollectionScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.info_outline, size: 14.sp, color: Colors.blue.shade700),
                         SizedBox(width: 6.w),
-                        Expanded(child: CommonText(text: 'à¤œà¤° à¤²à¤¾à¤­à¤¾à¤°à¥à¤¥à¥à¤¯à¤¾à¤šà¥à¤¯à¤¾ à¤®à¥‹à¤¬à¤¾à¤ˆà¤²à¤µà¤° OTP à¤ªà¥à¤°à¤¾à¤ªà¥à¤¤ à¤à¤¾à¤²à¤¾ à¤¨à¤¸à¥‡à¤² à¤¤à¤° option 2 à¤µà¤¾à¤ªà¤°à¥‚à¤¨ OTP à¤ªà¤¾à¤ à¤µà¤¾', fontSize: 11.sp, fontWeight: FontWeight.w400, textColor: Colors.blue.shade800, textAlign: TextAlign.start)),
+                        Expanded(child: CommonText(text: 'जर लाभार्थ्याच्या मोबाईलवर OTP प्राप्त झाला नसेल तर option 2 वापरून OTP पाठवा', fontSize: 11.sp, fontWeight: FontWeight.w400, textColor: Colors.blue.shade800, textAlign: TextAlign.start)),
                       ],
                     ),
                   ),
@@ -342,7 +342,7 @@ class CTSampleCollectionScreen extends StatelessWidget {
               photoFile: ctrl.consentPhotoFile,
               onCapture: () => _captureConsentPhoto(ctrl),
               captureLabel: 'Tap to capture *',
-              hintText: 'à¤¸à¤‚à¤®à¤¤à¥€à¤ªà¤¤à¥à¤° à¤†à¤£à¤¿ à¤“à¤³à¤–à¤ªà¤¤à¥à¤° à¤à¤•à¤¤à¥à¤° à¤«à¥‹à¤Ÿà¥‹',
+              hintText: 'संमतीपत्र आणि ओळखपत्र एकत्र फोटो',
             ),
           ),
         ],
