@@ -9,7 +9,8 @@ import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Screens/CampDetailsScreen/CampDetailsScreen.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Screens/camp_details/screen/camp_details_screen.dart';
 
 
 class CampCalendarCampListRow extends StatelessWidget {
@@ -28,24 +29,17 @@ class CampCalendarCampListRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => CampDetailsScreen(
-                  campId: obj.campId ?? 0,
-                  dISTLGDCODE: obj.dISTLGDCODE ?? 0,
-                  campDate: obj.campDate ?? "",
-                  surveyCoordinatorName: obj.surveyCoordinatorName ?? "",
-                  dISTNAME: obj.dISTNAME ?? "",
-                  mOBNO: obj.mOBNO ?? "",
-                  cAMPTYPE: selectedCampType?.cAMPTYPE ?? 0,
-                  campTypeDescription:
-                      selectedCampType?.campTypeDescription ?? "",
-                  isHealthScreeing: false,
-                ),
-          ),
-        );
+        Get.to(() => CampDetailsScreen(
+          campId: obj.campId ?? 0,
+          dISTLGDCODE: obj.dISTLGDCODE ?? 0,
+          campDate: obj.campDate ?? "",
+          surveyCoordinatorName: obj.surveyCoordinatorName ?? "",
+          dISTNAME: obj.dISTNAME ?? "",
+          mOBNO: obj.mOBNO ?? "",
+          cAMPTYPE: selectedCampType?.cAMPTYPE ?? 0,
+          campTypeDescription: selectedCampType?.campTypeDescription ?? "",
+          isHealthScreeing: false,
+        ));
       },
       child: IntrinsicHeight(
         child: Stack(

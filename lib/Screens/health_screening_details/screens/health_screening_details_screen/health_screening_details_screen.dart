@@ -8,7 +8,7 @@ import '../../../../Modules/Enums/Enums.dart';
 import '../../../../Modules/constants/images.dart';
 import '../../../../Modules/utilities/SizeConfig.dart';
 import '../../../../Modules/widgets/S2TAppBar.dart';
-import '../../../CampDetailsScreen/CampDetailsScreen.dart';
+import '../../../camp_details/screen/camp_details_screen.dart';
 import '../../controllers/health_screening_details_controller.dart';
 import '../camp_closing_screen/camp_closing_screen.dart';
 import '../audio_screening_screen/audio_screening_patient_list_screen.dart';
@@ -88,23 +88,17 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
   void _onMenuTap(BuildContext context, HealthScreeningDetailsMenu menu) {
     switch (menu) {
       case HealthScreeningDetailsMenu.ScreeningStatus:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (_) => CampDetailsScreen(
-                  campId: campID,
-                  dISTLGDCODE: dISTLGDCODE,
-                  campDate: campDate,
-                  surveyCoordinatorName: surveyCoordinatorName,
-                  dISTNAME: dISTNAME,
-                  mOBNO: mOBNO,
-                  cAMPTYPE: campType,
-                  campTypeDescription: '',
-                  isHealthScreeing: true,
-                ),
-          ),
-        );
+        Get.to(() => CampDetailsScreen(
+          campId: campID,
+          dISTLGDCODE: dISTLGDCODE,
+          campDate: campDate,
+          surveyCoordinatorName: surveyCoordinatorName,
+          dISTNAME: dISTNAME,
+          mOBNO: mOBNO,
+          cAMPTYPE: campType,
+          campTypeDescription: '',
+          isHealthScreeing: true,
+        ));
         break;
 
       case HealthScreeningDetailsMenu.CampClosing:

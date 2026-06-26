@@ -15,7 +15,7 @@ import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/admin_dashboard/controller/admin_controller.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_conducted_response.dart';
 import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
-import 'package:s2toperational/Screens/CampDetailsScreen/CampDetailsScreen.dart';
+import 'package:s2toperational/Screens/camp_details/screen/camp_details_screen.dart';
 
 class ConductedCampsScreen extends StatefulWidget {
   final bool isDistAndYearVisiable;
