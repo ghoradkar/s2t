@@ -1,10 +1,10 @@
-// ignore_for_file: file_names, avoid_print
+﻿// ignore_for_file: file_names, avoid_print
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AppointmentStatusResponse/AppointmentStatusResponse.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/appointment_status_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../model/appoinment_expected_beneficiaries_response.dart';

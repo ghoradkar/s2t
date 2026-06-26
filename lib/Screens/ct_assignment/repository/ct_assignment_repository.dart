@@ -2,9 +2,9 @@
 
 import 'dart:async';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AssignmentRemarksResponse/AssignmentRemarksResponse.dart';
+import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/assignment_remarks_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
-import 'package:s2toperational/Modules/Json_Class/T2TCTUserDetailsResponse/T2TCTUserDetailsResponse.dart';
+import 'package:s2toperational/Screens/ct_assignment/model/t2t_ct_user_details_response.dart';
 import '../model/beneficiary_details_for_assign_teamid_details_response.dart';
 import '../model/confirmatory_tests_screening_response.dart';
 import '../model/confirmatory_tests_screening_tube_response.dart';

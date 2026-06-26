@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+﻿// ignore_for_file: must_be_immutable
 
 import 'dart:io';
 import 'dart:typed_data';
@@ -17,7 +17,7 @@ import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
 import 'package:s2toperational/Modules/widgets/AppTextField.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Modules/Json_Class/PostCampBeneficiaryListResponse/PostCampBeneficiaryListResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/post_camp_beneficiary_list_response.dart';
 
 class MedicineDeliveryAcknowledgementScreen extends StatefulWidget {
   final PostCampBeneficiaryOutput beneficiary;
@@ -52,13 +52,13 @@ class _MedicineDeliveryAcknowledgementScreenState
     super.dispose();
   }
 
-  // ── Native color palette ───────────────────────────────────────────────────
+  // â”€â”€ Native color palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // static const _purple = Color(0xFF423897);
   static const _green = Color(0xFF4CAF50);
   static const _blue = Color(0xFF1565C0);
   static const _red = Color(0xFFD32F2F);
 
-  // ── Build ─────────────────────────────────────────────────────────────────
+  // â”€â”€ Build â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class _MedicineDeliveryAcknowledgementScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── 1. Patient Info Card ──────────────────────────────
+                      // â”€â”€ 1. Patient Info Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                       _buildPatientInfoCard(),
                       SizedBox(height: 12.h),
 
@@ -110,9 +110,9 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // PATIENT INFO — native CardView with gradient name header
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  // PATIENT INFO â€” native CardView with gradient name header
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
   Widget _buildPatientInfoCard() {
     final b = widget.beneficiary;
@@ -179,9 +179,9 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // PENDING MODE CONTENT — full form
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  // PENDING MODE CONTENT â€” full form
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
   Widget _buildPendingContent() {
     return Obx(() {
@@ -192,10 +192,10 @@ class _MedicineDeliveryAcknowledgementScreenState
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Delivery Status dropdown (always visible in pending) ──────────
+          // â”€â”€ Delivery Status dropdown (always visible in pending) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           _buildDeliveryStatusDropdown(),
 
-          // ── Remark (status 2/3 only) ─────────────────────────────────────
+          // â”€â”€ Remark (status 2/3 only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (isNonDelivery) ...[
             SizedBox(height: 12.h),
             _buildRemarkDropdown(),
@@ -205,25 +205,25 @@ class _MedicineDeliveryAcknowledgementScreenState
             ],
           ],
 
-          // ── SMS Vendor (status 1 only) ────────────────────────────────────
+          // â”€â”€ SMS Vendor (status 1 only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (isDelivered) ...[
             SizedBox(height: 12.h),
             _buildSmsVendorSection(),
           ],
 
-          // ── OTP Verification (status 1 or Beneficiary Not Available) ─────
+          // â”€â”€ OTP Verification (status 1 or Beneficiary Not Available) â”€â”€â”€â”€â”€
           if (controller.isStatusOtpAllowed) ...[
             SizedBox(height: 12.h),
             _buildOtpSection(),
           ],
 
-          // ── Beneficiary Photo (shown when status selected) ────────────────
+          // â”€â”€ Beneficiary Photo (shown when status selected) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (statusId != null) ...[
             SizedBox(height: 12.h),
             _buildBeneficiaryPhotoSection(),
           ],
 
-          // ── Submit button (non-delivery statuses) ─────────────────────────
+          // â”€â”€ Submit button (non-delivery statuses) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (isNonDelivery) ...[
             SizedBox(height: 12.h),
             AppButtonWithIcon(
@@ -235,19 +235,19 @@ class _MedicineDeliveryAcknowledgementScreenState
             ),
           ],
 
-          // ── Delivery Challan (status 1 only) ─────────────────────────────
+          // â”€â”€ Delivery Challan (status 1 only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (isDelivered) ...[
             SizedBox(height: 12.h),
             _buildDeliveryChallanSection(),
           ],
 
-          // ── Consent Form (status 1 only) ──────────────────────────────────
+          // â”€â”€ Consent Form (status 1 only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (isDelivered) ...[
             SizedBox(height: 12.h),
             _buildConsentFormSection(),
           ],
 
-          // ── Deliver Medicines button (status 1, after OTP verified) ───────
+          // â”€â”€ Deliver Medicines button (status 1, after OTP verified) â”€â”€â”€â”€â”€â”€â”€
           if (isDelivered) ...[
             Obx(() {
               if (!controller.isOtpVerified.value)
@@ -275,7 +275,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     });
   }
 
-  // ── Delivery Status dropdown ───────────────────────────────────────────────
+  // â”€â”€ Delivery Status dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Native: plain label + outlined textview with arrow dropdown
 
   Widget _buildDeliveryStatusDropdown() {
@@ -307,7 +307,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── Remark dropdown ───────────────────────────────────────────────────────
+  // â”€â”€ Remark dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Widget _buildRemarkDropdown() {
     return _sectionCard(
@@ -349,7 +349,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── Other Description field ───────────────────────────────────────────────
+  // â”€â”€ Other Description field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Widget _buildOtherDescriptionField() {
     return _sectionCard(
@@ -375,7 +375,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── SMS Vendor section ────────────────────────────────────────────────────
+  // â”€â”€ SMS Vendor section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Native: gradient header "SMS Vendor" (tappable collapse), then radio group
 
   Widget _buildSmsVendorSection() {
@@ -451,7 +451,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     });
   }
 
-  // ── OTP Section ───────────────────────────────────────────────────────────
+  // â”€â”€ OTP Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Native: CardView "OTP Verification" + select number dropdown + worker/alt + send OTP btn
 
   Widget _buildOtpSection() {
@@ -726,7 +726,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── Beneficiary Photo section ──────────────────────────────────────────────
+  // â”€â”€ Beneficiary Photo section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Native: gradient header + skip face detection switch + 80x88 camera image + label
   // Submit button (for status 2/3) is inside this section
 
@@ -800,7 +800,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     });
   }
 
-  // ── Delivery Challan section ──────────────────────────────────────────────
+  // â”€â”€ Delivery Challan section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Native: gradient header "Delivery Challan" + 80x88 camera image + label
 
   Widget _buildDeliveryChallanSection() {
@@ -846,7 +846,7 @@ class _MedicineDeliveryAcknowledgementScreenState
   //   controller.deliveryChallanNoController.text = res;
   // }
 
-  // ── Consent Form section ──────────────────────────────────────────────────
+  // â”€â”€ Consent Form section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Native: gradient header "Consent Form" + camera image + label
   //         + status messages + btnSubmitDeliveryAck
 
@@ -876,9 +876,9 @@ class _MedicineDeliveryAcknowledgementScreenState
     });
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   // VIEW-ONLY CONTENT (already delivered / not available / denied)
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
   Widget _buildViewOnlyContent() {
     final b = widget.beneficiary;
@@ -903,7 +903,7 @@ class _MedicineDeliveryAcknowledgementScreenState
 
     return Column(
       children: [
-        // ── Delivery Status (disabled, view-only) ────────────────────────────
+        // â”€â”€ Delivery Status (disabled, view-only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         _sectionCard(
           child: AppTextField(
             controller: TextEditingController(text: b.deliveryStatusName ?? ''),
@@ -1092,7 +1092,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── View photo card (view-only mode) ─────────────────────────────────────
+  // â”€â”€ View photo card (view-only mode) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   Widget _buildViewPhotoCard({
     required String title,
     required String? url,
@@ -1217,7 +1217,7 @@ class _MedicineDeliveryAcknowledgementScreenState
         base.endsWith('/') ? base.substring(0, base.length - 1) : base;
 
     // If the stored value is a full local device path (e.g. /storage/emulated/0/...),
-    // extract just the filename and build the server URL — matches native behaviour:
+    // extract just the filename and build the server URL â€” matches native behaviour:
     // domain + "/MedicineDelivery/BeneficiaryPhoto/" + filename
     if (trimmed.startsWith('/storage/') || trimmed.startsWith('/data/')) {
       final filename = trimmed.split('/').last;
@@ -1243,7 +1243,7 @@ class _MedicineDeliveryAcknowledgementScreenState
       return Uri.encodeFull('$baseNoSlash/MedicineDelivery/$cleaned');
     }
 
-    // Default: assume filename only — same as native:
+    // Default: assume filename only â€” same as native:
     // domain + "/MedicineDelivery/<folder>/" + filename
     return '$baseNoSlash/MedicineDelivery/$folder/${Uri.encodeComponent(cleaned)}';
   }
@@ -1301,9 +1301,9 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   // PICKERS (bottom sheets)
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
   void _showStatusPicker() {
     final items = controller.statusList;
@@ -1505,7 +1505,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── Full-screen viewer ────────────────────────────────────────────────────
+  // â”€â”€ Full-screen viewer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _openFullScreen(
     BuildContext context, {
@@ -1522,11 +1522,11 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   // SHARED UI PRIMITIVES (matching native style)
-  // ═══════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-  // ── Section card (plain, no header) ──────────────────────────────────────
+  // â”€â”€ Section card (plain, no header) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   Widget _sectionCard({required Widget child}) {
     return Card(
       margin: EdgeInsets.zero,
@@ -1536,7 +1536,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  // ── Photo capture area (compact horizontal layout) ────────────────────────
+  // â”€â”€ Photo capture area (compact horizontal layout) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // [fallbackLocalFile] / [fallbackUrl] show a previously submitted photo
   // when no new capture has been made yet (notAvailable re-attempt).
   Widget _buildPhotoCaptureArea({
@@ -1610,7 +1610,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  /// Section header — solid icon badge, white background, subtle divider.
+  /// Section header â€” solid icon badge, white background, subtle divider.
   Widget _gradientHeader({
     required String title,
     Widget? trailing,
@@ -1657,7 +1657,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  /// Read-only text field — matches native MaterialEditText style (hint + value)
+  /// Read-only text field â€” matches native MaterialEditText style (hint + value)
   Widget _nativeField({required String hint, String? value}) {
     final display = (value == null || value.isEmpty) ? '' : value;
     return Padding(
@@ -1683,7 +1683,7 @@ class _MedicineDeliveryAcknowledgementScreenState
     );
   }
 
-  /// RadioButton row — matches native RadioButton style
+  /// RadioButton row â€” matches native RadioButton style
   Widget _nativeRadioTile({
     required String label,
     required int value,
@@ -1734,9 +1734,9 @@ class _MedicineDeliveryAcknowledgementScreenState
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // Full-screen image viewer
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 class _FullScreenImageViewer extends StatelessWidget {
   final String title;
@@ -1801,11 +1801,11 @@ class _FullScreenImageViewer extends StatelessWidget {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // SSL-safe network image widget
 // Uses the same IOClient (SSL-bypass) as all API calls, then renders bytes
-// via Image.memory — avoids Image.network() which can fail on self-signed certs.
-// ─────────────────────────────────────────────────────────────────────────────
+// via Image.memory â€” avoids Image.network() which can fail on self-signed certs.
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SslSafeImage extends StatefulWidget {
   final String url;

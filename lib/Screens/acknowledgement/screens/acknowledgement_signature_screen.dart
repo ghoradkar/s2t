@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
+import 'package:s2toperational/Screens/acknowledgement/model/acknowledgement_patient_list_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
@@ -69,7 +69,7 @@ class _AcknowledgementSignatureScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          // ── Beneficiary details ──────────────────────────────────────
+          // â”€â”€ Beneficiary details â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             child: Column(
@@ -157,7 +157,7 @@ class _AcknowledgementSignatureScreenState
             ),
           ),
 
-          // ── Signature section ───────────────────────────────────────────
+          // â”€â”€ Signature section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Container(
             padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
             color: kBackground,

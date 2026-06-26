@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_build_context_synchronously
+﻿// ignore_for_file: file_names, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,8 +6,8 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ChooseDocumentManager/ChooseDocumentManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/Json_Class/OtherReasonForPatientRejectionResponse/OtherReasonForPatientRejectionResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/TestListForRejectResponse/TestListForRejectResponse.dart';
+import 'package:s2toperational/Screens/camp_details/model/other_reason_for_patient_rejection_response.dart';
+import 'package:s2toperational/Screens/camp_details/model/test_list_for_reject_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';

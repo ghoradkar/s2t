@@ -1,8 +1,8 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Json_Class/T2TCTUserDetailsResponse/T2TCTUserDetailsResponse.dart';
+import 'package:s2toperational/Screens/ct_assignment/model/t2t_ct_user_details_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../model/beneficiary_details_for_assign_teamid_details_response.dart';

@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import 'package:s2toperational/Modules/Json_Class/DishaResponse/DishaResponse.dart';
+import 'package:s2toperational/Screens/health_screening_details/models/disha_response.dart';
 import 'package:s2toperational/Screens/user_attendance/model/user_attendances_using_site_details_id_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';

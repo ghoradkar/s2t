@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
-import 'package:s2toperational/Modules/Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
+import 'package:s2toperational/Screens/d2d_team/model/lab_by_user_id_response.dart';
 
 import '../model/d2d_non_working_teams_response.dart';
 import '../model/d2d_team_member_details_response.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:convert';
 import 'dart:io';
@@ -6,9 +6,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/ExpenseCampIDListV1Response/ExpenseCampIDListV1Response.dart';
-import 'package:s2toperational/Modules/Json_Class/ExpenseHeadResponse/ExpenseHeadResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubExpenseHeadsResponse/SubExpenseHeadsResponse.dart';
+import 'package:s2toperational/Screens/expense_claim/model/expense_camp_id_list_v1_response.dart';
+import 'package:s2toperational/Screens/expense_claim/model/expense_head_response.dart';
+import 'package:s2toperational/Screens/expense_claim/model/sub_expense_heads_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';

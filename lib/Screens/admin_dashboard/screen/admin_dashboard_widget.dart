@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
@@ -6,8 +6,8 @@ import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import 'package:s2toperational/Modules/widgets/CommonText.dart';
 import 'dart:math' as math;
-import 'package:s2toperational/Modules/Json_Class/AdminDashboard/ConductedCampsTotals.dart';
-import 'package:s2toperational/Modules/Json_Class/AdminDashboard/TodaysPatientsResponse.dart';
+import 'package:s2toperational/Screens/admin_dashboard/model/conducted_camps_totals.dart';
+import 'package:s2toperational/Screens/admin_dashboard/model/todays_patients_response.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/admin_dashboard/screen/conducted_camp_screen.dart';
 
@@ -276,7 +276,7 @@ class _AdminDashboardWidgetState extends State<AdminDashboardWidget>
                 ],
               ),
 
-              // 👁 Eye icon OVERLAY (does NOT affect size)
+              // ðŸ‘ Eye icon OVERLAY (does NOT affect size)
               // Positioned(
               //   right: 10.w,
               //   bottom: 10.h,
@@ -392,7 +392,7 @@ class _AdminDashboardWidgetState extends State<AdminDashboardWidget>
                           flex: 6,
                           child: Center(
                             child: SizedBox(
-                              width: 230.w, // 🔥 increase diameter safely
+                              width: 230.w, // ðŸ”¥ increase diameter safely
                               height: 230.w,
                               child: Stack(
                                 alignment: Alignment.center,
@@ -460,7 +460,7 @@ class _AdminDashboardWidgetState extends State<AdminDashboardWidget>
                 ],
               ),
 
-              // 👁 Eye icon OVERLAY (does NOT affect size)
+              // ðŸ‘ Eye icon OVERLAY (does NOT affect size)
               Positioned(
                 right: 10.w,
                 bottom: 10.h,

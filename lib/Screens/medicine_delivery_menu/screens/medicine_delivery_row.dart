@@ -1,7 +1,7 @@
-// ignore_for_file: must_be_immutable
+﻿// ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Json_Class/PostCampBeneficiaryListResponse/PostCampBeneficiaryListResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/post_camp_beneficiary_list_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
 import '../../../Modules/constants/fonts.dart';

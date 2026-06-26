@@ -2,7 +2,7 @@
 
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
-import 'package:s2toperational/Modules/Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
+import 'package:s2toperational/Screens/d2d_team/model/lab_by_user_id_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 

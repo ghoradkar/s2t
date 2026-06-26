@@ -1,4 +1,4 @@
-// export 'package:s2toperational/Modules/Json_Class/CampDetailsonLabForDoorToDoorResponse/CampDetailsonLabForDoorToDoorResponse.dart';
+﻿// export 'package:s2toperational/Screens/health_screening_details/models/camp_details_on_lab_for_door_to_door_response.dart';
 // export 'package:s2toperational/Modules/Json_Class/UserCampMappingAndAttendanceStatusResponse/UserCampMappingAndAttendanceStatusResponse.dart';
 
 class CampDetailsonLabForDoorToDoorResponse {

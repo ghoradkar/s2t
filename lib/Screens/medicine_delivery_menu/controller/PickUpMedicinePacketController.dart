@@ -1,12 +1,12 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/LabByUserIDResponse/LabByUserIDResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/PacketAcceptDataResponse/PacketAcceptDataResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import 'package:s2toperational/Screens/d2d_team/model/lab_by_user_id_response.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/packet_accept_data_response.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
@@ -26,11 +26,11 @@ class PickUpMedicinePacketController extends GetxController {
   // Unified display name shown in the Taluka field
   final RxString selectedDropdownName = ''.obs;
 
-  // Lab mode (default – designation other than 35 / 64 / 86)
+  // Lab mode (default â€“ designation other than 35 / 64 / 86)
   final Rx<LabByUserIDOutput?> selectedLab = Rx<LabByUserIDOutput?>(null);
   final RxList<LabByUserIDOutput> labList = <LabByUserIDOutput>[].obs;
 
-  // Taluka mode (designation 35 / 64 / 86 / 157 – matches native behaviour)
+  // Taluka mode (designation 35 / 64 / 86 / 157 â€“ matches native behaviour)
   final Rx<UserMappedTalukaOutput?> selectedTaluka =
       Rx<UserMappedTalukaOutput?>(null);
   final RxList<UserMappedTalukaOutput> talukaList =
@@ -124,7 +124,7 @@ class PickUpMedicinePacketController extends GetxController {
     fetchPacketList();
   }
 
-  // ── Dropdown loading ────────────────────────────────────────────────────────
+  // â”€â”€ Dropdown loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _fetchDropdownList({
     bool autoSelect = false,
@@ -146,7 +146,7 @@ class PickUpMedicinePacketController extends GetxController {
     }
   }
 
-  /// DESGID 35 / 64 / 86 — talukas from GetUserMappedTaluka using user's district
+  /// DESGID 35 / 64 / 86 â€” talukas from GetUserMappedTaluka using user's district
   void _fetchTalukaList({
     bool autoSelect = false,
     bool showDropdown = false,
@@ -193,7 +193,7 @@ class PickUpMedicinePacketController extends GetxController {
     });
   }
 
-  /// Other designations — labs from GetLabByUserID
+  /// Other designations â€” labs from GetLabByUserID
   void _fetchLabList({
     bool autoSelect = false,
     bool showDropdown = false,
@@ -286,7 +286,7 @@ class PickUpMedicinePacketController extends GetxController {
     _fetchDropdownList(showDropdown: true, context: context);
   }
 
-  // ── Packet fetch ─────────────────────────────────────────────────────────────
+  // â”€â”€ Packet fetch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void fetchPacketList() {
     if (fromDateString.value.isEmpty || toDateString.value.isEmpty) return;
@@ -330,7 +330,7 @@ class PickUpMedicinePacketController extends GetxController {
     });
   }
 
-  // ── Selection ─────────────────────────────────────────────────────────────────
+  // â”€â”€ Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void togglePacketSelection(int index) {
     if (index < 0 || index >= packetList.length) return;
@@ -354,7 +354,7 @@ class PickUpMedicinePacketController extends GetxController {
         packetList.isNotEmpty && selectedCount.value == packetList.length;
   }
 
-  // ── Submit ────────────────────────────────────────────────────────────────────
+  // â”€â”€ Submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String _buildBulkPacketDetailsJson(List<PacketAcceptDataOutput> items) {
     final list =
@@ -524,7 +524,7 @@ class PickUpMedicinePacketController extends GetxController {
     submitBarcodePacket(context, scannedValue: res);
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _showDropDownBottomSheet(
     BuildContext context,

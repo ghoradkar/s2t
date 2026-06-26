@@ -1,6 +1,6 @@
-// export 'package:s2toperational/Modules/Json_Class/CampCloseCampDetailsResponse/CampCloseCampDetailsResponse.dart';
-// export 'package:s2toperational/Modules/Json_Class/CampCloseDetailsResponse/CampCloseDetailsResponse.dart';
-// export 'package:s2toperational/Modules/Json_Class/ConsumableListDetailsResponse/ConsumableListDetailsResponse.dart';
+﻿// export 'package:s2toperational/Screens/health_screening_details/models/camp_close_camp_details_response.dart';
+// export 'package:s2toperational/Screens/health_screening_details/models/camp_close_details_response.dart';
+// export 'package:s2toperational/Screens/device_and_resource_mapping/models/consumable_list_details_response.dart';
 
 // ignore_for_file: file_names
 

@@ -1,7 +1,7 @@
 
 
-import '../Json_Class/ReportDeliveryExecutiveResponse/ReportDeliveryExecutiveResponse.dart';
-import '../Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import '../../Screens/medicine_delivery_menu/model/report_delivery_executive_response.dart';
+import '../../Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 
 class AppDataManager {
   static String fromDate = "";

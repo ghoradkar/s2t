@@ -138,7 +138,11 @@
       "Bash(sed -i \"s|package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/SelectedTeamsDataListResponse.dart|../model/selected_teams_data_list_response.dart|g\" lib/Screens/ct_assignment/widget/rejected_beneficiary_team_view.dart)",
       "Bash(git *)",
       "Bash(grep -v \"^.*//\\\\|test\\\\|_test\\\\|CampDetailsScreen/\\\\|camp_details/\")",
-      "Bash(PowerShell *)"
+      "Bash(PowerShell *)",
+      "Bash(xargs -I{} grep -n \"Json_Class/\" {})",
+      "Bash(grep -v \"^.*:[ \\\\t]*//\")",
+      "Bash(mkdir -p \"lib/Screens/medicine_delivery_menu/model\")",
+      "Bash(mkdir -p \"lib/Screens/acknowledgement/model\")"
     ]
   }
 }

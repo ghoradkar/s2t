@@ -1,12 +1,12 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
-import 'package:s2toperational/Modules/Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/camp_list_v3_response.dart';
+import 'package:s2toperational/Screens/device_and_resource_mapping/models/consumables_list_response.dart';
 import '../models/devices_list_response.dart';
-import 'package:s2toperational/Modules/Json_Class/ResourceListResponse/ResourceListResponse.dart';
+import 'package:s2toperational/Screens/device_and_resource_mapping/models/resource_list_response.dart';
 import '../models/sub_devices_list_response.dart';
-import 'package:s2toperational/Modules/Json_Class/SubResourceListResponse/SubResourceListResponse.dart';
+import 'package:s2toperational/Screens/device_and_resource_mapping/models/sub_resource_list_response.dart';
 import '../models/submit_device_mapping_response.dart';
 
 class DeviceAndResourceMappingRepository {

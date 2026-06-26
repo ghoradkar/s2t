@@ -1,11 +1,11 @@
-// ignore_for_file: must_be_immutable, file_names
+﻿// ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AppointmentStatusResponse/AppointmentStatusResponse.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/appointment_status_response.dart';
 import 'package:s2toperational/Screens/appointments_confirmed_list/model/team_cc_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
@@ -21,7 +21,7 @@ import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListSc
 import '../../../../../Modules/constants/fonts.dart';
 // import '../../Modules/Enums/Enums.dart';
 // import '../../Modules/FormatterManager/FormatterManager.dart';
-// import '../../Modules/Json_Class/AppointmentStatusResponse/AppointmentStatusResponse.dart';
+// import '../../Screens/appointments_confirmed_list/model/appointment_status_response.dart';
 // import '../../Modules/Json_Class/TeamCCResponse/TeamCCResponse.dart';
 // import '../../Modules/ToastManager/ToastManager.dart';
 // import '../../Modules/constants/constants.dart';

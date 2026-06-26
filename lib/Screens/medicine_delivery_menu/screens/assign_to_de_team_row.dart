@@ -1,7 +1,7 @@
-// ignore_for_file: must_be_immutable, file_names
+﻿// ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Json_Class/PacketAcceptDataResponse/PacketAcceptDataResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/packet_accept_data_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';

@@ -1,10 +1,10 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/Json_Class/TeamDetailsListResponse/TeamDetailsListResponse.dart';
+import 'package:s2toperational/Screens/camp_details/model/team_details_list_response.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/widgets/AppDropdownTextfield.dart';
 import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';

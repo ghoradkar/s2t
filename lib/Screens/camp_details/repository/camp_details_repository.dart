@@ -1,11 +1,11 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:async';
 import 'dart:io';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/OtherReasonForPatientRejectionResponse/OtherReasonForPatientRejectionResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/TeamDetailsListResponse/TeamDetailsListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/TestListForRejectResponse/TestListForRejectResponse.dart';
+import 'package:s2toperational/Screens/camp_details/model/other_reason_for_patient_rejection_response.dart';
+import 'package:s2toperational/Screens/camp_details/model/team_details_list_response.dart';
+import 'package:s2toperational/Screens/camp_details/model/test_list_for_reject_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/team_number_by_campId_and_user_id_list_response.dart';
 import '../model/audio_screening_details_response.dart';
 import '../model/beneficiary_worker_response.dart';
@@ -63,7 +63,7 @@ class CampDetailsRepository {
     return c.future;
   }
 
-  // "Safe" variants return null on failure — used with Future.wait so all 4 complete even if one fails
+  // "Safe" variants return null on failure â€” used with Future.wait so all 4 complete even if one fails
   Future<PatientCheckupAnalysisReportResponse?> fetchPatientCheckupSafe(Map<String, String> params) async {
     final c = Completer<PatientCheckupAnalysisReportResponse?>();
     _api.getCAMPPatientCheckupAnalysisReportNewAPI(params, (res, error, success) {

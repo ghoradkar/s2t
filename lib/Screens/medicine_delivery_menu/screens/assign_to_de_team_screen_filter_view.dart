@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_conditional_assignment, must_be_immutable, file_names
+﻿// ignore_for_file: prefer_conditional_assignment, must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,8 +6,8 @@ import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/ReportDeliveryExecutiveResponse/ReportDeliveryExecutiveResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/report_delivery_executive_response.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
@@ -21,8 +21,8 @@ import '../../../../Modules/constants/fonts.dart';
 // import '../../Modules/APIManager/APIManager.dart';
 // import '../../Modules/Enums/Enums.dart';
 // import '../../Modules/FormatterManager/FormatterManager.dart';
-// import '../../Modules/Json_Class/ReportDeliveryExecutiveResponse/ReportDeliveryExecutiveResponse.dart';
-// import '../../Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+// import '../../Screens/medicine_delivery_menu/model/report_delivery_executive_response.dart';
+// import '../../Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 // import '../../Modules/ToastManager/ToastManager.dart';
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/images.dart';

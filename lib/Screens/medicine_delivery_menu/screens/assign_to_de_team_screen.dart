@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api, avoid_print
+﻿// ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api, avoid_print
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
 import 'package:s2toperational/Modules/DelegateManager/DelegateManager.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/PacketAcceptDataResponse/PacketAcceptDataResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/packet_accept_data_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';

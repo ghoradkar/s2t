@@ -1,13 +1,13 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/BillSubmissionResponse/BillSubmissionResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/ExpenseCampIDListV1Response/ExpenseCampIDListV1Response.dart';
-import 'package:s2toperational/Modules/Json_Class/ExpenseHeadResponse/ExpenseHeadResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubExpenseHeadsResponse/SubExpenseHeadsResponse.dart';
+import 'package:s2toperational/Screens/expense_claim/model/bill_submission_response.dart';
+import 'package:s2toperational/Screens/expense_claim/model/expense_camp_id_list_v1_response.dart';
+import 'package:s2toperational/Screens/expense_claim/model/expense_head_response.dart';
+import 'package:s2toperational/Screens/expense_claim/model/sub_expense_heads_response.dart';
 import '../model/advadetails_new_version_v2_response.dart';
 import '../model/advances_request_details_show_response.dart';
 

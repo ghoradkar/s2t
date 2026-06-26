@@ -1,7 +1,7 @@
-// ignore_for_file: must_be_immutable
+﻿// ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Json_Class/PatientListReAllocationforMedicineDeliveryResponse/PatientListReAllocationforMedicineDeliveryResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/patient_list_re_allocation_for_medicine_delivery_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
 import 'package:s2toperational/Modules/utilities/SizeConfig.dart';

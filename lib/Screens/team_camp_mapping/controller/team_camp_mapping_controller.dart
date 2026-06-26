@@ -3,12 +3,12 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AssignResourcesResponse/AssignResourcesResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/AssignTypeModel/AssignTypeModel.dart';
-import 'package:s2toperational/Modules/Json_Class/CampListV3Response/CampListV3Response.dart';
+import 'package:s2toperational/Screens/device_and_resource_mapping/models/assign_resources_response.dart';
+import 'package:s2toperational/Screens/team_camp_mapping/model/assign_type_model.dart';
+import 'package:s2toperational/Screens/camp_calendar/model/camp_list_v3_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
-import 'package:s2toperational/Modules/Json_Class/TeamCampLabResponse/TeamCampLabResponse.dart';
+import 'package:s2toperational/Screens/team_camp_mapping/model/team_camp_lab_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import '../model/assigned_external_resource_details_response.dart';

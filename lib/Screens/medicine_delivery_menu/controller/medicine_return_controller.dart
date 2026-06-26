@@ -1,12 +1,12 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/PacketReturnResponse/PacketReturnResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/ReportDeliveryExecutiveResponse/ReportDeliveryExecutiveResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/packet_return_response.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/report_delivery_executive_response.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';

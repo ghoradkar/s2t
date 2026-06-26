@@ -1,12 +1,12 @@
-// ignore_for_file: file_names, avoid_print, use_build_context_synchronously
+﻿// ignore_for_file: file_names, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Json_Class/CallStatusListResponse/CallStatusListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/RemarkListResponse/RemarkListResponse.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/call_status_list_response.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/remark_list_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
@@ -215,7 +215,7 @@ class AppointmentsConfirmedBeneficiaryDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'नोंद',
+                'à¤¨à¥‹à¤‚à¤¦',
                 style: TextStyle(
                   fontFamily: FontConstants.interFonts,
                   fontSize: 16.sp,
@@ -225,8 +225,8 @@ class AppointmentsConfirmedBeneficiaryDetailsScreen extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                'कृपया खालील लाभार्थी नोंदणी क्रमांक नोंद करा किंवा कॉपी करा. '
-                'पेशंट नोंदणी स्क्रीनमध्ये Beneficiary Reg No. फील्डमध्ये हा क्रमांक वापरा.',
+                'à¤•à¥ƒà¤ªà¤¯à¤¾ à¤–à¤¾à¤²à¥€à¤² à¤²à¤¾à¤­à¤¾à¤°à¥à¤¥à¥€ à¤¨à¥‹à¤‚à¤¦à¤£à¥€ à¤•à¥à¤°à¤®à¤¾à¤‚à¤• à¤¨à¥‹à¤‚à¤¦ à¤•à¤°à¤¾ à¤•à¤¿à¤‚à¤µà¤¾ à¤•à¥‰à¤ªà¥€ à¤•à¤°à¤¾. '
+                'à¤ªà¥‡à¤¶à¤‚à¤Ÿ à¤¨à¥‹à¤‚à¤¦à¤£à¥€ à¤¸à¥à¤•à¥à¤°à¥€à¤¨à¤®à¤§à¥à¤¯à¥‡ Beneficiary Reg No. à¤«à¥€à¤²à¥à¤¡à¤®à¤§à¥à¤¯à¥‡ à¤¹à¤¾ à¤•à¥à¤°à¤®à¤¾à¤‚à¤• à¤µà¤¾à¤ªà¤°à¤¾.',
                 style: TextStyle(
                   fontFamily: FontConstants.interFonts,
                   fontSize: 13.sp,

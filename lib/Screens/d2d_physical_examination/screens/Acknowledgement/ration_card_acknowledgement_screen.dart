@@ -1,8 +1,8 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
+import 'package:s2toperational/Screens/acknowledgement/model/acknowledgement_patient_list_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
@@ -58,7 +58,7 @@ class RationCardAcknowledgementScreen extends StatelessWidget {
   }
 }
 
-// ── Patient Details ───────────────────────────────────────────────────────────
+// â”€â”€ Patient Details â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _PatientDetailsCard extends StatelessWidget {
   final AcknowledgementPatientOutput patient;
@@ -158,7 +158,7 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-// ── Ration Card Type ──────────────────────────────────────────────────────────
+// â”€â”€ Ration Card Type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _RationCardTypeSection extends StatelessWidget {
   final RationCardAcknowledgementController ctrl;
@@ -277,7 +277,7 @@ class _RadioOption extends StatelessWidget {
   }
 }
 
-// ── Photo Section ─────────────────────────────────────────────────────────────
+// â”€â”€ Photo Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _PhotoSection extends StatelessWidget {
   final RationCardAcknowledgementController ctrl;
@@ -469,7 +469,7 @@ class _PhotoTile extends StatelessWidget {
   }
 }
 
-// ── Upload Button ─────────────────────────────────────────────────────────────
+// â”€â”€ Upload Button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _UploadButton extends StatelessWidget {
   final RationCardAcknowledgementController ctrl;

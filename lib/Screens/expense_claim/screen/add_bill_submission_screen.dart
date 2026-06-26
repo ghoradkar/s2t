@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, avoid_print, file_names, use_build_context_synchronously
+﻿// ignore_for_file: must_be_immutable, avoid_print, file_names, use_build_context_synchronously
 
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/ChooseDocumentManager/ChooseDocumentManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/Json_Class/ExpenseHeadResponse/ExpenseHeadResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/SubExpenseHeadsResponse/SubExpenseHeadsResponse.dart';
+import 'package:s2toperational/Screens/expense_claim/model/expense_head_response.dart';
+import 'package:s2toperational/Screens/expense_claim/model/sub_expense_heads_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';

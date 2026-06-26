@@ -11,7 +11,7 @@ import 'package:pointycastle/asn1.dart' as asn1;
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/attendance_status_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/beneficiary_details_response.dart';

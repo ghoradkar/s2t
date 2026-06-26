@@ -1,11 +1,11 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:s2toperational/Modules/ChooseDocumentManager/ChooseDocumentManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AcknowledgementPatientListResponse/AcknowledgementPatientListResponse.dart';
+import 'package:s2toperational/Screens/acknowledgement/model/acknowledgement_patient_list_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:s2toperational/Screens/acknowledgement/repository/acknowledgement_repository.dart';
@@ -112,7 +112,7 @@ class AcknowledgementSignatureController extends GetxController {
     }
 
     isLoading.value = true;
-    print('[AckSign] Starting save — RegdId=${patient.regdId} SiteId=${patient.siteId} CampId=$campId CreatedBy=$empCode thumbFile=${thumbFile.value?.path}');
+    print('[AckSign] Starting save â€” RegdId=${patient.regdId} SiteId=${patient.siteId} CampId=$campId CreatedBy=$empCode thumbFile=${thumbFile.value?.path}');
 
     try {
       final ui.Image? image = await signatureController.toImage();

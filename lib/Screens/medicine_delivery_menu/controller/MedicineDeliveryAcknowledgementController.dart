@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+﻿// ignore_for_file: avoid_print
 
 import 'dart:async';
 import 'dart:io';
@@ -7,7 +7,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/PostCampBeneficiaryListResponse/PostCampBeneficiaryListResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/post_camp_beneficiary_list_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,7 +15,7 @@ import 'package:path/path.dart' as p;
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/face_detection_screen.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/front_camera_screen.dart';
 
-// ── Simple inline models ──────────────────────────────────────────────────────
+// â”€â”€ Simple inline models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class DeliveryStatusItem {
   final int id;
@@ -43,11 +43,11 @@ class DeliveryRemarkItem {
       );
 }
 
-// ── Mode enum ─────────────────────────────────────────────────────────────────
+// â”€â”€ Mode enum â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 enum AckMode { pending, delivered, notAvailable, denied }
 
-// ── controller ────────────────────────────────────────────────────────────────
+// â”€â”€ controller â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class MedicineDeliveryAcknowledgementController extends GetxController {
   final PostCampBeneficiaryOutput beneficiary;
@@ -56,16 +56,16 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
 
   final APIManager _api = APIManager();
 
-  // ── Session ───────────────────────────────────────────────────────────────
+  // â”€â”€ Session â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String _userId = '';
   String _orgId = '0';
 
-  // ── Mode ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   late final AckMode mode;
 
-  // ── SMS Gateway ───────────────────────────────────────────────────────────
+  // â”€â”€ SMS Gateway â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   /// 0 = SMS Striker (smsId "2"), 1 = SMS 91 (smsId "1")
   final RxInt selectedSmsVendorIndex = 0.obs;
@@ -82,13 +82,13 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
 
   void selectSmsVendor(int index) => selectedSmsVendorIndex.value = index;
 
-  // ── Mobile numbers (display only) ────────────────────────────────────────
+  // â”€â”€ Mobile numbers (display only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String get workerMobileDisplay => beneficiary.workersMob ?? '';
 
   String get alternateMobileDisplay => beneficiary.alternateMobNo ?? '';
 
-  // ── OTP target number (from API picker) ───────────────────────────────────
+  // â”€â”€ OTP target number (from API picker) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   final RxString otpTargetNumber = "8830378568".obs;
 
@@ -125,7 +125,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     otpTargetNumber.value = number;
   }
 
-  // ── Face Detection ────────────────────────────────────────────────────────
+  // â”€â”€ Face Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   /// Whether the face detection toggle section should be shown
   /// (native: shown when faceDetectionCompulsory == "0")
@@ -148,7 +148,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     });
   }
 
-  // ── OTP ───────────────────────────────────────────────────────────────────
+  // â”€â”€ OTP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   final RxBool isOtpSending = false.obs;
   final RxBool isOtpVerifying = false.obs;
@@ -239,7 +239,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
         otpTimerText.value = '';
         canResendOtp.value = false;
         // Show success dialog (native: AlertDialog "OTP Verification successfully")
-        // Set isOtpVerified after user taps OK — same as native's onPositiveButton callback.
+        // Set isOtpVerified after user taps OK â€” same as native's onPositiveButton callback.
         // showDialog(
         //   context: context,
         //   barrierDismissible: false,
@@ -274,7 +274,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     });
   }
 
-  // ── Photos ────────────────────────────────────────────────────────────────
+  // â”€â”€ Photos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   final Rx<File?> beneficiaryPhotoFile = Rx<File?>(null);
   final Rx<File?> consentFormFile = Rx<File?>(null);
@@ -295,7 +295,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
 
   Future<void> captureBeneficiaryPhoto(BuildContext context) async {
     if (!skipFaceDetection.value) {
-      // Skip Face Detection is OFF → use face detection camera (native: FaceDetectionActivity)
+      // Skip Face Detection is OFF â†’ use face detection camera (native: FaceDetectionActivity)
       final file = await Navigator.of(context).push<File>(
         MaterialPageRoute(builder: (_) => const FaceDetectionScreen()),
       );
@@ -303,7 +303,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
         beneficiaryPhotoFile.value = await _copyToExternalCache(file, 'BF');
       }
     } else {
-      // Skip Face Detection is ON → front camera without blink check
+      // Skip Face Detection is ON â†’ front camera without blink check
       final file = await Navigator.of(context).push<File>(
         MaterialPageRoute(builder: (_) => const FrontCameraScreen()),
       );
@@ -331,7 +331,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     }
   }
 
-  // ── Status / Remark ───────────────────────────────────────────────────────
+  // â”€â”€ Status / Remark â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   final RxList<DeliveryStatusItem> statusList = <DeliveryStatusItem>[].obs;
   final RxList<DeliveryRemarkItem> remarkList = <DeliveryRemarkItem>[].obs;
@@ -354,15 +354,15 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
   bool get isStatusNonDelivery =>
       selectedStatus.value?.id == 2 || selectedStatus.value?.id == 3;
 
-  // ── Submit loading ────────────────────────────────────────────────────────
+  // â”€â”€ Submit loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   final RxBool isSubmitting = false.obs;
 
-  // ── Image base URL ────────────────────────────────────────────────────────
+  // â”€â”€ Image base URL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String get imageBaseUrl => APIManager.kMediaBaseURL;
 
-  // ── Init ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @override
   void onInit() {
@@ -403,7 +403,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     super.onClose();
   }
 
-  // ── Mode resolution ───────────────────────────────────────────────────────
+  // â”€â”€ Mode resolution â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _resolveMode() {
     final statusId = beneficiary.deliveryStatusRemarkId ?? 0;
@@ -419,7 +419,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     }
   }
 
-  // ── Status / Remark fetch ─────────────────────────────────────────────────
+  // â”€â”€ Status / Remark fetch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _fetchStatusList({int? preferredStatusId, int? preferredRemarkId}) {
     _api.getMedicineDeliveryStatusListAPI((response, error, success) {
@@ -500,7 +500,7 @@ class MedicineDeliveryAcknowledgementController extends GetxController {
     selectedRemark.value = item;
   }
 
-  // ── Submit ────────────────────────────────────────────────────────────────
+  // â”€â”€ Submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void submitDeliveryAck(BuildContext context) {
     // final dcNo = deliveryChallanNoController.text.trim();

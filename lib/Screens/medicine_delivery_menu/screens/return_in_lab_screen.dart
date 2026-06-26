@@ -1,4 +1,4 @@
-// ignore_for_file: use_full_hex_values_for_flutter_colors, file_names, avoid_print, prefer_conditional_assignment
+﻿// ignore_for_file: use_full_hex_values_for_flutter_colors, file_names, avoid_print, prefer_conditional_assignment
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
 import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
 import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/Json_Class/PatientListReAllocationforMedicineDeliveryResponse/PatientListReAllocationforMedicineDeliveryResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/UserMappedTalukaResponse/UserMappedTalukaResponse.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/patient_list_re_allocation_for_medicine_delivery_response.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';

@@ -1,10 +1,10 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
 import 'dart:async';
 import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/Json_Class/AppointmentStatusResponse/AppointmentStatusResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/CallStatusListResponse/CallStatusListResponse.dart';
-import 'package:s2toperational/Modules/Json_Class/RemarkListResponse/RemarkListResponse.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/appointment_status_response.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/call_status_list_response.dart';
+import 'package:s2toperational/Screens/appointments_confirmed_list/model/remark_list_response.dart';
 import '../model/appoinment_expected_beneficiaries_response.dart';
 import '../model/beneficiaries_details_response.dart';
 import '../model/beneficiary_dependant_details_response.dart';

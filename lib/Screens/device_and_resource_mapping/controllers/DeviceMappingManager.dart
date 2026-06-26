@@ -1,8 +1,8 @@
-// ignore_for_file: file_names
+﻿// ignore_for_file: file_names
 
-import '../../../Modules/Json_Class/ConsumablesListResponse/ConsumablesListResponse.dart';
+import '../../../Screens/device_and_resource_mapping/models/consumables_list_response.dart';
 import '../models/devices_list_response.dart';
-import '../../../Modules/Json_Class/ResourceListResponse/ResourceListResponse.dart';
+import '../../../Screens/device_and_resource_mapping/models/resource_list_response.dart';
 
 class DeviceMappingManager {
   static final DeviceMappingManager _singleton =
