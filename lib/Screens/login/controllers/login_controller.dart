@@ -6,7 +6,7 @@ import '../../../Modules/Enums/Enums.dart';
 import '../../../Modules/FormatterManager/FormatterManager.dart';
 import '../../../Modules/ToastManager/ToastManager.dart';
 import '../../../Modules/utilities/DataProvider.dart';
-import '../../../Screens/HomeScreen/HomeScreen.dart';
+import '../../../Screens/HomeScreen/screen/home_screen.dart';
 import '../../../Screens/verify_otp/controllers/verify_otp_controller.dart';
 import '../../../Screens/verify_otp/repository/verify_otp_repository.dart';
 import '../../../Screens/verify_otp/screens/verify_otp_screen.dart';

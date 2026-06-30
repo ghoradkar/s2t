@@ -342,6 +342,8 @@ class APIConstants {
   static String kVerifyDependentDetailsV2 = "VerifyDependentDetails_V2";
   static String kGetBeneficiaryConsentDetails = "GetBeneficiaryConsentDetails";
   static String kGetWorkerInfroReRegistration = "GetWorkerInfroRe_Registration";
+  static String kInsertChangePasswordRequest = "InsertChangePasswordRequest";
+  static String kUpdateUserPassword = "UpdateUserPassword";
   static String kGetWorkerInfroFromWorkerRegid = "GetWorkerInfroFromWorkerRegid";
   static String kInsertSignatureandThumbDetails =
       "handler/InsertSignatureandThumbDetails.ashx";

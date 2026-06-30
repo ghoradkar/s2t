@@ -6,7 +6,7 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 import 'package:s2toperational/Modules/constants/APIConstants.dart';
 import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
 import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Screens/HomeScreen/HomeScreen.dart';
+import 'package:s2toperational/Screens/HomeScreen/screen/home_screen.dart';
 import 'package:s2toperational/Screens/login/controllers/device_uuid_manager.dart';
 import 'package:s2toperational/Screens/login/controllers/login_controller.dart';
 import 'package:s2toperational/Screens/login/screens/login_screen.dart';

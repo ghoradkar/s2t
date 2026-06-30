@@ -3090,7 +3090,11 @@ class D2DPatientRegistrationController extends GetxController {
       }
     }
 
+    // ignore: avoid_print
+    print('[IsCellularPhone] Validation reached. isCellularPhone=${isCellularPhone.value} consentPhotoPath=${consentPhotoPath.value}');
     if (isCellularPhone.value && consentPhotoPath.value.isEmpty) {
+      // ignore: avoid_print
+      print('[IsCellularPhone=true] BLOCKED — basic phone, consent photo missing');
       ToastManager.toast('Please capture consent photo');
       return false;
     }
@@ -3155,10 +3159,13 @@ class D2DPatientRegistrationController extends GetxController {
           : tecRationCardNo.text.trim();
 
       // ── Consent check (new in 9.82) ───────────────────────────────────────
-      // isCellularPhone=true → beneficiary clicked web-consent link themselves
-      //   → consent photo is mandatory, then skip getConsent() and go to verify.
-      // isCellularPhone=false → no phone → getConsent() API checks offline consent.
+      // isCellularPhone=false(0) → HAS smartphone → web consent link clicked → getConsent() checks server record.
+      // isCellularPhone=true(1) → basic/feature phone → can't open link → phlebo captures consent photo → skip getConsent().
+      // ignore: avoid_print
+      print('[IsCellularPhone] BRANCH DECISION → isCellularPhone=${isCellularPhone.value} RegdNo=$regdNo Name=${tecFullName.text.trim()} RelationId=$relationId');
       if (!isCellularPhone.value) {
+        // ignore: avoid_print
+        print('[IsCellularPhone=false] HAS smartphone → calling getConsent() API');
         final consentStatus = await _repo.getConsent(
           bocwRegNo: regdNo,
           beneficiaryName: tecFullName.text.trim(),
@@ -3167,8 +3174,12 @@ class D2DPatientRegistrationController extends GetxController {
 
         ToastManager.hideLoader();
         isSubmitting.value = false;
+        // ignore: avoid_print
+        print('[getConsent] Response received. consentStatus=$consentStatus');
 
         if (consentStatus == null) {
+          // ignore: avoid_print
+          print('[getConsent] BLOCKED — server not responding');
           ToastManager.showAlertDialog(
             context,
             'Server not responding while checking consent. Please try again.',
@@ -3178,6 +3189,8 @@ class D2DPatientRegistrationController extends GetxController {
         }
 
         if (consentStatus == 0) {
+          // ignore: avoid_print
+          print('[getConsent] BLOCKED — consent not yet received (status=0)');
           ToastManager.showAlertDialog(
             context,
             'या लाभार्थ्याकडून संमती (Consent) अदयाप प्राप्त झालेला नाही त्यामळे स्क्रीनिंग प्रक्रिया पुढे सुरू करण्यासाठी लाभार्थ्याला संमती सादर करण्यास सांगावे',
@@ -3187,6 +3200,8 @@ class D2DPatientRegistrationController extends GetxController {
         }
 
         if (consentStatus == 2) {
+          // ignore: avoid_print
+          print('[getConsent] BLOCKED — consent withdrawn (status=2)');
           ToastManager.showAlertDialog(
             context,
             'या लाभार्थ्याकडून संमती (Consent) मागे घेण्यात आली आहे त्यामळे स्क्रीनिंग प्रक्रिया पुढे सुरू करण्यासाठी लाभार्थ्याला संमती सादर करण्यास सांगावे',
@@ -3195,8 +3210,13 @@ class D2DPatientRegistrationController extends GetxController {
           return;
         }
         // consentStatus == 1 → consent given, proceed
+        // ignore: avoid_print
+        print('[getConsent] Consent CONFIRMED (status=1) → proceeding to verifyBeneficiaryDetails()');
         isSubmitting.value = true;
         ToastManager.showLoader();
+      } else {
+        // ignore: avoid_print
+        print('[IsCellularPhone=true] Basic/feature phone → skipping getConsent(), consent photo captured by phlebo');
       }
       // ─────────────────────────────────────────────────────────────────────
 

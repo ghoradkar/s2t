@@ -1888,17 +1888,17 @@ class D2DPatientRegistrationRepository {
       }
       if (consentPhoto != null) {
         // ignore: avoid_print
-        print('[saveD2DRegistration] file5=consentPhoto path=${consentPhoto.path} filename=${regdNo}_CF.jpg');
+        print('[saveD2DRegistration] ConsentFormPath=consentPhoto path=${consentPhoto.path} filename=${regdNo}_CF.jpg');
         request.files.add(
           await http.MultipartFile.fromPath(
-            'file5',
+            'ConsentFormPath',
             consentPhoto.path,
             filename: '${regdNo}_CF.jpg',
           ),
         );
       } else {
         // ignore: avoid_print
-        print('[saveD2DRegistration] file5=null (no consent photo)');
+        print('[saveD2DRegistration] ConsentFormPath=null (no consent photo)');
       }
 
       final streamed = await ioClient.send(request);

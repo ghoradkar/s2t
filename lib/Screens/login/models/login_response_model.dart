@@ -169,6 +169,7 @@ class LoginOutput {
   String? myOperatorUserID;
   int? is24By7IsAccountCreated;
   bool? isFixedPay;
+  int? passwordChageDays;
 
   LoginOutput({
     this.iD,
@@ -310,6 +311,7 @@ class LoginOutput {
     this.myOperatorUserID,
     this.is24By7IsAccountCreated,
     this.isFixedPay,
+    this.passwordChageDays,
   });
 
   LoginOutput.fromJson(Map<String, dynamic> json) {
@@ -454,6 +456,7 @@ class LoginOutput {
     if (json['IsFixedPay'] != null) {
       isFixedPay = json['IsFixedPay'].toString().toLowerCase() == 'true';
     }
+    passwordChageDays = json['PasswordChageDays'];
   }
 
   Map<String, dynamic> toJson() {
@@ -597,6 +600,7 @@ class LoginOutput {
     data['MyOperator_UserID'] = myOperatorUserID;
     data['Is24By7IsAccountCreated'] = is24By7IsAccountCreated;
     data['IsFixedPay'] = isFixedPay;
+    data['PasswordChageDays'] = passwordChageDays;
     return data;
   }
 }

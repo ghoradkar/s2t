@@ -10,7 +10,7 @@ import '../../../Modules/constants/images.dart';
 import '../../../Modules/utilities/DataProvider.dart';
 import '../../../Modules/constants/APIConstants.dart';
 import '../../../Modules/utilities/DeviceInfoUtil.dart';
-import '../../../Screens/HomeScreen/HomeScreen.dart';
+import '../../../Screens/HomeScreen/screen/home_screen.dart';
 import '../../../Screens/login/controllers/login_controller.dart';
 import '../../../Screens/login/screens/login_screen.dart';
 import '../repository/splash_repository.dart';
