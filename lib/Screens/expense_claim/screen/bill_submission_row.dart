@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
 import '../model/advadetails_new_version_v2_response.dart';
 
 class BillSubmissionRow extends StatelessWidget {

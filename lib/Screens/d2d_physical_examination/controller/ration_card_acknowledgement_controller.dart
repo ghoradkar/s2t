@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:s2toperational/Screens/acknowledgement/model/acknowledgement_patient_list_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/regular_patient_registration_repository.dart';
 
 enum RationCardType { manual, digital }

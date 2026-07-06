@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import '../models/camp_closing_model.dart';
 import '../repository/health_screening_repository.dart';
 

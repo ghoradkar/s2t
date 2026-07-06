@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/admin_dashboard/controller/admin_controller.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_conducted_response.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/camp_details/screen/camp_details_screen.dart';
 
 class ConductedCampsScreen extends StatefulWidget {

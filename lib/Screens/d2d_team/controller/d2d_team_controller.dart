@@ -3,8 +3,8 @@
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Screens/d2d_team/model/lab_by_user_id_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 
 import '../model/d2d_non_working_teams_response.dart';
 import '../model/d2d_team_member_details_response.dart';

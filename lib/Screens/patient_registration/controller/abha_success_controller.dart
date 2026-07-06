@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 

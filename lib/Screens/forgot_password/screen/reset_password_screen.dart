@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/calling_modules/routes/app_routes.dart';
+import 'package:s2toperational/Modules/utilities/app_routes.dart';
 
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/AppButton.dart';
-import '../../../../Modules/widgets/AppTextField.dart';
+import '../../../../Modules/utilities/size_config.dart';
+import '../../../../Modules/common_widgets/AppButton.dart';
+import '../../../../Modules/common_widgets/AppTextField.dart';
 import '../controller/forgot_password_controller.dart';
 import '../repository/forgot_password_repository.dart';
 

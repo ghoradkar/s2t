@@ -5,12 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_internet_widget.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_internet_widget.dart';
 import 'package:s2toperational/Screens/s2t_patient_app/controller/s2t_patient_app_controller.dart';
 import 'package:s2toperational/Screens/s2t_patient_app/screen/AndroidAndIosPatientCountScreen.dart';
 

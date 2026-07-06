@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
 
-import '../../../../Modules/APIManager/APIManager.dart';
+import '../../../Modules/utilities/api_manager.dart';
 
 class BeneficiaryCardRepository {
   IOClient getInstanceOfIoClient() {

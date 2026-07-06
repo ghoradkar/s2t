@@ -5,12 +5,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';
-import 'package:s2toperational/Screens/user_attendance/controller/LocationManager.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Screens/user_attendance/controller/location_manager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/user_attendance/model/user_attandance_response.dart';
 import 'package:s2toperational/Screens/user_attendance/repository/user_attendance_repository.dart';
 

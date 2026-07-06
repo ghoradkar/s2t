@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_patient_registration_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/model/attendance_status_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/select_camp_response.dart';

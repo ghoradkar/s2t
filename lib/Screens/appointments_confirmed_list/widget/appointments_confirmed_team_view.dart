@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:s2toperational/Screens/appointments_confirmed_list/model/team_cc_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
 //
 // import '../../Modules/Json_Class/TeamCCResponse/TeamCCResponse.dart';
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/images.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
+// import '../../Modules/utilities/size_config.dart';
 // import '../../Modules/widgets/AppActiveButton.dart';
 import '../../../../../Modules/constants/fonts.dart';
 

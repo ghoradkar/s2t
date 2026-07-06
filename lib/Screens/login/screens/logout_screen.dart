@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/AppButtonWithIcon.dart';
+import '../../../../Modules/utilities/size_config.dart';
+import '../../../../Modules/common_widgets/AppButtonWithIcon.dart';
 
 class LogOutScreen extends StatelessWidget {
   const LogOutScreen({super.key});

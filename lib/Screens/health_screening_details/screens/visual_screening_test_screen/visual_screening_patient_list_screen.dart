@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/visual_screening_patient_list_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'visual_screening_test_screen.dart';

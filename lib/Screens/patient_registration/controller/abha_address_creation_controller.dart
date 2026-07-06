@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Screens/patient_registration/repository/d2d_patient_registration_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/abha_success_screen.dart';
 

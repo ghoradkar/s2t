@@ -7,11 +7,11 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/camp_creation/controllers/camp_creation_controller.dart';
 
 class CampCreationScreen extends StatelessWidget {

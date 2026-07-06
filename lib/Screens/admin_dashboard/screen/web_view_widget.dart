@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MyWebView extends StatefulWidget {

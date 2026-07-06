@@ -3,19 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../Modules/Enums/Enums.dart';
-import '../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/utilities/enums.dart';
+import '../../../Modules/utilities/toast_manager.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppActiveButton.dart';
-import '../../../Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/common_widgets/AppActiveButton.dart';
+import '../../../Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../controllers/payment_details_controller.dart';
 import '../widgets/otp_verify_sheet.dart';
 

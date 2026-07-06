@@ -3,15 +3,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/DropDownListScreen/DropDownListScreen.dart';
 
 import '../controller/d2d_team_controller.dart';
 

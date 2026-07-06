@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
 import '../../../../../Modules/constants/fonts.dart';
 // import '../../Modules/constants/constants.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
+// import '../../Modules/utilities/size_config.dart';
 
 class BeneficiaryCampColorInfoView extends StatelessWidget {
   const BeneficiaryCampColorInfoView({super.key});

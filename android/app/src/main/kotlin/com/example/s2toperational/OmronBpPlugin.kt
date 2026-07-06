@@ -41,6 +41,14 @@ class OmronBpPlugin : FlutterPlugin, MethodCallHandler {
         const val USER_HASH  = "s2t.operational@s2t.com"
         const val TIMEOUT_MS = 60_000L   // overall transfer timeout
         const val CONFIG_WAIT_MS = 30_000L  // max wait for first-time config download
+
+        // setAPIKey() must be called exactly once per app process lifetime — matching
+        // the native reference app, which calls it once in Activity.onCreate() and never
+        // again per-transfer. Re-calling it on every transfer (as this plugin used to)
+        // re-triggers the SDK's internal auth/session init and was causing
+        // endDataTransferFromPeripheral() to fail with "User Hash for device
+        // configuration/encryption missing" on the 2nd+ transfer in a session.
+        private var apiKeyInitialized = false
     }
 
     private lateinit var methodChannel: MethodChannel
@@ -105,20 +113,25 @@ class OmronBpPlugin : FlutterPlugin, MethodCallHandler {
         mainHandler.postDelayed(timeoutRunnable!!, TIMEOUT_MS)
 
         try {
-            // Authenticate SDK (may trigger async device-config download on first use)
-            OmronPeripheralManager.sharedManager(ctx).setAPIKey(API_KEY, null)
+            if (!apiKeyInitialized) {
+                // First transfer ever in this process — authenticate SDK once (may
+                // trigger async device-config download on a fresh install) and wait
+                // for it to be ready before touching the peripheral.
+                OmronPeripheralManager.sharedManager(ctx).setAPIKey(API_KEY, null)
+                apiKeyInitialized = true
 
-            // Check if device config is already cached from a previous run
-            val existingConfig = OmronPeripheralManager.sharedManager(ctx).retrieveManagerConfiguration()
-            if (existingConfig != null) {
-                // Config is ready — proceed immediately
-                Log.d(TAG, "Device config already cached, starting transfer")
-                doTransfer(ctx, localName, uuid)
+                val existingConfig = OmronPeripheralManager.sharedManager(ctx).retrieveManagerConfiguration()
+                if (existingConfig != null) {
+                    Log.d(TAG, "Device config already cached, starting transfer")
+                    doTransfer(ctx, localName, uuid)
+                } else {
+                    Log.d(TAG, "Device config not yet available, waiting for download…")
+                    waitForConfigThenTransfer(ctx, localName, uuid)
+                }
             } else {
-                // First install — SDK needs to download config from Omron servers.
-                // Wait for OMRONBLEConfigDeviceAvailabilityNotification.
-                Log.d(TAG, "Device config not yet available, waiting for download…")
-                waitForConfigThenTransfer(ctx, localName, uuid)
+                // Every subsequent transfer — do NOT call setAPIKey() again.
+                Log.d(TAG, "API key already initialized, starting transfer directly")
+                doTransfer(ctx, localName, uuid)
             }
         } catch (e: Exception) {
             Log.e(TAG, "startTransfer exception", e)
@@ -126,7 +139,7 @@ class OmronBpPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    // ── Wait for config download (first install) ─────────────────────────────
+    // ── Wait for config download (first install only) ────────────────────────
 
     private fun waitForConfigThenTransfer(ctx: Context, localName: String, uuid: String) {
         var configReceived = false

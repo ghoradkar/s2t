@@ -2,11 +2,11 @@
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import 'package:s2toperational/Screens/appointments_confirmed_list/model/appointment_status_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import '../model/appoinment_expected_beneficiaries_response.dart';
 import '../model/team_cc_response.dart';
 import '../repository/appointments_confirmed_repository.dart';

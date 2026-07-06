@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s2toperational/Screens/resource_re_mapping/models/ResourceReMappingCampResponse.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
 
 class AcknowledgementNewCampRow extends StatelessWidget {
   final ResourceReMappingCampOutput camp;

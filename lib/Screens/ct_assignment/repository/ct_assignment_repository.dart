@@ -1,7 +1,7 @@
 ﻿// ignore_for_file: file_names
 
 import 'dart:async';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/assignment_remarks_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/landing_lab_camp_creation_response.dart';
 import 'package:s2toperational/Screens/ct_assignment/model/t2t_ct_user_details_response.dart';

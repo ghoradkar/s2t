@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/all_district_list_for_phy_exam_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/model/d2d_physical_exam_details_response.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/repository/d2d_physical_examination_repository.dart';

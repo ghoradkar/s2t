@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/assignment_remarks_response.dart';
 import 'package:s2toperational/Screens/ct_assignment/model/department_type_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/taluka_camp_creation_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import '../model/t2t_ct_beneficiary_details_response.dart';
 import '../repository/ct_assignment_repository.dart';
 

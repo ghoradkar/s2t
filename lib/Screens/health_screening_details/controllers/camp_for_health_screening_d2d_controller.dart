@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
+import 'package:s2toperational/Modules/common_widgets/DropDownListScreen/DropDownListScreen.dart';
 // import 'package:s2toperational/screen/health_screening_details/models/camp_d2d_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 

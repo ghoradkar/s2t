@@ -1,13 +1,13 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/d2d_physical_examination/screens/Acknowledgement/patient_list_acknowledgement.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/screens/CallToDoctorScreen/patient_list_d2d_phy_exa.dart';
-import '../../../../Modules/Enums/Enums.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/screens/call_to_doctor_screen/patient_list_d2d_phy_exa.dart';
+import '../../../../Modules/utilities/enums.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/S2TAppBar.dart';
+import '../../../../Modules/utilities/size_config.dart';
+import '../../../../Modules/common_widgets/S2TAppBar.dart';
 import '../../../camp_details/screen/camp_details_screen.dart';
 import '../../controllers/health_screening_details_controller.dart';
 import '../camp_closing_screen/camp_closing_screen.dart';
@@ -16,7 +16,7 @@ import '../basic_health_info_screen/basic_health_info_patient_list_screen.dart';
 import '../lung_function_test_screen/lung_function_test_patient_list_screen.dart';
 import '../visual_screening_test_screen/visual_screening_patient_list_screen.dart';
 import '../health_screening_patient_list_screen/health_screening_patient_list_screen.dart';
-import '../../../d2d_physical_examination/screens/AssignedD2DPhysicalExaminationPatientListScreen/AssignedD2DPhysicalExaminationPatientListScreen.dart';
+import '../../../d2d_physical_examination/screens/assigned_d2d_physical_examination_patient_list/assigned_d2d_physical_examination_patient_list_screen.dart';
 import 'health_screening_menu_row/health_screening_menu_row.dart';
 
 class HealthScreeningDetailsScreen extends StatelessWidget {

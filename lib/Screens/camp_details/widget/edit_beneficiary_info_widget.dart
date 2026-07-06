@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';

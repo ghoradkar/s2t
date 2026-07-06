@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/io_client.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/verify_otp/models/OrganisationWiseAPIKeyResponse.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
 import 'package:s2toperational/Screens/verify_otp/models/user_android_id_response.dart';
 
 class VerifyOtpRepository {

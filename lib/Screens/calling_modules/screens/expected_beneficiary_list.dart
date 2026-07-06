@@ -3,22 +3,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_controller.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_list_controller.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/expected_beneficiary_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/expected_beneficiary_list_controller.dart';
 
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppButtonWithIcon.dart';
-import '../../../Modules/widgets/AppTextField.dart';
-import '../../../Modules/widgets/CommonSkeletonList.dart';
-import '../../../Modules/widgets/S2TAppBar.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/common_widgets/AppButtonWithIcon.dart';
+import '../../../Modules/common_widgets/AppTextField.dart';
+import '../../../Modules/common_widgets/CommonSkeletonList.dart';
+import '../../../Modules/common_widgets/S2TAppBar.dart';
 import 'beneficiary_card.dart' show BeneficiaryCard;
-import '../custom_widgets/network_wrapper.dart';
-import '../custom_widgets/no_data_widget.dart';
-import '../custom_widgets/selection_bottom_sheet.dart';
-import '../../../Modules/ToastManager/ToastManager.dart';
+import '../widgets/network_wrapper.dart';
+import '../widgets/no_data_widget.dart';
+import '../widgets/selection_bottom_sheet.dart';
+import '../../../Modules/utilities/toast_manager.dart';
 
 class ExpectedBeneficiaryList
     extends GetView<ExpectedBeneficiaryListController> {

@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppIconTextfield.dart';
-import 'package:s2toperational/Screens/verify_otp/controllers/verify_otp_controller.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppIconTextfield.dart';
+import 'package:s2toperational/Screens/verify_otp/controller/verify_otp_controller.dart';
 
 class VerifyOtpScreen extends StatelessWidget {
   const VerifyOtpScreen({super.key});

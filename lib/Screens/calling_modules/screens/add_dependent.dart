@@ -3,19 +3,20 @@
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/common_widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/add_dependent_controller.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/add_dependent_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/calling_modules/models/add_dependent_model.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppButtonWithIcon.dart';
-import '../../../Modules/widgets/AppTextField.dart';
-import '../../../Modules/widgets/S2TAppBar.dart';
-import '../custom_widgets/no_data_widget.dart';
+import '../../../Modules/utilities/size_config.dart';
+
 
 class AddDependentScreen extends GetView<AddDependentController> {
   const AddDependentScreen({super.key});

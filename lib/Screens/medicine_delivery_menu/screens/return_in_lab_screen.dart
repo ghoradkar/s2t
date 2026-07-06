@@ -1,25 +1,23 @@
-﻿// ignore_for_file: use_full_hex_values_for_flutter_colors, file_names, avoid_print, prefer_conditional_assignment
+// ignore_for_file: use_full_hex_values_for_flutter_colors, file_names, avoid_print, prefer_conditional_assignment
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/model/patient_list_re_allocation_for_medicine_delivery_response.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/app_data_manager.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/return_in_lab_controller.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppBarCodeTextfield.dart';
-import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppBarCodeTextfield.dart';
+import 'package:s2toperational/Modules/common_widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/return_in_lab_row.dart';
-import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/common_widgets/DropDownListScreen/DropDownListScreen.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../../../../Modules/constants/fonts.dart';
 
@@ -31,49 +29,40 @@ class ReturnInLabScreen extends StatefulWidget {
 }
 
 class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
-  APIManager apiManager = APIManager();
+  late final ReturnInLabController controller;
   int dISTLGDCODE = 0;
   int empCode = 0;
   bool isShowTaluka = false;
 
-  bool isPacketSelected = false;
-  bool canAcceptInLab = true;
-  List<PatientListReAllocationforMedicineDeliveryOutput>? returnInLabList;
-
-  TextEditingController barcodeController = TextEditingController();
-
-  String resultBarCode = "";
+  final TextEditingController barcodeController = TextEditingController();
 
   bool get _allRowsSelected {
-    final list = returnInLabList;
-    if (list == null || list.isEmpty) {
-      return false;
-    }
-    return list.every((item) => item.isSelected == true);
+    if (controller.returnInLabList.isEmpty) return false;
+    return controller.returnInLabList.every((item) => item.isSelected == true);
   }
 
   void _toggleAllRows() {
-    final list = returnInLabList;
-    if (list == null || list.isEmpty) {
-      return;
-    }
+    if (controller.returnInLabList.isEmpty) return;
     final shouldSelectAll = !_allRowsSelected;
-    for (final item in list) {
+    for (final item in controller.returnInLabList) {
       item.isSelected = shouldSelectAll;
     }
-    setState(() {});
+    controller.returnInLabList.refresh();
   }
 
   @override
   void initState() {
     super.initState();
-
+    controller = Get.find<ReturnInLabController>();
     dISTLGDCODE =
         DataProvider().getParsedUserData()?.output?.first.dISTLGDCODE ?? 0;
     empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
-
     isShowTaluka = false;
-    getTaluka();
+    controller.fetchTaluka(
+      userId: empCode,
+      distLgdCode: dISTLGDCODE,
+      showDropdown: false,
+    );
   }
 
   @override
@@ -94,65 +83,69 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
               color: const Color(0XFFFFFFFF),
               borderRadius: BorderRadius.circular(10),
             ),
-            // padding: EdgeInsets.all(8),
             child: Column(
               children: [
-                // AppDropdownTextfield(
-                //   icon: icMapPin,
-                //   titleHeaderString: "Taluka *",
-                //   valueString: AppDataManager.selectedTaluka?.tALNAME ?? "",
-                //   onTap: () {
-                //     isShowTaluka = true;
-                //     getTaluka();
-                //   },
-                // ),
                 const SizedBox(height: 8),
-
-                AppTextField(
-                  controller: TextEditingController(
-                    text: AppDataManager.selectedTaluka?.tALNAME ?? "",
-                  ),
-                  readOnly: true,
-                  onTap: () {
-                    isShowTaluka = true;
-                    getTaluka();
-                  },
-                  hint: 'Taluka *',
-                  label: CommonText(
-                    text: 'Taluka *',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.normal,
-                    textColor: kBlackColor,
-                    textAlign: TextAlign.start,
-                  ),
-                  hintStyle: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: FontConstants.interFonts,
-                  ),
-                  fieldRadius: 10,
-                  prefixIcon: SizedBox(
-                    height: 20.h,
-                    width: 20.w,
-                    child: Center(
-                      child: Image.asset(
-                        icMapPin,
-                        height: 24.h,
-                        width: 24.w,
-                        fit: BoxFit.contain,
+                Obx(
+                  () => AppTextField(
+                    controller: TextEditingController(
+                      text: AppDataManager.selectedTaluka?.tALNAME ?? "",
+                    ),
+                    readOnly: true,
+                    onTap: () {
+                      isShowTaluka = true;
+                      ToastManager.showLoader();
+                      controller.fetchTaluka(
+                        userId: empCode,
+                        distLgdCode: dISTLGDCODE,
+                        showDropdown: true,
+                        onShowDropdown: (list) {
+                          _showDropDownBottomSheet(
+                            "Taluka",
+                            list,
+                            DropDownTypeMenu.UserMappedTaluka,
+                          );
+                        },
+                      );
+                    },
+                    hint: 'Taluka *',
+                    label: CommonText(
+                      text: 'Taluka *',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.normal,
+                      textColor: kBlackColor,
+                      textAlign: TextAlign.start,
+                    ),
+                    hintStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: FontConstants.interFonts,
+                    ),
+                    fieldRadius: 10,
+                    prefixIcon: SizedBox(
+                      height: 20.h,
+                      width: 20.w,
+                      child: Center(
+                        child: Image.asset(
+                          icMapPin,
+                          height: 24.h,
+                          width: 24.w,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
+                    suffixIcon: const Icon(Icons.keyboard_arrow_down),
                   ),
-                  suffixIcon: Icon(Icons.keyboard_arrow_down),
                 ),
                 const SizedBox(height: 12),
-
                 AppBarCodeTextfield(
                   titleHeaderString: "Scan packet or Delivery Challan No.",
                   controller: barcodeController,
                   onSearch: (p0) {
                     ToastManager.showLoader();
-                    getBarcodePostCampDetails();
+                    controller.fetchBarcodePostCampDetails(
+                      barcode: barcodeController.text.trim(),
+                    );
                   },
                   onBarcodeScanned: () {
                     openBarCodeScanner();
@@ -203,12 +196,15 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border(
-                                right: BorderSide(color: Colors.grey, width: 0.5),
+                                right: BorderSide(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
                               ),
                             ),
                             child: Center(
@@ -265,16 +261,18 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: _toggleAllRows,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            width: 46,
-                            height: 40,
-                            child: Image.asset(
-                              _allRowsSelected
-                                  ? icCheckBoxSelected
-                                  : icUnCheckBoxSelected,
+                        Obx(
+                          () => GestureDetector(
+                            onTap: _toggleAllRows,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              width: 46,
+                              height: 40,
+                              child: Image.asset(
+                                _allRowsSelected
+                                    ? icCheckBoxSelected
+                                    : icUnCheckBoxSelected,
+                              ),
                             ),
                           ),
                         ),
@@ -282,141 +280,57 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
                     ),
                   ),
                   Expanded(
-                        child:(returnInLabList == null || returnInLabList == [])
-                            ? Center(child: Text("No Data Available"))
-                            :  ListView.builder(
-                          itemCount: returnInLabList?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return ReturnInLabRow(
-                              index: index,
-                              obj: returnInLabList![index],
-                              onSelectionChanged: () {
-                                setState(() {});
+                    child: Obx(
+                      () => controller.returnInLabList.isEmpty
+                          ? const Center(child: Text("No Data Available"))
+                          : ListView.builder(
+                              itemCount: controller.returnInLabList.length,
+                              itemBuilder: (context, index) {
+                                return ReturnInLabRow(
+                                  index: index,
+                                  obj: controller.returnInLabList[index],
+                                  onSelectionChanged: () {
+                                    controller.returnInLabList.refresh();
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-                      ),
+                            ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          if (returnInLabList != null && returnInLabList!.isNotEmpty)
-            Center(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(80, 5, 80, 5),
-                child: AppButtonWithIcon(
-                  buttonColor: kPrimaryColor,
-                  title: "Accept In Lab",
-                  icon: Image.asset(
-                    iconArrow,
-                    height: responsiveHeight(24),
-                    width: responsiveHeight(24),
-                  ),
-                  mWidth: SizeConfig.screenWidth,
-                  textStyle: TextStyle(
-                    fontFamily: FontConstants.interFonts,
-                    color: Colors.white,
-                    fontSize: responsiveFont(16),
-                  ),
-                  onTap: () {
-                    submitData();
-                  },
-                ),
-              ),
-            ),
+          Obx(
+            () => controller.returnInLabList.isNotEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(80, 5, 80, 5),
+                      child: AppButtonWithIcon(
+                        buttonColor: kPrimaryColor,
+                        title: "Accept In Lab",
+                        icon: Image.asset(
+                          iconArrow,
+                          height: responsiveHeight(24),
+                          width: responsiveHeight(24),
+                        ),
+                        mWidth: SizeConfig.screenWidth,
+                        textStyle: TextStyle(
+                          fontFamily: FontConstants.interFonts,
+                          color: Colors.white,
+                          fontSize: responsiveFont(16),
+                        ),
+                        onTap: () {
+                          submitData();
+                        },
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
-  }
-
-  void getTaluka() {
-    Map<String, String> data = {
-      "UserId": empCode.toString(),
-      "DISTLGDCODE": dISTLGDCODE.toString(),
-    };
-    apiManager.getUserMappedTalukaAPI(data, apiUserMappedTalukaBack);
-  }
-
-  void apiUserMappedTalukaBack(
-    UserMappedTalukaResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    if (success) {
-      if (isShowTaluka) {
-        ToastManager.hideLoader();
-        _showDropDownBottomSheet(
-          "Taluka",
-          response?.output ?? [],
-          DropDownTypeMenu.UserMappedTaluka,
-        );
-      } else {
-        if (AppDataManager.selectedTaluka == null) {
-          AppDataManager.selectedTaluka = response?.output?.first;
-        }
-        // getBarcodePostCampDetails();
-      }
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
-  }
-
-  void getBarcodePostCampDetails() {
-    String barcode = barcodeController.text.trim();
-    Map<String, String> data = {
-      "FromDate": "",
-      "ToDate": "",
-      "Labcode": "0",
-      "TALLGDCODE": AppDataManager.selectedTaluka?.tALLGDCODE.toString() ?? "",
-      "PacketID": barcode,
-    };
-    apiManager.getBarcodePostCampDetailsAPI(
-      data,
-      apiBarcodePostCampDetailsBack,
-    );
-  }
-
-  void apiBarcodePostCampDetailsBack(
-    PatientListReAllocationforMedicineDeliveryResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      returnInLabList = response?.output ?? [];
-      canAcceptInLab = true;
-      int packetSelect = 0;
-      int packetCollect = 0;
-      for (final item
-          in returnInLabList ??
-              <PatientListReAllocationforMedicineDeliveryOutput>[]) {
-        if (item.overallStatusID == 1) {
-          packetSelect += 1;
-        }
-        if (item.overallStatusID == 2) {
-          packetCollect += 1;
-        }
-      }
-      if (packetSelect > 0) {
-        ToastManager.toast(
-          "Failure to accept return, process collection of packet first and try again.",
-        );
-        canAcceptInLab = false;
-      }
-      if (packetCollect > 0) {
-        ToastManager.toast(
-          "Failure to accept return, process receiving of packet first and try again.",
-        );
-        canAcceptInLab = false;
-      }
-    } else {
-      returnInLabList = [];
-      ToastManager.toast(errorMessage);
-      canAcceptInLab = false;
-    }
-    setState(() {});
   }
 
   void _showDropDownBottomSheet(
@@ -449,6 +363,7 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
             onApplyTap: (p0) {
               if (dropDownType == DropDownTypeMenu.UserMappedTaluka) {
                 AppDataManager.selectedTaluka = p0;
+                controller.returnInLabList.refresh();
               }
               setState(() {});
             },
@@ -460,42 +375,14 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
     });
   }
 
-  String jsonToString() {
-    List<Map<String, String>> packetJsonArray = [];
-    isPacketSelected = false;
-    for (PatientListReAllocationforMedicineDeliveryOutput packetObj
-        in returnInLabList!) {
-      if (packetObj.isSelected) {
-        isPacketSelected = true;
-        final dict = {
-          "DISTLGDCODE": packetObj.dISTLGDCODE?.toString() ?? "",
-          "TALLGDCODE":
-              AppDataManager.selectedTaluka?.tALLGDCODE?.toString() ?? "",
-          "Labcode": packetObj.labcode?.toString() ?? "",
-          "PacketID": packetObj.packetNumber ?? "",
-          "TreatmentID": packetObj.prescriptionID?.toString() ?? "",
-          "OverallStatusID": packetObj.overallStatusID?.toString() ?? "",
-        };
-        packetJsonArray.add(dict);
-      }
-    }
-
-    try {
-      String json = jsonEncode(packetJsonArray);
-      print(json);
-      return json;
-    } catch (e) {
-      print("something went wrong with parsing json: $e");
-      return "";
-    }
-  }
-
   void submitData() {
-    String json = jsonToString();
+    final isSelected =
+        controller.returnInLabList.any((p) => p.isSelected);
+    final json = controller.buildPacketJson();
 
-    if (!isPacketSelected) {
+    if (!isSelected) {
       ToastManager.toast("Please select at least one patient");
-    } else if (!canAcceptInLab) {
+    } else if (!controller.canAcceptInLab.value) {
       ToastManager.toast(
         "Failure to accept return, process collection/receiving of packet first.",
       );
@@ -506,15 +393,24 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Alert"),
-            content: Text("Are you sure you want to Continue?"),
+            title: const Text("Alert"),
+            content: const Text("Are you sure you want to Continue?"),
             actions: [
               TextButton(
                 child: const Text("Yes"),
                 onPressed: () {
                   Navigator.pop(context);
                   ToastManager.showLoader();
-                  insertPacketDetails(json);
+                  controller.insertPacketDetails(
+                    json: json,
+                    empCode: empCode,
+                    onSuccess: () {
+                      barcodeController.clear();
+                      isShowTaluka = false;
+                      ToastManager.showLoader();
+                      controller.fetchBarcodePostCampDetails(barcode: "");
+                    },
+                  );
                 },
               ),
               TextButton(
@@ -530,32 +426,6 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
     }
   }
 
-  void insertPacketDetails(String json) {
-    Map<String, String> data = {
-      "CW_ReallocationMedicalDelivary": json,
-      "USERID": empCode.toString(),
-    };
-    apiManager.insertPacketDetailsAPI(data, apiInsertPacketDetailsBack);
-  }
-
-  void apiInsertPacketDetailsBack(
-    PatientListReAllocationforMedicineDeliveryResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    if (success) {
-      ToastManager.hideLoader();
-      ToastManager.toast("Packet Accepted successfully");
-      barcodeController.clear();
-      isShowTaluka = false;
-      ToastManager.showLoader();
-      getBarcodePostCampDetails();
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
-  }
-
   void openBarCodeScanner() async {
     String? res = await SimpleBarcodeScanner.scanBarcode(
       context,
@@ -569,13 +439,11 @@ class _ReturnInLabScreenState extends State<ReturnInLabScreen> {
       delayMillis: 2000,
       cameraFace: CameraFace.back,
     );
-    setState(() {
-      resultBarCode = res as String;
-      barcodeController.text = resultBarCode;
-    });
-    if (resultBarCode.trim().isNotEmpty) {
+    final scanned = res as String;
+    barcodeController.text = scanned;
+    if (scanned.trim().isNotEmpty) {
       ToastManager.showLoader();
-      getBarcodePostCampDetails();
+      controller.fetchBarcodePostCampDetails(barcode: scanned.trim());
     }
   }
 }

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
-import 'package:s2toperational/Screens/d2d_physical_examination/screens/PhysicalExaminationFormScreen/PhysicalExaminationFormScreen.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
+import 'package:s2toperational/Screens/d2d_physical_examination/screens/physical_examination_form_screen/physical_examination_form_screen.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/health_screening_patient_list_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/sample_collection_screen/sample_collection_screen.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/urine_sample_collection_screen/urine_sample_collection_screen.dart';
-import '../../../../Modules/Enums/Enums.dart';
+import '../../../../Modules/utilities/enums.dart';
 
 class HealthScreeningPatientListScreen extends StatefulWidget {
   final HealthScreeningDetailsMenu screeningMenu;

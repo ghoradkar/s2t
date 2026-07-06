@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
 import 'package:excel/excel.dart' as ex;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -18,7 +18,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:open_file/open_file.dart';
 import 'package:s2toperational/Screens/admin_dashboard/screen/pending_count_screen/data_row/pending_count_data_row.dart';
 
-import '../../../../Modules/ToastManager/ToastManager.dart';
+import '../../../../Modules/utilities/toast_manager.dart';
 import '../../Model/home_lab_pending_count_table_model.dart';
 
 class PendingCountScreen extends StatefulWidget {

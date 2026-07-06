@@ -9,22 +9,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/appointment_confirmation_controller.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/appointment_confirmation_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/selection_bottom_sheet.dart';
 
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppButtonWithIcon.dart';
-import '../../../Modules/widgets/AppTextField.dart';
-import '../../../Modules/widgets/S2TAppBar.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/common_widgets/AppButtonWithIcon.dart';
+import '../../../Modules/common_widgets/AppTextField.dart';
+import '../../../Modules/common_widgets/S2TAppBar.dart';
 import 'beneficiary_card.dart';
-import '../custom_widgets/no_data_widget.dart';
-import '../custom_widgets/selection_bottom_sheet.dart';
-import '../routes/app_routes.dart';
+import '../../../Modules/utilities/app_routes.dart';
 
 class AppointmentConfirmation
     extends GetView<AppointmentConfirmationController> {

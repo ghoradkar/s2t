@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 
 // import 'package:s2toperational/Modules/Json_Class/BindDistrictResponse/bind_district_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/BindDivisionResponse/bind_division_response.dart';
@@ -10,8 +10,8 @@ import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
 // import 'package:s2toperational/Modules/Json_Class/LandingLabCampCreationResponse/landing_lab_camp_creation_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryToTeamResponse/recollection_beneficiary_to_team_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/SubOrganizationResponse/sub_organization_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/daily_work_dashboard/repository/daily_work_dashboard_repository.dart';
 
 import '../model/bind_district_response.dart';

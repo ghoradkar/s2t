@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
 
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../controllers/splash_controller.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../controller/splash_controller.dart';
 
 class SplashScreen extends GetView<SplashController> {
   const SplashScreen({super.key});

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 
-import '../../../Modules/Enums/Enums.dart';
-import '../../../Modules/FormatterManager/FormatterManager.dart';
-import '../../../Modules/ToastManager/ToastManager.dart';
-import '../../../Modules/utilities/DataProvider.dart';
-import '../../../Screens/HomeScreen/screen/home_screen.dart';
-import '../../../Screens/verify_otp/controllers/verify_otp_controller.dart';
+import '../../../Modules/utilities/enums.dart';
+import '../../../Modules/utilities/formatter_manager.dart';
+import '../../../Modules/utilities/toast_manager.dart';
+import '../../../Modules/utilities/data_provider.dart';
+import '../../../Screens/home_screen/screen/home_screen.dart';
+import '../../../Screens/verify_otp/controller/verify_otp_controller.dart';
 import '../../../Screens/verify_otp/repository/verify_otp_repository.dart';
 import '../../../Screens/verify_otp/screens/verify_otp_screen.dart';
 import '../repository/login_repository.dart';

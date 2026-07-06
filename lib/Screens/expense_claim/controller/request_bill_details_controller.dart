@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import '../model/advances_request_details_show_response.dart';
 import '../repository/expense_claim_repository.dart';
 

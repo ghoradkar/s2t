@@ -1,50 +1,29 @@
-﻿// ignore_for_file: prefer_conditional_assignment, must_be_immutable, file_names
+// ignore_for_file: prefer_conditional_assignment, must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/model/report_delivery_executive_response.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/app_data_manager.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/packet_allocation_controller.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/DropDownListScreen/DropDownListScreen.dart';
 import '../../../../Modules/constants/fonts.dart';
-// import '../../Modules/APIManager/APIManager.dart';
-// import '../../Modules/Enums/Enums.dart';
-// import '../../Modules/FormatterManager/FormatterManager.dart';
-// import '../../Screens/medicine_delivery_menu/model/report_delivery_executive_response.dart';
-// import '../../Screens/medicine_delivery_menu/model/user_mapped_taluka_response.dart';
-// import '../../Modules/ToastManager/ToastManager.dart';
-// import '../../Modules/constants/constants.dart';
-// import '../../Modules/constants/images.dart';
-// import '../../Modules/utilities/DataProvider.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
-// import '../../Modules/widgets/AppActiveButton.dart';
-// import '../DropDownListScreen/DropDownListScreen.dart';
 
 class AssignToDETeamScreenFilterView extends StatefulWidget {
   AssignToDETeamScreenFilterView({
     super.key,
-    // required this.fromDate,
-    // required this.toDate,
-    // required this.selectedTaluka,
-    // required this.selectedReportDeliveryExecutive,
     required this.onTapApply,
   });
 
-  // String fromDate = "";
-  // String toDate = "";
-  // UserMappedTalukaOutput? selectedTaluka;
-  // ReportDeliveryExecutiveOutput? selectedReportDeliveryExecutive;
   Function() onTapApply;
 
   @override
@@ -54,9 +33,9 @@ class AssignToDETeamScreenFilterView extends StatefulWidget {
 
 class _AssignToDETeamScreenFilterViewState
     extends State<AssignToDETeamScreenFilterView> {
+  late final PacketAllocationController controller;
   int dISTLGDCODE = 0;
   int empCode = 0;
-  APIManager apiManager = APIManager();
 
   Future<void> selectFromDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -83,43 +62,6 @@ class _AssignToDETeamScreenFilterViewState
       AppDataManager.toDate = FormatterManager.formatDateToString(picked);
       setState(() {});
     }
-  }
-
-  getTaluka({bool showDropdown = true}) {
-    Map<String, String> data = {
-      "UserId": empCode.toString(),
-      "DISTLGDCODE": dISTLGDCODE.toString(),
-    };
-    apiManager.getUserMappedTalukaAPI(data, (response, errorMessage, success) {
-      apiUserMappedTalukaBack(response, errorMessage, success, showDropdown);
-    });
-  }
-
-  void apiUserMappedTalukaBack(
-    UserMappedTalukaResponse? response,
-    String errorMessage,
-    bool success,
-    bool showDropdown,
-  ) async {
-    if (success) {
-      ToastManager.hideLoader();
-      if (AppDataManager.selectedTaluka == null &&
-          (response?.output ?? []).isNotEmpty) {
-        AppDataManager.selectedTaluka = response?.output?.first;
-      }
-      if (showDropdown) {
-        _showDropDownBottomSheet(
-          "Taluka",
-          response?.output ?? [],
-          DropDownTypeMenu.UserMappedTaluka,
-        );
-      } else {
-        setState(() {});
-      }
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
   }
 
   void _showDropDownBottomSheet(
@@ -166,47 +108,21 @@ class _AssignToDETeamScreenFilterViewState
     });
   }
 
-  getReportDeliveryExecutiveAPI() {
-    if (AppDataManager.selectedTaluka == null) {
-      ToastManager.toast("Please select Taluka");
-      return;
-    }
-    Map<String, String> data = {
-      "TALLGDCODE": AppDataManager.selectedTaluka?.tALLGDCODE.toString() ?? "0",
-    };
-    apiManager.getReportDeliveryExecutiveAPI(
-      data,
-      apiReportDeliveryExecutiveBack,
-    );
-  }
-
-  void apiReportDeliveryExecutiveBack(
-    ReportDeliveryExecutiveResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    if (success) {
-      ToastManager.hideLoader();
-      _showDropDownBottomSheet(
-        "Select Resource",
-        response?.output ?? [],
-        DropDownTypeMenu.ReportDeliveryExecutive,
-      );
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
+    controller = Get.find<PacketAllocationController>();
     dISTLGDCODE =
         DataProvider().getParsedUserData()?.output?.first.dISTLGDCODE ?? 0;
     empCode = DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
     if (AppDataManager.selectedTaluka == null) {
       ToastManager.showLoader();
-      getTaluka(showDropdown: false);
+      controller.fetchTaluka(
+        userId: empCode,
+        distLgdCode: dISTLGDCODE,
+        showDropdown: false,
+        onShowDropdown: null,
+      );
     }
   }
 
@@ -264,15 +180,6 @@ class _AssignToDETeamScreenFilterViewState
                     ),
                   ),
                 ),
-
-                // AppDateTextfield(
-                //   icon: icCalendarMonth,
-                //   titleHeaderString: "From Date *",
-                //   valueString: AppDataManager.fromDate,
-                //   onTap: () {
-                //     selectFromDate(context);
-                //   },
-                // ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -311,14 +218,6 @@ class _AssignToDETeamScreenFilterViewState
                     ),
                   ),
                 ),
-                // AppDateTextfield(
-                //   icon: icCalendarMonth,
-                //   titleHeaderString: "To Date *",
-                //   valueString: AppDataManager.toDate,
-                //   onTap: () {
-                //     selectToDate(context);
-                //   },
-                // ),
               ),
             ],
           ),
@@ -330,7 +229,18 @@ class _AssignToDETeamScreenFilterViewState
             readOnly: true,
             onTap: () {
               ToastManager.showLoader();
-              getTaluka(showDropdown: true);
+              controller.fetchTaluka(
+                userId: empCode,
+                distLgdCode: dISTLGDCODE,
+                showDropdown: true,
+                onShowDropdown: (list) {
+                  _showDropDownBottomSheet(
+                    "Taluka",
+                    list,
+                    DropDownTypeMenu.UserMappedTaluka,
+                  );
+                },
+              );
             },
             hint: 'Taluka *',
             label: CommonText(
@@ -358,7 +268,7 @@ class _AssignToDETeamScreenFilterViewState
                 ),
               ),
             ),
-            suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
+            suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
           ),
           const SizedBox(height: 8),
           AppTextField(
@@ -368,7 +278,15 @@ class _AssignToDETeamScreenFilterViewState
             readOnly: true,
             onTap: () {
               ToastManager.showLoader();
-              getReportDeliveryExecutiveAPI();
+              controller.fetchDeliveryExecutives(
+                onSuccess: (list) {
+                  _showDropDownBottomSheet(
+                    "Select Resource",
+                    list,
+                    DropDownTypeMenu.ReportDeliveryExecutive,
+                  );
+                },
+              );
             },
             hint: 'Delivery Executive / Team *',
             label: CommonText(
@@ -396,7 +314,7 @@ class _AssignToDETeamScreenFilterViewState
                 ),
               ),
             ),
-            suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
+            suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
           ),
 
           const Spacer(),

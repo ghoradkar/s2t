@@ -5,7 +5,7 @@ import '../model/teams_mmu_doctor_list_response.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/utilities/size_config.dart';
 
 class MMUDoctorView extends StatefulWidget {
   MMUDoctorView({

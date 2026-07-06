@@ -3,14 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
 import 'package:s2toperational/Screens/camp_details/model/team_details_list_response.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/AppDropdownTextfield.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/DropDownListScreen/DropDownListScreen.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Modules/common_widgets/AppDropdownTextfield.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/DropDownListScreen/DropDownListScreen.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 import '../controller/beneficiary_camp_details_controller.dart';
 import '../widget/beneficiary_camp_row.dart';
 

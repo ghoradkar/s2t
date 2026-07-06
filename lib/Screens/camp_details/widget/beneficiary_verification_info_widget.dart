@@ -4,11 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';
 import '../model/beneficiary_worker_response.dart';
 import '../model/patient_checkup_analysis_report_response.dart';

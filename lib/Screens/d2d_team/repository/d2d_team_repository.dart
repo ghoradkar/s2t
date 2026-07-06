@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Screens/d2d_team/model/lab_by_user_id_response.dart';
 

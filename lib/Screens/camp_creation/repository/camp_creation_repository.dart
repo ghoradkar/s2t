@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/io_client.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
 import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import '../models/home_and_hub_lab_camp_creation_response.dart';

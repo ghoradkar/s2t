@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/io_client.dart';
 
-import '../../../Modules/APIManager/APIManager.dart';
-import '../../../Modules/constants/APIConstants.dart';
+import '../../../Modules/utilities/api_manager.dart';
+import '../../../Modules/constants/api_constants.dart';
 
 class SplashRepository {
   IOClient _client() {

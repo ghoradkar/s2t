@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../model/camp_details_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
 
 // import '../../Modules/Json_Class/CampDetailsResponse/CampDetailsResponse.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
+// import '../../Modules/utilities/size_config.dart';
 import '../../../../../Modules/constants/fonts.dart';
 // ignore_for_file: must_be_immutable
 

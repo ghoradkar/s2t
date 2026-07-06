@@ -5,10 +5,10 @@ import 'package:s2toperational/Screens/acknowledgement/model/acknowledgement_pat
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/acknowledgement/controllers/acknowledgement_signature_controller.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/acknowledgement/controller/acknowledgement_signature_controller.dart';
 import 'package:s2toperational/Screens/acknowledgement/screens/acknowledgement_signature_screen.dart';
 
 class AcknowledgementConfirmationScreen extends StatelessWidget {

@@ -4,13 +4,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/fibro_scanning_district_wise_model.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/liver_scanning_count_model.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/liver_scanning_table_data.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/check_connectivity.dart';
 // import '../model/fibro_scanning_district_wise_model.dart';
 // import '../model/liver_scanning_count_model.dart';
 // import '../model/liver_scanning_table_data.dart';

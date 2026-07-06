@@ -3,11 +3,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
 import 'package:s2toperational/Screens/login/models/login_response_model.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_conducted_response.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_type_list_model.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/d2d_non_working_teams.dart';
@@ -25,7 +25,7 @@ import 'package:s2toperational/Screens/admin_dashboard/Model/s2t_android_Ios_cou
 import 'package:s2toperational/Screens/admin_dashboard/Model/s2t_android_Ios_count_model.dart';
 import 'package:s2toperational/Screens/admin_dashboard/repository/admin_dashboard_repository.dart';
 
-import '../../calling_modules/custom_widgets/check_connectivity.dart';
+import '../../calling_modules/widgets/check_connectivity.dart';
 
 class AdminController extends GetxController {
   final AdminDashboardRepository _repository = AdminDashboardRepository();

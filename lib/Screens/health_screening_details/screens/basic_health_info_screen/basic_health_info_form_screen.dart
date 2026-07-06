@@ -8,13 +8,13 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/basic_health_info_form_controller.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/basic_health_info_screen/ble_device_list_screen.dart';
@@ -241,7 +241,7 @@ Widget _label(String text) => RichText(
       color: kBlackColor,
       fontSize: 14 * 1.2,
       fontFamily: FontConstants.interFonts,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.normal,
     ),
   ),
 );
@@ -357,10 +357,11 @@ Widget _monthYearRow(
           child: AppTextField(
             controller: monthCtrl,
             readOnly: false,
+            maxLength: 6,
             onTap: () {},
             textInputType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            label: _label('Since Month'),
+            label: _label('Months'),
             prefixIcon: Icon(
               Icons.calendar_today_outlined,
               color: kPrimaryColor,
@@ -372,11 +373,12 @@ Widget _monthYearRow(
         Expanded(
           child: AppTextField(
             controller: yearCtrl,
+            maxLength: 6,
             readOnly: false,
             onTap: () {},
             textInputType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            label: _label('Since Year'),
+            label: _label('Years'),
             prefixIcon: Icon(
               Icons.calendar_month_outlined,
               color: kPrimaryColor,
@@ -535,7 +537,7 @@ class _BasicHealthInfoSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── Vitals ──────────────────────────────────────
-              _sectionDivider('Vitals'),
+              // _sectionDivider('Vitals'),
               Row(
                 children: [
                   Expanded(
@@ -715,10 +717,10 @@ class _BasicHealthInfoSection extends StatelessWidget {
               _gap(14),
 
               // ── Fasting ──────────────────────────────────────
-              _sectionDivider('Fasting'),
+              _sectionDivider('Fasting Duration'),
               _ChipSelector(
-                heading: 'Fasting Duration',
-                options: const ['< 12 hrs', '> 12 hrs'],
+                heading: 'जेवण/नाश्ता किती तासांपूर्वी केला आहे?',
+                options: const ['Less than 12 hrs', 'More than 12 hrs'],
                 selectedIndex: c.fastingIndex,
                 onChanged: (i) {
                   c.fastingIndex = i;
@@ -984,7 +986,7 @@ class _HabitRow extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
-                    fontSize: 14.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: isNo ? kLabelTextColor : kTextColor,
                   ),

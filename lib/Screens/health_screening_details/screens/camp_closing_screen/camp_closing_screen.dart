@@ -2,19 +2,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/health_screening_details/screens/CampClosingColorInfoView/CampClosingColorInfoView.dart';
+import 'package:s2toperational/Screens/health_screening_details/screens/camp_closing_color_info_view/camp_closing_color_info_view.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/CampClosingSummaryView/CampClosingSummaryView.dart';
 import 'package:s2toperational/Screens/health_screening_details/screens/ConsumableConsumptionForCampView/ConsumableConsumptionForCampView.dart';
 import '../../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/AppButtonWithIcon.dart';
-import '../../../../Modules/widgets/AppIconTextfield.dart';
-import '../../../../Modules/widgets/S2TAppBar.dart';
+import '../../../../Modules/utilities/size_config.dart';
+import '../../../../Modules/common_widgets/AppButtonWithIcon.dart';
+import '../../../../Modules/common_widgets/AppIconTextfield.dart';
+import '../../../../Modules/common_widgets/S2TAppBar.dart';
 
-// import '../../../../Views/CampClosingColorInfoView/CampClosingColorInfoView.dart';
+// import '../../../../Views/CampClosingColorInfoView/camp_closing_color_info_view.dart';
 // import '../../../../Views/CampClosingScreeningDetailsView/CampClosingScreeningDetailsView.dart';
 // import '../../../../Views/CampClosingSummaryView/CampClosingSummaryView.dart';
 // import '../../../../Views/ConsumableConsumptionForCampView/ConsumableConsumptionForCampView.dart';

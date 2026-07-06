@@ -3,12 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/disha_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/specimen_type_response.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Modules/constants/Repository.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
+import 'package:s2toperational/Modules/constants/api_client.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 
 import '../models/camp_closing_model.dart';

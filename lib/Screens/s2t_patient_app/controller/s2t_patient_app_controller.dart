@@ -4,10 +4,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/s2t_android_Ios_count_district_wise_model.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/s2t_android_Ios_count_model.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/check_connectivity.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/check_connectivity.dart';
 // import 'package:s2toperational/screen/s2t_patient_app/model/s2t_android_Ios_count_model.dart';
 // import 'package:s2toperational/screen/s2t_patient_app/model/s2t_android_Ios_count_district_wise_model.dart';
 import '../repository/s2t_patient_app_repository.dart';

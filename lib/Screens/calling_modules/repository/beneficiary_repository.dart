@@ -2,8 +2,8 @@
 
 import 'package:http/http.dart' as http;
 
-import '../../../Modules/APIManager/APIManager.dart';
-import '../../../Modules/constants/APIConstants.dart';
+import '../../../Modules/utilities/api_manager.dart';
+import '../../../Modules/constants/api_constants.dart';
 
 class BeneficiaryRepository {
   Future<http.Response> expectedBeneficiaryList(

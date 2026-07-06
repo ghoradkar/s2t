@@ -4,12 +4,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 import '../models/campId_list_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/camp_readiness_form/models/camp_readiness_form_list_response.dart';
 import 'package:s2toperational/Screens/camp_readiness_form/models/camp_readiness_form_submitt_response.dart';
 import 'package:s2toperational/Screens/camp_readiness_form/repository/camp_readiness_form_repository.dart';

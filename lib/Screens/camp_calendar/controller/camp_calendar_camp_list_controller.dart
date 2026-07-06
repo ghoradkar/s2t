@@ -1,11 +1,11 @@
 // ignore_for_file: avoid_print, file_names
 
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import '../model/camp_type_and_catagory_response.dart';
 import '../model/monthly_survey_site_response.dart';
 import '../repository/camp_calendar_repository.dart';

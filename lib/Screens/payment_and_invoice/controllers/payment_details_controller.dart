@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 
-import '../../../Modules/FormatterManager/FormatterManager.dart';
+import '../../../Modules/utilities/formatter_manager.dart';
 import '../models/months_response.dart';
 import '../models/years_response.dart';
 import '../models/company_list_model.dart';
 import '../models/user_invoice_payment_model.dart';
-import '../../../Modules/ToastManager/ToastManager.dart';
-import '../../../Modules/utilities/DataProvider.dart';
+import '../../../Modules/utilities/toast_manager.dart';
+import '../../../Modules/utilities/data_provider.dart';
 import '../repository/payment_repository.dart';
 
 class PaymentDetailsController extends GetxController {

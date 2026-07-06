@@ -1,0 +1,235 @@
+[GETX] Instance "BasicHealthInfoPatientListController" has been created
+[GETX] Instance "BasicHealthInfoPatientListController" has been initialized
+I/flutter ( 4272): {"status":"Success","message":"Login Successfully","output":[{"ID":12389,"EmpCode":12389,"SUBORGWISEDESGID":178,"SubOrgId":3,"SubOrgName":"HSCC(INDIA)LIMITED","OrgId":1,"OrgName":"HSCC(INDIA)LIMITED","ProjectId":"0","ProjectName":"NA","USERNAME":"8149190424","name":"BHARAT  GAIKWAD","FirstName":"BHARAT","MiddleName":"NA","LastName":"GAIKWAD","SpouseName":"NA","Children":0,"MotherName":"NA","FatherName":"NA","VoterId":"NA","per_email":"bg466483@gmail.com","per_mobile":"9657365115","PAddress":"NA","CAddress":"KOLWADI","dob":"2000-07-15","AGE":25,"Aadhar":"NA","pancard":"NA","ImagePath":"https://test.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/12389/http://beta.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/Default/Default.png","joiningdate":"2025-04-08","bloodgroup":null,"BLOODID":null,"EDUCDTLID":0,"edu":"NA","universityname":"NA","qualification":"NA","QUALID":null,"EDTYPEID":null,"UNIVID":null,"yearofpassing":0,"percentage":0,"cast":"NA","religion":"NA","ReligionId":null,"category":"NA","Maritialstatus":"NA
+I/flutter ( 4272): user Data Not null
+I/flutter ( 4272): https://testmcwwb.myhindlab.com/webservices/D2D_V2.asmx/GetUserAttendancesUsingSitedetailsID_Anti
+I/flutter ( 4272): {EmpCode: 702215, DistrictId: 0, TestId: 2, UserId: 12389, TeamId: 5930}
+I/flutter ( 4272): {"status":"Success","message":"Attendances List using Site Details ID","output":[{"CreatedDate":"\/Date(1783350053360)\/","CampId":702215,"SiteId":765073,"RegdId":13405608,"EnglishName":"SOMNATH  BABURAO  KALE","MobileNo":"8830378568","DOB":"06/07/1992","Height_CMs":null,"Weight_KGs":null,"Gender":"M","BrId":null,"BloodSugar_PP":null,"IsSignature":1,"Age":34,"RegdNo":131650060940,"patientPhoto":"http://mcwwb.myhindlab.com/MCWWBDOCS_LIVE/CampDocs/PatientImage/765073_131650060940_131650060940_PR.jpg","HealthCardPath":"http://mcwwb.myhindlab.com/MCWWBDOCS_LIVE/CampDocs/BarcodeImage/765073_13405608_131650060940_HC.jpg","IsHCRenewal":"No","HCRenewalFilePath":"http://mcwwb.myhindlab.com/MCWWBDOCS_LIVE/CampDocs/BarcodeImage/","UserThumbPath":"http://mcwwb.myhindlab.com/MCWWBDOCS_LIVE/CampDocs/ImpressionRawFile/","AudioImage":"http://mcwwb.myhindlab.com/MCWWBDOCS_LIVE/CampDocs/PatientAudioImage/","AntigenResult":"0","AntiBarcode":null,"IsDependent":0,"ReleationID":20,"RelName":"Self","DoctorMapStatus":"0","ABHANumbe
+I/flutter ( 4272): [BHI] isAckAndRCPending=null isSignature=1 pending=1 patient=SOMNATH  BABURAO  KALE
+I/flutter ( 4272): {"status":"Success","message":"Login Successfully","output":[{"ID":12389,"EmpCode":12389,"SUBORGWISEDESGID":178,"SubOrgId":3,"SubOrgName":"HSCC(INDIA)LIMITED","OrgId":1,"OrgName":"HSCC(INDIA)LIMITED","ProjectId":"0","ProjectName":"NA","USERNAME":"8149190424","name":"BHARAT  GAIKWAD","FirstName":"BHARAT","MiddleName":"NA","LastName":"GAIKWAD","SpouseName":"NA","Children":0,"MotherName":"NA","FatherName":"NA","VoterId":"NA","per_email":"bg466483@gmail.com","per_mobile":"9657365115","PAddress":"NA","CAddress":"KOLWADI","dob":"2000-07-15","AGE":25,"Aadhar":"NA","pancard":"NA","ImagePath":"https://test.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/12389/http://beta.myhindlab.com/BETA_MYHINDLABDOCS/ProfilePhoto/Default/Default.png","joiningdate":"2025-04-08","bloodgroup":null,"BLOODID":null,"EDUCDTLID":0,"edu":"NA","universityname":"NA","qualification":"NA","QUALID":null,"EDTYPEID":null,"UNIVID":null,"yearofpassing":0,"percentage":0,"cast":"NA","religion":"NA","ReligionId":null,"category":"NA","Maritialstatus":"NA
+I/flutter ( 4272): user Data Not null
+[GETX] Instance "BasicHealthInfoFormController" has been created
+I/flutter ( 4272): [BHI] getMachineAvailabilityFlag URL: https://testmcwwb.myhindlab.com/webservices/D2D_V2.asmx/GetMachineAvailabilityFlag_V1 body={USERID: 12389}
+[GETX] Instance "BasicHealthInfoFormController" has been initialized
+I/flutter ( 4272): https://testmcwwb.myhindlab.com/webservices/ConstructionWorker_V2.asmx/GetUserDataforPhysicalExamnination
+I/flutter ( 4272): {"status":"Fail","message":"Patient list not found"}
+I/flutter ( 4272): {status: Fail, message: Patient list not found}
+I/flutter ( 4272): [BHI] getMachineAvailabilityFlag response: {"status":"Success","message":"Machine Availability Data","output":[{"IsWeightingMachineAvailable":0,"IsBPMachineAvailable":0,"IsSugarDeviceAvailable":0}]}
+I/flutter ( 4272): [BHI] machineFlags: isWeight=false isBP=false isSugar=false
+I/Quality ( 4272): Skipped: false 3 cost 53.08747 refreshRate 16666666 bit true processName com.s2t.operational
+D/[FBP-Android]( 4272): [FBP] onMethodCall: flutterRestart
+D/[FBP-Android]( 4272): [FBP] initializing BluetoothAdapter
+D/[FBP-Android]( 4272): [FBP] disconnectAllDevices(flutterRestart)
+D/[FBP-Android]( 4272): [FBP] connectedPeripherals: 0
+D/[FBP-Android]( 4272): [FBP] onMethodCall: getAdapterState
+I/flutter ( 4272): [BT] adapterState=BluetoothAdapterState.on
+D/[FBP-Android]( 4272): [FBP] onMethodCall: startScan
+D/VRI[MainActivity]( 4272): onFocusEvent false
+D/ViewRootImplExtImpl( 4272): onDisplayChanged 0 for VRI android.view.ViewRootImpl@9504a5
+D/CompatibilityChangeReporter( 4272): Compat change id reported: 78294732; UID 12713; state: ENABLED
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothLeScanner( 4272): onScannerRegistered() - status=0 scannerId=9 mScannerId=0
+D/VRI[MainActivity]( 4272): onFocusEvent true
+D/ViewRootImplExtImpl( 4272): onDisplayChanged 0 for VRI android.view.ViewRootImpl@9504a5
+I/flutter ( 4272): BpDevice PROACTIVE: Starting background scan for fccad1758116
+D/[FBP-Android]( 4272): [FBP] onMethodCall: stopScan
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/[FBP-Android]( 4272): [FBP] onMethodCall: startScan
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothLeScanner( 4272): onScannerRegistered() - status=0 scannerId=9 mScannerId=0
+I/flutter ( 4272): BpDevice ADV mfr[0x020e] (5B): 01 08 62 00 0e
+I/flutter ( 4272): BpDevice ADV serviceUuids: fe4a
+I/flutter ( 4272): BpDevice ADV parse [5B]: 01 08 62 00 0e
+I/flutter ( 4272): BpDevice ADV status=0x1 records=8
+I/flutter ( 4272): BpDevice ADV byte[1][2]: sys=8 dia=98
+I/flutter ( 4272): BpDevice ADV byte[2][4]: sys=98 dia=14
+I/flutter ( 4272): BpDevice ADV byte[3][4]: sys=0 dia=14
+I/flutter ( 4272): BpDevice ADV BE[1,2][3,4]: sys=2146 dia=14
+I/flutter ( 4272): BpDevice ADV LE[1,2][3,4]: sys=25096 dia=3584
+D/[FBP-Android]( 4272): [FBP] onMethodCall: stopScan
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+I/flutter ( 4272): BpDevice PROACTIVE: stopped
+I/flutter ( 4272): [FBP] stopScan: already stopped
+D/OmronBP ( 4272): Device config not yet available, waiting for download…
+W/FeatureFlagsImplExport( 4272): java.lang.NoClassDefFoundError: Class not found using the boot class loader; no stack trace available
+D/OmronBP ( 4272): Device config downloaded, starting transfer
+D/OmronBP ( 4272): startDataTransferFromPeripheral: localName=BLESmart_0000047EFCCAD1758116 uuid=FC:CA:D1:75:81:16
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothLeScanner( 4272): onScannerRegistered() - status=0 scannerId=9 mScannerId=0
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothLeScanner( 4272): onScannerRegistered() - status=0 scannerId=9 mScannerId=0
+D/BluetoothGattServer( 4272): registerCallback()
+D/BluetoothGattServer( 4272): registerCallback() - UUID=8a9b4509-07cd-418b-9556-3dd7853fcd5e
+D/BluetoothGattServer( 4272): onServerRegistered() - status=0 serverIf=10
+D/BluetoothGattServer( 4272): addService() - service: aee957f2-0d93-4bc2-abcb-a9363b5f40f5
+D/BluetoothGattServer( 4272): onServiceAdded() - handle=47 uuid=aee957f2-0d93-4bc2-abcb-a9363b5f40f5 status=0
+D/BluetoothGatt( 4272): connect() - device: FC:CA:D1:75:81:16, auto: false, eattSupport: false
+D/BluetoothGatt( 4272): registerApp()
+D/BluetoothGatt( 4272): registerApp() - UUID=cb2cd191-a128-4e34-8c16-d1345cbbf6be
+D/BluetoothGatt( 4272): onClientRegistered() - status=0 clientIf=11
+D/BluetoothGattServer( 4272): onServerConnectionState() - status=0 serverIf=10 device=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): onClientConnectionState() - status=0 clientIf=11 device=FC:CA:D1:75:81:16
+D/[FBP-Android]( 4272): [FBP] OnBondStateChanged: bonding prev: bonded
+D/[FBP-Android]( 4272): [FBP] OnBondStateChanged: bonded prev: bonding
+D/BluetoothGatt( 4272): discoverServices() - device: FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): onSearchComplete() = Device=FC:CA:D1:75:81:16 Status=0
+D/BluetoothGattServer( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=24 latency=0 timeout=200 status=0
+D/BluetoothGatt( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=24 latency=0 timeout=200 status=0
+D/BluetoothGatt( 4272): configureMTU() - device: FC:CA:D1:75:81:16 mtu: 67
+D/BluetoothGatt( 4272): onConfigureMTU() - Device=FC:CA:D1:75:81:16 mtu=67 status=0
+D/BluetoothGatt( 4272): requestConnectionPriority() - params: 1
+D/BluetoothGatt( 4272): setCharacteristicNotification() - uuid: 49123040-aee8-11e1-a74d-0002a5d5c51b enable: true
+D/BluetoothGattServer( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=12 latency=0 timeout=500 status=0
+D/BluetoothGatt( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=12 latency=0 timeout=500 status=0
+I/BluetoothDevice( 4272): setAlias(): alias: HEM-7140T1, called by: com.s2t.operational
+D/OmronBP ( 4272): startTransfer cb: success=true msg=null
+D/OmronBP ( 4272): endTransfer cb: success=true msg=null
+D/OmronBP ( 4272): Total BP records received: 14
+D/OmronBP ( 4272): BP record[0]: {OMRONVitalDataMeasurementStartDateKey=1781275450000, OMRONVitalDataDiastolicKey=74, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=105, OMRONVitalDataSequenceKey=85, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:14:10, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[1]: {OMRONVitalDataMeasurementStartDateKey=1781275898000, OMRONVitalDataDiastolicKey=80, OMRONVitalDataPulseKey=79, OMRONVitalDataSystolicKey=107, OMRONVitalDataSequenceKey=86, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:21:38, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[2]: {OMRONVitalDataMeasurementStartDateKey=1781276169000, OMRONVitalDataDiastolicKey=74, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=98, OMRONVitalDataSequenceKey=87, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:26:09, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[3]: {OMRONVitalDataMeasurementStartDateKey=1781276313000, OMRONVitalDataDiastolicKey=74, OMRONVitalDataPulseKey=85, OMRONVitalDataSystolicKey=100, OMRONVitalDataSequenceKey=88, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:28:33, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[4]: {OMRONVitalDataMeasurementStartDateKey=1781277219000, OMRONVitalDataDiastolicKey=67, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=88, OMRONVitalDataSequenceKey=89, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:43:39, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[5]: {OMRONVitalDataMeasurementStartDateKey=1781277853000, OMRONVitalDataDiastolicKey=77, OMRONVitalDataPulseKey=72, OMRONVitalDataSystolicKey=98, OMRONVitalDataSequenceKey=90, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:54:13, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[6]: {OMRONVitalDataMeasurementStartDateKey=1782394553000, OMRONVitalDataDiastolicKey=84, OMRONVitalDataPulseKey=77, OMRONVitalDataSystolicKey=115, OMRONVitalDataSequenceKey=91, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-25 19:05:53, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[7]: {OMRONVitalDataMeasurementStartDateKey=1782475808000, OMRONVitalDataDiastolicKey=88, OMRONVitalDataPulseKey=85, OMRONVitalDataSystolicKey=113, OMRONVitalDataSequenceKey=92, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-26 17:40:08, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[8]: {OMRONVitalDataMeasurementStartDateKey=1782477588000, OMRONVitalDataDiastolicKey=80, OMRONVitalDataPulseKey=90, OMRONVitalDataSystolicKey=101, OMRONVitalDataSequenceKey=93, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-26 18:09:48, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[9]: {OMRONVitalDataMeasurementStartDateKey=1782657725000, OMRONVitalDataDiastolicKey=69, OMRONVitalDataPulseKey=65, OMRONVitalDataSystolicKey=103, OMRONVitalDataSequenceKey=94, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-28 20:12:05, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[10]: {OMRONVitalDataMeasurementStartDateKey=1782657816000, OMRONVitalDataDiastolicKey=82, OMRONVitalDataPulseKey=77, OMRONVitalDataSystolicKey=119, OMRONVitalDataSequenceKey=95, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-28 20:13:36, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[11]: {OMRONVitalDataMeasurementStartDateKey=1783355449000, OMRONVitalDataDiastolicKey=72, OMRONVitalDataPulseKey=74, OMRONVitalDataSystolicKey=112, OMRONVitalDataSequenceKey=96, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:00:49, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[12]: {OMRONVitalDataMeasurementStartDateKey=1783357063000, OMRONVitalDataDiastolicKey=71, OMRONVitalDataPulseKey=85, OMRONVitalDataSystolicKey=94, OMRONVitalDataSequenceKey=97, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:27:43, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[13]: {OMRONVitalDataMeasurementStartDateKey=1783358972000, OMRONVitalDataDiastolicKey=79, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=111, OMRONVitalDataSequenceKey=98, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:59:32, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): Selected BP record: {OMRONVitalDataMeasurementStartDateKey=1783358972000, OMRONVitalDataDiastolicKey=79, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=111, OMRONVitalDataSequenceKey=98, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:59:32, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): Delivering sys=111 dia=79
+I/flutter ( 4272): BpDevice APPLIED: sys=111 dia=79
+I/flutter ( 4272): [BHI] BpDevice APPLIED: sys=111 dia=79 mac=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): cancelOpen() - device: FC:CA:D1:75:81:16
+E/OplusCustomizeRestrictionManager( 4272): sInstance is null, start a new sInstance
+D/CompatibilityChangeReporter( 4272): Compat change id reported: 210923482; UID 12713; state: ENABLED
+D/CompatibilityChangeReporter( 4272): Compat change id reported: 147798919; UID 12713; state: ENABLED
+D/WindowManager( 4272): Add to mViews: android.widget.FrameLayout{7cee1f V.E...... ......I. 0,0-0,0},pkg= com.s2t.operational
+D/ViewRootImplExtImpl( 4272): onDisplayChanged -1 for VRI android.view.ViewRootImpl@f8c4d3b
+D/InputEventReceiver( 4272): Input log is disabled
+D/BluetoothGatt( 4272): onClientConnectionState() - status=0 clientIf=11 device=FC:CA:D1:75:81:16
+I/Quality ( 4272): Skipped: false 11 cost 190.65561 refreshRate 16873677 bit true processName com.s2t.operational
+D/BufferQueueConsumer( 4272): [](id:10b000000004,api:0,p:-1,c:4272) connect: controlledByApp=false
+E/IPCThreadState( 4272): attemptIncStrongHandle(66): Not supported
+D/BufferQueueProducer( 4272): [VRI[Toast]#4(BLAST Consumer)4](id:10b000000004,api:1,p:4272,c:4272) connect: api=1 producerControlledByApp=true
+D/VRI[Toast]( 4272): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast]( 4272): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+W/Parcel  ( 4272): Expecting binder but got null!
+D/VRI[Toast]( 4272): draw finished.
+I/Quality ( 4272): Skipped: false 5 cost 89.46937 refreshRate 16878237 bit true processName com.s2t.operational
+D/VRI[Toast]( 4272): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast]( 4272): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=false syncBuffer=false
+D/VRI[Toast]( 4272): draw finished.
+D/BluetoothGatt( 4272): cancelOpen() - device: FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): cancelOpen() - device: FC:CA:D1:75:81:16
+D/BluetoothGattServer( 4272): onServerConnectionState() - status=0 serverIf=10 device=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): close()
+D/BluetoothGatt( 4272): unregisterApp() - mClientIf=11
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothGattServer( 4272): clearServices()
+D/BluetoothGattServer( 4272): close()
+D/BluetoothGattServer( 4272): unregisterCallback() - mServerIf=10
+D/OplusScrollToTopManager( 4272): unregisterGuidePopupDismissReceiverInSystemUI
+D/OplusScrollToTopManager( 4272): Receiver not registered: android.view.OplusScrollToTopManager$1@8a96b0b
+D/OplusScrollToTopManager( 4272): unregisterSystemUIBroadcastReceiver
+D/OplusScrollToTopManager( 4272): java.lang.IllegalArgumentException: Receiver not registered: android.view.OplusScrollToTopManager$2@4421de8
+V/ZoomWindowDecorView( 4272): removeZoomView
+D/BufferQueueProducer( 4272): [VRI[Toast]#4(BLAST Consumer)4](id:10b000000004,api:1,p:4272,c:4272) disconnect: api 1
+D/BufferQueueConsumer( 4272): [VRI[Toast]#4(BLAST Consumer)4](id:10b000000004,api:0,p:-1,c:4272) disconnect
+I/Quality ( 4272): Skipped: false 1 cost 22.562294 refreshRate 16877000 bit true processName com.s2t.operational
+D/BluetoothGattServer( 4272): registerCallback()
+D/BluetoothGattServer( 4272): registerCallback() - UUID=3713f7ca-016b-4870-9cec-d51ca9d3b905
+D/BluetoothGattServer( 4272): onServerRegistered() - status=0 serverIf=9
+D/BluetoothGattServer( 4272): addService() - service: aee957f2-0d93-4bc2-abcb-a9363b5f40f5
+D/BluetoothGattServer( 4272): onServiceAdded() - handle=47 uuid=aee957f2-0d93-4bc2-abcb-a9363b5f40f5 status=0
+D/OmronBP ( 4272): API key already initialized, starting transfer directly
+D/OmronBP ( 4272): startDataTransferFromPeripheral: localName=BLESmart_0000047EFCCAD1758116 uuid=FC:CA:D1:75:81:16
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothLeScanner( 4272): onScannerRegistered() - status=0 scannerId=10 mScannerId=0
+I/Quality ( 4272): Skipped: false 6 cost 115.89405 refreshRate 16878514 bit true processName com.s2t.operational
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothLeScanner( 4272): onScannerRegistered() - status=0 scannerId=10 mScannerId=0
+D/BluetoothGatt( 4272): connect() - device: FC:CA:D1:75:81:16, auto: false, eattSupport: false
+D/BluetoothGatt( 4272): registerApp()
+D/BluetoothGatt( 4272): registerApp() - UUID=bd5fa8db-36ce-4c9f-9ab5-7fb99c9d80a4
+D/BluetoothGatt( 4272): onClientRegistered() - status=0 clientIf=11
+D/BluetoothGattServer( 4272): onServerConnectionState() - status=0 serverIf=9 device=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): onClientConnectionState() - status=0 clientIf=11 device=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): discoverServices() - device: FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): onSearchComplete() = Device=FC:CA:D1:75:81:16 Status=0
+D/[FBP-Android]( 4272): [FBP] OnBondStateChanged: bonding prev: bonded
+D/[FBP-Android]( 4272): [FBP] OnBondStateChanged: bonded prev: bonding
+D/BluetoothGattServer( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=24 latency=0 timeout=200 status=0
+D/BluetoothGatt( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=24 latency=0 timeout=200 status=0
+D/BluetoothGatt( 4272): configureMTU() - device: FC:CA:D1:75:81:16 mtu: 67
+D/BluetoothGatt( 4272): onConfigureMTU() - Device=FC:CA:D1:75:81:16 mtu=67 status=0
+D/BluetoothGatt( 4272): requestConnectionPriority() - params: 1
+D/BluetoothGatt( 4272): setCharacteristicNotification() - uuid: 49123040-aee8-11e1-a74d-0002a5d5c51b enable: true
+D/BluetoothGatt( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=12 latency=0 timeout=500 status=0
+D/BluetoothGattServer( 4272): onConnectionUpdated() - Device=FC:CA:D1:75:81:16 interval=12 latency=0 timeout=500 status=0
+I/BluetoothDevice( 4272): setAlias(): alias: HEM-7140T1, called by: com.s2t.operational
+D/OmronBP ( 4272): startTransfer cb: success=true msg=null
+D/OmronBP ( 4272): endTransfer cb: success=true msg=null
+D/OmronBP ( 4272): Total BP records received: 14
+D/OmronBP ( 4272): BP record[0]: {OMRONVitalDataMeasurementStartDateKey=1781275898000, OMRONVitalDataDiastolicKey=80, OMRONVitalDataPulseKey=79, OMRONVitalDataSystolicKey=107, OMRONVitalDataSequenceKey=86, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:21:38, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[1]: {OMRONVitalDataMeasurementStartDateKey=1781276169000, OMRONVitalDataDiastolicKey=74, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=98, OMRONVitalDataSequenceKey=87, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:26:09, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[2]: {OMRONVitalDataMeasurementStartDateKey=1781276313000, OMRONVitalDataDiastolicKey=74, OMRONVitalDataPulseKey=85, OMRONVitalDataSystolicKey=100, OMRONVitalDataSequenceKey=88, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:28:33, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[3]: {OMRONVitalDataMeasurementStartDateKey=1781277219000, OMRONVitalDataDiastolicKey=67, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=88, OMRONVitalDataSequenceKey=89, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:43:39, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[4]: {OMRONVitalDataMeasurementStartDateKey=1781277853000, OMRONVitalDataDiastolicKey=77, OMRONVitalDataPulseKey=72, OMRONVitalDataSystolicKey=98, OMRONVitalDataSequenceKey=90, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-12 20:54:13, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[5]: {OMRONVitalDataMeasurementStartDateKey=1782394553000, OMRONVitalDataDiastolicKey=84, OMRONVitalDataPulseKey=77, OMRONVitalDataSystolicKey=115, OMRONVitalDataSequenceKey=91, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-25 19:05:53, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[6]: {OMRONVitalDataMeasurementStartDateKey=1782475808000, OMRONVitalDataDiastolicKey=88, OMRONVitalDataPulseKey=85, OMRONVitalDataSystolicKey=113, OMRONVitalDataSequenceKey=92, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-26 17:40:08, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[7]: {OMRONVitalDataMeasurementStartDateKey=1782477588000, OMRONVitalDataDiastolicKey=80, OMRONVitalDataPulseKey=90, OMRONVitalDataSystolicKey=101, OMRONVitalDataSequenceKey=93, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-26 18:09:48, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[8]: {OMRONVitalDataMeasurementStartDateKey=1782657725000, OMRONVitalDataDiastolicKey=69, OMRONVitalDataPulseKey=65, OMRONVitalDataSystolicKey=103, OMRONVitalDataSequenceKey=94, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-28 20:12:05, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[9]: {OMRONVitalDataMeasurementStartDateKey=1782657816000, OMRONVitalDataDiastolicKey=82, OMRONVitalDataPulseKey=77, OMRONVitalDataSystolicKey=119, OMRONVitalDataSequenceKey=95, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-06-28 20:13:36, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[10]: {OMRONVitalDataMeasurementStartDateKey=1783355449000, OMRONVitalDataDiastolicKey=72, OMRONVitalDataPulseKey=74, OMRONVitalDataSystolicKey=112, OMRONVitalDataSequenceKey=96, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:00:49, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[11]: {OMRONVitalDataMeasurementStartDateKey=1783357063000, OMRONVitalDataDiastolicKey=71, OMRONVitalDataPulseKey=85, OMRONVitalDataSystolicKey=94, OMRONVitalDataSequenceKey=97, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:27:43, OMRONVitalDataCuffFlagKey=0}
+D/OmronBP ( 4272): BP record[12]: {OMRONVitalDataMeasurementStartDateKey=1783358972000, OMRONVitalDataDiastolicKey=79, OMRONVitalDataPulseKey=81, OMRONVitalDataSystolicKey=111, OMRONVitalDataSequenceKey=98, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 22:59:32, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): BP record[13]: {OMRONVitalDataMeasurementStartDateKey=1783359380000, OMRONVitalDataDiastolicKey=76, OMRONVitalDataPulseKey=73, OMRONVitalDataSystolicKey=99, OMRONVitalDataSequenceKey=99, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 23:06:20, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): Selected BP record: {OMRONVitalDataMeasurementStartDateKey=1783359380000, OMRONVitalDataDiastolicKey=76, OMRONVitalDataPulseKey=73, OMRONVitalDataSystolicKey=99, OMRONVitalDataSequenceKey=99, OMRONVitalDataConsecutiveMeasurementKey=0, OMRONVitalDataUserIdKey=1, OMRONVitalDataMeasurementDateKey=2026-07-06 23:06:20, OMRONVitalDataCuffFlagKey=1}
+D/OmronBP ( 4272): Delivering sys=99 dia=76
+I/flutter ( 4272): BpDevice APPLIED: sys=99 dia=76
+I/flutter ( 4272): [BHI] BpDevice APPLIED: sys=99 dia=76 mac=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): cancelOpen() - device: FC:CA:D1:75:81:16
+D/WindowManager( 4272): Add to mViews: android.widget.FrameLayout{82d07f0 V.E...... ......I. 0,0-0,0},pkg= com.s2t.operational
+D/ViewRootImplExtImpl( 4272): onDisplayChanged -1 for VRI android.view.ViewRootImpl@df048f
+D/BluetoothGatt( 4272): onClientConnectionState() - status=0 clientIf=11 device=FC:CA:D1:75:81:16
+D/InputEventReceiver( 4272): Input log is disabled
+I/Quality ( 4272): Skipped: false 12 cost 209.66043 refreshRate 16882580 bit true processName com.s2t.operational
+D/BufferQueueConsumer( 4272): [](id:10b000000005,api:0,p:-1,c:4272) connect: controlledByApp=false
+E/IPCThreadState( 4272): attemptIncStrongHandle(81): Not supported
+D/BufferQueueProducer( 4272): [VRI[Toast]#5(BLAST Consumer)5](id:10b000000005,api:1,p:4272,c:4272) connect: api=1 producerControlledByApp=true
+D/VRI[Toast]( 4272): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast]( 4272): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+W/Parcel  ( 4272): Expecting binder but got null!
+D/VRI[Toast]( 4272): draw finished.
+I/Quality ( 4272): Skipped: false 2 cost 43.10721 refreshRate 16876373 bit true processName com.s2t.operational
+D/VRI[Toast]( 4272): registerCallbacksForSync syncBuffer=false
+D/VRI[Toast]( 4272): Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=false syncBuffer=false
+D/VRI[Toast]( 4272): draw finished.
+D/BluetoothGatt( 4272): cancelOpen() - device: FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): cancelOpen() - device: FC:CA:D1:75:81:16
+D/BluetoothGattServer( 4272): onServerConnectionState() - status=0 serverIf=9 device=FC:CA:D1:75:81:16
+D/BluetoothGatt( 4272): close()
+D/BluetoothGatt( 4272): unregisterApp() - mClientIf=11
+D/BluetoothAdapter( 4272): isLeEnabled(): ON
+D/BluetoothGattServer( 4272): clearServices()
+D/BluetoothGattServer( 4272): close()
+D/BluetoothGattServer( 4272): unregisterCallback() - mServerIf=9
+D/OplusScrollToTopManager( 4272): unregisterGuidePopupDismissReceiverInSystemUI
+D/OplusScrollToTopManager( 4272): Receiver not registered: android.view.OplusScrollToTopManager$1@b17aff3
+D/OplusScrollToTopManager( 4272): unregisterSystemUIBroadcastReceiver
+D/OplusScrollToTopManager( 4272): java.lang.IllegalArgumentException: Receiver not registered: android.view.OplusScrollToTopManager$2@9a424b0
+V/ZoomWindowDecorView( 4272): removeZoomView
+D/BufferQueueProducer( 4272): [VRI[Toast]#5(BLAST Consumer)5](id:10b000000005,api:1,p:4272,c:4272) disconnect: api 1
+D/BufferQueueConsumer( 4272): [VRI[Toast]#5(BLAST Consumer)5](id:10b000000005,api:0,p:-1,c:4272) disconnect
+I/Quality ( 4272): Skipped: false 1 cost 21.406977 refreshRate 16666666 bit true processName com.s2t.operational
+D/BluetoothGattServer( 4272): registerCallback()
+D/BluetoothGattServer( 4272): registerCallback() - UUID=96cc78cd-05c7-4eac-8859-5a80bd965001
+D/BluetoothGattServer( 4272): onServerRegistered() - status=0 serverIf=9
+D/BluetoothGattServer( 4272): addService() - service: aee957f2-0d93-4bc2-abcb-a9363b5f40f5
+D/BluetoothGattServer( 4272): onServiceAdded() - handle=47 uuid=aee957f2-0d93-4bc2-abcb-a9363b5f40f5 status=0

@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/constants/Repository.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
+import 'package:s2toperational/Modules/constants/api_client.dart';
 import 'package:s2toperational/Screens/user_attendance/model/camp_location_response.dart';
 import 'package:s2toperational/Screens/user_attendance/model/user_attandance_response.dart';
 

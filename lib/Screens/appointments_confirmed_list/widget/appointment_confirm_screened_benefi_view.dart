@@ -1,14 +1,14 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import '../model/appoinment_expected_beneficiaries_response.dart';
 import '../model/screened_dependent_count_response.dart';
-import '../../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/utilities/toast_manager.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
+import '../../../../Modules/utilities/size_config.dart';
 
 class AppointmentConfirmScreenedBenefiView extends StatefulWidget {
   AppointmentConfirmScreenedBenefiView({

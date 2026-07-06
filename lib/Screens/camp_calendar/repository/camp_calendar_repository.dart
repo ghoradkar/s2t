@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import '../model/bind_district_response.dart';
 import '../model/bind_division_response.dart';
 import '../model/camp_count_with_day_response.dart';

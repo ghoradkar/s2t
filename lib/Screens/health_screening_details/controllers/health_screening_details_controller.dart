@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 
 class HealthScreeningDetailsController extends GetxController {
   final RxList<HealthScreeningDetailsMenu> menuList =

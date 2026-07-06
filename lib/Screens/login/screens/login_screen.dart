@@ -4,14 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/utilities/toast_manager.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppButtonWithIcon.dart';
-import '../../../Modules/widgets/AppTextField.dart';
-import '../../calling_modules/custom_widgets/network_wrapper.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/common_widgets/AppButtonWithIcon.dart';
+import '../../../Modules/common_widgets/AppTextField.dart';
+import '../../calling_modules/widgets/network_wrapper.dart';
 import '../controllers/login_controller.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -36,6 +36,7 @@ class LoginScreen extends StatelessWidget {
         if (!isConnected) ToastManager.toast("No Internet");
       },
       child: Scaffold(
+        backgroundColor: kWhiteColor,
         resizeToAvoidBottomInset: true,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,

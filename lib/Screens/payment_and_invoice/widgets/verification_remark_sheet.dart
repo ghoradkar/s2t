@@ -5,16 +5,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
 
 import '../models/verification_remark_model.dart';
-import '../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/utilities/toast_manager.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/AppActiveButton.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/common_widgets/AppActiveButton.dart';
 
 class VerificationRemarkSheet extends StatefulWidget {
   VerificationRemarkSheet({

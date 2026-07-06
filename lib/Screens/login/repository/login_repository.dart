@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:http/io_client.dart';
 
-import '../../../Modules/APIManager/APIManager.dart';
+import '../../../Modules/utilities/api_manager.dart';
 import '../models/login_response_model.dart';
-import '../../../Modules/constants/APIConstants.dart';
-import '../../../Modules/utilities/DataProvider.dart';
+import '../../../Modules/constants/api_constants.dart';
+import '../../../Modules/utilities/data_provider.dart';
 
 class LoginRepository {
   IOClient _client() {

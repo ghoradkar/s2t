@@ -3,8 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/years_response.dart';
 import '../models/month_wise_invoice_model.dart';
-import '../../../Modules/ToastManager/ToastManager.dart';
-import '../../../Modules/utilities/DataProvider.dart';
+import '../../../Modules/utilities/toast_manager.dart';
+import '../../../Modules/utilities/data_provider.dart';
 import '../repository/invoice_repository.dart';
 
 class InvoiceController extends GetxController {

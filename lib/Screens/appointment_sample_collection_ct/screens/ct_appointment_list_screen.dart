@@ -4,17 +4,17 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/appointment_sample_collection_ct/controllers/ct_appointment_list_controller.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/appointment_sample_collection_ct/controller/ct_appointment_list_controller.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/screens/ct_appointment_confirmation_screen.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/widgets/ct_beneficiary_row.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 
 class CTAppointmentListScreen extends StatefulWidget {
   const CTAppointmentListScreen({super.key});

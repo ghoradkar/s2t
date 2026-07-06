@@ -2,7 +2,7 @@
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:get/get.dart';
 // import 'package:s2toperational/Modules/constants/constants.dart';
-// import 'package:s2toperational/Modules/widgets/CommonText.dart';
+// import 'package:s2toperationalModules/common_widgets/CommonText.dart';
 //
 // class SuperAdminDashCard extends StatelessWidget {
 //   final String title;

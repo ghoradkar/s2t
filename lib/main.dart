@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/themes/AppTheme.dart';
+// import 'package:s2toperational/Modules/themes/AppTheme.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/expected_beneficiary_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/expected_beneficiary_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_repository.dart';
-import 'Modules/utilities/DataProvider.dart';
-import 'Modules/utilities/SizeConfig.dart';
-import 'Screens/calling_modules/routes/app_routes.dart';
-import 'Screens/SplashScreen/controllers/splash_controller.dart';
+import 'Modules/utilities/data_provider.dart';
+import 'Modules/utilities/size_config.dart';
+import 'Modules/utilities/app_routes.dart';
+import 'Screens/SplashScreen/controller/splash_controller.dart';
 import 'Screens/SplashScreen/screens/splash_screen.dart';
 import 'Modules/utilities/route_observer.dart';
 
 /// Bypasses SSL certificate validation globally — required because the server
-/// uses a self-signed/untrusted certificate. Consistent with APIManager's
+/// uses a self-signed/untrusted certificate. Consistent with api_manager's
 /// existing `badCertificateCallback = true` on all API calls.
 class _BypassSslHttpOverrides extends HttpOverrides {
   @override
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           title: "S2T Operational",
-          theme: AppTheme.lightTheme,
+          // theme: AppTheme.lightTheme,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,

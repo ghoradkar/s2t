@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/beneficiary_card_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/beneficiary_card_controller.dart';
 import 'package:s2toperational/Screens/calling_modules/models/beneficiary_response_model.dart';
 import 'package:s2toperational/Screens/calling_modules/repository/beneficiary_card_repository.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/DataProvider.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../routes/app_routes.dart';
+import '../../../Modules/utilities/data_provider.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/utilities/app_routes.dart';
 
 class BeneficiaryCard extends StatefulWidget {
   final BeneficiaryOutput beneficiary;

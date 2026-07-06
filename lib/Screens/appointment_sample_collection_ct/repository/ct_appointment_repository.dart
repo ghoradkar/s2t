@@ -1,4 +1,4 @@
-﻿import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+﻿import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/assignment_remarks_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/district_response.dart';
 import 'package:s2toperational/Screens/appointment_sample_collection_ct/models/ct_appointment_beneficiary_model.dart';

@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
-import '../../../Modules/widgets/S2TAppBar.dart';
+import '../../../Modules/utilities/size_config.dart';
+import '../../../Modules/common_widgets/S2TAppBar.dart';
 import '../controllers/invoice_controller.dart';
 import '../controllers/payment_details_controller.dart';
 import '../controllers/payment_invoice_controller.dart';

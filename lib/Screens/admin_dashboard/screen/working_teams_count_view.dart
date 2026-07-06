@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../Modules/constants/constants.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/utilities/size_config.dart';
 
 class WorkingTeamsCountView extends StatefulWidget {
   int workingTeamsCount = 0;

@@ -4,13 +4,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
 // import 'package:s2toperational/Modules/Json_Class/BeneficiaryStatusAndDetailsResponse/beneficiary_status_and_details_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/recollection_assignment_remarks_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/recollection_beneficiary_status_and_details_count_v1_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/SelectedTeamsDataListResponse/selected_teams_data_list_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/daily_work_dashboard/repository/daily_work_dashboard_repository.dart';
 import 'package:s2toperational/Screens/patient_registration/controller/d2d_select_camp_controller.dart';
 import 'package:s2toperational/Screens/patient_registration/screen/d2d_select_camp_screen.dart';

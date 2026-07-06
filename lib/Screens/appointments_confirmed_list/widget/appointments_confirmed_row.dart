@@ -8,7 +8,7 @@ import '../model/appoinment_expected_beneficiaries_response.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
+import '../../../../Modules/utilities/size_config.dart';
 
 class AppointmentsConfirmedRow extends StatelessWidget {
   AppointmentsConfirmedRow({super.key, required this.obj});

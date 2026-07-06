@@ -1,9 +1,9 @@
 // ignore_for_file: file_names
 
 import 'package:http/http.dart' as http;
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Modules/constants/Repository.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
+import 'package:s2toperational/Modules/constants/api_client.dart';
 
 class S2TPatientAppRepository {
   static const Duration _timeout = Duration(minutes: 5);

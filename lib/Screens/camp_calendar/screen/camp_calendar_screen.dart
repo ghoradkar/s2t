@@ -8,18 +8,18 @@ import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
 import 'package:s2toperational/Screens/admin_dashboard/screen/pending_count_screen/pending_count_screen.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/camp_calendar/screen/CalenderScreen/CalenderScreen.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/camp_calendar/screen/calender_widget.dart';
 
-// import 'package:s2toperational/Views/CalenderScreen/CalenderScreen.dart';
+// import 'package:s2toperational/Views/CalenderScreen/calender_widget.dart';
 import '../controller/camp_calendar_controller.dart';
-import 'camp_calendar_camp_list_screen/camp_calendar_camp_list_screen.dart';
-import 'camp_calendar_count_view/camp_calendar_count_view.dart';
+import 'camp_calendar_camp_list_screen.dart';
+import 'camp_calendar_count_view.dart';
 
 class CampCalendarScreen extends StatelessWidget {
   const CampCalendarScreen({super.key});

@@ -142,7 +142,19 @@
       "Bash(xargs -I{} grep -n \"Json_Class/\" {})",
       "Bash(grep -v \"^.*:[ \\\\t]*//\")",
       "Bash(mkdir -p \"lib/Screens/medicine_delivery_menu/model\")",
-      "Bash(mkdir -p \"lib/Screens/acknowledgement/model\")"
+      "Bash(mkdir -p \"lib/Screens/acknowledgement/model\")",
+      "Bash(powershell -Command \"\\(Get-Content 'D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\HomeScreen\\\\HomeScreen.dart'\\).Count\")",
+      "Bash(powershell -Command \"Get-Content 'D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\HomeScreen\\\\HomeScreen.dart' | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"Get-Content 'D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Screens\\\\HomeScreen\\\\HomeScreen.dart' | Select-Object -Last 10\")",
+      "PowerShell(Remove-Item *)",
+      "Bash(Select-String -Path \"D:\\\\s2toperational\\\\s2toperational\\\\lib\\\\Modules\\\\APIManager\\\\api_manager.dart\" -Pattern \"ioClient\\\\.close\\\\\\(\\\\\\)\")",
+      "Bash(Select-Object LineNumber, Line)",
+      "Bash(cp /tmp/omron_a_disasm.txt \"C:\\\\Users\\\\LENOVO\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--s2toperational-s2toperational\\\\9bdb2848-d2d0-4076-807e-d6fb68b29e94\\\\scratchpad\\\\omron_a_disasm.txt\")",
+      "Bash(cygpath -w /tmp/omron_a_disasm.txt)",
+      "Bash(./gradlew.bat :app:compileDebugKotlin --console=plain)",
+      "Bash(ls *.bat)",
+      "Bash(ls gradlew*)",
+      "Bash(./gradlew.bat :app:compileBetaDebugJavaWithJavac --console=plain)"
     ]
   }
 }

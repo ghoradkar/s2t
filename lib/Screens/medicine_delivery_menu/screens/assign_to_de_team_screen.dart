@@ -1,23 +1,19 @@
-﻿// ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api, avoid_print
+// ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api, avoid_print
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
-import 'package:s2toperational/Modules/DelegateManager/DelegateManager.dart';
-import 'package:s2toperational/Modules/FormatterManager/FormatterManager.dart';
-import 'package:s2toperational/Screens/medicine_delivery_menu/model/packet_accept_data_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/app_data_manager.dart';
+import 'package:s2toperational/Modules/utilities/formatter_manager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/packet_allocation_controller.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/assign_to_de_team_row.dart';
 import '../../../../Modules/constants/fonts.dart';
 
@@ -28,36 +24,28 @@ class AssignToDETeamScreen extends StatefulWidget {
   State<AssignToDETeamScreen> createState() => _AssignToDETeamScreenState();
 }
 
-class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
-    implements RefreshDelegate {
-  APIManager apiManager = APIManager();
-  List<PacketAcceptDataOutput> listOfPackets = [];
-  List<PacketAcceptDataOutput> listOfPacketsSearch = [];
-
-  TextEditingController searchController = TextEditingController();
+class _AssignToDETeamScreenState extends State<AssignToDETeamScreen> {
+  late final PacketAllocationController controller;
+  final TextEditingController searchController = TextEditingController();
 
   bool get _allRowsSelected {
-    if (listOfPacketsSearch.isEmpty) {
-      return false;
-    }
-    return listOfPacketsSearch.every((item) => item.isSelected == true);
+    if (controller.listOfPacketsSearch.isEmpty) return false;
+    return controller.listOfPacketsSearch.every((item) => item.isSelected == true);
   }
 
   void _toggleAllRows() {
-    if (listOfPacketsSearch.isEmpty) {
-      return;
-    }
+    if (controller.listOfPacketsSearch.isEmpty) return;
     final shouldSelectAll = !_allRowsSelected;
-    for (final item in listOfPacketsSearch) {
+    for (final item in controller.listOfPacketsSearch) {
       item.isSelected = shouldSelectAll;
     }
-    setState(() {});
+    controller.listOfPacketsSearch.refresh();
   }
 
   @override
   void initState() {
     super.initState();
-    DelegateManager().registerDelegate(this);
+    controller = Get.find<PacketAllocationController>();
     if (AppDataManager.fromDate.isEmpty) {
       AppDataManager.fromDate = FormatterManager.formatDateToString(
         DateTime.now(),
@@ -68,9 +56,7 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
         DateTime.now(),
       );
     }
-    callRefreshAPI();
-    // ToastManager.showLoader();
-    // getDataForPacketAssignment();
+    controller.fetchPackets();
   }
 
   @override
@@ -82,8 +68,7 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
             controller: searchController,
             readOnly: false,
             onChange: (value) {
-              listOfPacketsSearch = searchByDescEn(value);
-              setState(() {});
+              controller.filterByName(value);
             },
             hint: 'Search Beneficiary Name',
             label: CommonText(
@@ -215,16 +200,18 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: _toggleAllRows,
-                          child: Container(
-                            padding: EdgeInsets.all(4),
-                            width: 30,
-                            height: 30,
-                            child: Image.asset(
-                              _allRowsSelected
-                                  ? icCheckBoxSelected
-                                  : icUnCheckBoxSelected,
+                        Obx(
+                          () => GestureDetector(
+                            onTap: _toggleAllRows,
+                            child: Container(
+                              padding: EdgeInsets.all(4),
+                              width: 30,
+                              height: 30,
+                              child: Image.asset(
+                                _allRowsSelected
+                                    ? icCheckBoxSelected
+                                    : icUnCheckBoxSelected,
+                              ),
                             ),
                           ),
                         ),
@@ -232,52 +219,55 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
                     ),
                   ),
                   Expanded(
-                    child:
-                        listOfPacketsSearch.isNotEmpty
-                            ? ListView.builder(
-                              itemCount: listOfPacketsSearch.length,
+                    child: Obx(
+                      () => controller.listOfPacketsSearch.isNotEmpty
+                          ? ListView.builder(
+                              itemCount: controller.listOfPacketsSearch.length,
                               itemBuilder: (context, index) {
                                 return AssignToDETeamRow(
                                   index: index,
-                                  obj: listOfPacketsSearch[index],
+                                  obj: controller.listOfPacketsSearch[index],
                                   onSelectionChanged: () {
-                                    setState(() {});
+                                    controller.listOfPacketsSearch.refresh();
                                   },
                                 );
                               },
                             )
-                            : Center(child: Text("No Data Available")),
-                  ),
-                  if (listOfPacketsSearch.isNotEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.viewPaddingOf(context).bottom,
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(80, 8, 80, 8),
-                          child: AppButtonWithIcon(
-                            buttonColor: kPrimaryColor,
-                              title: "Accept in Lab",
-                            icon: Image.asset(
-                              iconArrow,
-                              height: responsiveHeight(24),
-                              width: responsiveHeight(24),
-                            ),
-                            mWidth: SizeConfig.screenWidth,
-                            textStyle: TextStyle(
-                              fontFamily: FontConstants.interFonts,
-                              color: Colors.white,
-                              fontSize: responsiveFont(16),
-                            ),
-                            onTap: () {
-                              submitData();
-                            },
-                          ),
-                        ),
-                      ),
+                          : Center(child: Text("No Data Available")),
                     ),
-
+                  ),
+                  Obx(
+                    () => controller.listOfPacketsSearch.isNotEmpty
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.viewPaddingOf(context).bottom,
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(80, 8, 80, 8),
+                                child: AppButtonWithIcon(
+                                  buttonColor: kPrimaryColor,
+                                  title: "Accept in Lab",
+                                  icon: Image.asset(
+                                    iconArrow,
+                                    height: responsiveHeight(24),
+                                    width: responsiveHeight(24),
+                                  ),
+                                  mWidth: SizeConfig.screenWidth,
+                                  textStyle: TextStyle(
+                                    fontFamily: FontConstants.interFonts,
+                                    color: Colors.white,
+                                    fontSize: responsiveFont(16),
+                                  ),
+                                  onTap: () {
+                                    submitData();
+                                  },
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
                 ],
               ),
             ),
@@ -287,82 +277,8 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
     );
   }
 
-  @override
-  void callRefreshAPI() {
-    ToastManager.showLoader();
-    getDataForPacketAssignment();
-  }
-
-  void getDataForPacketAssignment() {
-    Map<String, String> data = {
-      "FromDate": AppDataManager.fromDate,
-      "ToDate": AppDataManager.toDate,
-      "Labcode": "0",
-      "TALLGDCODE": AppDataManager.selectedTaluka?.tALLGDCODE.toString() ?? "0",
-    };
-    //AppDataManager.selectedReportDeliveryExecutive?.d.toString() ??
-
-    apiManager.getDataForPacketAssignmentAPI(
-      data,
-      apiDataForPacketAssignmentBack,
-    );
-  }
-
-  void apiDataForPacketAssignmentBack(
-    PacketAcceptDataResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      listOfPackets = response?.output ?? [];
-      listOfPacketsSearch = listOfPackets;
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
-  }
-
-  List<PacketAcceptDataOutput> searchByDescEn(String query) {
-    return listOfPackets.where((item) {
-      final desc = item.patientName?.toString().toLowerCase() ?? '';
-      return desc.contains(query.toLowerCase());
-    }).toList();
-  }
-
-  String getPacketDetailsJson() {
-    List<Map<String, String>> packetJsonArray = [];
-
-    for (PacketAcceptDataOutput packetObj in listOfPackets) {
-      if (packetObj.isSelected) {
-        final dict = {
-          "DCID": packetObj.deliveryChallanID ?? "",
-          "PacketID": packetObj.packetNumber ?? "",
-          "TreatmentID": packetObj.prescriptionID?.toString() ?? "",
-          "TeamId": AppDataManager.selectedResource?.teamid.toString() ?? "0",
-        };
-        packetJsonArray.add(dict);
-      }
-    }
-
-    try {
-      String json = jsonEncode(packetJsonArray);
-      print(json);
-      return json;
-    } catch (e) {
-      print("something went wrong with parsing json: $e");
-      return "";
-    }
-  }
-
   void submitData() {
-    bool isSelected = false;
-    for (PacketAcceptDataOutput packetObj in listOfPackets) {
-      if (packetObj.isSelected) {
-        isSelected = true;
-        break;
-      }
-    }
+    final isSelected = controller.listOfPackets.any((p) => p.isSelected);
 
     if (AppDataManager.toDate.isEmpty) {
       ToastManager.toast("Please select To Date");
@@ -384,51 +300,13 @@ class _AssignToDETeamScreenState extends State<AssignToDETeamScreen>
         if (p1 == true) {
           Navigator.pop(context);
           ToastManager.showLoader();
-          insertPacketAssignDetailsManually();
+          controller.insertPacketAssignDetailsManually(
+            onSuccess: () => searchController.clear(),
+          );
         } else if (p1 == false) {
           Navigator.pop(context);
         }
       },
     );
-  }
-
-  void insertPacketAssignDetailsManually() {
-    String packetDetails = getPacketDetailsJson();
-
-    if (packetDetails.isEmpty) {
-      ToastManager.toast("No packets selected for assignment");
-      return;
-    }
-    int empCode =
-        DataProvider().getParsedUserData()?.output?.first.empCode ?? 0;
-    Map<String, String> data = {
-      "CreatedBy": empCode.toString(),
-      "PacketDetails": packetDetails,
-      "DeliveryExecutiveID":
-          AppDataManager.selectedResource?.userID.toString() ?? "0",
-    };
-
-    apiManager.insertPacketAssignDetailsManuallyAPI(
-      data,
-      apiInsertPacketAssignDetailsManuallyBack,
-    );
-  }
-
-  void apiInsertPacketAssignDetailsManuallyBack(
-    PacketAcceptDataResponse? response,
-    String errorMessage,
-    bool success,
-  ) async {
-    ToastManager.hideLoader();
-    if (success) {
-      ToastManager.toast("Packet assigned successfully");
-      listOfPacketsSearch = [];
-      listOfPackets = [];
-      searchController.clear();
-      callRefreshAPI();
-    } else {
-      ToastManager.toast(errorMessage);
-    }
-    setState(() {});
   }
 }

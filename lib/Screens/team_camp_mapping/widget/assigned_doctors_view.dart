@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../model/assigned_external_resource_details_response.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/utilities/size_config.dart';
 import '../../../Modules/constants/fonts.dart';
 
 class AssignedDoctorsView extends StatefulWidget {

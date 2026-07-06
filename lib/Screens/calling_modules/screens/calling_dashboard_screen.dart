@@ -5,12 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/calling_modules/controllers/calling_dashboard_controller.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/controller/calling_dashboard_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/calling_modules/models/calling_dashboard_model.dart';
 
 class CallingDashboardScreen extends GetView<CallingDashboardController> {

@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
 //
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/images.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
+// import '../../Modules/utilities/size_config.dart';
 import '../../../../../Modules/constants/fonts.dart';
 
 class CampClosingSummaryView extends StatefulWidget {

@@ -5,17 +5,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 import 'package:s2toperational/Screens/health_screening_details/controllers/camp_for_health_screening_d2d_controller.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/CommonSkeletonList.dart';
-import '../../../../Modules/widgets/S2TAppBar.dart';
+import '../../../../Modules/utilities/size_config.dart';
+import '../../../../Modules/common_widgets/CommonSkeletonList.dart';
+import '../../../../Modules/common_widgets/S2TAppBar.dart';
 import '../health_screening_details_screen/health_screening_details_screen.dart';
-import 'camp_for_health_screening_d2d_row/camp_for_health_screening_d2d_row.dart';
+import 'camp_for_health_screening_d2d_row.dart';
 
 class CampForHealthScreeningD2DScreen extends StatelessWidget {
   final int testID;

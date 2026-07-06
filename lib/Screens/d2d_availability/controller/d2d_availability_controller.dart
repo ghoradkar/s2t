@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../../Modules/ToastManager/ToastManager.dart';
-import '../../../Modules/utilities/DataProvider.dart';
+import '../../../Modules/utilities/toast_manager.dart';
+import '../../../Modules/utilities/data_provider.dart';
 import '../models/get_doc_list_d2d_response.dart';
 import '../repository/d2d_availability_repository.dart';
 

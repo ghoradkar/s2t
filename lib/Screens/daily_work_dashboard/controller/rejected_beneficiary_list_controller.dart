@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:s2toperational/Modules/Json_Class/RecollectionAssignmentRemarksResponse/recollection_assignment_remarks_response.dart';
 // import 'package:s2toperational/Modules/Json_Class/RecollectionBeneficiaryStatusandDetailsCountV1Response/recollection_beneficiary_status_and_details_count_v1_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import 'package:s2toperational/Screens/daily_work_dashboard/repository/daily_work_dashboard_repository.dart';
 
 import '../model/recollection_assignment_remarks_response.dart';

@@ -3,8 +3,8 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/ct_assignment/model/t2t_ct_user_details_response.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
 import '../model/beneficiary_details_for_assign_teamid_details_response.dart';
 import '../model/selected_teams_data_list_response.dart';
 import '../model/t2t_ct_beneficiary_details_response.dart';

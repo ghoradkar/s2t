@@ -1,9 +1,9 @@
 ﻿import 'dart:convert';
 
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
-import 'package:s2toperational/Modules/constants/Repository.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
+import 'package:s2toperational/Modules/constants/api_client.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_conducted_response.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/camp_type_list_model.dart';
 import 'package:s2toperational/Screens/admin_dashboard/Model/d2d_non_working_teams.dart';

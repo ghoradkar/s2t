@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/month_wise_invoice_model.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/fonts.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/utilities/size_config.dart';
 
 class InvoiceRow extends StatelessWidget {
   const InvoiceRow({

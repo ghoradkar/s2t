@@ -6,18 +6,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:get/get.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/AppButtonWithIcon.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/selection_bottom_sheet.dart';
+import 'package:s2toperational/Modules/common_widgets/AppButtonWithIcon.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/selection_bottom_sheet.dart';
 import 'package:s2toperational/Screens/calling_modules/models/relation_model.dart';
 import 'package:s2toperational/Screens/patient_registration/model/dependent_list_response.dart';
 import 'package:s2toperational/Screens/patient_registration/model/gp_item.dart';
@@ -200,7 +200,10 @@ class _D2DPatientRegistrationScreenState
                 // Disabled after API data returned or during re-registration
                 readOnly: _hasData || c.reRegistrationLocked.value,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChange: (_hasData || c.reRegistrationLocked.value) ? null : c.onWorkerRegNoChanged,
+                onChange:
+                    (_hasData || c.reRegistrationLocked.value)
+                        ? null
+                        : c.onWorkerRegNoChanged,
                 errorText:
                     c.workerRegNoError.value.isEmpty
                         ? null
@@ -314,9 +317,7 @@ class _D2DPatientRegistrationScreenState
                               : () {
                                 if (_isYes &&
                                     c.selectedRelation.value == null) {
-                                  ToastManager.toast(
-                                    'Please select relation',
-                                  );
+                                  ToastManager.toast('Please select relation');
                                   return;
                                 }
                                 if (c.abhaCreateMode.value == 'demographic') {
@@ -346,7 +347,8 @@ class _D2DPatientRegistrationScreenState
                                             district: c.navCampLocation,
                                             campType: c.navCampType,
                                             empCode: c.empCode,
-                                            initialMobile: c.tecMobileNo.text.trim(),
+                                            initialMobile:
+                                                c.tecMobileNo.text.trim(),
                                           ),
                                     ),
                                   );
@@ -923,7 +925,10 @@ class _D2DPatientRegistrationScreenState
         else
           // isDependent=Yes → picker (locked after worker data loads)
           GestureDetector(
-            onTap: (_hasData || _isLocked) ? null : () => _showRelationPicker(context),
+            onTap:
+                (_hasData || _isLocked)
+                    ? null
+                    : () => _showRelationPicker(context),
             child: AbsorbPointer(
               child: AppTextField(
                 controller: TextEditingController(
@@ -1017,7 +1022,8 @@ class _D2DPatientRegistrationScreenState
           ),
         ],
         // Contact number verified banner — always visible once verified
-        if (c.mobileOtpVerified.value) _verifiedBanner('Contact number verified'),
+        if (c.mobileOtpVerified.value)
+          _verifiedBanner('Contact number verified'),
         if (c.mobileOtpVerified.value) ...[
           SizedBox(height: 10.h),
 
@@ -1490,8 +1496,6 @@ class _D2DPatientRegistrationScreenState
           SizedBox(height: 14.h),
         ],
 
-
-
         // ── Beneficiary Consent ──────────────────────────────────────────
         _sectionLabel('Beneficiary Consent'),
         SizedBox(height: 8.h),
@@ -1506,9 +1510,7 @@ class _D2DPatientRegistrationScreenState
               // ── Checkbox row ──────────────────────────────────────────
               InkWell(
                 borderRadius: BorderRadius.circular(12),
-                onTap:
-                    () =>
-                        c.isCellularPhone.value = !c.isCellularPhone.value,
+                onTap: () => c.isCellularPhone.value = !c.isCellularPhone.value,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.w,
@@ -2054,7 +2056,10 @@ class _D2DPatientRegistrationScreenState
     bool resendVisible = false;
     Timer? countdownTimer;
 
-    Future<void> onVerify(StateSetter setDialogState, BuildContext dialogCtx) async {
+    Future<void> onVerify(
+      StateSetter setDialogState,
+      BuildContext dialogCtx,
+    ) async {
       final otp = otpController.text.trim();
       if (otp.isEmpty) {
         ToastManager.toast('Please enter OTP');
@@ -2139,9 +2144,10 @@ class _D2DPatientRegistrationScreenState
                     ),
                     SizedBox(height: 6.h),
                     CommonText(
-                      text: isAlternate
-                          ? 'OTP sent to alternate number: ${c.tecAltMobileNo.text.trim()}'
-                          : 'OTP sent to: ${c.tecMobileNo.text.trim()}',
+                      text:
+                          isAlternate
+                              ? 'OTP sent to alternate number: ${c.tecAltMobileNo.text.trim()}'
+                              : 'OTP sent to: ${c.tecMobileNo.text.trim()}',
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w400,
                       textColor: kLabelTextColor,
@@ -2500,7 +2506,9 @@ class _D2DPatientRegistrationScreenState
               ]);
               ToastManager.hideLoader();
               // ignore: avoid_print
-              print('[onDependentTap] context.mounted=${context.mounted} relationAllowed=${results[0]} dependentStatusError=${results[1]}');
+              print(
+                '[onDependentTap] context.mounted=${context.mounted} relationAllowed=${results[0]} dependentStatusError=${results[1]}',
+              );
               if (!context.mounted) return;
               final relationAllowed = results[0] as bool;
               final dependentStatusError = results[1] as String?;
@@ -2515,7 +2523,9 @@ class _D2DPatientRegistrationScreenState
                 c.clearDependentSelection();
               } else if (dependentStatusError != null) {
                 // ignore: avoid_print
-                print('[onDependentTap] showing dependentStatus alert: $dependentStatusError');
+                print(
+                  '[onDependentTap] showing dependentStatus alert: $dependentStatusError',
+                );
                 ToastManager.showAlertDialog(
                   context,
                   dependentStatusError,

@@ -1,17 +1,19 @@
 // ignore_for_file: use_full_hex_values_for_flutter_colors, file_names
-import 'package:s2toperational/Modules/AppDataManager/AppDataManager.dart';
-import 'package:s2toperational/Modules/DelegateManager/DelegateManager.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/app_data_manager.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/network_wrapper.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/packet_allocation_controller.dart';
+import 'package:s2toperational/Screens/medicine_delivery_menu/controller/return_in_lab_controller.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/network_wrapper.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/assign_to_de_team_screen_filter_view.dart';
 // import 'package:s2toperational/Views/AssignToDETeamScreenFilterView/assign_to_de_team_screen_filter_view.dart';
 
 import '../../../../Modules/constants/fonts.dart';
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
 import 'assign_to_de_team_screen.dart';
 import 'return_in_lab_screen.dart';
 
@@ -166,6 +168,15 @@ class _PacketAllocationScreenState extends State<PacketAllocationScreen> {
   @override
   void initState() {
     super.initState();
+    Get.put(PacketAllocationController());
+    Get.put(ReturnInLabController());
+  }
+
+  @override
+  void dispose() {
+    Get.delete<PacketAllocationController>();
+    Get.delete<ReturnInLabController>();
+    super.dispose();
   }
 
   void showAppointmentFilterBottomSheet() {
@@ -189,7 +200,7 @@ class _PacketAllocationScreenState extends State<PacketAllocationScreen> {
           ),
           child: AssignToDETeamScreenFilterView(
             onTapApply: () {
-              DelegateManager().triggerRefresh();
+              Get.find<PacketAllocationController>().fetchPackets();
             },
           ),
         );

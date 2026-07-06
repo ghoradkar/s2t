@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
 import 'package:s2toperational/Screens/team_photos/model/attendance_details_response.dart';
 import 'package:s2toperational/Screens/team_photos/model/attendance_image_response.dart';
 import 'package:s2toperational/Screens/team_photos/model/camp_list_response.dart';

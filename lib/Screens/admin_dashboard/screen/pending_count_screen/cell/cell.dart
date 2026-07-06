@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../Modules/constants/constants.dart';
-import '../../../../../Modules/widgets/CommonText.dart';
+import '../../../../../Modules/common_widgets/CommonText.dart';
 
 class Cell extends StatelessWidget {
   final String text;

@@ -1,16 +1,16 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
 import '../../../../Modules/constants/fonts.dart';
 // import '../../Modules/Json_Class/SelectedTeamsDataListResponse/selected_teams_data_list_response.dart';
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/images.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
+// import '../../Modules/utilities/size_config.dart';
 // import '../../Modules/widgets/AppActiveButton.dart';
 import '../../../Modules/constants/constants.dart';
 import '../../../Modules/constants/images.dart';
-import '../../../Modules/utilities/SizeConfig.dart';
+import '../../../Modules/utilities/size_config.dart';
 import '../model/selected_teams_data_list_response.dart';
 
 class RejectedBeneficiaryTeamView extends StatefulWidget {

@@ -1,7 +1,7 @@
 ﻿// ignore_for_file: file_names
 
 import 'dart:async';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/device_and_resource_mapping/models/assign_resources_response.dart';
 import 'package:s2toperational/Screens/camp_calendar/model/camp_list_v3_response.dart';
 import 'package:s2toperational/Screens/camp_creation/models/camp_type_response.dart';

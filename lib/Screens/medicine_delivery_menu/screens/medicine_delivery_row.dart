@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/model/post_camp_beneficiary_list_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
 import '../../../Modules/constants/fonts.dart';
 
 class MedicineDeliveryRow extends StatelessWidget {

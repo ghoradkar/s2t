@@ -1,15 +1,15 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import '../model/appoinment_expected_beneficiaries_response.dart';
 import '../model/beneficiary_dependant_details_response.dart';
-import '../../../../Modules/ToastManager/ToastManager.dart';
+import '../../../Modules/utilities/toast_manager.dart';
 import '../../../../Modules/constants/constants.dart';
 import '../../../../Modules/constants/fonts.dart';
 import '../../../../Modules/constants/images.dart';
-import '../../../../Modules/utilities/SizeConfig.dart';
-import '../../../../Modules/widgets/AppDropdownTextfield.dart';
+import '../../../../Modules/utilities/size_config.dart';
+import '../../../../Modules/common_widgets/AppDropdownTextfield.dart';
 
 class ScreeningDetailsAppointConfimedView extends StatefulWidget {
   ScreeningDetailsAppointConfimedView({

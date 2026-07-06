@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/payment_and_invoice/models/company_list_model.dart';
 import 'package:s2toperational/Screens/payment_and_invoice/models/user_invoice_payment_model.dart';
 

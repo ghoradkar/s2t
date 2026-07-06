@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import '../models/CampDetailsntApprovalResponse.dart';
 import '../models/CampResourceAllocationResponse.dart';
 import '../models/GetCampAssignUserResponse.dart';

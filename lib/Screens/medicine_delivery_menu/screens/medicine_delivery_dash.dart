@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:s2toperational/Modules/Enums/Enums.dart';
+import 'package:s2toperational/Modules/utilities/enums.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/HomeScreen/DashboardMenuRow/DashboardMenuOptions.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/home_screen/widget/DashboardMenuOptions.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/packet_allocation_screen.dart';
 import 'package:s2toperational/Screens/medicine_delivery_menu/screens/packet_collection_screen.dart';

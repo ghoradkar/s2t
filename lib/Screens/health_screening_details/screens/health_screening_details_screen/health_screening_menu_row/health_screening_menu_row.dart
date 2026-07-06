@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../../Modules/Enums/Enums.dart';
+import '../../../../../Modules/utilities/enums.dart';
 import '../../../../../Modules/constants/constants.dart';
 import '../../../../../Modules/constants/images.dart';
-import '../../../../../Modules/utilities/SizeConfig.dart';
+import '../../../../../Modules/utilities/size_config.dart';
 
 import '../../../../../Modules/constants/fonts.dart';
 

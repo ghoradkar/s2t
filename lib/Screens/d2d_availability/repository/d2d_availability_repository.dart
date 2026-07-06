@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/io_client.dart';
 
-import '../../../Modules/APIManager/APIManager.dart';
-import '../../../Modules/constants/APIConstants.dart';
+import '../../../Modules/utilities/api_manager.dart';
+import '../../../Modules/constants/api_constants.dart';
 import '../models/d2d_availability_update_response.dart';
 import '../models/get_doc_list_d2d_response.dart';
 

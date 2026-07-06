@@ -7,9 +7,9 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:s2toperational/Modules/ToastManager/ToastManager.dart';
-import 'package:s2toperational/Modules/utilities/DataProvider.dart';
-import 'package:s2toperational/Modules/constants/APIConstants.dart';
+import 'package:s2toperational/Modules/utilities/toast_manager.dart';
+import 'package:s2toperational/Modules/utilities/data_provider.dart';
+import 'package:s2toperational/Modules/constants/api_constants.dart';
 import 'package:s2toperational/Screens/health_screening_details/models/patient_list_model.dart';
 import 'package:s2toperational/Screens/health_screening_details/repository/health_screening_repository.dart';
 

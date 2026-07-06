@@ -5,14 +5,14 @@ import '../model/team_details_list_for_assign_response.dart';
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/utilities/SizeConfig.dart';
-import 'package:s2toperational/Modules/widgets/AppActiveButton.dart';
+import 'package:s2toperational/Modules/utilities/size_config.dart';
+import 'package:s2toperational/Modules/common_widgets/AppActiveButton.dart';
 //
 // import '../../Modules/Json_Class/TeamDetailsListForAssignResponse/TeamDetailsListForAssignResponse.dart';
 // import '../../Modules/constants/constants.dart';
 // import '../../Modules/constants/fonts.dart';
 // import '../../Modules/constants/images.dart';
-// import '../../Modules/utilities/SizeConfig.dart';
+// import '../../Modules/utilities/size_config.dart';
 // import '../../Modules/widgets/AppActiveButton.dart';
 
 class TeamsDetailsListForAssignView extends StatefulWidget {

@@ -6,13 +6,13 @@ import 'package:s2toperational/Screens/acknowledgement/model/acknowledgement_pat
 import 'package:s2toperational/Modules/constants/constants.dart';
 import 'package:s2toperational/Modules/constants/fonts.dart';
 import 'package:s2toperational/Modules/constants/images.dart';
-import 'package:s2toperational/Modules/widgets/AppTextField.dart';
-import 'package:s2toperational/Modules/widgets/CommonSkeletonList.dart';
-import 'package:s2toperational/Modules/widgets/CommonText.dart';
-import 'package:s2toperational/Modules/widgets/S2TAppBar.dart';
-import 'package:s2toperational/Screens/acknowledgement/controllers/acknowledgement_patient_list_controller.dart';
+import 'package:s2toperational/Modules/common_widgets/AppTextField.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonSkeletonList.dart';
+import 'package:s2toperational/Modules/common_widgets/CommonText.dart';
+import 'package:s2toperational/Modules/common_widgets/S2TAppBar.dart';
+import 'package:s2toperational/Screens/acknowledgement/controller/acknowledgement_patient_list_controller.dart';
 import 'package:s2toperational/Screens/acknowledgement/screens/acknowledgement_confirmation_screen.dart';
-import 'package:s2toperational/Screens/calling_modules/custom_widgets/no_data_widget.dart';
+import 'package:s2toperational/Screens/calling_modules/widgets/no_data_widget.dart';
 
 class AcknowledgementPatientListScreenNew extends StatefulWidget {
   final int campId;

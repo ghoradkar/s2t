@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:s2toperational/Modules/APIManager/APIManager.dart';
+import 'package:s2toperational/Modules/utilities/api_manager.dart';
 import 'package:s2toperational/Screens/camp_details/model/other_reason_for_patient_rejection_response.dart';
 import 'package:s2toperational/Screens/camp_details/model/team_details_list_response.dart';
 import 'package:s2toperational/Screens/camp_details/model/test_list_for_reject_response.dart';
