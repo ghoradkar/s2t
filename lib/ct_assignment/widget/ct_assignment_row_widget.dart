@@ -1,0 +1,357 @@
+// ignore_for_file: must_be_immutable, file_names
+
+import 'package:flutter/material.dart';
+import 'package:s2toperational/constants/fonts.dart';
+import '../model/t2t_ct_beneficiary_details_response.dart';
+import 'package:s2toperational/constants/constants.dart';
+import 'package:s2toperational/constants/images.dart';
+import 'package:s2toperational/utilities/size_config.dart';
+
+class CTAssignmentRowWidget extends StatelessWidget {
+  CTAssignmentRowWidget({
+    super.key,
+    required this.obj,
+    required this.onSelectTap,
+  });
+
+  T2TCTBeneficiaryDetailsOutput obj;
+  Function() onSelectTap;
+
+  String _remarkFromArId(int? arId) {
+    switch (arId) {
+      case 1:
+        return "Assignment Done";
+      case 2:
+        return "Assignment Pending";
+      case 3:
+        return "Re-Assignment";
+      default:
+        return "";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 20),
+      child: InkWell(
+        onTap: () {
+          onSelectTap();
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 4,
+              ),
+            ],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(icInitiatedBy),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Name : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.beneficiaryName ?? "",
+                            style: TextStyle(
+                              color: kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(icHashIcon),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Beneficiary No. : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.regdno ?? "",
+
+                            style: TextStyle(
+                              color: kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(icHashIcon),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Pincode : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.pinCode ?? "",
+                            style: TextStyle(
+                              color: kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(icMapPin),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Address : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.address ?? "",
+                            style: TextStyle(
+                              color: kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(iconFile),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "CT Assignment Remark : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.assignmentRemarks ?? _remarkFromArId(obj.arId),
+                            style: TextStyle(
+                              color: kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(iconFile),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Is Emergency : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.isEmergency ?? "",
+                            style: TextStyle(
+                              color: (obj.isEmergency ?? "").toLowerCase() == "yes"
+                                  ? Colors.red
+                                  : kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    child: Image.asset(icCalendarMonth),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Appointment Date : ",
+                          style: TextStyle(
+                            color: kTextColor,
+                            fontFamily: FontConstants.interFonts,
+                            fontWeight: FontWeight.normal,
+                            fontSize: responsiveFont(14),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            obj.appointmentDate ?? "",
+                            style: TextStyle(
+                              color: kBlackColor,
+                              fontFamily: FontConstants.interFonts,
+                              fontWeight: FontWeight.w500,
+                              fontSize: responsiveFont(14),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(
+                          width: responsiveWidth(26),
+                          height: responsiveWidth(26),
+                          child: Image.asset(icViewIcon),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

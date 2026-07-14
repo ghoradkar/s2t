@@ -1,0 +1,1 @@
+﻿export 'package:s2toperational/camp_calendar/model/bind_division_response.dart';

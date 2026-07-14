@@ -1,1 +1,0 @@
-﻿export 'package:s2toperational/Screens/camp_calendar/model/bind_district_response.dart';

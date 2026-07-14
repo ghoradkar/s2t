@@ -1,0 +1,817 @@
+﻿import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:s2toperational/utilities/api_manager.dart';
+import 'package:s2toperational/health_screening_details/models/disha_response.dart';
+import 'package:s2toperational/camp_creation/models/district_response.dart';
+import 'package:s2toperational/health_screening_details/models/specimen_type_response.dart';
+import 'package:s2toperational/constants/api_constants.dart';
+import 'package:s2toperational/constants/api_client.dart';
+import 'package:s2toperational/health_screening_details/models/patient_list_model.dart';
+
+import '../models/camp_closing_model.dart';
+import '../models/camp_d2d_model.dart';
+import '../models/camp_regular_model.dart';
+import '../models/lung_function_test_model.dart';
+
+class HealthScreeningRepository {
+  final APIManager _apiManager = APIManager();
+
+  // â”€â”€â”€ Camp Closing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<CampCloseCampDetailsResponse?> getCampDetailsCount({
+    required int campId,
+    required int distLgdCode,
+    required String campDate,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetCampDetailsCountRegularInCampTest}';
+      final body = {
+        'CampId': campId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'FromDate': campDate,
+        'ToDate': campDate,
+      };
+      debugPrint('getCampDetailsCount URL: $uri');
+      debugPrint('getCampDetailsCount body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getCampDetailsCount raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return CampCloseCampDetailsResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getCampDetailsCount error: $e');
+      return null;
+    }
+  }
+
+  Future<CampCloseDetailsResponse?> getCampCloseDetails({
+    required int campId,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetCampCloseDetails}';
+      final body = {'CampId': campId.toString()};
+      debugPrint('getCampCloseDetails URL: $uri');
+      debugPrint('getCampCloseDetails body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getCampCloseDetails raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final model = CampCloseDetailsResponse.fromJson(decoded);
+      if ((model.status ?? '').toLowerCase() == 'success') return model;
+      return null;
+    } catch (e) {
+      debugPrint('getCampCloseDetails error: $e');
+      return null;
+    }
+  }
+
+  Future<bool> insertCampClose({
+    required int campId,
+    required int userId,
+    required String consumablesJson,
+    required String totalBenificiary,
+    required String sampleCollectionCount,
+    String sampleSendToHubLabCount = '0',
+    String sampleSendToHomeLabCount = '0',
+    String otherRemark = '',
+    String otherRemarkSummary = '',
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kInsertCampCloseActivitywithUrineChanges}';
+      final body = {
+        'CampID':                  campId.toString(),
+        'CampCloseUserid':         userId.toString(),
+        'JsonConsumableDetails':   consumablesJson,
+        'OtherRemark':             otherRemark,
+        'TotalBenificiary':        totalBenificiary,
+        'SampleCollectionCount':   sampleCollectionCount,
+        'SampleSendToHubLabCount': sampleSendToHubLabCount,
+        'SampleSendToHomeLabCount': sampleSendToHomeLabCount,
+        'OtherRemarkSummary':      otherRemarkSummary,
+      };
+      debugPrint('[insertCampClose] URL: $uri');
+      body.forEach((k, v) => debugPrint('[insertCampClose] Param: $k = $v'));
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('[insertCampClose] Response: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final status = (decoded['status'] ?? '').toString().toLowerCase();
+      return status != 'fail';
+    } catch (e) {
+      debugPrint('[insertCampClose] error: $e');
+      return false;
+    }
+  }
+
+  Future<ConsumableListDetailsResponse?> getConsumableListDetails({
+    required int campId,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetConsumableListDetails}';
+      final body = {'CampId': campId.toString()};
+      debugPrint('getConsumableListDetails URL: $uri');
+      debugPrint('getConsumableListDetails body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getConsumableListDetails raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final model = ConsumableListDetailsResponse.fromJson(decoded);
+      if ((model.status ?? '').toLowerCase() == 'success') return model;
+      return null;
+    } catch (e) {
+      debugPrint('getConsumableListDetails error: $e');
+      return null;
+    }
+  }
+
+  // â”€â”€â”€ Camp D2D â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<CampDetailsonLabForDoorToDoorResponse?> getCampDetailsForD2D({
+    required String campDate,
+    required int labCode,
+    required int subOrgId,
+    required int distLgdCode,
+    required int userId,
+    required int dESGID,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetCampDetailsonLabForDoorToDoorV2}';
+      final body = {
+        'CampDate': campDate,
+        'LabCode': '0',
+        'SubOrgId': subOrgId.toString(),
+        'Divison': '0',
+        'DISTLGDCODE': distLgdCode.toString(),
+        'USERID': userId.toString(),
+        'DesgId': dESGID.toString(),
+      };
+      debugPrint('getCampDetailsForD2D URL: $uri');
+      debugPrint('getCampDetailsForD2D body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getCampDetailsForD2D raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return CampDetailsonLabForDoorToDoorResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getCampDetailsForD2D error: $e');
+      return null;
+    }
+  }
+
+  Future<UserCampMappingAndAttendanceStatusResponse?>
+      getUserCampMappingAndAttendanceStatusD2D({
+    required String campDate,
+    required int userId,
+    required int distLgdCode,
+    required int campType,
+    required int campId,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingAndAttendanceStatusReadinessCampClose}';
+      final body = {
+        'CampDATE': campDate,
+        'UserId': userId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'CampType': campType.toString(),
+        'CampID': campId.toString(),
+      };
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D URL: $uri');
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return UserCampMappingAndAttendanceStatusResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getUserCampMappingAndAttendanceStatusD2D error: $e');
+      return null;
+    }
+  }
+
+  // â”€â”€â”€ Camp Regular â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<ResourceReMappingCampResponse?> getApprovedCampList({
+    required String campDate,
+    required int subOrgId,
+    required int userId,
+    required int dESGID,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetApprovedCampListDetailsForAppFlexiCampV1}';
+      final body = {
+        'CampDATE': campDate,
+        'SubOrgId': subOrgId.toString(),
+        'Divison': '0',
+        'DISTLGDCODE': '0',
+        'USERID': userId.toString(),
+        'DesgId': dESGID.toString(),
+      };
+      debugPrint('getApprovedCampList URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getApprovedCampList raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return ResourceReMappingCampResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getApprovedCampList error: $e');
+      return null;
+    }
+  }
+
+  Future<UserCampMappingAndAttendanceDataResponse?>
+      getUserCampMappingAndAttendanceStatusRegular({
+    required String campDate,
+    required int userId,
+    required int distLgdCode,
+    required int campType,
+    required int campId,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingAndAttendanceStatusForRegularCampReadiness}';
+      final body = {
+        'CampDATE': campDate,
+        'UserId': userId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'CampType': campType.toString(),
+        'CampID': campId.toString(),
+        'TestId': '1',
+      };
+      debugPrint('getUserCampMappingAndAttendanceStatusRegular URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getUserCampMappingAndAttendanceStatusRegular raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return UserCampMappingAndAttendanceDataResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getUserCampMappingAndAttendanceStatusRegular error: $e');
+      return null;
+    }
+  }
+
+  Future<UserCampMappingAndAttendanceDataResponse?>
+      getUserCampMappingAndAttendanceStatusReadiness({
+    required String campDate,
+    required int userId,
+    required int distLgdCode,
+    required int campType,
+    required int campId,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetUserCampMappingAndAttendanceStatusReadiness}';
+      final body = {
+        'CampDATE': campDate,
+        'UserId': userId.toString(),
+        'DISTLGDCODE': distLgdCode.toString(),
+        'CampType': campType.toString(),
+        'CampID': campId.toString(),
+      };
+      debugPrint('getUserCampMappingAndAttendanceStatusReadiness URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getUserCampMappingAndAttendanceStatusReadiness raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return UserCampMappingAndAttendanceDataResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('getUserCampMappingAndAttendanceStatusReadiness error: $e');
+      return null;
+    }
+  }
+
+  // â”€â”€â”€ Patient List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<String> getTeamNumber({
+    required int campId,
+    required int userId,
+  }) async {
+    try {
+      final url = Uri.parse(
+        '${APIManager.kD2DBaseURL}${APIConstants.kGetTeamNumberByCampIdAndUSerId}',
+      );
+      final ioClient = _apiManager.getInstanceOfIoClient();
+      final response = await ioClient.post(
+        url,
+        body: {'campid': campId.toString(), 'UserID': userId.toString()},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      ioClient.close();
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      if (decoded['status']?.toString().toLowerCase() == 'success') {
+        final output = decoded['output'] as List?;
+        if (output != null && output.isNotEmpty) {
+          return (output[0] as Map<String, dynamic>)['TeamNumber']
+                  ?.toString() ??
+              '0';
+        }
+      }
+    } catch (_) {}
+    return '0';
+  }
+
+  Future<UserAttendancesUsingSitedetailsIDResponse?> getPatientList({
+    required int testId,
+    required int campId,
+    int siteDetailId = 0,
+    required int userId,
+    required String teamNumber,
+    required bool isRegularCamp,
+  }) async {
+    UserAttendancesUsingSitedetailsIDResponse? result;
+
+    String urlString;
+    Map<String, String> params;
+
+    if (testId == 11) {
+      urlString =
+          "${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDUrineChange}";
+      params = {
+        "EmpCode": campId.toString(),
+        "DistrictId": "0",
+        "TestId": testId.toString(),
+        "UserId": userId.toString(),
+      };
+    } else if (testId == 16 || testId == 13) {
+      urlString =
+          "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDAnti}";
+      params = {
+        "EmpCode": campId.toString(),
+        "DistrictId": "0",
+        "TestId": testId.toString(),
+        "UserId": userId.toString(),
+        "TeamId": teamNumber,
+      };
+    } else if (isRegularCamp) {
+      urlString =
+          "${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDNew}";
+      params = {
+        "EmpCode": campId.toString(),
+        "DistrictId": "0",
+        "TestId": testId.toString(),
+        "UserId": userId.toString(),
+      };
+    } else {
+      urlString =
+          "${APIManager.kD2DBaseURL}${APIConstants.kGetUserAttendancesUsingSitedetailsIDAnti}";
+      params = {
+        "EmpCode": campId.toString(),
+        "DistrictId": "0",
+        "TestId": testId.toString(),
+        "UserId": userId.toString(),
+        "TeamId": teamNumber,
+      };
+    }
+
+    await _apiManager.getUserAttendancesUsingSitedetailsIDAPI(
+      urlString,
+      params,
+      (UserAttendancesUsingSitedetailsIDResponse? response, String error,
+          bool success) {
+        if (success) result = response;
+      },
+    );
+    return result;
+  }
+
+  Future<UserAttendancesUsingSitedetailsIDResponse?> getPatientListForBasicHealthInfo({
+    required int siteDetailId,
+    required int userId,
+    required String teamId,
+  }) async {
+    UserAttendancesUsingSitedetailsIDResponse? result;
+    final urlString =
+        "${APIManager.kD2DBaseURL}${APIConstants.kGetuserAttendanceForSitedetailsIDPhysicalExam}";
+    final params = {
+      "SiteDetailId": siteDetailId.toString(),
+      "DistrictId": "0",
+      "TestId": "1",
+      "UserId": userId.toString(),
+      "TeamId": teamId,
+    };
+    await _apiManager.getUserAttendancesUsingSitedetailsIDAPI(
+      urlString,
+      params,
+      (UserAttendancesUsingSitedetailsIDResponse? response, String error,
+          bool success) {
+        if (success) result = response;
+      },
+    );
+    return result;
+  }
+
+  // â”€â”€â”€ District List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<DistrictResponse?> getDistrictByUserID({
+    required int userId,
+  }) async {
+    DistrictResponse? result;
+    await _apiManager.getDistrictByUserIDAPI(
+      {
+        'STATELGDCODE': '2',
+        'USERID': userId.toString(),
+      },
+      (DistrictResponse? response, String error, bool success) {
+        if (success) result = response;
+      },
+    );
+    return result;
+  }
+
+  // â”€â”€â”€ Sample Collection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<List<SpecimenTypeOutput>> getSpecimenTypes() async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kGetSpecimenType}';
+      debugPrint('getSpecimenTypes URL: $uri');
+      final response = await Repository.postResponse(
+        uri,
+        {},
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('getSpecimenTypes raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      final model = SpecimenTypeResponse.fromJson(decoded);
+      if ((model.status ?? '').toLowerCase() == 'success') {
+        return model.output ?? [];
+      }
+      return [];
+    } catch (e) {
+      debugPrint('getSpecimenTypes error: $e');
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> submitSampleCollection({
+    required int regdId,
+    required int siteId,
+    required int campId,
+    required String sampleCount,
+    required String barcode1,
+    required String barcode2,
+    required int createdBy,
+    required String sampleDate,
+    required String sampleTime,
+    required String specTypeId,
+    required String versionNo,
+    required String isScannedBy,
+    String labcode = '0',
+    String latitude = '0.0',
+    String longitude = '0.0',
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kInsertCWPatientBarcodeDetails}';
+      final body = {
+        'RegdId': regdId.toString(),
+        'SiteId': siteId.toString(),
+        'CampId': campId.toString(),
+        'SampleCount': sampleCount.isEmpty ? '3' : sampleCount,
+        'Barcode1': barcode1,
+        'Barcode2': barcode2,
+        'CreatedBy': createdBy.toString(),
+        'Type': '1',
+        'sampledate': sampleDate,
+        'sampletime': sampleTime,
+        'SPECTYPEID': specTypeId,
+        'Labcode': labcode,
+        'VersionNo': versionNo,
+        'IsScannedBy': isScannedBy,
+        'Latitude': latitude,
+        'Longitude': longitude,
+      };
+      debugPrint('submitSampleCollection URL: $uri');
+      body.forEach((k, v) => debugPrint('[SampleCollection] Param: $k = $v'));
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitSampleCollection response: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitSampleCollection error: $e');
+      return null;
+    }
+  }
+
+  Future<bool> getIs24By7Flag({required int userId}) async {
+    try {
+      final uri =
+          '${APIManager.kD2DBaseURL}${APIConstants.kGetIs24By7IsAccountCreatedFlag}';
+      debugPrint('[SampleCollection] getIs24By7Flag URL: $uri body={UserID: $userId}');
+      final response = await Repository.postResponse(
+        uri,
+        {'UserID': userId.toString()},
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('[SampleCollection] getIs24By7Flag response: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      if ((decoded['status'] as String? ?? '').toLowerCase() == 'success') {
+        final output = decoded['output'] as List?;
+        if (output != null && output.isNotEmpty) {
+          return (output[0] as Map<String, dynamic>)['is24By7IsAccountCreated'] == 1;
+        }
+      }
+    } catch (e) {
+      debugPrint('[SampleCollection] getIs24By7Flag error: $e');
+    }
+    return false;
+  }
+
+  // â”€â”€â”€ Urine Sample Collection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<Map<String, dynamic>?> submitUrineSampleCollection({
+    required int regdId,
+    required int campId,
+    required String barcode1,
+    required int sampleReceiveFlag,
+    required int createdBy,
+    required String remark,
+  }) async {
+    try {
+      final uri =
+          '${APIManager.kConstructionWorkerBaseURL}${APIConstants.kInsertUrineSampleReceived}';
+      final body = {
+        'RegdId': regdId.toString(),
+        'CampId': campId.toString(),
+        'Barcode1': barcode1,
+        'SampleReciveFlag': sampleReceiveFlag.toString(),
+        'CreatedBy': createdBy.toString(),
+        'Remark': remark,
+      };
+      debugPrint('submitUrineSampleCollection URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitUrineSampleCollection raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitUrineSampleCollection error: $e');
+      return null;
+    }
+  }
+
+  // â”€â”€â”€ Disha LIS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  static const String _dishaBase = 'http://103.251.94.38:8080/DISHA_API';
+
+  Future<String?> dishaLogin() async {
+    try {
+      final uri = Uri.parse('$_dishaBase/auth/login');
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {'username': 'Suvarna', 'password': 'Suvarna@123'},
+      );
+      debugPrint('dishaLogin status: ${response.statusCode}');
+      debugPrint('dishaLogin raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return DishaLoginResponse.fromJson(decoded).token;
+    } catch (e) {
+      debugPrint('dishaLogin error: $e');
+      return null;
+    }
+  }
+
+  Future<DishaTestsResponse?> dishaGetTests(String token) async {
+    try {
+      final uri = Uri.parse('$_dishaBase/api/v1/getTestbyCustomerId?customerCode=NHO');
+      final response = await http.get(
+        uri,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint('dishaGetTests raw: ${response.body}');
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
+      return DishaTestsResponse.fromJson(decoded);
+    } catch (e) {
+      debugPrint('dishaGetTests error: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> dishaRegisterPatient({
+    required String token,
+    required Map<String, dynamic> body,
+  }) async {
+    try {
+      final uri = Uri.parse('$_dishaBase/api/v1/registerPatientFromHMIS');
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(body),
+      );
+      debugPrint('dishaRegisterPatient raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('dishaRegisterPatient error: $e');
+      return null;
+    }
+  }
+
+  // â”€â”€â”€ Audio Screening â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  /// Mirrors native InsertAudioImages AsyncTask â€” multipart POST to
+  /// InsertAudioImages_NEW_VersionNo.ashx with RegId, CreatedBy, JsonString,
+  /// PDF chart file, and VersionNo.
+  Future<bool> saveAudioScreeningData({
+    required String regdId,
+    required String createdBy,
+    required String jsonString,
+    required String versionNo,
+    Uint8List? chartPdfBytes,
+  }) async {
+    try {
+      final url =
+          '${APIManager.kWebservicesBaseURL}${APIConstants.kInsertAudioImagesVersionNo}';
+      debugPrint('saveAudioScreeningData url=$url');
+      debugPrint(
+        'saveAudioScreeningData RegId=$regdId CreatedBy=$createdBy VersionNo=$versionNo JsonString=$jsonString',
+      );
+
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+      request.fields['RegId'] = regdId;
+      request.fields['CreatedBy'] = createdBy;
+      request.fields['JsonString'] = jsonString;
+      request.fields['VersionNo'] = versionNo;
+
+      if (chartPdfBytes != null) {
+        // field name is empty string to match native addFilePart("", file)
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            '',
+            chartPdfBytes,
+            filename: '${createdBy}_$regdId.pdf',
+          ),
+        );
+      }
+
+      final ioClient = _apiManager.getInstanceOfIoClient();
+      final streamed = await ioClient.send(request);
+      final body = await streamed.stream.bytesToString();
+      debugPrint('saveAudioScreeningData response=$body');
+
+      final decoded = json.decode(body) as Map<String, dynamic>;
+      return (decoded['status'] ?? '').toString().toLowerCase() == 'success';
+    } catch (e) {
+      debugPrint('saveAudioScreeningData error=$e');
+      return false;
+    }
+  }
+
+  // â”€â”€â”€ Lung Function Test â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<Map<String, dynamic>?> submitLFTDetails({
+    required String regId,
+    required String campId,
+    required String createdBy,
+    required String versionNo,
+    required String deviceId,
+    required LungFunctionTestResult result,
+  }) async {
+    try {
+      final uri = '${APIManager.kD2DBaseURL}${APIConstants.kInsertLFTDetails}';
+      final body = {
+        'Regid':     regId,
+        'CampId':    campId,
+        'FCV':       result.fvc.toStringAsFixed(3),
+        'FEV1':      result.fev1.toStringAsFixed(3),
+        'FEVI_FVC':  result.feviFvc.toStringAsFixed(3),
+        'PEF':       result.pef.toStringAsFixed(3),
+        'FEF_25_75': result.fef2575.toStringAsFixed(3),
+        'FIVC':      result.fivc == 0 ? '' : result.fivc.toStringAsFixed(3),
+        'PIF':       result.pif == 0 ? '' : result.pif.toStringAsFixed(3),
+        'FET':       result.fet.toStringAsFixed(3),
+        'Result':    result.diagnosis,
+        'DeviceId':  deviceId,
+        'CreatedBy': createdBy,
+        'VersionNo': versionNo,
+      };
+      debugPrint('[InsertLFTDetails] URL: $uri');
+      body.forEach((k, v) => debugPrint('[InsertLFTDetails] Param: $k = $v'));
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('[InsertLFTDetails] Response: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitLFTDetails error: $e');
+      return null;
+    }
+  }
+
+  // â”€â”€â”€ Visual Screening Test â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  Future<Map<String, dynamic>?> submitVisualScreeningDetails({
+    required String userId,
+    required String regdId,
+    required String campId,
+    required String userName,
+    required String suggestion,
+    required String injuryRightName,
+    required String injuryRightId,
+    required String nearRemark,
+    required String injuryLeftName,
+    required String injuryLeftId,
+    required String leftRemark,
+    required String snellenRight,
+    required String snellenLeft,
+    required String jaegarRight,
+    required String jaegarLeft,
+    required String glassesId,
+    required String blindnessId,
+    required String snellenRightRemark,
+    required String snellenLeftRemark,
+  }) async {
+    try {
+      final uri = '${APIManager.kD2DBaseURL}${APIConstants.kInsertEyeScreeningDetails}';
+      final body = {
+        'DoctorID':                    userId,
+        'RegdID':                      regdId,
+        'CampID':                      campId,
+        'USERID':                      userId,
+        'CHECKEDBY':                   userId,
+        'CHECKEDBYNAME':               userName,
+        'Remarks':                     '1',
+        'Suggestion':                  suggestion,
+        'ForDistanceID_right':         '0',
+        'Diesease_Injury_Evidence_right':   injuryRightName,
+        'Diesease_Injury_EvidenceId_right': injuryRightId,
+        'ColorTest_right':             nearRemark,
+        'ColorTestId_right':           '0',
+        'ForDistanceID_left':          '0',
+        'ForDistanceID_both':          '0',
+        'Diesease_Injury_Evidence_left':    injuryLeftName,
+        'Diesease_Injury_EvidenceId_left':  injuryLeftId,
+        'ColorTest_left':              '',
+        'ColorTestId_left':            '0',
+        'other_remark':                leftRemark,
+        'Snellelchart_R':              snellenRight,
+        'Snellelchart_L':              snellenLeft,
+        'GagerChartReport':            jaegarRight,
+        'jsonstring':                  '[]',
+        'idGlasses':                   glassesId,
+        'blindnessId':                 blindnessId,
+        'snellenrightremark':          snellenRightRemark,
+        'snellenleftremark':           snellenLeftRemark,
+        'GagerChartReportleft':        jaegarLeft,
+        'VersionNo':                   APIConstants.kNativeVersion,
+      };
+      debugPrint('submitVisualScreening URL: $uri body: $body');
+      final response = await Repository.postResponse(
+        uri,
+        body,
+        {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+      debugPrint('submitVisualScreening raw: ${response.body}');
+      return json.decode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('submitVisualScreening error: $e');
+      return null;
+    }
+  }
+}

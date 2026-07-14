@@ -1,0 +1,152 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:s2toperational/calling_modules/controller/add_dependent_controller.dart';
+import 'package:s2toperational/calling_modules/controller/appointment_confirmation_controller.dart';
+import 'package:s2toperational/calling_modules/controller/calling_dashboard_controller.dart';
+import 'package:s2toperational/calling_modules/controller/expected_beneficiary_list_controller.dart';
+import 'package:s2toperational/calling_modules/models/beneficiary_response_model.dart';
+import 'package:s2toperational/calling_modules/repository/calling_dashboard_repository.dart';
+import 'package:s2toperational/calling_modules/screens/add_dependent.dart';
+import 'package:s2toperational/calling_modules/screens/appointment_confirmation.dart';
+import 'package:s2toperational/calling_modules/screens/calling_dashboard_screen.dart';
+import 'package:s2toperational/calling_modules/screens/expected_beneficiary_list.dart';
+import 'package:s2toperational/forgot_password/screen/forgot_password_screen.dart';
+import 'package:s2toperational/forgot_password/screen/forgot_password_otp_screen.dart';
+import 'package:s2toperational/forgot_password/screen/reset_password_screen.dart';
+import '../../login/controllers/login_controller.dart';
+import '../../login/screens/login_screen.dart';
+import '../../SplashScreen/controller/splash_controller.dart';
+import '../../SplashScreen/screens/splash_screen.dart';
+import '../../calling_modules/widgets/logout_widget.dart';
+
+class AppRoutes {
+  const AppRoutes._();
+
+  static const String splash = "/";
+  static const String loginScreen = "/loginScreen";
+  static const String introScreen = "/introScreen";
+  static const String dashboard = "/dashboard";
+  static const String mobileOTP = "/mobileOTP";
+  static const String setOTP = "/setOTP";
+  static const String homeScreen = "/homeScreen";
+  static const String forgotScreen = "/forgotScreen";
+  static const String forgotPasswordOTP = "/forgotPasswordOTP";
+  static const String resetPassword = "/resetPassword";
+  static const String otpLoginScreen = "/otpLoginScreen";
+  static const String registredPatientList = "/registredPatientList";
+  static const String newRegistration = "/newRegistration";
+  static const String bookAppointments = "/bookAppointments";
+  static const String myAppointments = "/myAppointments";
+  static const String confirmLoginOTP = "/confirmLoginOTP";
+  static const String profileScreen = "/profileScreen";
+  static const String registeredPatientScreen = "/registeredPatientScreen";
+  static const String addFamilyMemberScreen = "/addFamilyMemberScreen";
+  static const String updateFamilyMemberScreen = "/updateFamilyMemberScreen";
+  static const String idCardList = "/idCardList";
+  static const String idCard = "/idCard";
+  static const String menuScreen = "/menuScreen";
+  static const String expectectedBeneficiaryList =
+      "/expectectedBeneficiaryList";
+  static const String logoutScreen = "/logoutScreen";
+  static const String appointmentConfirmation = "/appointmentConfirmation";
+  static const String addDependent = "/addDependent";
+  static const String callingDashboard = "/callingDashboard";
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(
+          builder: (_) {
+            if (!Get.isRegistered<SplashController>()) {
+              Get.lazyPut(() => SplashController());
+            }
+            return const SplashScreen();
+          },
+        );
+      // case introScreen:
+      //   return MaterialPageRoute(builder: (_) => const IntroScreen());
+      case loginScreen:
+        return MaterialPageRoute(
+          builder: (_) {
+            if (!Get.isRegistered<LoginController>()) {
+              Get.lazyPut(() => LoginController());
+            }
+            return const LoginScreen();
+          },
+        );
+
+      case forgotScreen:
+        return MaterialPageRoute(builder: (_) => ForgotPasswordScreen());
+
+      // case menuScreen:
+      //   return MaterialPageRoute(builder: (_) => const SideDrawerMenu());
+      case expectectedBeneficiaryList:
+        return MaterialPageRoute(
+          builder: (_) {
+            if (!Get.isRegistered<ExpectedBeneficiaryListController>()) {
+              Get.put(ExpectedBeneficiaryListController());
+            }
+            return const ExpectedBeneficiaryList();
+          },
+          settings: settings,
+        );
+
+      case forgotPasswordOTP:
+        return MaterialPageRoute(
+          builder: (_) => const ForgotPasswordOTPScreen(),
+          settings: settings,
+        );
+      case resetPassword:
+        return MaterialPageRoute(
+          builder: (_) => ResetPasswordScreen(),
+          settings: settings,
+        );
+      case logoutScreen:
+        return MaterialPageRoute(
+          builder: (_) => const LogoutWidget(),
+          settings: settings,
+        );
+      case appointmentConfirmation:
+        {
+          final beneficiary = settings.arguments as BeneficiaryOutput;
+          // Always delete stale instance so each navigation gets a fresh
+          // controller initialised with the correct beneficiary.
+          Get.delete<AppointmentConfirmationController>(force: true);
+          Get.put(AppointmentConfirmationController(beneficiary: beneficiary));
+          return MaterialPageRoute(
+            builder: (_) => const AppointmentConfirmation(),
+            settings: settings,
+          );
+        }
+      case addDependent:
+        {
+          final args = settings.arguments as Map<String, dynamic>;
+          Get.delete<AddDependentController>(force: true);
+          Get.put(AddDependentController(args: args));
+          return MaterialPageRoute(
+            builder: (_) => const AddDependentScreen(),
+            settings: settings,
+          );
+        }
+
+      case callingDashboard:
+        Get.delete<CallingDashboardController>(force: true);
+        Get.put(
+          CallingDashboardController(repository: CallingDashboardRepository()),
+        );
+        return MaterialPageRoute(
+          builder: (_) => const CallingDashboardScreen(),
+          settings: settings,
+        );
+
+      default:
+        throw const RouteException('Route not found!');
+    }
+  }
+}
+
+class RouteException implements Exception {
+  final String message;
+
+  const RouteException(this.message);
+}
