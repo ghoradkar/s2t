@@ -37,8 +37,9 @@ class BeneficiaryCampColorInfoView extends StatelessWidget {
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: rejectionIsPendingColor,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.black, width: 0.6),
                 ),
               ),
               const SizedBox(width: 6),
@@ -66,6 +67,7 @@ class BeneficiaryCampColorInfoView extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: rejectedBeneficiariesColor,
                   borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.black, width: 0.6),
                 ),
               ),
               const SizedBox(width: 6),
@@ -93,6 +95,7 @@ class BeneficiaryCampColorInfoView extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: approvedBeneficiariesColor,
                   borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.black, width: 0.6),
                 ),
               ),
               const SizedBox(width: 6),
@@ -120,6 +123,7 @@ class BeneficiaryCampColorInfoView extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: beneficiariesVerifiedColor,
                   borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.black, width: 0.6),
                 ),
               ),
               const SizedBox(width: 6),

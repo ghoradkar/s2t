@@ -187,7 +187,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 1. Beneficiary Reg No ────────────────────────────────────────
         _sectionLabel('Beneficiary Info'),
-        SizedBox(height: 8.h),
+        SizedBox(height: 18.h),
         Row(
           children: [
             Expanded(
@@ -914,7 +914,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 5. Relation with Worker ──────────────────────────────────────
         _sectionLabel('Relation with Worker'),
-        SizedBox(height: 6.h),
+        SizedBox(height: 18.h),
         if (_isNo)
           // isDependent=No → always "Self", disabled
           AppTextField(
@@ -944,7 +944,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 6. Name fields ───────────────────────────────────────────────
         _sectionLabel('Name'),
-        SizedBox(height: 8.h),
+        SizedBox(height: 18.h),
         // First + Middle row
         Row(
           children: [
@@ -971,7 +971,7 @@ class _D2DPatientRegistrationScreenState
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 18.h),
         // Last name — disabled when API returned (Scenarios 2 & 4)
         AppTextField(
           controller: c.tecLastName,
@@ -981,7 +981,7 @@ class _D2DPatientRegistrationScreenState
           inputFormatters: _kUpper,
           onChange: (_) => c.onNamePartsChanged(),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 18.h),
         // Full name — always disabled (auto-composed)
         AppTextField(
           controller: c.tecFullName,
@@ -992,7 +992,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 7. Contact Number + Verify OTP ──────────────────────────────
         _sectionLabel('Contact'),
-        SizedBox(height: 8.h),
+        SizedBox(height: 18.h),
         AppTextField(
           controller: c.tecMobileNo,
           label: _label('Contact Number *'),
@@ -1010,12 +1010,12 @@ class _D2DPatientRegistrationScreenState
             size: 18,
           ).paddingOnly(left: 6.w),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 18.h),
         // Show Verify Contact Number button only when checkbox NOT checked and not yet verified
         if (!c.isNumberNotBelongsToBeneficiary.value &&
             !c.mobileOtpVerified.value) ...[
           AppButtonWithIcon(
-            title: 'Verify Contact Number',
+            title: 'Verify OTP',
             mHeight: 40,
             mWidth: double.infinity,
             onTap: () => _showWhatsAppDialog(context, isAlternate: false),
@@ -1189,24 +1189,14 @@ class _D2DPatientRegistrationScreenState
             final isAadhaar = isWithAbha || c.isAadhaarMode;
             // Self + without_abha → "Identity Number" (matches native hint)
             // Dependent or with_abha → "Aadhaar Number" (auto-filled / entered)
-            final isSelfWithoutAbha = !isDependent && !isWithAbha;
-            final sectionTitle =
-                isSelfWithoutAbha
-                    ? 'Identity'
-                    : isAadhaar
-                    ? 'Aadhaar'
-                    : c.selectedIdentityName.value;
-            final fieldLabel =
-                isSelfWithoutAbha
-                    ? 'Identity Number *'
-                    : isAadhaar
-                    ? 'Aadhaar Number *'
-                    : '${c.selectedIdentityName.value} Number *';
+            // final isSelfWithoutAbha = !isDependent && !isWithAbha;
+            final sectionTitle = 'Aadhaar Number';
+            final fieldLabel = 'Aadhaar Number *';
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _sectionLabel(sectionTitle),
-                SizedBox(height: 6.h),
+                SizedBox(height: 18.h),
                 AppTextField(
                   controller: c.tecAadhaarNo,
                   label: _label(fieldLabel),
@@ -1265,10 +1255,10 @@ class _D2DPatientRegistrationScreenState
           }),
           SizedBox(height: 14.h),
         ],
-
+        SizedBox(height: 12.h),
         // ── 11. Age (DOB hidden — auto-populated, never user-editable; matches native) ──
         SizedBox(
-          width: 80.w,
+          // width: 80.w,
           child: AppTextField(
             controller: c.tecAge,
             label: _label('Age'),
@@ -1279,7 +1269,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 12. Gender ───────────────────────────────────────────────────
         _sectionLabel('Gender'),
-        SizedBox(height: 6.h),
+        SizedBox(height: 12.h),
         Obx(() {
           final locked = c.isGenderLockedByRelation.value || _isLocked;
           final gender = c.selectedGender.value;
@@ -1312,7 +1302,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 13. Permanent Address ────────────────────────────────────────
         _sectionLabel('Address'),
-        SizedBox(height: 6.h),
+        SizedBox(height: 18.h),
         AppTextField(
           controller: c.tecPermAddr,
           label: _label('Permanent Address'),
@@ -1365,7 +1355,7 @@ class _D2DPatientRegistrationScreenState
             controller: c.tecLandmark,
             label: _label('Landmark'),
             textCapitalization: TextCapitalization.characters,
-            inputFormatters: _kUpper,
+            // inputFormatters: _kUpper,
             prefixIcon: const Icon(
               Icons.place_rounded,
               color: kPrimaryColor,
@@ -1460,7 +1450,7 @@ class _D2DPatientRegistrationScreenState
           ),
           SizedBox(height: 12.h),
         ],
-
+        SizedBox(height: 18.h),
         // ── 18. Pin Code ─────────────────────────────────────────────────
         AppTextField(
           controller: c.tecPincode,
@@ -1483,7 +1473,7 @@ class _D2DPatientRegistrationScreenState
 
         // ── 20. Ration Card No ───────────────────────────────────────────
         // Visible only when registering a dependent (native behaviour).
-        if (_hasData && c.isDependent.value) ...[
+        if (c.isDependent.value) ...[
           _sectionLabel('Ration Card No'),
           SizedBox(height: 8.h),
           AppTextField(
@@ -1672,7 +1662,7 @@ class _D2DPatientRegistrationScreenState
           children: [
             Expanded(
               child: _PhotoTile(
-                label: 'Beneficiary Photo',
+                label: 'Beneficiary',
                 icon: Icons.person_pin,
                 localPath: c.patientPhotoPath.value,
                 required: !c.skipFaceDetection.value,
@@ -1683,7 +1673,8 @@ class _D2DPatientRegistrationScreenState
             Expanded(
               child: _PhotoTile(
                 // isDependent=Yes → "Identity Card"; No → "Beneficiary Card"
-                label: _isYes ? 'Identity Card' : 'Aadhaar Card',
+                // label: _isYes ? 'Identity Card' : 'Aadhaar Card',
+                label: "Beneficiary Card",
                 icon: Icons.credit_card,
                 localPath: c.healthCardPhotoPath.value,
                 onTap: c.pickHealthCardPhoto,
@@ -1718,10 +1709,7 @@ class _D2DPatientRegistrationScreenState
                 !c.isDependent.value &&
                 c.abhaVerified.value)) ...[
           AppButtonWithIcon(
-            title:
-                c.isDependent.value
-                    ? 'VERIFY BENEFICIARY DETAILS'
-                    : 'REGISTER PATIENT',
+            title: 'Verify Beneficiary Details',
             mWidth: double.infinity,
             mHeight: 52,
             icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
@@ -2676,7 +2664,7 @@ class _D2DPatientRegistrationScreenState
         ),
         // GP field — visible only when Rural
         if (c.isRural.value) ...[
-          SizedBox(height: 8.h),
+          SizedBox(height: 18.h),
           GestureDetector(
             onTap: () => _showGpPicker(),
             child: AbsorbPointer(

@@ -10,7 +10,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:s2toperational/constants/constants.dart';
 import 'package:s2toperational/constants/images.dart';
 import 'package:s2toperational/utilities/size_config.dart';
-import 'package:s2toperational/common_widgets/AppTextField.dart';
 import 'package:s2toperational/common_widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/common_widgets/CommonText.dart';
 import 'package:s2toperational/calling_modules/widgets/network_wrapper.dart';
@@ -60,7 +59,7 @@ class UserAttendanceScreen extends StatelessWidget {
                               children: [
                                 _legendDot(
                                   const Color.fromRGBO(100, 167, 90, 1.0),
-                                ).paddingOnly(bottom: 6,left: 4),
+                                ).paddingOnly(bottom: 6, left: 4),
                                 const SizedBox(width: 4),
 
                                 CommonText(
@@ -77,7 +76,7 @@ class UserAttendanceScreen extends StatelessWidget {
                               children: [
                                 _legendDot(
                                   const Color.fromRGBO(33, 150, 243, 1.0),
-                                ).paddingOnly(bottom: 6,left: 4),
+                                ).paddingOnly(bottom: 6, left: 4),
                                 const SizedBox(width: 4),
 
                                 CommonText(

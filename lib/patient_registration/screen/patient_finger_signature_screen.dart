@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:s2toperational/constants/constants.dart';
-import 'package:s2toperational/constants/fonts.dart';
 import 'package:s2toperational/common_widgets/app_active_button.dart';
-import 'package:s2toperational/common_widgets/AppTextField.dart';
 import 'package:s2toperational/common_widgets/CommonText.dart';
 import 'package:s2toperational/common_widgets/S2TAppBar.dart';
 import 'package:s2toperational/calling_modules/widgets/network_wrapper.dart';
+import 'package:s2toperational/constants/images.dart';
 import 'package:s2toperational/patient_registration/controller/patient_finger_signature_controller.dart';
 import 'package:s2toperational/patient_registration/screen/patient_signature_screen.dart';
 
@@ -84,7 +83,11 @@ class PatientFingerAndSignatureScreen extends StatelessWidget {
       child: NetworkWrapper(
         child: Scaffold(
           backgroundColor: kBackground,
-          appBar: mAppBar(scTitle: 'Fingerprint & Signature'),
+          appBar: mAppBar(
+            scTitle: 'Fingerprint & Signature',
+            leadingIcon: iconBackArrow,
+            onLeadingIconClick: () => Navigator.pop(context),
+          ),
           body: Obx(() {
             if (c.isLoading.value) {
               return const Center(child: CircularProgressIndicator());
@@ -112,7 +115,6 @@ class _Body extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           // ── Patient Info Card ──────────────────────────────────────────
           _PatientInfoCard(c: c),
           SizedBox(height: 16.h),

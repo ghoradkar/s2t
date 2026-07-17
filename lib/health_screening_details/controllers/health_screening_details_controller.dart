@@ -48,7 +48,7 @@ class HealthScreeningDetailsController extends GetxController {
         dESGID == 177) {
       menuList.add(HealthScreeningDetailsMenu.BasicHealthInfo);
       menuList.add(HealthScreeningDetailsMenu.SampleCollection);
-      menuList.add(HealthScreeningDetailsMenu.UrineSampleCollection);
+      // menuList.add(HealthScreeningDetailsMenu.UrineSampleCollection);
       menuList.add(HealthScreeningDetailsMenu.Acknowledgement);
 
       if (!DataProvider().getRegularCamp()) {

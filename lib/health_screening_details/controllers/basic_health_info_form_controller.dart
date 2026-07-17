@@ -92,9 +92,11 @@ class BasicHealthInfoFormController extends GetxController {
   BluetoothDevice? _sugarDevice;
   final BpDeviceController bpController = BpDeviceController();
 
-  bool get isWeightConnected => _weightDevice != null || isWeightDataReceived.value;
+  bool get isWeightConnected =>
+      _weightDevice != null || isWeightDataReceived.value;
 
-  bool get isSugarConnected => _sugarDevice != null || isSugarDataReceived.value;
+  bool get isSugarConnected =>
+      _sugarDevice != null || isSugarDataReceived.value;
 
   String _weightDeviceName = '';
   String _sugarDeviceName = '';
@@ -204,7 +206,9 @@ class BasicHealthInfoFormController extends GetxController {
         '${APIManager.kD2DBaseURL}${APIConstants.kGetMachineAvailabilityFlagV1}',
       );
       // ignore: avoid_print
-      print('[BHI] getMachineAvailabilityFlag URL: $url body={USERID: $_empCode}');
+      print(
+        '[BHI] getMachineAvailabilityFlag URL: $url body={USERID: $_empCode}',
+      );
       final ioClient = _api.getInstanceOfIoClient();
       final response = await ioClient.post(
         url,
@@ -216,7 +220,8 @@ class BasicHealthInfoFormController extends GetxController {
       print('[BHI] getMachineAvailabilityFlag response: ${response.body}');
       final decoded = jsonDecode(response.body) as Map<String, dynamic>;
       if (decoded['status']?.toString().toLowerCase() == 'success') {
-        final output = (decoded['output'] as List?)?.first as Map<String, dynamic>?;
+        final output =
+            (decoded['output'] as List?)?.first as Map<String, dynamic>?;
         if (output != null) {
           isWeightMachineAvailable.value =
               output['IsWeightingMachineAvailable']?.toString() == '1';
@@ -225,7 +230,9 @@ class BasicHealthInfoFormController extends GetxController {
           isSugarDeviceAvailable.value =
               output['IsSugarDeviceAvailable']?.toString() == '1';
           // ignore: avoid_print
-          print('[BHI] machineFlags: isWeight=${isWeightMachineAvailable.value} isBP=${isBPMachineAvailable.value} isSugar=${isSugarDeviceAvailable.value}');
+          print(
+            '[BHI] machineFlags: isWeight=${isWeightMachineAvailable.value} isBP=${isBPMachineAvailable.value} isSugar=${isSugarDeviceAvailable.value}',
+          );
         }
       }
     } catch (e) {
@@ -404,8 +411,10 @@ class BasicHealthInfoFormController extends GetxController {
     if (state == BluetoothAdapterState.on) return true;
     // On iOS, CoreBluetooth starts as unknown/unauthorized before the permission
     // dialog appears. Allow navigation so the scan screen triggers the dialog.
-    if (Platform.isIOS && (state == BluetoothAdapterState.unknown ||
-        state == BluetoothAdapterState.unauthorized)) return true;
+    if (Platform.isIOS &&
+        (state == BluetoothAdapterState.unknown ||
+            state == BluetoothAdapterState.unauthorized))
+      return true;
     return false;
   }
 
@@ -414,7 +423,10 @@ class BasicHealthInfoFormController extends GetxController {
   Future<void> connectWeightDevice(BluetoothDevice device) async {
     ToastManager.showLoader();
     try {
-      await device.connect(license: License.free, timeout: const Duration(seconds: 10));
+      await device.connect(
+        license: License.free,
+        timeout: const Duration(seconds: 10),
+      );
       _weightDevice = device;
       deviceError.value = '';
       _updateDeviceStatus();
@@ -430,7 +442,10 @@ class BasicHealthInfoFormController extends GetxController {
   Future<void> connectSugarDevice(BluetoothDevice device) async {
     ToastManager.showLoader();
     try {
-      await device.connect(license: License.free, timeout: const Duration(seconds: 10));
+      await device.connect(
+        license: License.free,
+        timeout: const Duration(seconds: 10),
+      );
       _sugarDevice = device;
       deviceError.value = '';
       _updateDeviceStatus();
@@ -478,10 +493,12 @@ class BasicHealthInfoFormController extends GetxController {
   }
 
   void _applyBpReading(Map<String, int> reading) {
-    systolicCtrl.text  = reading['systolic'].toString();
+    systolicCtrl.text = reading['systolic'].toString();
     diastolicCtrl.text = reading['diastolic'].toString();
     // ignore: avoid_print
-    print('[BHI] BpDevice APPLIED: sys=${reading['systolic']} dia=${reading['diastolic']} mac=${bpController.savedDeviceMac.value}');
+    print(
+      '[BHI] BpDevice APPLIED: sys=${reading['systolic']} dia=${reading['diastolic']} mac=${bpController.savedDeviceMac.value}',
+    );
     ToastManager.toast('Blood pressure reading applied.');
     update();
   }
@@ -493,7 +510,8 @@ class BasicHealthInfoFormController extends GetxController {
       if (wName.isNotEmpty) 'Weight: $wName',
       if (sName.isNotEmpty) 'Sugar: $sName',
     ];
-    deviceStatus.value = parts.isEmpty ? 'No devices connected' : parts.join(' | ');
+    deviceStatus.value =
+        parts.isEmpty ? 'No devices connected' : parts.join(' | ');
   }
 
   // ── Transfer data from connected devices ────────────────────────────────
@@ -549,29 +567,43 @@ class BasicHealthInfoFormController extends GetxController {
     final gender = patientItem?.gender ?? '';
 
     // BMIStatus: native uses 1=Underweight, 2=Normal, 3=Overweight
-    final bmiStatus = bmiStatusIndex >= 0 ? (bmiStatusIndex + 1).toString() : '0';
+    final bmiStatus =
+        bmiStatusIndex >= 0 ? (bmiStatusIndex + 1).toString() : '0';
 
     // MaritalStatus: native uses 1=Unmarried, 2=Married
     final maritalStatus = maritalStatusIndex == 0 ? '2' : '1';
 
     // FastingHrs: send actual hours for <12, send '12' for >=12
-    final fastingHrs = fastingIndex == 0
-        ? (fastingHrsInputCtrl.text.trim().isEmpty ? '0' : fastingHrsInputCtrl.text.trim())
-        : '12';
+    final fastingHrs =
+        fastingIndex == 0
+            ? (fastingHrsInputCtrl.text.trim().isEmpty
+                ? '0'
+                : fastingHrsInputCtrl.text.trim())
+            : '12';
 
     final bpReading = bpController.getLastReading();
+
+    final bloodSugarRString = bloodSugarRCtrl.text.trim();
 
     // ── Device state log ────────────────────────────────────────────────
     // ignore: avoid_print
     print('[BHI] ===== DEVICE STATE =====');
     // ignore: avoid_print
-    print('[BHI] isWeightDataReceived=${isWeightDataReceived.value} weightDeviceName=$_weightDeviceName');
+    print(
+      '[BHI] isWeightDataReceived=${isWeightDataReceived.value} weightDeviceName=$_weightDeviceName',
+    );
     // ignore: avoid_print
-    print('[BHI] isSugarDataReceived=${isSugarDataReceived.value} sugarDeviceName=$_sugarDeviceName');
+    print(
+      '[BHI] isSugarDataReceived=${isSugarDataReceived.value} sugarDeviceName=$_sugarDeviceName',
+    );
     // ignore: avoid_print
-    print('[BHI] bpLastReading=$bpReading bpDeviceMac=${bpController.savedDeviceMac.value}');
+    print(
+      '[BHI] bpLastReading=$bpReading bpDeviceMac=${bpController.savedDeviceMac.value}',
+    );
     // ignore: avoid_print
-    print('[BHI] isBPManual=${bpReading != null ? "0 (from device)" : "1 (manual)"}');
+    print(
+      '[BHI] isBPManual=${bpReading != null ? "0 (from device)" : "1 (manual)"}',
+    );
     // ignore: avoid_print
     print('[BHI] IsFromBloodPressureDevice=${bpReading != null ? "0" : "1"}');
 
@@ -583,7 +615,7 @@ class BasicHealthInfoFormController extends GetxController {
       'BloodPressure': '0',
       'BloodSugar_F': '',
       'BloodSugar_PP': '',
-      'BloodSugar_R': bloodSugarRCtrl.text.trim(),
+      'BloodSugar_R': bloodSugarRString,
       'BMI': bmiCtrl.text.trim(),
       'BMIStatus': bmiStatus,
       'BloodGroup': selectedBloodGroup ?? '',
@@ -601,11 +633,14 @@ class BasicHealthInfoFormController extends GetxController {
       'Tests_Details': '[]',
       'PulseRate': '0',
       'Drugs': drugsIndex == 1 ? '1' : '0',
-      'AlcoholSinceMonth': alcoholIndex == 1 ? alcoholMonthCtrl.text.trim() : '0',
+      'AlcoholSinceMonth':
+          alcoholIndex == 1 ? alcoholMonthCtrl.text.trim() : '0',
       'AlcoholSinceYear': alcoholIndex == 1 ? alcoholYearCtrl.text.trim() : '0',
-      'SmokingSinceMonth': smokingIndex == 1 ? smokingMonthCtrl.text.trim() : '0',
+      'SmokingSinceMonth':
+          smokingIndex == 1 ? smokingMonthCtrl.text.trim() : '0',
       'SmokingSinceYear': smokingIndex == 1 ? smokingYearCtrl.text.trim() : '0',
-      'TobacoSinceMonth': tobaccoIndex == 1 ? tobaccoMonthCtrl.text.trim() : '0',
+      'TobacoSinceMonth':
+          tobaccoIndex == 1 ? tobaccoMonthCtrl.text.trim() : '0',
       'TobacoSinceYear': tobaccoIndex == 1 ? tobaccoYearCtrl.text.trim() : '0',
       'DrugSinceMonth': drugsIndex == 1 ? drugsMonthCtrl.text.trim() : '0',
       'DrugSinceYear': drugsIndex == 1 ? drugsYearCtrl.text.trim() : '0',
@@ -631,11 +666,7 @@ class BasicHealthInfoFormController extends GetxController {
     _api.insertBasicHealthInfoNewAPI(body, _onSaveResult);
   }
 
-  void _onSaveResult(
-    dynamic response,
-    String error,
-    bool success,
-  ) {
+  void _onSaveResult(dynamic response, String error, bool success) {
     ToastManager.hideLoader();
     if (success) {
       ToastManager().showSuccessOkayDialog(
@@ -677,7 +708,9 @@ class BasicHealthInfoFormController extends GetxController {
     }
     isWeightDataReceived.value = true;
     // ignore: avoid_print
-    print('[BHI] WeightDevice APPLIED: weight=$weight bmi=$bmi device=$deviceNameStr');
+    print(
+      '[BHI] WeightDevice APPLIED: weight=$weight bmi=$bmi device=$deviceNameStr',
+    );
     update();
   }
 
@@ -692,7 +725,9 @@ class BasicHealthInfoFormController extends GetxController {
     _sugarDeviceName = deviceNameStr;
     isSugarDataReceived.value = true;
     // ignore: avoid_print
-    print('[BHI] SugarDevice APPLIED: glucose=$glucose numeric=$numericValue device=$deviceNameStr');
+    print(
+      '[BHI] SugarDevice APPLIED: glucose=$glucose numeric=$numericValue device=$deviceNameStr',
+    );
     update();
   }
 
@@ -733,9 +768,23 @@ class BasicHealthInfoFormController extends GetxController {
       ToastManager.toast('Please select fasting duration');
       return false;
     }
-    if (fastingIndex == 0 && fastingHrsInputCtrl.text.trim().isEmpty) {
-      ToastManager.toast('Please enter fasting hours');
-      return false;
+    final hrs12 = fastingHrsInputCtrl.text.trim();
+
+    if (fastingIndex == 0) {
+      if (hrs12.isEmpty) {
+        ToastManager.toast('Please enter fasting hours');
+        return false;
+      }
+      final hrs12Int = int.parse(hrs12);
+      if (hrs12Int > 12 || hrs12Int == 0) {
+        ToastManager.toast("Please enter hours in between 1-12 hrs");
+        return false;
+      }
+
+      if (hrs12.startsWith("00")) {
+        ToastManager.toast("Please enter hours between 1 and 12.");
+        return false;
+      }
     }
     if (maritalStatusIndex == -1) {
       ToastManager.toast('Please select marital status');
@@ -801,12 +850,40 @@ class BasicHealthInfoFormController extends GetxController {
         return false;
       }
     }
-    if (bloodSugarRCtrl.text.trim().isEmpty) {
+    final bloodSugarRString = bloodSugarRCtrl.text.trim();
+    if (bloodSugarRString.isEmpty) {
       ToastManager.toast('Please enter blood sugar (R) value');
       return false;
     }
+    final bloodSugarRInt =
+        bloodSugarRString.isEmpty ? 0 : int.parse(bloodSugarRString);
+
+    if (bloodSugarRInt < 40 || bloodSugarRInt > 700) {
+      ToastManager.toast('Blood Sugar R should be between 40 to 700');
+      return false;
+    }
+    final bloodPressureSystolicString = systolicCtrl.text.trim();
+    final bloodPressureSystolicInt =
+        bloodPressureSystolicString.isEmpty
+            ? 0
+            : int.parse(bloodPressureSystolicString);
+
     if (systolicCtrl.text.trim().isEmpty || diastolicCtrl.text.trim().isEmpty) {
       ToastManager.toast('Please enter blood pressure values');
+      return false;
+    }
+    if (bloodPressureSystolicInt < 80 || bloodPressureSystolicInt > 180) {
+      ToastManager.toast("Systolic should be between 80 to 180");
+      return false;
+    }
+    final bloodPressureDiastolicString = diastolicCtrl.text.trim();
+    final bloodPressureDiastolicInt =
+        bloodPressureDiastolicString.isEmpty
+            ? 0
+            : int.parse(bloodPressureDiastolicString);
+
+    if (bloodPressureDiastolicInt < 60 || bloodPressureDiastolicInt > 110) {
+      ToastManager.toast("Diastolic should be between 60 to 110");
       return false;
     }
     return true;

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class CampCreationController extends GetxController {
   final CampCreationRepository _repository;
 
   CampCreationController({CampCreationRepository? repository})
-      : _repository = repository ?? CampCreationRepository();
+    : _repository = repository ?? CampCreationRepository();
 
   // ─── Plain fields (loaded once in onInit, never change) ──────────────────────
   int empCode = 0;
@@ -69,8 +70,13 @@ class CampCreationController extends GetxController {
     districtId.value = userData?.dISTLGDCODE ?? 0;
     districtName.value = userData?.district ?? '';
     isRegularCamp = DataProvider().getRegularCamp();
-    selectedInitiatedBy.value = InitiatedByOutput(iD: 1, initiatedBy: 'Internal');
-    print('[CampCreation] onInit - empCode: $empCode | dESGID: $dESGID | districtId: ${districtId.value} | districtName: ${districtName.value} | isRegularCamp: $isRegularCamp');
+    selectedInitiatedBy.value = InitiatedByOutput(
+      iD: 1,
+      initiatedBy: 'Internal',
+    );
+    print(
+      '[CampCreation] onInit - empCode: $empCode | dESGID: $dESGID | districtId: ${districtId.value} | districtName: ${districtName.value} | isRegularCamp: $isRegularCamp',
+    );
   }
 
   @override
@@ -84,7 +90,9 @@ class CampCreationController extends GetxController {
   // ─── Camp Type ────────────────────────────────────────────────────────────────
 
   Future<void> loadCampTypes() async {
-    print('[CampCreation] loadCampTypes - isRegularCamp: $isRegularCamp | dESGID: $dESGID');
+    print(
+      '[CampCreation] loadCampTypes - isRegularCamp: $isRegularCamp | dESGID: $dESGID',
+    );
     ToastManager.showLoader();
     CampTypeResponse? response;
     if (isRegularCamp) {
@@ -189,7 +197,9 @@ class CampCreationController extends GetxController {
 
     if (response?.output?.isNotEmpty == true) {
       selectedHomeAndHubLab.value = response!.output!.first;
-      print('[CampCreation] homeAndHubLab loaded - homeLab: ${selectedHomeAndHubLab.value?.homeLab} | hubLab: ${selectedHomeAndHubLab.value?.hubLab}');
+      print(
+        '[CampCreation] homeAndHubLab loaded - homeLab: ${selectedHomeAndHubLab.value?.homeLab} | hubLab: ${selectedHomeAndHubLab.value?.hubLab}',
+      );
     } else {
       print('[CampCreation] homeAndHubLab failed or empty');
       ToastManager.toast('Failed to load home/hub lab');
@@ -211,23 +221,33 @@ class CampCreationController extends GetxController {
       return;
     }
     print('[CampCreation] screeningTest loaded - count: ${list.length}');
-    _showMultiSelectDropDown('Screening Test', list,
-        DropDownMultipleTypeMenu.ScreeningTest);
+    _showMultiSelectDropDown(
+      'Screening Test',
+      list,
+      DropDownMultipleTypeMenu.ScreeningTest,
+    );
   }
 
   // ─── Selection handlers ───────────────────────────────────────────────────────
 
   void onCampTypeSelected(CampTypeOutput value) {
     selectedCampType.value = value;
-    selectedInitiatedBy.value = InitiatedByOutput(iD: 1, initiatedBy: 'Internal');
+    selectedInitiatedBy.value = InitiatedByOutput(
+      iD: 1,
+      initiatedBy: 'Internal',
+    );
     _resetFromCampType();
-    print('[CampCreation] selected campType: ${value.campTypeDescription} (id: ${value.cAMPTYPE})');
+    print(
+      '[CampCreation] selected campType: ${value.campTypeDescription} (id: ${value.cAMPTYPE})',
+    );
   }
 
   void onInitiatedBySelected(InitiatedByOutput value) {
     selectedInitiatedBy.value = value;
     _resetFromInitiatedBy();
-    print('[CampCreation] selected initiatedBy: ${value.initiatedBy} (id: ${value.iD})');
+    print(
+      '[CampCreation] selected initiatedBy: ${value.initiatedBy} (id: ${value.iD})',
+    );
   }
 
   void onDistrictSelected(DistrictOutput value) {
@@ -236,13 +256,17 @@ class CampCreationController extends GetxController {
     selectedTaluka.value = null;
     selectedLandingLab.value = null;
     selectedHomeAndHubLab.value = null;
-    print('[CampCreation] selected district: ${districtName.value} (districtId: ${districtId.value})');
+    print(
+      '[CampCreation] selected district: ${districtName.value} (districtId: ${districtId.value})',
+    );
   }
 
   void onTalukaSelected(TalukaCampCreationOutput value) {
     selectedTaluka.value = value;
     _resetFromTaluka();
-    print('[CampCreation] selected taluka: ${value.tALNAME} (code: ${value.tALLGDCODE})');
+    print(
+      '[CampCreation] selected taluka: ${value.tALNAME} (code: ${value.tALLGDCODE})',
+    );
   }
 
   void onLandingLabSelected(LandingLabCampCreationOutput value) {
@@ -254,13 +278,17 @@ class CampCreationController extends GetxController {
     selectedCampDate.value = '';
     selectedPostCampDate.value = '';
     expectedBeneficiaryController.clear();
-    print('[CampCreation] selected landingLab: ${value.labName} (labCode: ${value.labCode})');
+    print(
+      '[CampCreation] selected landingLab: ${value.labName} (labCode: ${value.labCode})',
+    );
     _loadHomeAndHubLab();
   }
 
   void onScreeningTestsSelected(List<ScreeningTestCampCreationOutput> value) {
     selectedScreeningTest.assignAll(value);
-    print('[CampCreation] selected screeningTests: ${selectedScreeningTest.map((e) => e.testName).join(', ')}');
+    print(
+      '[CampCreation] selected screeningTests: ${selectedScreeningTest.map((e) => e.testName).join(', ')}',
+    );
   }
 
   // ─── Reset helpers ────────────────────────────────────────────────────────────
@@ -314,7 +342,9 @@ class CampCreationController extends GetxController {
       selectedPostCampDate.value = FormatterManager.formatDateToString(
         picked.add(const Duration(days: 7)),
       );
-      print('[CampCreation] selected campDate: ${selectedCampDate.value} | postCampDate: ${selectedPostCampDate.value}');
+      print(
+        '[CampCreation] selected campDate: ${selectedCampDate.value} | postCampDate: ${selectedPostCampDate.value}',
+      );
     }
   }
 
@@ -324,15 +354,16 @@ class CampCreationController extends GetxController {
       selectedScreeningTest.map((e) => e.testName ?? '').join(',');
 
   String _buildCampTestMappingJson() {
-    final dataList = selectedScreeningTest.map((obj) {
-      return {
-        'CampID': '0',
-        'TestID': (obj.testId ?? 0).toString(),
-        'IsTestProcess': obj.isSelected ? '1' : '0',
-        'IsActive': '1',
-        'CreatedBy': empCode.toString(),
-      };
-    }).toList();
+    final dataList =
+        selectedScreeningTest.map((obj) {
+          return {
+            'CampID': '0',
+            'TestID': (obj.testId ?? 0).toString(),
+            'IsTestProcess': obj.isSelected ? '1' : '0',
+            'IsActive': '1',
+            'CreatedBy': empCode.toString(),
+          };
+        }).toList();
 
     try {
       final result = jsonEncode(dataList);
@@ -350,46 +381,76 @@ class CampCreationController extends GetxController {
     final campName = campNameController.text.trim();
     final campAddress = campAddressController.text.trim();
     final expectedBeneficiary = expectedBeneficiaryController.text.trim();
-    print('[CampCreation] saveDidPressed - campName: $campName | campAddress: $campAddress | campDate: ${selectedCampDate.value} | expectedBeneficiary: $expectedBeneficiary');
+    print(
+      '[CampCreation] saveDidPressed - campName: $campName | campAddress: $campAddress | campDate: ${selectedCampDate.value} | expectedBeneficiary: $expectedBeneficiary',
+    );
 
     if (selectedCampType.value == null) {
-      print('[CampCreation] saveDidPressed - validation failed: campType not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: campType not selected',
+      );
       _showAlert('Select Camp Type');
     } else if (selectedInitiatedBy.value == null) {
-      print('[CampCreation] saveDidPressed - validation failed: initiatedBy not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: initiatedBy not selected',
+      );
       _showAlert('Select Initiated By');
     } else if (districtName.value.isEmpty) {
-      print('[CampCreation] saveDidPressed - validation failed: district not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: district not selected',
+      );
       _showAlert('Select district');
     } else if (selectedTaluka.value == null) {
-      print('[CampCreation] saveDidPressed - validation failed: taluka not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: taluka not selected',
+      );
       _showAlert('Select taluka');
     } else if (selectedLandingLab.value == null) {
-      print('[CampCreation] saveDidPressed - validation failed: landingLab not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: landingLab not selected',
+      );
       _showAlert('Select Landing lab');
     } else if (campName.isEmpty) {
-      print('[CampCreation] saveDidPressed - validation failed: campName empty');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: campName empty',
+      );
       _showAlert('Select camp name');
     } else if (campAddress.isEmpty) {
-      print('[CampCreation] saveDidPressed - validation failed: campAddress empty');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: campAddress empty',
+      );
       _showAlert('Select Camp Address');
     } else if (campAddress.length <= 14) {
-      print('[CampCreation] saveDidPressed - validation failed: campAddress too short (${campAddress.length} chars)');
-      _showAlert('Camp address should be grater than or equal to 15 character length');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: campAddress too short (${campAddress.length} chars)',
+      );
+      _showAlert(
+        'Camp address should be grater than or equal to 15 character length',
+      );
     } else if (selectedCampDate.value.isEmpty) {
-      print('[CampCreation] saveDidPressed - validation failed: campDate not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: campDate not selected',
+      );
       _showAlert('Select camp date');
     } else if (selectedScreeningTest.isEmpty) {
-      print('[CampCreation] saveDidPressed - validation failed: screeningTest not selected');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: screeningTest not selected',
+      );
       _showAlert('Select screening tests');
     } else if (expectedBeneficiary.isEmpty) {
-      print('[CampCreation] saveDidPressed - validation failed: expectedBeneficiary empty');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: expectedBeneficiary empty',
+      );
       _showAlert('Please Enter Expected Beneficiary');
     } else if (UIValidator.isAllZeros(expectedBeneficiary)) {
-      print('[CampCreation] saveDidPressed - validation failed: expectedBeneficiary all zeros');
+      print(
+        '[CampCreation] saveDidPressed - validation failed: expectedBeneficiary all zeros',
+      );
       _showAlert('Please Enter valid Expected Beneficiary');
     } else {
-      print('[CampCreation] saveDidPressed - validation passed, proceeding to createCamp');
+      print(
+        '[CampCreation] saveDidPressed - validation passed, proceeding to createCamp',
+      );
       _createCamp();
     }
   }
@@ -444,20 +505,33 @@ class CampCreationController extends GetxController {
     final lat = campLatitude.value;
     final lng = campLongitude.value;
     final geoUri = 'geo:$lat,$lng?q=$lat,$lng(Selected Location)';
-    try {
-      final intent = AndroidIntent(
-        action: 'action_view',
-        data: geoUri,
-        package: 'com.google.android.apps.maps',
-      );
-      await intent.launch();
-    } catch (_) {
-      final fallback =
-          Uri.parse('https://maps.google.com/?q=$lat,$lng');
-      if (await canLaunchUrl(fallback)) {
-        await launchUrl(fallback, mode: LaunchMode.externalApplication);
+    if (Platform.isAndroid) {
+      try {
+        final intent = AndroidIntent(
+          action: 'action_view',
+          data: geoUri,
+          package: 'com.google.android.apps.maps',
+        );
+        await intent.launch();
+      } catch (_) {
+        final fallback = Uri.parse('https://maps.google.com/?q=$lat,$lng');
+        if (await canLaunchUrl(fallback)) {
+          await launchUrl(fallback, mode: LaunchMode.externalApplication);
+        } else {
+          ToastManager.toast('Google Maps not installed');
+        }
+      }
+    } else {
+      final googleMapsUri = Uri.parse('comgooglemaps://?q=$lat,$lng&zoom=14');
+
+      if (await canLaunchUrl(googleMapsUri)) {
+        await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
       } else {
-        ToastManager.toast('Google Maps not installed');
+        final webUri = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+        );
+
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
       }
     }
   }
@@ -477,7 +551,9 @@ class CampCreationController extends GetxController {
     ToastManager.hideLoader();
 
     if (result != null) {
-      print('[CampCreation] placeDetails - address: ${result.address} | lat: ${result.lat} | lng: ${result.lng}');
+      print(
+        '[CampCreation] placeDetails - address: ${result.address} | lat: ${result.lat} | lng: ${result.lng}',
+      );
       campLatitude.value = result.lat;
       campLongitude.value = result.lng;
       campAddressController.text = result.address;
@@ -491,7 +567,10 @@ class CampCreationController extends GetxController {
   // ─── Bottom sheets ────────────────────────────────────────────────────────────
 
   void _showDropDown(
-      String title, List<dynamic> list, DropDownTypeMenu dropDownType) {
+    String title,
+    List<dynamic> list,
+    DropDownTypeMenu dropDownType,
+  ) {
     Get.bottomSheet(
       Container(
         width: double.infinity,
@@ -530,8 +609,11 @@ class CampCreationController extends GetxController {
     );
   }
 
-  void _showMultiSelectDropDown(String title, List<dynamic> list,
-      DropDownMultipleTypeMenu dropDownType) {
+  void _showMultiSelectDropDown(
+    String title,
+    List<dynamic> list,
+    DropDownMultipleTypeMenu dropDownType,
+  ) {
     Get.bottomSheet(
       Container(
         width: double.infinity,
@@ -554,7 +636,8 @@ class CampCreationController extends GetxController {
           onApplyTap: (selected) {
             if (dropDownType == DropDownMultipleTypeMenu.ScreeningTest) {
               onScreeningTestsSelected(
-                  List<ScreeningTestCampCreationOutput>.from(selected));
+                List<ScreeningTestCampCreationOutput>.from(selected),
+              );
             }
           },
         ),
@@ -599,12 +682,13 @@ class CampCreationController extends GetxController {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    suffixIcon: isSearching.value
-                        ? const Padding(
-                            padding: EdgeInsets.all(12),
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : null,
+                    suffixIcon:
+                        isSearching.value
+                            ? const Padding(
+                              padding: EdgeInsets.all(12),
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : null,
                   ),
                   onChanged: (value) async {
                     if (value.length < 3) {
@@ -627,21 +711,24 @@ class CampCreationController extends GetxController {
                     final p = predictions[index];
                     final fmt =
                         p['structured_formatting'] as Map<String, dynamic>? ??
-                            {};
-                    final primary = fmt['main_text'] as String? ??
+                        {};
+                    final primary =
+                        fmt['main_text'] as String? ??
                         p['description'] as String? ??
                         '';
-                    final secondary =
-                        fmt['secondary_text'] as String? ?? '';
+                    final secondary = fmt['secondary_text'] as String? ?? '';
                     final placeId = p['place_id'] as String? ?? '';
                     return ListTile(
                       leading: const Icon(Icons.location_on_outlined),
                       title: Text(primary),
-                      subtitle: secondary.isNotEmpty
-                          ? Text(secondary,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis)
-                          : null,
+                      subtitle:
+                          secondary.isNotEmpty
+                              ? Text(
+                                secondary,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              )
+                              : null,
                       onTap: () async {
                         Get.back();
                         await _fetchPlaceDetails(placeId);
@@ -678,9 +765,7 @@ class CampCreationController extends GetxController {
             ),
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: Text(
-                'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
-              ),
+              child: Text('कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.'),
             ),
             SizedBox(
               width: 80.w,
@@ -710,9 +795,7 @@ class CampCreationController extends GetxController {
             ),
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: Text(
-                'कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.',
-              ),
+              child: Text('कृपया कॅम्पचा पत्ता फ्लेबोशी कन्फर्म करूनच टाका.'),
             ),
             SizedBox(
               width: 80.w,
@@ -735,10 +818,15 @@ class CampCreationController extends GetxController {
   }
 
   void _showSuccessDialog(String campId) {
-    ToastManager().showSuccessOkayDialog( context: Get.context!, title: 'Success', message: 'Camp Created Successfully.\nCamp ID $campId', onTap: (){
-      Get.back();
-      Get.back();
-    });
+    ToastManager().showSuccessOkayDialog(
+      context: Get.context!,
+      title: 'Success',
+      message: 'Camp Created Successfully.\nCamp ID $campId',
+      onTap: () {
+        Get.back();
+        Get.back();
+      },
+    );
     // Get.dialog(
     //   AlertDialog(
     //     title: const Text('Success'),

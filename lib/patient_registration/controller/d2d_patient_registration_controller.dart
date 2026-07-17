@@ -80,7 +80,7 @@ class D2DPatientRegistrationController extends GetxController {
   final tecFirstName = TextEditingController();
   final tecMiddleName = TextEditingController();
   final tecLastName = TextEditingController();
-  final tecMobileNo = TextEditingController(text: '9673974373');
+  final tecMobileNo = TextEditingController(text: '8087202645');
   final tecAltMobileNo = TextEditingController();
   final tecAadhaarNo = TextEditingController();
   final tecDob = TextEditingController();
@@ -323,7 +323,7 @@ class D2DPatientRegistrationController extends GetxController {
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
     final rawMsId = user?.maritialstatusId?.toString() ?? '';
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
-    tecMobileNo.text = '9673974373';
+    tecMobileNo.text = '8087202645';
     _startAutoLocationUpdates();
     _fetchFaceDetectionFlag();
   }
@@ -995,8 +995,7 @@ class D2DPatientRegistrationController extends GetxController {
       if (phone.isNotEmpty) tecMobileNo.text = phone;
 
       // Address + pincode
-      final addressObj =
-          (patientObj['address'] as Map<String, dynamic>?) ?? {};
+      final addressObj = (patientObj['address'] as Map<String, dynamic>?) ?? {};
       final line = addressObj['line']?.toString() ?? '';
       if (line.isNotEmpty) tecPermAddr.text = line;
       final pincode = addressObj['pincode']?.toString() ?? '';
@@ -1231,7 +1230,9 @@ class D2DPatientRegistrationController extends GetxController {
     tecFirstName.text = parts.isNotEmpty ? parts[0] : '';
     tecMiddleName.text = parts.length > 2 ? parts[1] : '';
     tecLastName.text =
-        parts.length > 1 ? parts.sublist(parts.length > 2 ? 2 : 1).join(' ') : '';
+        parts.length > 1
+            ? parts.sublist(parts.length > 2 ? 2 : 1).join(' ')
+            : '';
     onNamePartsChanged();
 
     // BOCW ID
@@ -1249,7 +1250,8 @@ class D2DPatientRegistrationController extends GetxController {
     } else if (relIdInt != null) {
       selectedRelation.value = RelationOutput(
         relId: relIdInt,
-        relName: data.relName?.isNotEmpty == true ? data.relName : data.relation,
+        relName:
+            data.relName?.isNotEmpty == true ? data.relName : data.relation,
       );
     }
 
@@ -1278,7 +1280,9 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // ignore: avoid_print
-    print('[_fetchDependentRescreeningData] relId=$relIdStr name=${tecFirstName.text} ${tecMiddleName.text} ${tecLastName.text} gender=${selectedGender.value} dob=${tecDob.text}');
+    print(
+      '[_fetchDependentRescreeningData] relId=$relIdStr name=${tecFirstName.text} ${tecMiddleName.text} ${tecLastName.text} gender=${selectedGender.value} dob=${tecDob.text}',
+    );
   }
 
   Future<void> onDependentSelected(DependentOutput dep) async {
@@ -1476,7 +1480,7 @@ class D2DPatientRegistrationController extends GetxController {
     tecLastName.clear();
 
     // Contact
-    tecMobileNo.text = '9673974373'; // TEST OVERRIDE
+    tecMobileNo.text = '8087202645'; // TEST OVERRIDE
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
     originalAadhaar = '';
@@ -1653,7 +1657,7 @@ class D2DPatientRegistrationController extends GetxController {
     // Mobile
     final apiMobile = (data.mobile ?? '').trim();
     if (apiMobile.isNotEmpty) tecMobileNo.text = apiMobile;
-    tecMobileNo.text = '9673974373'; // TEST OVERRIDE
+    tecMobileNo.text = '8087202645'; // TEST OVERRIDE
 
     // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
     // (isDependent=No). When registering a dependent the phlebo enters these
@@ -2891,7 +2895,8 @@ class D2DPatientRegistrationController extends GetxController {
 
     // GP guard — mirrors native radioRural check before submit
     // '0' is the sentinel for "no GP selected" (same as native gpCode = "0")
-    if (isRural.value && (selectedGpCode.value.isEmpty || selectedGpCode.value == '0')) {
+    if (isRural.value &&
+        (selectedGpCode.value.isEmpty || selectedGpCode.value == '0')) {
       ToastManager.showAlertDialog(
         Get.context!,
         'Please select Gram Panchayat',
@@ -2914,7 +2919,9 @@ class D2DPatientRegistrationController extends GetxController {
 
     // Mirrors native submitData() lines 6890-6896: dependent list field must be
     // filled for BOTH with_abha and without_abha when isDependent==1.
-    if (isDependent.value && selectedDependent.value == null && !reRegistrationLocked.value) {
+    if (isDependent.value &&
+        selectedDependent.value == null &&
+        !reRegistrationLocked.value) {
       ToastManager.showAlertDialog(
         Get.context!,
         'Please select dependent first',
@@ -3091,10 +3098,14 @@ class D2DPatientRegistrationController extends GetxController {
     }
 
     // ignore: avoid_print
-    print('[IsCellularPhone] Validation reached. isCellularPhone=${isCellularPhone.value} consentPhotoPath=${consentPhotoPath.value}');
+    print(
+      '[IsCellularPhone] Validation reached. isCellularPhone=${isCellularPhone.value} consentPhotoPath=${consentPhotoPath.value}',
+    );
     if (isCellularPhone.value && consentPhotoPath.value.isEmpty) {
       // ignore: avoid_print
-      print('[IsCellularPhone=true] BLOCKED — basic phone, consent photo missing');
+      print(
+        '[IsCellularPhone=true] BLOCKED — basic phone, consent photo missing',
+      );
       ToastManager.toast('Please capture consent photo');
       return false;
     }
@@ -3152,20 +3163,26 @@ class D2DPatientRegistrationController extends GetxController {
     ToastManager.showLoader();
     try {
       final regdNo = 'MH${tecWorkerRegNo.text.trim()}';
-      final aadhaar = isAadhaarMode ? originalAadhaar : tecAadhaarNo.text.trim();
+      final aadhaar =
+          isAadhaarMode ? originalAadhaar : tecAadhaarNo.text.trim();
       final relationId = selectedRelation.value?.relId?.toString() ?? '20';
-      final rationCard = tecRationCardNo.text.trim().isEmpty
-          ? 'NA'
-          : tecRationCardNo.text.trim();
+      final rationCard =
+          tecRationCardNo.text.trim().isEmpty
+              ? 'NA'
+              : tecRationCardNo.text.trim();
 
       // ── Consent check (new in 9.82) ───────────────────────────────────────
       // isCellularPhone=false(0) → HAS smartphone → web consent link clicked → getConsent() checks server record.
       // isCellularPhone=true(1) → basic/feature phone → can't open link → phlebo captures consent photo → skip getConsent().
       // ignore: avoid_print
-      print('[IsCellularPhone] BRANCH DECISION → isCellularPhone=${isCellularPhone.value} RegdNo=$regdNo Name=${tecFullName.text.trim()} RelationId=$relationId');
+      print(
+        '[IsCellularPhone] BRANCH DECISION → isCellularPhone=${isCellularPhone.value} RegdNo=$regdNo Name=${tecFullName.text.trim()} RelationId=$relationId',
+      );
       if (!isCellularPhone.value) {
         // ignore: avoid_print
-        print('[IsCellularPhone=false] HAS smartphone → calling getConsent() API');
+        print(
+          '[IsCellularPhone=false] HAS smartphone → calling getConsent() API',
+        );
         final consentStatus = await _repo.getConsent(
           bocwRegNo: regdNo,
           beneficiaryName: tecFullName.text.trim(),
@@ -3211,12 +3228,16 @@ class D2DPatientRegistrationController extends GetxController {
         }
         // consentStatus == 1 → consent given, proceed
         // ignore: avoid_print
-        print('[getConsent] Consent CONFIRMED (status=1) → proceeding to verifyBeneficiaryDetails()');
+        print(
+          '[getConsent] Consent CONFIRMED (status=1) → proceeding to verifyBeneficiaryDetails()',
+        );
         isSubmitting.value = true;
         ToastManager.showLoader();
       } else {
         // ignore: avoid_print
-        print('[IsCellularPhone=true] Basic/feature phone → skipping getConsent(), consent photo captured by phlebo');
+        print(
+          '[IsCellularPhone=true] Basic/feature phone → skipping getConsent(), consent photo captured by phlebo',
+        );
       }
       // ─────────────────────────────────────────────────────────────────────
 

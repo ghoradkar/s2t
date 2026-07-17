@@ -14,7 +14,8 @@ import 'package:s2toperational/utilities/data_provider.dart';
 import 'package:s2toperational/user_attendance/model/user_attandance_response.dart';
 import 'package:s2toperational/user_attendance/repository/user_attendance_repository.dart';
 
-class UserAttendanceController extends GetxController with WidgetsBindingObserver {
+class UserAttendanceController extends GetxController
+    with WidgetsBindingObserver {
   final UserAttendanceRepository repository;
 
   UserAttendanceController({required this.repository});
@@ -45,8 +46,10 @@ class UserAttendanceController extends GetxController with WidgetsBindingObserve
   bool isMapReady = false;
   bool isLocationPermissionDenied = false;
 
-  static const Color _colorCheckIn = Color.fromRGBO(100, 167, 90, 1.0);
-  static const Color _colorCheckOut = Color.fromRGBO(33, 150, 243, 1.0);
+  // static const Color _colorCheckIn = Color.fromRGBO(100, 167, 90, 1.0);
+  // static const Color _colorCheckOut = Color.fromRGBO(33, 150, 243, 1.0);
+  static const Color _colorCheckIn = Color.fromRGBO(46, 139, 87, 1.0);
+  static const Color _colorCheckOut = Color.fromRGBO(249, 187, 61, 1.0);
 
   @override
   void onInit() {
@@ -105,7 +108,8 @@ class UserAttendanceController extends GetxController with WidgetsBindingObserve
       final result = await LocationManager.checkAndRequestLocation();
       print('[MAP] checkAndRequestLocation result=$result');
 
-      isLocationPermissionDenied = result == LocationPermissionResult.permanentlyDenied;
+      isLocationPermissionDenied =
+          result == LocationPermissionResult.permanentlyDenied;
 
       if (result == LocationPermissionResult.granted) {
         print('[MAP] getting current location...');
@@ -221,8 +225,7 @@ class UserAttendanceController extends GetxController with WidgetsBindingObserve
         _inOutFlagMap[date] = flag;
 
         // Color: blue = fully checked out (2/02), green = checked in only (1/01 or other)
-        attendanceMap[date] =
-            (flag == '02' || flag == '2') ? _colorCheckOut : _colorCheckIn;
+        attendanceMap[date] = flag == '1' ? _colorCheckOut : _colorCheckIn;
       }
     } catch (e) {
       attendanceMap = {};

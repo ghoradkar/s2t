@@ -30,7 +30,7 @@ class BeneficiaryCampRow extends StatelessWidget {
       child: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(6.w, 16.h, 0, 12.h),
+            padding: EdgeInsets.fromLTRB(6.w, 16.h, 0, 22.h),
             child: Container(
               width: SizeConfig.screenWidth,
               decoration: BoxDecoration(
@@ -63,7 +63,11 @@ class BeneficiaryCampRow extends StatelessWidget {
                             children: [
                               SizedBox(width: 8.h),
 
-                              Image.asset(icHashIcon,width: 20.w,height: 20.h,),
+                              Image.asset(
+                                icHashIcon,
+                                width: 20.w,
+                                height: 20.h,
+                              ),
                               SizedBox(width: 8.w),
                               Expanded(
                                 child: Row(
@@ -102,7 +106,11 @@ class BeneficiaryCampRow extends StatelessWidget {
                             children: [
                               SizedBox(width: 8.h),
 
-                              Image.asset(icInitiatedBy,width: 20.w,height: 20.h,),
+                              Image.asset(
+                                icInitiatedBy,
+                                width: 20.w,
+                                height: 20.h,
+                              ),
                               SizedBox(width: 8.w),
                               Expanded(
                                 child: Row(
@@ -163,7 +171,11 @@ class BeneficiaryCampRow extends StatelessWidget {
                                   () => BeneficiaryVerificationScreen(obj: obj),
                                 )?.then((_) => onRefresh?.call());
                               },
-                              child: Image.asset(icViewIcon,width: 24.w,height: 24.h,),
+                              child: Image.asset(
+                                icViewIcon,
+                                width: 24.w,
+                                height: 24.h,
+                              ),
                             ),
                           ],
                         ),
@@ -191,7 +203,7 @@ class BeneficiaryCampRow extends StatelessWidget {
                     color: kWhiteColor,
                     fontFamily: FontConstants.interFonts,
                     fontWeight: FontWeight.bold,
-                    fontSize:14.sp,
+                    fontSize: 14.sp,
                   ),
                 ),
               ),

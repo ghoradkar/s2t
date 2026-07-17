@@ -161,7 +161,10 @@ class _ExpandableCardState extends State<_ExpandableCard>
                 onTap: _toggle,
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 12.h,
+                  ),
                   decoration: BoxDecoration(
                     color: kPrimaryColor,
                     borderRadius:
@@ -322,11 +325,9 @@ class _ChipSelector extends StatelessWidget {
                     fontSize: 14.sp,
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                     color:
-                    // !enabled
-                    //     ? kTextColor.withValues(alpha: 0.35) :
-                    selected
-                        ? kWhiteColor
-                        : kTextColor,
+                        // !enabled
+                        //     ? kTextColor.withValues(alpha: 0.35) :
+                        selected ? kWhiteColor : kTextColor,
                   ),
                 ),
               ),
@@ -622,27 +623,29 @@ class _BasicHealthInfoSection extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w),
                   Expanded(
-                    child: Obx(() => AppTextField(
-                      controller: c.weightCtrl,
-                      readOnly: c.isWeightMachineAvailable.value && c.isLive,
-                      onTap: () {},
-                      onChange: (_) => c.recalculateBMI(),
-                      textInputType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d*\.?\d*'),
+                    child: Obx(
+                      () => AppTextField(
+                        controller: c.weightCtrl,
+                        readOnly: c.isWeightMachineAvailable.value && c.isLive,
+                        onTap: () {},
+                        onChange: (_) => c.recalculateBMI(),
+                        textInputType: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
-                      ],
-                      label: _label('Weight (kgs)'),
-                      prefixIcon: Image.asset(
-                        icWeightIcon,
-                        color: kPrimaryColor,
-                        width: 20.w,
-                        height: 20.h,
-                      ).paddingOnly(left: 6.w),
-                    )),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*'),
+                          ),
+                        ],
+                        label: _label('Weight (kgs)'),
+                        prefixIcon: Image.asset(
+                          icWeightIcon,
+                          color: kPrimaryColor,
+                          width: 20.w,
+                          height: 20.h,
+                        ).paddingOnly(left: 6.w),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -704,16 +707,18 @@ class _BasicHealthInfoSection extends StatelessWidget {
               ),
               _gap(),
 
-              Obx(() => _ChipSelector(
-                heading: 'BMI Status',
-                options: const ['Underweight', 'Normal', 'Overweight'],
-                selectedIndex: c.bmiStatusIndex,
-                enabled: !c.isWeightMachineAvailable.value,
-                onChanged: (i) {
-                  c.bmiStatusIndex = i;
-                  c.update();
-                },
-              )),
+              Obx(
+                () => _ChipSelector(
+                  heading: 'BMI Status',
+                  options: const ['Underweight', 'Normal', 'Overweight'],
+                  selectedIndex: c.bmiStatusIndex,
+                  enabled: !c.isWeightMachineAvailable.value,
+                  onChanged: (i) {
+                    // c.bmiStatusIndex = i;
+                    // c.update();
+                  },
+                ),
+              ),
               _gap(14),
 
               // ── Fasting ──────────────────────────────────────
@@ -1072,22 +1077,26 @@ class _BloodSugarSection extends StatelessWidget {
       icon: Icons.water_drop_outlined,
       content: Column(
         children: [
-          Obx(() => AppTextField(
-            controller: ctrl.bloodSugarRCtrl,
-            readOnly: ctrl.isSugarDeviceAvailable.value && ctrl.isLive,
-            onTap: () {},
-            textInputType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-            ],
-            label: _label('Blood Sugar (R) mg/dL'),
-            prefixIcon: Image.asset(
-              icBloodGroup,
-              color: kPrimaryColor,
-              width: 20.w,
-              height: 20.h,
-            ).paddingOnly(left: 6.w),
-          )),
+          Obx(
+            () => AppTextField(
+              controller: ctrl.bloodSugarRCtrl,
+              readOnly: ctrl.isSugarDeviceAvailable.value && ctrl.isLive,
+              onTap: () {},
+              textInputType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              label: _label('Blood Sugar (R) mg/dL'),
+              prefixIcon: Image.asset(
+                icBloodGroup,
+                color: kPrimaryColor,
+                width: 20.w,
+                height: 20.h,
+              ).paddingOnly(left: 6.w),
+            ),
+          ),
           _gap(10),
           _btSearchButton(
             label: 'Search Sugar Device',
@@ -1099,9 +1108,8 @@ class _BloodSugarSection extends StatelessWidget {
               final result = await Navigator.push<GlucoseResult?>(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => GlucoseDeviceScreen(
-                    patientItem: ctrl.patientItem,
-                  ),
+                  builder:
+                      (_) => GlucoseDeviceScreen(patientItem: ctrl.patientItem),
                 ),
               );
               if (result != null && context.mounted) {
@@ -1137,37 +1145,43 @@ class _BloodPressureSection extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Obx(() => AppTextField(
-                  controller: ctrl.systolicCtrl,
-                  readOnly: ctrl.isBPMachineAvailable.value && ctrl.isLive,
-                  onTap: () {},
-                  textInputType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  label: _label('Systolic (mmHg)'),
-                  prefixIcon: Image.asset(
-                    icBloodGroup,
-                    color: kPrimaryColor,
-                    width: 20.w,
-                    height: 20.h,
-                  ).paddingOnly(left: 6.w),
-                )),
+                child: Obx(
+                  () => AppTextField(
+                    controller: ctrl.systolicCtrl,
+                    readOnly: ctrl.isBPMachineAvailable.value && ctrl.isLive,
+                    onTap: () {},
+                    maxLength: 3,
+                    textInputType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    label: _label('Systolic (mmHg)'),
+                    prefixIcon: Image.asset(
+                      icBloodGroup,
+                      color: kPrimaryColor,
+                      width: 20.w,
+                      height: 20.h,
+                    ).paddingOnly(left: 6.w),
+                  ),
+                ),
               ),
               SizedBox(width: 10.w),
               Expanded(
-                child: Obx(() => AppTextField(
-                  controller: ctrl.diastolicCtrl,
-                  readOnly: ctrl.isBPMachineAvailable.value && ctrl.isLive,
-                  onTap: () {},
-                  textInputType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  label: _label('Diastolic (mmHg)'),
-                  prefixIcon: Image.asset(
-                    icBloodGroup,
-                    color: kPrimaryColor,
-                    width: 20.w,
-                    height: 20.h,
-                  ).paddingOnly(left: 6.w),
-                )),
+                child: Obx(
+                  () => AppTextField(
+                    controller: ctrl.diastolicCtrl,
+                    readOnly: ctrl.isBPMachineAvailable.value && ctrl.isLive,
+                    onTap: () {},
+                    maxLength: 3,
+                    textInputType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    label: _label('Diastolic (mmHg)'),
+                    prefixIcon: Image.asset(
+                      icBloodGroup,
+                      color: kPrimaryColor,
+                      width: 20.w,
+                      height: 20.h,
+                    ).paddingOnly(left: 6.w),
+                  ),
+                ),
               ),
             ],
           ),
@@ -1175,13 +1189,16 @@ class _BloodPressureSection extends StatelessWidget {
           Obx(() {
             final bp = ctrl.bpController;
             // Show paired view if device was ever paired (persisted) OR currently connected
-            final hasPairedDevice = bp.savedDeviceMac.value.isNotEmpty || bp.isConnected.value;
-            final displayName = bp.connectedDeviceName.value.isNotEmpty
-                ? bp.connectedDeviceName.value
-                : bp.savedDeviceName.value;
-            final displayMac = bp.connectedDeviceMac.value.isNotEmpty
-                ? bp.connectedDeviceMac.value
-                : bp.savedDeviceMac.value;
+            final hasPairedDevice =
+                bp.savedDeviceMac.value.isNotEmpty || bp.isConnected.value;
+            final displayName =
+                bp.connectedDeviceName.value.isNotEmpty
+                    ? bp.connectedDeviceName.value
+                    : bp.savedDeviceName.value;
+            final displayMac =
+                bp.connectedDeviceMac.value.isNotEmpty
+                    ? bp.connectedDeviceMac.value
+                    : bp.savedDeviceMac.value;
             final busy = bp.isConnecting.value || bp.isWaitingForReading.value;
 
             return Column(
@@ -1192,7 +1209,10 @@ class _BloodPressureSection extends StatelessWidget {
                   // Native-style paired device notice
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 8.h,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
                       borderRadius: BorderRadius.circular(8.r),
@@ -1201,7 +1221,11 @@ class _BloodPressureSection extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.info_outline, size: 14.r, color: Colors.blue.shade700),
+                        Icon(
+                          Icons.info_outline,
+                          size: 14.r,
+                          color: Colors.blue.shade700,
+                        ),
                         SizedBox(width: 6.w),
                         Expanded(
                           child: Text(
@@ -1218,7 +1242,11 @@ class _BloodPressureSection extends StatelessWidget {
                         SizedBox(width: 4.w),
                         GestureDetector(
                           onTap: () => bp.forgetDevice(),
-                          child: Icon(Icons.settings_outlined, size: 18.r, color: Colors.blue.shade700),
+                          child: Icon(
+                            Icons.settings_outlined,
+                            size: 18.r,
+                            color: Colors.blue.shade700,
+                          ),
                         ),
                       ],
                     ),
@@ -1228,9 +1256,14 @@ class _BloodPressureSection extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        bp.isConnected.value ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                        bp.isConnected.value
+                            ? Icons.bluetooth_connected
+                            : Icons.bluetooth_disabled,
                         size: 13.r,
-                        color: bp.isConnected.value ? Colors.green : kLabelTextColor,
+                        color:
+                            bp.isConnected.value
+                                ? Colors.green
+                                : kLabelTextColor,
                       ),
                       SizedBox(width: 5.w),
                       Expanded(
@@ -1239,7 +1272,10 @@ class _BloodPressureSection extends StatelessWidget {
                           style: TextStyle(
                             fontFamily: FontConstants.interFonts,
                             fontSize: 11.sp,
-                            color: bp.isConnected.value ? Colors.green.shade700 : kLabelTextColor,
+                            color:
+                                bp.isConnected.value
+                                    ? Colors.green.shade700
+                                    : kLabelTextColor,
                           ),
                         ),
                       ),
@@ -1262,12 +1298,17 @@ class _BloodPressureSection extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: busy ? null : ctrl.transferBpData,
-                      icon: busy
-                          ? SizedBox(
-                              width: 17.r, height: 17.r,
-                              child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                            )
-                          : Icon(Icons.sync, size: 17.r),
+                      icon:
+                          busy
+                              ? SizedBox(
+                                width: 17.r,
+                                height: 17.r,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                              : Icon(Icons.sync, size: 17.r),
                       label: Text(
                         busy ? 'Please wait...' : 'TRANSFER',
                         style: TextStyle(
@@ -1300,17 +1341,22 @@ class _BloodPressureSection extends StatelessWidget {
                         final device = await Navigator.push<BluetoothDevice?>(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const BleDeviceListScreen(
-                              title: 'BP Device Pairing',
-                              namePrefix: 'BLESmart_',
-                            ),
+                            builder:
+                                (_) => const BleDeviceListScreen(
+                                  title: 'BP Device Pairing',
+                                  namePrefix: 'BLESmart_',
+                                ),
                           ),
                         );
                         if (device != null && context.mounted) {
                           await ctrl.connectBpDevice(device);
                         }
                       },
-                      icon: Icon(Icons.bluetooth_searching, size: 17.r, color: kPrimaryColor),
+                      icon: Icon(
+                        Icons.bluetooth_searching,
+                        size: 17.r,
+                        color: kPrimaryColor,
+                      ),
                       label: Text(
                         'SCAN',
                         style: TextStyle(

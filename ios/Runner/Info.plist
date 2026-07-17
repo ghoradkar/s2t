@@ -28,9 +28,15 @@
 	<array>
 		<string>tel</string>
 		<string>youtube</string>
+        <string>comgooglemaps</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Bluetooth is required to connect to weight and health monitoring devices.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
@@ -41,11 +47,6 @@
 	<array>
 		<string>com.adobe.pdf</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We need your location to proceed.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

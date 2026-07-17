@@ -28,52 +28,61 @@ class BeneficiaryCampDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(BeneficiaryCampDetailsController(
-      campId: campId,
-      cAMPTYPE: cAMPTYPE,
-      campTypeDescription: campTypeDescription,
-    ));
-    return GetBuilder<BeneficiaryCampDetailsController>(
-      builder: (ctrl) => NetworkWrapper(
-        child: Expanded(
-          child: Column(
-            children: [
-              SizedBox(height: 6.h),
-              ctrl.isShowTeamDropDown
-                  ? AppDropdownTextfield(
-                    icon: icTeamIconn,
-                    titleHeaderString: 'Team',
-                    valueString: ctrl.teamName,
-                    isDisabled: false,
-                    onTap: () => _openTeamSheet(context, ctrl),
-                  )
-                  : const SizedBox.shrink(),
-              ctrl.isShowTeamDropDown ? SizedBox(height: 10.h) : const SizedBox.shrink(),
-              Expanded(
-                child: ctrl.isLoading
-                    ? const CommonSkeletonPatientList()
-                    : ctrl.beneficiaryWorkerList.isNotEmpty
-                    ? ListView.builder(
-                      itemCount: ctrl.beneficiaryWorkerList.length,
-                      itemBuilder: (context, index) {
-                        final obj = ctrl.beneficiaryWorkerList[index];
-                        return BeneficiaryCampRow(
-                          index: index,
-                          obj: obj,
-                          onRefresh: ctrl.fetchBeneficiaryList,
-                        );
-                      },
-                    )
-                    : NoDataFound(),
-              ),
-            ],
-          ),
-        ),
+    Get.put(
+      BeneficiaryCampDetailsController(
+        campId: campId,
+        cAMPTYPE: cAMPTYPE,
+        campTypeDescription: campTypeDescription,
       ),
+    );
+    return GetBuilder<BeneficiaryCampDetailsController>(
+      builder:
+          (ctrl) => NetworkWrapper(
+            child: Expanded(
+              child: Column(
+                children: [
+                  SizedBox(height: 6.h),
+                  ctrl.isShowTeamDropDown
+                      ? AppDropdownTextfield(
+                        icon: icTeamIconn,
+                        titleHeaderString: 'Team',
+                        valueString: ctrl.teamName,
+                        isDisabled: false,
+                        onTap: () => _openTeamSheet(context, ctrl),
+                      )
+                      : const SizedBox.shrink(),
+                  ctrl.isShowTeamDropDown
+                      ? SizedBox(height: 10.h)
+                      : const SizedBox.shrink(),
+                  Expanded(
+                    child:
+                        ctrl.isLoading
+                            ? const CommonSkeletonPatientList()
+                            : ctrl.beneficiaryWorkerList.isNotEmpty
+                            ? ListView.builder(
+                              itemCount: ctrl.beneficiaryWorkerList.length,
+                              itemBuilder: (context, index) {
+                                final obj = ctrl.beneficiaryWorkerList[index];
+                                return BeneficiaryCampRow(
+                                  index: index,
+                                  obj: obj,
+                                  onRefresh: ctrl.fetchBeneficiaryList,
+                                );
+                              },
+                            )
+                            : NoDataFound(),
+                  ),
+                ],
+              ),
+            ),
+          ),
     );
   }
 
-  Future<void> _openTeamSheet(BuildContext context, BeneficiaryCampDetailsController ctrl) async {
+  Future<void> _openTeamSheet(
+    BuildContext context,
+    BeneficiaryCampDetailsController ctrl,
+  ) async {
     final teams = await ctrl.fetchCampWiseTeams();
     if (teams.isEmpty || !context.mounted) return;
     showModalBottomSheet(
@@ -83,23 +92,24 @@ class BeneficiaryCampDetailsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       isDismissible: false,
       enableDrag: false,
-      builder: (_) => Container(
-        width: double.infinity,
-        height: MediaQuery.of(context).size.width * 1.33,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+      builder:
+          (_) => Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.width * 1.33,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: DropDownListScreen(
+              titleString: 'Select Team',
+              dropDownList: teams,
+              dropDownMenu: DropDownTypeMenu.CampDetailsTeam,
+              onApplyTap: (p0) => ctrl.selectTeam(p0 as TeamDetailsOutput),
+            ),
           ),
-        ),
-        child: DropDownListScreen(
-          titleString: 'Select Team',
-          dropDownList: teams,
-          dropDownMenu: DropDownTypeMenu.CampDetailsTeam,
-          onApplyTap: (p0) => ctrl.selectTeam(p0 as TeamDetailsOutput),
-        ),
-      ),
     ).whenComplete(() => ctrl.update());
   }
 }

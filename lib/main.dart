@@ -19,7 +19,6 @@ import 'utilities/route_observer.dart';
 class _BypassSslHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-
     return super.createHttpClient(context)
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
@@ -49,7 +48,6 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           title: "S2T Operational",
-          // theme: AppTheme.lightTheme,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,

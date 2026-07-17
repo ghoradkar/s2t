@@ -52,7 +52,7 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
       child: Scaffold(
         backgroundColor: kBackground,
         appBar: mAppBar(
-          scTitle: 'Team Photos',
+          scTitle: 'Team Attendance In Camp',
           leadingIcon: iconBackArrow,
           onLeadingIconClick: () => Get.back(),
           showActions: true,
@@ -294,41 +294,91 @@ class _TeamPhotosScreenState extends State<TeamPhotosScreen> {
   static void _showInfoDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (_) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            title: Text(
-              'Team Photos',
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-              ),
-            ),
-            content: Text(
-              'Capture and upload the team group photo for Check-In and Check-Out. '
-              'All team members must mark attendance before uploading.',
-              style: TextStyle(
-                fontFamily: FontConstants.interFonts,
-                fontSize: 14.sp,
-                color: kTextColor,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'OK',
-                  style: TextStyle(
-                    color: kPrimaryColor,
-                    fontFamily: FontConstants.interFonts,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(24.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64.w,
+                  height: 64.w,
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.info_outline_rounded,
+                    color: Colors.orange,
+                    size: 34.sp,
                   ),
                 ),
-              ),
-            ],
+
+                SizedBox(height: 20.h),
+
+                Text(
+                  "महत्वाची सूचना",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: FontConstants.interFonts,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.sp,
+                    color: kTextColor,
+                  ),
+                ),
+
+                SizedBox(height: 16.h),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "• फोटो घेताना सर्व टीम सदस्य एकाच फ्रेममध्ये स्पष्टपणे दिसणे अनिवार्य आहे.\n\n"
+                    "• कॅम्पच्या दिवशी चेक-आउट फोटो न घेतल्यास सर्व register केलेले लाभार्थी रद्द (Reject) करण्यात येतील.",
+                    style: TextStyle(
+                      fontFamily: FontConstants.interFonts,
+                      fontSize: 14.sp,
+                      height: 1.6,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 24.h),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      "ठीक आहे",
+                      style: TextStyle(
+                        fontFamily: FontConstants.interFonts,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+        );
+      },
     );
   }
 

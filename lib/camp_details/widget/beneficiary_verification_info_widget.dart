@@ -142,7 +142,6 @@ class _BeneficiaryVerificationInfoScreenState
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -163,7 +162,7 @@ class _BeneficiaryVerificationInfoScreenState
                     height: 22.h,
                     child: Image.asset(icUserIcon),
                   ),
-                   SizedBox(width: 6.w),
+                  SizedBox(width: 6.w),
                   Expanded(
                     child: RichText(
                       text: TextSpan(
@@ -193,7 +192,7 @@ class _BeneficiaryVerificationInfoScreenState
                   ),
                 ],
               ),
-               SizedBox(height: 8.h),
+              SizedBox(height: 8.h),
               Container(
                 width: SizeConfig.screenWidth,
                 height: 30.h,
@@ -228,7 +227,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -245,7 +244,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -262,7 +261,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -279,7 +278,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -296,7 +295,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -321,7 +320,7 @@ class _BeneficiaryVerificationInfoScreenState
                   ],
                 ),
               ),
-               SizedBox(height: 2.h),
+              SizedBox(height: 2.h),
               Container(
                 width: SizeConfig.screenWidth,
                 height: 30.h,
@@ -350,7 +349,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -370,7 +369,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -390,7 +389,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -410,7 +409,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         color: Colors.white,
@@ -430,7 +429,7 @@ class _BeneficiaryVerificationInfoScreenState
                         ),
                       ),
                     ),
-                     SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(color: Colors.white),
@@ -488,7 +487,10 @@ class _BeneficiaryVerificationInfoScreenState
                           Container(
                             width: 70.w,
                             height: 70.h,
-                            padding: EdgeInsets.symmetric(vertical: 4.h,horizontal: 4.w),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4.h,
+                              horizontal: 4.w,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
@@ -510,7 +512,7 @@ class _BeneficiaryVerificationInfoScreenState
                               },
                             ),
                           ),
-                           SizedBox(width: 8.w),
+                          SizedBox(width: 8.w),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -586,7 +588,7 @@ class _BeneficiaryVerificationInfoScreenState
                           ),
                         ),
                       ),
-                       SizedBox(height: 4.h),
+                      SizedBox(height: 4.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -594,7 +596,10 @@ class _BeneficiaryVerificationInfoScreenState
                           Container(
                             width: 70.w,
                             height: 70.h,
-                            padding: EdgeInsets.symmetric(vertical: 4.h,horizontal: 4.w),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4.h,
+                              horizontal: 4.w,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
@@ -615,7 +620,7 @@ class _BeneficiaryVerificationInfoScreenState
                               },
                             ),
                           ),
-                           SizedBox(width: 8.w),
+                          SizedBox(width: 8.w),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -686,9 +691,8 @@ class _BeneficiaryVerificationInfoScreenState
     );
   }
 
-
   String checkPatienStatus(String status) {
-    if (status == "0") {
+    if (status == "0" || status.isEmpty) {
       return icCrossIcon;
     }
     return icCheckIcon;
@@ -700,10 +704,10 @@ class _BeneficiaryVerificationInfoScreenState
     return imagePath;
   }
 
-// String cardImageURL() {
-//   String cardImagePath = widget.obj.cardImagePath ?? "";
-//   String encodedPath1 = Uri.encodeQueryComponent(cardImagePath);
+  // String cardImageURL() {
+  //   String cardImagePath = widget.obj.cardImagePath ?? "";
+  //   String encodedPath1 = Uri.encodeQueryComponent(cardImagePath);
 
-//   return encodedPath1;
-// }
+  //   return encodedPath1;
+  // }
 }
