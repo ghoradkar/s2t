@@ -5,9 +5,11 @@ import 'package:s2toperational/calling_modules/widgets/network_wrapper.dart';
 import 'package:s2toperational/d2d_physical_examination/screens/Acknowledgement/patient_list_acknowledgement.dart';
 import 'package:s2toperational/d2d_physical_examination/screens/call_to_doctor_screen/patient_list_d2d_phy_exa.dart';
 import 'package:s2toperational/camp_details/screen/camp_details_screen.dart';
+import 'package:s2toperational/acknowledgement/screens/select%20_camp_acknowledgement_screen.dart';
 import '../../../../utilities/enums.dart';
 import '../../../../constants/images.dart';
 import '../../../../utilities/size_config.dart';
+import '../../../../utilities/data_provider.dart';
 import '../../../../common_widgets/S2TAppBar.dart';
 // import '../../../camp_details/screen/camp_details_screen.dart';
 import '../../controllers/health_screening_details_controller.dart';
@@ -53,6 +55,7 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.delete<HealthScreeningDetailsController>(force: true);
     final controller = Get.put(HealthScreeningDetailsController());
     SizeConfig().init(context);
 
@@ -227,7 +230,7 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
         break;
 
 
-      case HealthScreeningDetailsMenu.Acknowledgement:
+      case HealthScreeningDetailsMenu.RationAcknowledgement:
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -237,6 +240,14 @@ class HealthScreeningDetailsScreen extends StatelessWidget {
               healthScreentype: "16",
               flag: "2",
             ),
+          ),
+        );
+        break;
+
+      case HealthScreeningDetailsMenu.Acknowledgement:
+        Get.to(
+          () => AcknowledgementCampListScreenNew(
+            isD2D: !DataProvider().getRegularCamp(),
           ),
         );
         break;

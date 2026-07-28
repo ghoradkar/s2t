@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/io_client.dart';
 
 import '../../../utilities/api_manager.dart';
@@ -35,7 +36,8 @@ class SplashRepository {
         status: decoded['status'] as String? ?? '',
         message: decoded['message'] as String? ?? '',
       );
-    } catch (_) {
+    } catch (e) {
+      debugPrint(e.toString());
       return (status: '', message: '');
     }
   }

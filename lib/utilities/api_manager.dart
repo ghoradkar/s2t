@@ -6561,11 +6561,13 @@ class APIManager {
         APIConstants.getLandingPageCountsDisplayforFinancialYearForAllSubOrg;
     final url = Uri.parse('$kD2DBaseURL$method');
 
+    debugPrint('[ConductedCamps] GET $url');
     try {
       final response = await _ioClient.get(url);
+      debugPrint(
+        '[ConductedCamps] status=${response.statusCode} body=${response.body}',
+      );
       final body = json.decode(response.body);
-      debugPrint('$url');
-      debugPrint(body);
 
       final campsResponse = ConductedCampsResponse.fromJson(body);
 
@@ -6586,6 +6588,7 @@ class APIManager {
         );
       }
     } catch (e) {
+      debugPrint('[ConductedCamps] Exception: $e');
       callback(null, "Exceptions: $e", false);
     }
   }
@@ -6594,11 +6597,13 @@ class APIManager {
     final method = APIConstants.getTodaysPatientCount;
     final url = Uri.parse('$kD2DBaseURL$method?Date=$date');
 
+    debugPrint('[TodaysPatient] GET $url');
     try {
       final response = await _ioClient.get(url);
+      debugPrint(
+        '[TodaysPatient] status=${response.statusCode} body=${response.body}',
+      );
       final body = json.decode(response.body);
-      debugPrint('$url');
-      debugPrint(body);
 
       final todaysPatientsResponse = TodaysPatientsResponse.fromJson(body);
 
@@ -6619,6 +6624,7 @@ class APIManager {
         );
       }
     } catch (e) {
+      debugPrint('[TodaysPatient] Exception: $e');
       callback(null, "Exceptions: $e", false);
     }
   }

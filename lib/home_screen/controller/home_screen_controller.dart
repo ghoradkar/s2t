@@ -288,7 +288,6 @@ class HomeScreenController extends GetxController {
         DashboardMenu.PatientRegistration,
         DashboardMenu.UserAttendance,
         DashboardMenu.FingerPrintUpload,
-        DashboardMenu.Acknowledgement,
         DashboardMenu.ELearning,
       ]);
     } else if (dESGID == 29) {
@@ -302,7 +301,6 @@ class HomeScreenController extends GetxController {
         DashboardMenu.HealthScreeningDetails,
         DashboardMenu.UserAttendance,
         DashboardMenu.FingerPrintUpload,
-        DashboardMenu.Acknowledgement,
         DashboardMenu.ELearning,
         DashboardMenu.TeamPhotos,
       ]);
@@ -359,7 +357,6 @@ class HomeScreenController extends GetxController {
         DashboardMenu.HealthScreeningDetails,
         DashboardMenu.MedicineDeliveryMenu,
         DashboardMenu.PaymentAndInvoice,
-        DashboardMenu.Acknowledgement,
         DashboardMenu.ELearning,
       ]);
     } else if (dESGID == 29) {
@@ -389,7 +386,6 @@ class HomeScreenController extends GetxController {
         DashboardMenu.TeamCampMapping,
         DashboardMenu.HealthScreeningDetails,
         DashboardMenu.UserAttendance,
-        DashboardMenu.Acknowledgement,
         DashboardMenu.ELearning,
       ]);
     } else if (dESGID == 139) {
@@ -406,7 +402,6 @@ class HomeScreenController extends GetxController {
         DashboardMenu.HealthScreeningDetails,
         DashboardMenu.UserAttendance,
         DashboardMenu.FingerPrintUpload,
-        DashboardMenu.Acknowledgement,
         DashboardMenu.ELearning,
       ]);
     } else if (dESGID == 141) {

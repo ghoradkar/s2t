@@ -194,6 +194,7 @@ const String icUserAttendance = "assets/icons/icUserAttendance.png";
 const String icPatientRegistration = "assets/icons/icPatientRegistration.png";
 const String icTeamCampMapping = "assets/icons/icTeamCampMapping.png";
 const String icAcknowledgement = "assets/icons/icAcknowledgement.png";
+const String icCampAcknowledgement = "assets/icons/acknowledgement.png";
 const String icD2DTeam = "assets/icons/icD2DTeam.png";
 const String icSampleCollection = "assets/icons/icSampleCollection.png";
 const String icBasicHealthInfo = "assets/icons/icBasicHealthInfo.png";

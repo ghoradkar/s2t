@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/io_client.dart';
 
 import '../../../utilities/api_manager.dart';
@@ -47,7 +48,8 @@ class LoginRepository {
         );
       }
       return (model: null, error: 'Server error', success: false);
-    } catch (_) {
+    } catch (e) {
+      debugPrint(e.toString());
       return (model: null, error: 'Server Not Responding', success: false);
     }
   }

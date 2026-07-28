@@ -41,11 +41,13 @@ class _AcknowledgementSignatureScreenState
     controller = Get.find<AcknowledgementSignatureController>(
       tag: widget.controllerTag,
     );
-    nameController =
-        TextEditingController(text: widget.patient.englishName ?? '');
+    nameController = TextEditingController(
+      text: widget.patient.englishName ?? '',
+    );
     genderController = TextEditingController(text: controller.genderLabel);
-    ageController =
-        TextEditingController(text: widget.patient.age?.toString() ?? '');
+    ageController = TextEditingController(
+      text: widget.patient.age?.toString() ?? '',
+    );
   }
 
   @override
@@ -69,13 +71,13 @@ class _AcknowledgementSignatureScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          // â”€â”€ Beneficiary details â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            child: Column(
+            // â”€â”€ Beneficiary details â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _SectionHeader(title: 'Beneficiary Details'),
+                  _SectionHeader(title: 'Patient Details'),
                   const SizedBox(height: 8),
                   AppTextField(
                     controller: nameController,
@@ -154,133 +156,142 @@ class _AcknowledgementSignatureScreenState
                     ],
                   ),
                 ],
+              ),
             ),
-          ),
 
-          // â”€â”€ Signature section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-          Container(
-            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
-            color: kBackground,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Divider(height: 1),
-                SizedBox(height: 8.h),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: kPrimaryColor.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: kPrimaryColor.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: CommonText(
-                    text:
-                        'I have performed all the above tests successfully. I hereby acknowledge that I have received my health reports.',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    textColor: kBlackColor,
-                    textAlign: TextAlign.justify,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                _SectionHeader(title: 'Patient Signature'),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: borderDashboardColor),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                        child: Signature(
-                          controller: controller.signatureController,
-                          height: 180.h,
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
-                      const Divider(height: 1),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton.icon(
-                              onPressed: controller.clearSignature,
-                              icon: const Icon(Icons.clear, size: 18),
-                              label: CommonText(
-                                text: 'Clear',
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.redAccent,
-                                textAlign: TextAlign.start,
-                              ),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.redAccent,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                Obx(
-                  () => SizedBox(
+            // â”€â”€ Signature section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            Container(
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+              color: kBackground,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Divider(height: 1),
+                  SizedBox(height: 8.h),
+                  Container(
                     width: double.infinity,
-                    height: 48.h,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: kPrimaryColor.withValues(alpha: 0.3),
                       ),
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : () => controller.saveSignature(),
-                      child: controller.isLoading.value
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : CommonText(
-                              text: 'Save Signature',
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
-                              textColor: Colors.white,
-                              textAlign: TextAlign.center,
-                            ),
+                    ),
+                    child: CommonText(
+                      text:
+                          'I have performed all the above tests successfully. I hereby acknowledge that I have received my health reports.',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      textColor: kBlackColor,
+                      textAlign: TextAlign.justify,
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 8.h),
+                  _SectionHeader(title: 'Patient Signature'),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: borderDashboardColor),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                          child: Signature(
+                            controller: controller.signatureController,
+                            height: 180.h,
+                            backgroundColor: Colors.white,
+                          ),
+                        ),
+                        const Divider(height: 1),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton.icon(
+                                onPressed: controller.clearSignature,
+                                icon: const Icon(Icons.clear, size: 18),
+                                label: CommonText(
+                                  text: 'Clear',
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.redAccent,
+                                  textAlign: TextAlign.start,
+                                ),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.redAccent,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  CommonText(
+                    text: "Please do the signature inside the above box",
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                    textColor: googleButtonColor,
+                    textAlign: TextAlign.start,
+                  ),
+                  SizedBox(height: 12.h),
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 48.h,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed:
+                            controller.isLoading.value
+                                ? null
+                                : () => controller.saveSignature(),
+                        child:
+                            controller.isLoading.value
+                                ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : CommonText(
+                                  text: 'Save Signature',
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.white,
+                                  textAlign: TextAlign.center,
+                                ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
           ],
         ),
       ),
@@ -290,6 +301,7 @@ class _AcknowledgementSignatureScreenState
 
 class _SectionHeader extends StatelessWidget {
   final String title;
+
   const _SectionHeader({required this.title});
 
   @override

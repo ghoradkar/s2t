@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:s2toperational/constants/constants.dart';
 import 'package:s2toperational/utilities/size_config.dart';
-import '../../../../../constants/fonts.dart';
+import '../../../../constants/fonts.dart';
 // import '../../constants/constants.dart';
 // import '../../utilities/size_config.dart';
 
@@ -48,61 +48,7 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
     }
   }
 
-  List<DateTime?> _generateDatesGrid(DateTime month) {
-    int numDays = DateTime(month.year, month.month + 1, 0).day;
-    int firstWeekday = DateTime(month.year, month.month, 1).weekday - 1;
 
-    List<DateTime?> dates = [];
-
-    // Fill blanks before first day of current month
-    for (int i = 0; i < firstWeekday; i++) {
-      dates.add(null);
-    }
-
-    // Fill current month's dates
-    for (int day = 1; day <= numDays; day++) {
-      dates.add(DateTime(month.year, month.month, day));
-    }
-
-    // Fill blanks after last day of current month
-    int remainingBoxes = 42 - dates.length;
-    for (int day = 1; day <= remainingBoxes; day++) {
-      dates.add(null);
-    }
-
-    return dates;
-  }
-
-  void _changeMonth(int offset) {
-    setState(() {
-      currentMonth = DateTime(currentMonth.year, currentMonth.month + offset);
-      datesGrid = _generateDatesGrid(currentMonth);
-      widget.didChangeDate(currentMonth);
-    });
-  }
-
-  Color isSameDay(DateTime date) {
-    if (todayMonths.day == date.day && todayMonths.month == date.month) {
-      return kPrimaryColor;
-    } else {
-      return Colors.transparent;
-    }
-  }
-
-  Color getDateColor(DateTime date) {
-    Color? status =
-        widget.attendanceMap[DateTime(date.year, date.month, date.day)];
-
-    return status ?? isSameDay(date);
-  }
-
-  Color isTextSameDay(DateTime date) {
-    if (todayMonths.day == date.day && todayMonths.month == date.month) {
-      return kWhiteColor;
-    } else {
-      return Colors.black;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +153,62 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
         ],
       ),
     );
+  }
+
+  List<DateTime?> _generateDatesGrid(DateTime month) {
+    int numDays = DateTime(month.year, month.month + 1, 0).day;
+    int firstWeekday = DateTime(month.year, month.month, 1).weekday - 1;
+
+    List<DateTime?> dates = [];
+
+    // Fill blanks before first day of current month
+    for (int i = 0; i < firstWeekday; i++) {
+      dates.add(null);
+    }
+
+    // Fill current month's dates
+    for (int day = 1; day <= numDays; day++) {
+      dates.add(DateTime(month.year, month.month, day));
+    }
+
+    // Fill blanks after last day of current month
+    int remainingBoxes = 42 - dates.length;
+    for (int day = 1; day <= remainingBoxes; day++) {
+      dates.add(null);
+    }
+
+    return dates;
+  }
+
+  void _changeMonth(int offset) {
+    setState(() {
+      currentMonth = DateTime(currentMonth.year, currentMonth.month + offset);
+      datesGrid = _generateDatesGrid(currentMonth);
+      widget.didChangeDate(currentMonth);
+    });
+  }
+
+  Color isSameDay(DateTime date) {
+    if (todayMonths.day == date.day && todayMonths.month == date.month) {
+      return kPrimaryColor;
+    } else {
+      return Colors.transparent;
+    }
+  }
+
+  Color getDateColor(DateTime date) {
+    Color? status =
+    widget.attendanceMap[DateTime(date.year, date.month, date.day)];
+
+    return status ?? isSameDay(date);
+  }
+
+  Color isTextSameDay(DateTime date) {
+    if (todayMonths.day == date.day && todayMonths.month == date.month) {
+      return kWhiteColor;
+    } else {
+      return Colors.black;
+    }
   }
 
   String _monthName(int monthNumber) {

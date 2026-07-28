@@ -102,6 +102,7 @@ enum HealthScreeningDetailsMenu {
   LungFunctionTest,
   AudioScreeningTest,
   VisualScreeningTest,
+  RationAcknowledgement,
   Acknowledgement,
 }
 

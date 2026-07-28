@@ -33,8 +33,7 @@ class HealthScreeningDetailsController extends GetxController {
       menuList.add(HealthScreeningDetailsMenu.CampClosing);
     } else if (dESGID == 141 || dESGID == 34) {
       menuList.add(HealthScreeningDetailsMenu.ScreeningStatus);
-    } else if (dESGID == 92 ||
-        dESGID == 104 ||
+    } else if (dESGID == 104 ||
         dESGID == 108 ||
         dESGID == 29 ||
         dESGID == 35 ||
@@ -49,7 +48,13 @@ class HealthScreeningDetailsController extends GetxController {
       menuList.add(HealthScreeningDetailsMenu.BasicHealthInfo);
       menuList.add(HealthScreeningDetailsMenu.SampleCollection);
       // menuList.add(HealthScreeningDetailsMenu.UrineSampleCollection);
-      menuList.add(HealthScreeningDetailsMenu.Acknowledgement);
+      menuList.add(HealthScreeningDetailsMenu.RationAcknowledgement);
+
+      if (dESGID == 35 ||
+          (dESGID == 29 && DataProvider().getRegularCamp()) ||
+          (dESGID == 139 && !DataProvider().getRegularCamp())) {
+        menuList.add(HealthScreeningDetailsMenu.Acknowledgement);
+      }
 
       if (!DataProvider().getRegularCamp()) {
         menuList.add(HealthScreeningDetailsMenu.D2DPhysicalExamination);

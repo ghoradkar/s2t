@@ -53,6 +53,10 @@ class _D2DPatientRegistrationScreenState
 
   bool get _hasData => c.hasApiData.value;
 
+  // Name fields stay locked until a reg no has been entered — matches native
+  // (fields start android:enabled="false" and only unlock once data loads).
+  bool get _regNoEmpty => c.tecWorkerRegNo.text.trim().isEmpty;
+
   /// True after a successful ABHA-creation fill — locks most form fields.
   bool get _isLocked => c.abhaFormLocked.value;
 
@@ -952,7 +956,7 @@ class _D2DPatientRegistrationScreenState
               child: AppTextField(
                 controller: c.tecFirstName,
                 label: _label('First Name *'),
-                readOnly: _hasData || _isLocked,
+                readOnly: _regNoEmpty || _hasData || _isLocked,
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: _kUpper,
                 onChange: (_) => c.onNamePartsChanged(),
@@ -963,7 +967,7 @@ class _D2DPatientRegistrationScreenState
               child: AppTextField(
                 controller: c.tecMiddleName,
                 label: _label('Middle Name *'),
-                readOnly: _hasData || _isLocked,
+                readOnly: _regNoEmpty || _hasData || _isLocked,
                 textCapitalization: TextCapitalization.characters,
                 inputFormatters: _kUpper,
                 onChange: (_) => c.onNamePartsChanged(),
@@ -976,7 +980,7 @@ class _D2DPatientRegistrationScreenState
         AppTextField(
           controller: c.tecLastName,
           label: _label('Last Name *'),
-          readOnly: _hasData || _isLocked,
+          readOnly: _regNoEmpty || _hasData || _isLocked,
           textCapitalization: TextCapitalization.characters,
           inputFormatters: _kUpper,
           onChange: (_) => c.onNamePartsChanged(),
@@ -1654,6 +1658,8 @@ class _D2DPatientRegistrationScreenState
             ),
           ),
           SizedBox(height: 14.h),
+
+
         ],
         // ── 22. Photo Upload ─────────────────────────────────────────────
         _sectionLabel('Photo Upload'),

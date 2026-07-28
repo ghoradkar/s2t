@@ -13,13 +13,13 @@ import 'package:s2toperational/utilities/size_config.dart';
 import 'package:s2toperational/common_widgets/CommonSkeletonList.dart';
 import 'package:s2toperational/common_widgets/CommonText.dart';
 import 'package:s2toperational/calling_modules/widgets/network_wrapper.dart';
-import 'package:s2toperational/user_attendance/screens/MonthlyScreen/MonthlyScreen.dart';
+import 'package:s2toperational/user_attendance/screens/month_screen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:s2toperational/common_widgets/S2TAppBar.dart';
 import 'package:s2toperational/user_attendance/controller/location_manager.dart';
 import 'package:s2toperational/user_attendance/controller/user_attendance_controller.dart';
 import 'package:s2toperational/user_attendance/repository/user_attendance_repository.dart';
-// import 'package:s2toperational/Views/MonthlyScreen/MonthlyScreen.dart';
+// import 'package:s2toperational/Views/MonthlyScreen/month_screen.dart';
 
 class UserAttendanceScreen extends StatelessWidget {
   const UserAttendanceScreen({super.key});
@@ -58,7 +58,7 @@ class UserAttendanceScreen extends StatelessWidget {
                             Row(
                               children: [
                                 _legendDot(
-                                  const Color.fromRGBO(100, 167, 90, 1.0),
+                                  const Color.fromRGBO(46, 139, 87, 1.0),
                                 ).paddingOnly(bottom: 6, left: 4),
                                 const SizedBox(width: 4),
 
@@ -75,7 +75,7 @@ class UserAttendanceScreen extends StatelessWidget {
                             Row(
                               children: [
                                 _legendDot(
-                                  const Color.fromRGBO(33, 150, 243, 1.0),
+                                  const Color.fromRGBO(249, 187, 61, 1.0),
                                 ).paddingOnly(bottom: 6, left: 4),
                                 const SizedBox(width: 4),
 

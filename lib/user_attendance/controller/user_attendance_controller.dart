@@ -352,27 +352,7 @@ class UserAttendanceController extends GetxController
         }
       },
     );
-    // showDialog(
-    //   context: ctx,
-    //   barrierDismissible: false,
-    //   builder: (ctx) => AlertDialog(
-    //     title: const Text('Confirm'),
-    //     content: const Text('Are you sure you want to check out?'),
-    //     actions: [
-    //       TextButton(
-    //         onPressed: () => Navigator.pop(ctx),
-    //         child: const Text('Cancel'),
-    //       ),
-    //       TextButton(
-    //         onPressed: () {
-    //           Navigator.pop(ctx);
-    //           _onFetchData(date, isCheckout: true);
-    //         },
-    //         child: const Text('Yes'),
-    //       ),
-    //     ],
-    //   ),
-    // );
+
   }
 
   Future<void> _checkout(String attendanceDate) async {
@@ -422,25 +402,6 @@ class UserAttendanceController extends GetxController
   }
 
   // ─── Dialogs ─────────────────────────────────────────────────────────────────
-
-  void _showAlertDialog(String message) {
-    final ctx = Get.context;
-    if (ctx == null) return;
-    showDialog(
-      context: ctx,
-      builder:
-          (ctx) => AlertDialog(
-            title: const Text('Alert'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Okay'),
-              ),
-            ],
-          ),
-    );
-  }
 
   void _showSuccessDialog(String message) {
     final ctx = Get.context;
