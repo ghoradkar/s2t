@@ -28,7 +28,7 @@
 	<array>
 		<string>tel</string>
 		<string>youtube</string>
-        <string>comgooglemaps</string>
+		<string>comgooglemaps</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
