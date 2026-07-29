@@ -14,7 +14,20 @@ class BleDeviceListScreen extends StatefulWidget {
   final String title;
   /// If set, only devices whose name starts with this prefix are shown.
   final String? namePrefix;
-  const BleDeviceListScreen({super.key, required this.title, this.namePrefix});
+  /// If set, devices advertising this BLE service UUID (substring match,
+  /// case-insensitive) are also shown, regardless of [namePrefix]. More
+  /// reliable than a name prefix — the same physical device can advertise
+  /// under different local names depending on its pairing state (e.g. the
+  /// Omron BP monitor shows up as "BLESmart_..." before it's bonded and
+  /// under its real model name like "HEM-7140T1" afterward), but its
+  /// advertised service UUID stays constant.
+  final String? serviceUuidFilter;
+  const BleDeviceListScreen({
+    super.key,
+    required this.title,
+    this.namePrefix,
+    this.serviceUuidFilter,
+  });
 
   @override
   State<BleDeviceListScreen> createState() => _BleDeviceListScreenState();
@@ -71,12 +84,20 @@ class _BleDeviceListScreenState extends State<BleDeviceListScreen> {
           setState(() {
             _results = results.where((r) {
               final name = r.device.platformName;
-              if (name.isEmpty) return false;
               final prefix = widget.namePrefix;
-              if (prefix != null && prefix.isNotEmpty) {
-                return name.startsWith(prefix);
+              final matchesName = name.isNotEmpty &&
+                  (prefix == null || prefix.isEmpty || name.startsWith(prefix));
+
+              final uuidFilter = widget.serviceUuidFilter;
+              final matchesUuid = uuidFilter != null &&
+                  uuidFilter.isNotEmpty &&
+                  r.advertisementData.serviceUuids.any((u) =>
+                      u.toString().toLowerCase().contains(uuidFilter.toLowerCase()));
+
+              if (uuidFilter != null && uuidFilter.isNotEmpty) {
+                return matchesUuid || matchesName;
               }
-              return true;
+              return matchesName;
             }).toList();
           });
         }
@@ -197,7 +218,9 @@ class _BleDeviceListScreenState extends State<BleDeviceListScreen> {
                   child: Icon(Icons.bluetooth, color: kPrimaryColor, size: 20.r),
                 ),
                 title: Text(
-                  r.device.platformName,
+                  r.device.platformName.isNotEmpty
+                      ? r.device.platformName
+                      : r.device.remoteId.toString(),
                   style: TextStyle(
                     fontFamily: FontConstants.interFonts,
                     fontSize: 14.sp,

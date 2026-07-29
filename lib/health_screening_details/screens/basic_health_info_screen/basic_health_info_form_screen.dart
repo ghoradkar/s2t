@@ -1345,6 +1345,7 @@ class _BloodPressureSection extends StatelessWidget {
                                 (_) => const BleDeviceListScreen(
                                   title: 'BP Device Pairing',
                                   namePrefix: 'BLESmart_',
+                                  serviceUuidFilter: 'fe4a',
                                 ),
                           ),
                         );

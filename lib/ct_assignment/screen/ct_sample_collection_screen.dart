@@ -544,7 +544,7 @@ class CTSampleCollectionScreen extends StatelessWidget {
     final options = <String>[
       if (workerMob.isNotEmpty) workerMob,
       if (alternateMob.isNotEmpty) alternateMob,
-      '9371023232',
+      // '9371023232',
     ];
     showModalBottomSheet(
       context: context,

@@ -80,8 +80,8 @@ class D2DPatientRegistrationController extends GetxController {
   final tecFirstName = TextEditingController();
   final tecMiddleName = TextEditingController();
   final tecLastName = TextEditingController();
-  final tecMobileNo = TextEditingController();
-  // final tecMobileNo = TextEditingController(text: '9673974373');
+  // final tecMobileNo = TextEditingController();
+  final tecMobileNo = TextEditingController(text: '9322183452');
   final tecAltMobileNo = TextEditingController();
   final tecAadhaarNo = TextEditingController();
   final tecDob = TextEditingController();
@@ -324,7 +324,7 @@ class D2DPatientRegistrationController extends GetxController {
     talLgd = user?.tALLGDCODE?.toString() ?? '0';
     final rawMsId = user?.maritialstatusId?.toString() ?? '';
     maritalStatusId = (int.tryParse(rawMsId) != null) ? rawMsId : '1';
-    // tecMobileNo.text = '9673974373';
+    tecMobileNo.text = '9322183452';
     _startAutoLocationUpdates();
     _fetchFaceDetectionFlag();
   }
@@ -1482,7 +1482,7 @@ class D2DPatientRegistrationController extends GetxController {
 
     // Contact
     tecMobileNo.clear();
-    // tecMobileNo.text = '9673974373'; // TEST OVERRIDE
+    tecMobileNo.text = '9322183452'; // TEST OVERRIDE
     tecAltMobileNo.clear();
     tecAltMobileOtp.clear();
     originalAadhaar = '';
@@ -1659,7 +1659,7 @@ class D2DPatientRegistrationController extends GetxController {
     // Mobile
     final apiMobile = (data.mobile ?? '').trim();
     if (apiMobile.isNotEmpty) tecMobileNo.text = apiMobile;
-    // tecMobileNo.text = '9673974373'; // TEST OVERRIDE
+    tecMobileNo.text = '9322183452'; // TEST OVERRIDE
 
     // Aadhaar, DOB, Gender — only pre-fill for the beneficiary themselves
     // (isDependent=No). When registering a dependent the phlebo enters these

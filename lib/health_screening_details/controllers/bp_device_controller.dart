@@ -10,6 +10,14 @@ class BpDeviceController extends GetxController {
   // ── Static in-memory cache — survives controller recreation within same app session.
   static String _sMac  = '';
   static String _sName = '';
+  // The Omron SDK resolves a device against its internal model catalog by
+  // regex-matching the pre-bond advertised local name (e.g.
+  // "BLESmart_0000047E..."), never the post-bond GAP name ("HEM-7140T1").
+  // Kept separate from _sName (the display name) because on iOS
+  // CBPeripheral.name switches to the post-bond GATT Device Name once
+  // bonded, silently breaking the SDK's catalog lookup and producing
+  // "invalid user profile" for every user slot if we ever pass that instead.
+  static String _sSdkName = '';
   static int?   _sSys;
   static int?   _sDia;
 
@@ -21,6 +29,7 @@ class BpDeviceController extends GetxController {
   final RxString connectedDeviceMac = ''.obs;
   final RxString savedDeviceMac  = RxString(_sMac);
   final RxString savedDeviceName = RxString(_sName);
+  final RxString savedDeviceSdkName = RxString(_sSdkName);
   final RxString lastReadingStr  = RxString(
     (_sSys != null && _sDia != null) ? 'Systolic: $_sSys mmHg  |  Diastolic: $_sDia mmHg' : '',
   );
@@ -54,6 +63,7 @@ class BpDeviceController extends GetxController {
 
   static const String _prefMac       = 'bp_device_mac';
   static const String _prefName      = 'bp_device_name';
+  static const String _prefSdkName   = 'bp_device_sdk_name';
   static const String _prefSystolic  = 'bp_last_systolic';
   static const String _prefDiastolic = 'bp_last_diastolic';
 
@@ -132,12 +142,19 @@ class BpDeviceController extends GetxController {
     }
   }
 
-  void _stopProactiveScan() {
+  Future<void> _stopProactiveScan() async {
     if (!_proactiveScanRunning) return;
     _proactiveScanRunning = false;
     _proactiveScanSub?.cancel();
     _proactiveScanSub = null;
-    try { FlutterBluePlus.stopScan(); } catch (_) {}
+    // Awaited + settle delay — the Omron SDK spins up its own CBCentralManager
+    // right after this returns. Letting flutter_blue_plus's stopScan finish
+    // first avoids two CoreBluetooth stacks mutating state concurrently,
+    // which was crashing with EXC_BAD_ACCESS in NSDictionary setObject:forKey:.
+    try {
+      await FlutterBluePlus.stopScan();
+      await Future.delayed(const Duration(milliseconds: 200));
+    } catch (_) {}
     print('BpDevice PROACTIVE: stopped');
   }
 
@@ -173,11 +190,13 @@ class BpDeviceController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final mac  = prefs.getString(_prefMac)  ?? '';
     final name = prefs.getString(_prefName) ?? '';
+    final sdkName = prefs.getString(_prefSdkName) ?? '';
     final sys  = prefs.getInt(_prefSystolic);
     final dia  = prefs.getInt(_prefDiastolic);
-    _sMac = mac; _sName = name; _sSys = sys; _sDia = dia;
+    _sMac = mac; _sName = name; _sSdkName = sdkName; _sSys = sys; _sDia = dia;
     savedDeviceMac.value  = mac;
     savedDeviceName.value = name;
+    savedDeviceSdkName.value = sdkName;
     if (sys != null && dia != null) {
       _lastSystolic = sys;
       _lastDiastolic = dia;
@@ -199,13 +218,22 @@ class BpDeviceController extends GetxController {
     await prefs.setString(_prefName, name);
   }
 
+  Future<void> _persistSdkName(String sdkName) async {
+    _sSdkName = sdkName;
+    savedDeviceSdkName.value = sdkName;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_prefSdkName, sdkName);
+  }
+
   Future<void> _clearPersistedDevice() async {
-    _sMac = ''; _sName = ''; _sSys = null; _sDia = null;
+    _sMac = ''; _sName = ''; _sSdkName = ''; _sSys = null; _sDia = null;
     savedDeviceMac.value  = '';
     savedDeviceName.value = '';
+    savedDeviceSdkName.value = '';
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_prefMac);
     await prefs.remove(_prefName);
+    await prefs.remove(_prefSdkName);
     await prefs.remove(_prefSystolic);
     await prefs.remove(_prefDiastolic);
   }
@@ -223,6 +251,11 @@ class BpDeviceController extends GetxController {
     final mac  = device.remoteId.toString();
     final name = device.platformName.isNotEmpty ? device.platformName : mac;
     await _persistDevice(mac, name);
+    // Capture the raw pre-bond advertised name now, while it's still in
+    // flutter_blue_plus's scan cache — see _sSdkName comment above.
+    if (device.advName.isNotEmpty) {
+      await _persistSdkName(device.advName);
+    }
     statusStr.value = 'Listening for new reading from device...';
     // Start proactive scan now that device is paired
     _startProactiveScan();
@@ -329,7 +362,15 @@ class BpDeviceController extends GetxController {
       }
 
       isConnected.value = true;
-      await _persistDevice(device.remoteId.toString(), device.platformName);
+      // autoConnect() builds this BluetoothDevice straight from the saved MAC
+      // (not from a scan result), so platformName is empty here — persisting
+      // it unconditionally used to wipe out the good name saved at SCAN time,
+      // which then made every subsequent SDK transfer fail with "invalid
+      // user profile" (the SDK looks up its registered device by that name).
+      // Only overwrite the saved name if we actually have a real one.
+      if (device.platformName.isNotEmpty) {
+        await _persistDevice(device.remoteId.toString(), device.platformName);
+      }
       statusStr.value = 'Connected. Requesting measurement...';
       _connecting = false;
       isConnecting.value = false;
@@ -499,7 +540,7 @@ class BpDeviceController extends GetxController {
 
   Future<void> requestData() async {
     isWaitingForReading.value = true;
-    _stopProactiveScan();
+    await _stopProactiveScan();
 
     // Reset so SharedPreferences-restored values cannot leak into getLastReading().
     // Only a fresh SDK or GATT delivery (via _applyReading) can set these.
@@ -511,8 +552,13 @@ class BpDeviceController extends GetxController {
     // read records that raw BLE cannot (device only delivers data to registered clients).
     statusStr.value = 'Connecting to Omron device via SDK...';
     try {
+      // Pass the raw advertised name (SDK catalog key), falling back to the
+      // display name for devices paired before this fix was in place.
+      final sdkLocalName = savedDeviceSdkName.value.isNotEmpty
+          ? savedDeviceSdkName.value
+          : savedDeviceName.value;
       final result = await OmronBpChannel.transfer(
-        localName: savedDeviceName.value,
+        localName: sdkLocalName,
         uuid: savedDeviceMac.value,
       );
       _applyReading(result['systolic']!, result['diastolic']!);
@@ -633,7 +679,7 @@ class BpDeviceController extends GetxController {
   // ── Forget device ────────────────────────────────────────────────────────
 
   Future<void> forgetDevice() async {
-    _stopProactiveScan();
+    await _stopProactiveScan();
     _cancelSubs();
     try { _device?.disconnect(); } catch (_) {}
     _device = null;
